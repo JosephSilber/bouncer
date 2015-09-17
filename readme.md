@@ -68,6 +68,8 @@ $ php artisan migrate
 
 Adding roles and abilities to users is made extremely easy. You do not have to create a role or an ability in advance. Simply pass the name of the role/ability, and Bouncer will create it if it doesn't exist.
 
+**Note:** the examples below make use of the `Bouncer` facade. If you don't like facades, you can instead inject an instance of `Silber\Bouncer\Bouncer` into your class.
+
 ### Creating roles and abilities
 
 Let's create a role called `admin`, give it the ability to `ban-users` from our site.
