@@ -2,6 +2,8 @@
 
 namespace Silber\Bouncer;
 
+use Silber\Bouncer\Database\Role;
+use Silber\Bouncer\Database\Ability;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Auth\Access\Gate;
 
