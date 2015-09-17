@@ -28,13 +28,13 @@ class Role extends Model
     protected $fillable = ['title'];
 
     /**
-     * The Abilities relationship.
+     * The abilities relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function Abilities()
+    public function abilities()
     {
-        return $this->belongsToMany(Ability::class, 'role_Abilities');
+        return $this->belongsToMany(Ability::class, 'role_abilities');
     }
 
     /**
