@@ -72,7 +72,7 @@ Adding roles and abilities to users is made extremely easy. You do not have to c
 
 ### Creating roles and abilities
 
-Let's create a role called `admin` and give it the ability to `ban-users` from our site.
+Let's create a role called `admin` and give it the ability to `ban-users` from our site:
 
 ```php
 Bouncer::allow('admin')->to('ban-users');
@@ -96,7 +96,7 @@ $user->assign('admin');
 
 ### Giving a user an ability directly
 
-Sometimes, you might want to give a user an ability directly, without using a role. Simply tell the bouncer to give the ability directly to the user:
+Sometimes you might want to give a user an ability directly, without using a role:
 
 ```php
 Bouncer::allow($user)->to('ban-users');
@@ -110,7 +110,7 @@ $user->allow('ban-users');
 
 ### Retracting a role from a user
 
-To retract a role that has been given to a user, tell the bouncer to retract the given role:
+The bouncer can also retract a previously-assigned role from a user:
 
 ```php
 Bouncer::retract('ban-users')->from($user);
@@ -141,6 +141,16 @@ If the ability has been granted through a role, tell the bouncer to remove the a
 ```php
 Bouncer::disallow('admin')->to('ban-users');
 ```
+
+### Listing a user's capabilities
+
+You can get a list of a user's abilities directly off the user model:
+
+```php
+$abilities = $user->listAbilities();
+```
+
+This returns an instance of `Illuminate\Support\Collection` with the names of all abilities this user has. It includes abilities granted directly as well as those granted through the user's roles.
 
 ### License
 
