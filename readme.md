@@ -152,6 +152,19 @@ $abilities = $user->listAbilities();
 
 This returns an instance of `Illuminate\Support\Collection` with the names of all abilities this user has. It includes abilities granted directly as well as those granted through the user's roles.
 
+### Authorizing users
+
+Authorizing users is handled directly at [Laravel's `Gate`](http://laravel.com/docs/5.1/authorization#checking-abilities), or on the user model (`$user->can($ability)`).
+
+For convenience, the bouncer class provides two passthrough methods:
+
+```php
+Bouncer::allows($ability);
+Bouncer::denies($ability);
+```
+
+These call directly into the `Gate` class.
+
 ### License
 
 Bouncer is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)
