@@ -1,6 +1,6 @@
 # Bouncer
 
-Bouncer provides a mechanism to handle simple roles and abilities in Laravel's ACL. It stays out of your way as much as possible: use it when you want, ignore it when you don't.
+Bouncer provides a mechanism to handle simple roles and abilities in [Laravel's ACL](http://laravel.com/docs/5.1/authorization). It stays out of your way as much as possible: use it when you want, ignore it when you don't.
 
 Bouncer works well with other abilities you have hard-coded in your own app. Your code always takes precedence: if your code allows an action, the bouncer will not interfere.
 
