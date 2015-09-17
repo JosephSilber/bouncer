@@ -1,6 +1,6 @@
 {
     "name": "silber/bouncer",
-    "description": "A simple roles and capabilities system for Laravel's ACL.",
+    "description": "Bouncer provides a simple mechanism to handle roles and abilities in Laravel's ACL.",
     "keywords": ["laravel", "acl", "roles", "permissions", "capabilities"],
     "license": "MIT",
     "authors": [
