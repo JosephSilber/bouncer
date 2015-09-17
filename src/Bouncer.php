@@ -99,12 +99,12 @@ class Bouncer
     /**
      * Determine if the given ability should be granted for the current user.
      *
-     * @param  string  $Ability
+     * @param  string  $ability
      * @return bool
      */
-    public function allows($Ability)
+    public function allows($ability)
     {
-        return $this->getGate(true)->allows($Ability);
+        return $this->getGate(true)->allows($ability);
     }
 
     /**
@@ -112,9 +112,9 @@ class Bouncer
      *
      * @return bool
      */
-    public function denies($Ability)
+    public function denies($ability)
     {
-        return $this->getGate(true)->denies($Ability);
+        return $this->getGate(true)->denies($ability);
     }
 
     /**
