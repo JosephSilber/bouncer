@@ -53,7 +53,7 @@ class AssignsRole
     protected function role()
     {
         if ($this->role instanceof Role) {
-            return $role;
+            return $this->role;
         }
 
         return Role::firstOrCreate(['title' => $this->role]);
