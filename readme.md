@@ -72,7 +72,7 @@ Adding roles and abilities to users is made extremely easy. You do not have to c
 
 ### Creating roles and abilities
 
-Let's create a role called `admin`, give it the ability to `ban-users` from our site.
+Let's create a role called `admin` and give it the ability to `ban-users` from our site.
 
 ```php
 Bouncer::allow('admin')->to('ban-users');
