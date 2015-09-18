@@ -13,7 +13,7 @@ use Illuminate\Database\SQLiteConnection;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Database\ConnectionResolverInterface;
 
-class BouncerTest extends PHPUnit_Framework_TestCase
+abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 {
     /**
      * Bootstrap Eloquent.
@@ -52,8 +52,12 @@ class BouncerTest extends PHPUnit_Framework_TestCase
 
         $this->schema()->create('abilities', function ($table) {
             $table->increments('id');
-            $table->string('title')->unique();
+            $table->string('title');
+            $table->integer('entity_id')->unsigned()->nullable();
+            $table->string('entity_type')->nullable();
             $table->timestamps();
+
+            $table->unique(['title', 'entity_id', 'entity_type']);
         });
 
         $this->schema()->create('roles', function ($table) {
@@ -93,83 +97,6 @@ class BouncerTest extends PHPUnit_Framework_TestCase
         $this->schema()->drop('role_abilities');
     }
 
-    public function test_bouncer_can_give_and_remove_abilities()
-    {
-        $bouncer = $this->bouncer($user = User::create());
-
-        $bouncer->allow($user)->to('edit-site');
-
-        $this->assertTrue($bouncer->allows('edit-site'));
-
-        $bouncer->disallow($user)->to('edit-site');
-
-        $this->assertTrue($bouncer->denies('edit-site'));
-    }
-
-    public function test_bouncer_can_give_and_remove_roles()
-    {
-        $bouncer = $this->bouncer($user = User::create());
-
-        $bouncer->allow('admin')->to('edit-site');
-        $bouncer->assign('admin')->to($user);
-
-        $this->assertTrue($bouncer->allows('edit-site'));
-
-        $bouncer->retract('admin')->from($user);
-
-        $this->assertTrue($bouncer->denies('edit-site'));
-    }
-
-    public function test_bouncer_can_disallow_abilities_on_roles()
-    {
-        $bouncer = $this->bouncer($user = User::create());
-
-        $bouncer->allow('admin')->to('edit-site');
-        $bouncer->disallow('admin')->to('edit-site');
-        $bouncer->assign('admin')->to($user);
-
-        $this->assertTrue($bouncer->denies('edit-site'));
-    }
-
-    public function test_trait_list_abilities_gets_all_abilities()
-    {
-        $bouncer = $this->bouncer($user = User::create());
-
-        $bouncer->allow('admin')->to('edit-site');
-        $bouncer->allow($user)->to('create-posts');
-        $bouncer->allow('editor')->to('edit-posts');
-        $bouncer->assign('admin')->to($user);
-
-        $this->assertEquals(['create-posts', 'edit-site'], $user->listAbilities()->sort()->all());
-    }
-
-    public function test_trait_can_give_and_remove_abilities()
-    {
-        $gate = $this->gate($user = User::create());
-
-        $user->allow('edit-site');
-
-        $this->assertTrue($gate->allows('edit-site'));
-
-        $user->disallow('edit-site');
-
-        $this->assertTrue($gate->denies('edit-site'));
-    }
-
-    public function test_trait_can_assign_and_retract_roles()
-    {
-        $bouncer = $this->bouncer($user = User::create());
-
-        $bouncer->allow('admin')->to('edit-site');
-        $user->assign('admin');
-
-        $this->assertTrue($bouncer->allows('edit-site'));
-
-        $user->retract('admin');
-
-        $this->assertTrue($bouncer->denies('edit-site'));
-    }
-
     /**
      * Get a bouncer instance.
      *
@@ -193,8 +120,12 @@ class BouncerTest extends PHPUnit_Framework_TestCase
             return $user;
         });
 
-        $gate->before(function ($user, $ability) {
-            if ((new Clipboard)->check($user, $ability)) {
+        $gate->before(function ($user, $ability, $model = null, $additional = null) {
+            if ( ! is_null($additional)) {
+                return;
+            }
+
+            if ((new Clipboard)->check($user, $ability, $model)) {
                 return true;
             }
         });

@@ -19,8 +19,12 @@ class CreateBouncerTables extends Migration
 
         Schema::create('abilities', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('title')->unique();
+            $table->string('title');
+            $table->integer('entity_id')->unsigned()->nullable();
+            $table->string('entity_type')->nullable();
             $table->timestamps();
+
+            $table->unique(['title', 'entity_id', 'entity_type']);
         });
 
         Schema::create('roles', function (Blueprint $table) {

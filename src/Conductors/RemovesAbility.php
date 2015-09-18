@@ -28,22 +28,25 @@ class RemovesAbility
     /**
      * Remove the given ability from the model.
      *
-     * @param  mixed  $Abilities
+     * @param  mixed  $abilities
+     * @param  \Illuminate\Database\Eloquent\Model|string|null  $entity
      * @return bool
      */
-    public function to($abilities)
+    public function to($abilities, $entity = null)
     {
         if ( ! $model = $this->getModel()) {
             return false;
         }
 
-        $model->abilities()->detach($this->getAbilityIds($abilities));
+        if ($ids = $this->getAbilityIds($abilities, $entity)) {
+            $model->abilities()->detach($ids);
+        }
 
         return true;
     }
 
     /**
-     * Get the model.
+     * Get the model from which to remove the abilities.
      *
      * @return \Illuminate\Database\Eloquent\Model|null
      */
@@ -59,10 +62,16 @@ class RemovesAbility
     /**
      * Get the IDs of the provided abilities.
      *
-     * @return array
+     * @param  mixed  $abilities
+     * @param  \ELoquent\Database\Eloquent\Model|string|null  $model
+     * @return array|int
      */
-    protected function getAbilityIds($abilities)
+    protected function getAbilityIds($abilities, $model)
     {
+        if ( ! is_null($model)) {
+            return $this->getModelAbilityId($abilities, $model);
+        }
+
         $abilities = is_array($abilities) ? $abilities : [$abilities];
 
         return array_merge(
@@ -70,6 +79,20 @@ class RemovesAbility
             $this->getAbilityIdsFromModels($abilities),
             $this->getAbilityIdsFromStrings($abilities)
         );
+    }
+
+    /**
+     * Get the ability ID for the given model.
+     *
+     * @param  string  $ability
+     * @param  \Illuminate\Database\Eloquent\Model|string  $model
+     * @return int|null
+     */
+    protected function getModelAbilityId($ability, $model)
+    {
+        $model = $model instanceof Model ? $model : new $model;
+
+        return Ability::where('title', $ability)->forModel($model)->value('id');
     }
 
     /**

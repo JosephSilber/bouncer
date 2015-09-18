@@ -62,7 +62,13 @@ class BouncerServiceProvider extends ServiceProvider
      */
     protected function registerAtGate()
     {
-        $this->app->make(Gate::class)->before(function ($user, $ability) {
+        $gate = $this->app->make(Gate::class);
+
+        $gate->before(function ($user, $ability, $model = null, $additional = null) {
+            if ( ! is_null($additional)) {
+                return;
+            }
+
             if ($this->app->make(Clipboard::class)->check($user, $ability)) {
                 return true;
             }

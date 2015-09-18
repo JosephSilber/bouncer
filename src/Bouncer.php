@@ -100,21 +100,24 @@ class Bouncer
      * Determine if the given ability should be granted for the current user.
      *
      * @param  string  $ability
+     * @param  array|mixed  $arguments
      * @return bool
      */
-    public function allows($ability)
+    public function allows($ability, $arguments = [])
     {
-        return $this->getGate(true)->allows($ability);
+        return $this->getGate(true)->allows($ability, $arguments);
     }
 
     /**
      * Determine if the given ability should be denied for the current user.
      *
+     * @param  string  $ability
+     * @param  array|mixed  $arguments
      * @return bool
      */
-    public function denies($ability)
+    public function denies($ability, $arguments = [])
     {
-        return $this->getGate(true)->denies($ability);
+        return $this->getGate(true)->denies($ability, $arguments);
     }
 
     /**

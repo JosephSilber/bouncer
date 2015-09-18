@@ -2,8 +2,8 @@
 
 namespace Silber\Bouncer;
 
-use Illuminate\Database\Eloquent\Model;
 use Silber\Bouncer\Database\Ability;
+use Illuminate\Database\Eloquent\Model;
 
 class Clipboard
 {
@@ -18,16 +18,67 @@ class Clipboard
      * Determine if the given user has the given ability.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $user
-     * @param  \Silber\Bouncer\Database\Ability|string  $ability
+     * @param  string  $ability
+     * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
      * @return bool
      */
-    public function check(Model $user, $ability)
+    public function check(Model $user, $ability, $model = null)
     {
-        if ($ability instanceof Ability) {
-            $ability = $ability->title;
+        $abilities = $this->getUserAbilities($user);
+
+        foreach ($this->compileRequestedAbility($ability, $model) as $ability) {
+            if ($abilities->contains($ability)) {
+                return true;
+            }
         }
 
-        return $this->getUserAbilities($user)->contains($ability);
+        return false;
+    }
+
+    /**
+     * Compile a list of abilities that match the provided parameters.
+     *
+     * @param  string  $ability
+     * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
+     * @return array
+     */
+    protected function compileRequestedAbility($ability, $model)
+    {
+        if (is_null($model)) {
+            return [$ability];
+        }
+
+        return $this->compileModelAbilities($ability, $model);
+    }
+
+    /**
+     * Compile a list of abilities that match the given model.
+     *
+     * @param  string  $ability
+     * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
+     * @return array
+     */
+    protected function compileModelAbilities($ability, $model)
+    {
+        $model = $model instanceof Model ? $model : new $model;
+
+        $ability = [
+            'title'       => $ability,
+            'entity_id'   => null,
+            'entity_type' => $model->getMorphClass(),
+        ];
+
+        // If the provided model does not exist, we will only look for abilities
+        // where the "entity_id" is null. If the model does exist, we'll also
+        // look for the abilities whose "entity_id" matches the model key.
+        if ( ! $model->exists) {
+            return [$ability];
+        }
+
+        return [
+            $ability,
+            array_merge($ability, ['entity_id' => $model->getKey()])
+        ];
     }
 
     /**
@@ -42,7 +93,7 @@ class Clipboard
         $id = $user->getKey();
 
         if ( ! isset($this->cache[$id]) || $fresh) {
-            $this->cache[$id] = $this->fetchUserAbilities($user);
+            $this->cache[$id] = $this->getFreshUserAbilities($user);
         }
 
         return $this->cache[$id];
@@ -74,10 +125,25 @@ class Clipboard
     }
 
     /**
-     * Fetch a list of the user's abilities from the database.
+     * Get a fresh list of the given user's abilities.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $user
      * @return \Illuminate\Support\Collection
+     */
+    protected function getFreshUserAbilities(Model $user)
+    {
+        return collect($this->fetchUserAbilities($user))->map(function ($ability) {
+            $isSimpleAbility = is_null($ability->entity_id) && is_null($ability->entity_type);
+
+            return $isSimpleAbility ? $ability->title : (array) $ability;
+        });
+    }
+
+    /**
+     * Fetch a list of the user's abilities from the database.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $user
+     * @return array[]
      */
     protected function fetchUserAbilities(Model $user)
     {
@@ -85,7 +151,7 @@ class Clipboard
 
         $query->orWhereHas('users', $this->getUserConstraint($user));
 
-        return $query->lists('title');
+        return $query->getQuery()->select('title', 'entity_id', 'entity_type')->get();
     }
 
     /**
