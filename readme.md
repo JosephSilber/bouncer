@@ -168,6 +168,12 @@ To remove an ability for a specific model, pass it as a second argument:
 Bouncer::disallow($user)->to('delete', $post);
 ```
 
+To remove an ability for all models of a given type, pass the fully qualified class name as a second argument:
+
+```php
+Bouncer::disallow($user)->to('delete', Post::class);
+```
+
 ### Listing a user's capabilities
 
 You can get a list of a user's abilities directly off the user model:
