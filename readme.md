@@ -17,6 +17,9 @@ Bouncer::allow($user)->to('create', Post::class);
 // Alternatively, do it through a role
 Bouncer::allow('admin')->to('create', Post::class);
 Bouncer::assign('admin')->to($user);
+
+// You can also restrict abilities to a specific model
+Bouncer::allow($user)->to('edit', $post);
 ```
 
 When you check abilities at the gate, the bouncer will be consulted first. If he sees an ability that has been granted to the current user (whether directly, or through a role) he'll authorize the check.
