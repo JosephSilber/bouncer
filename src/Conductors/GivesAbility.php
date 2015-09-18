@@ -111,7 +111,7 @@ class GivesAbility
         // a model instance that does not exist, it is probably a mistake.
         if ( ! $model->exists) {
             throw new InvalidArgumentException(
-                'The model does not exist. To allow access to all models, pass in Model::class instead.'
+                'The model does not exist. To allow access to all models, use the class name instead'
             );
         }
 
