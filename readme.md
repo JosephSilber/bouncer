@@ -140,7 +140,7 @@ Or directly on the model:
 $user->disallow('ban-users');
 ```
 
-**Note:** if the user has a role that allows them to `ban-users` they will still have that ability. To disallow it, either remove the ability from the role, or retract the role from the user.
+> **Note:** if the user has a role that allows them to `ban-users` they will still have that ability. To disallow it, either remove the ability from the role or retract the role from the user.
 
 If the ability has been granted through a role, tell the bouncer to remove the ability from the role instead:
 
