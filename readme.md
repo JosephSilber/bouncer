@@ -12,16 +12,16 @@ Once installed, you can simply tell the bouncer what you want to allow at the ga
 
 ```php
 // Give a user the ability to create posts
-Bouncer::allow($user)->to('create-posts');
+Bouncer::allow($user)->to('create', Post::class);
 
 // Alternatively, do it through a role
-Bouncer::allow('admin')->to('create-posts');
+Bouncer::allow('admin')->to('create', Post::class);
 Bouncer::assign('admin')->to($user);
 ```
 
 When you check abilities at the gate, the bouncer will be consulted first. If he sees an ability that has been granted to the current user (whether directly, or through a role) he'll authorize the check.
 
-## Install
+## Installation
 
 Simply install the bouncer package with composer:
 
@@ -72,7 +72,7 @@ $ php artisan migrate
 
 Adding roles and abilities to users is made extremely easy. You do not have to create a role or an ability in advance. Simply pass the name of the role/ability, and Bouncer will create it if it doesn't exist.
 
-**Note:** the examples below all use the `Bouncer` facade. If you don't like facades, you can instead inject an instance of `Silber\Bouncer\Bouncer` into your class.
+> **Note:** the examples below all use the `Bouncer` facade. If you don't like facades, you can instead inject an instance of `Silber\Bouncer\Bouncer` into your class.
 
 ### Creating roles and abilities
 
@@ -112,6 +112,20 @@ Here too you can accomplish the same directly off of the user model:
 $user->allow('ban-users');
 ```
 
+### Giving an ability for certain models
+
+Sometimes you might want to only allow users to take action on a specific model. Simply pass the model as a second argument:
+
+```php
+Bouncer::allow($user)->to('edit', $post);
+```
+
+To allow an ability on all models of a certain type, pass the fully qualified class name instead:
+
+```php
+Bouncer::allow($user)->to('edit', Post::class);
+```
+
 ### Retracting a role from a user
 
 The bouncer can also retract a previously-assigned role from a user:
@@ -141,6 +155,12 @@ $user->disallow('ban-users');
 ```
 
 > **Note:** if the user has a role that allows them to `ban-users` they will still have that ability. To disallow it, either remove the ability from the role or retract the role from the user.
+
+To remove an ability for a specific model, pass it as a second argument:
+
+```php
+Bouncer::disallow($user)->to('delete', $post);
+```
 
 If the ability has been granted through a role, tell the bouncer to remove the ability from the role instead:
 
