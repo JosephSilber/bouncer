@@ -156,16 +156,16 @@ $user->disallow('ban-users');
 
 > **Note:** if the user has a role that allows them to `ban-users` they will still have that ability. To disallow it, either remove the ability from the role or retract the role from the user.
 
-To remove an ability for a specific model, pass it as a second argument:
-
-```php
-Bouncer::disallow($user)->to('delete', $post);
-```
-
 If the ability has been granted through a role, tell the bouncer to remove the ability from the role instead:
 
 ```php
 Bouncer::disallow('admin')->to('ban-users');
+```
+
+To remove an ability for a specific model, pass it as a second argument:
+
+```php
+Bouncer::disallow($user)->to('delete', $post);
 ```
 
 ### Listing a user's capabilities
