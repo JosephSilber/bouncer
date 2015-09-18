@@ -143,7 +143,7 @@ class Clipboard
      * Fetch a list of the user's abilities from the database.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $user
-     * @return array[]
+     * @return stdClass[]
      */
     protected function fetchUserAbilities(Model $user)
     {
