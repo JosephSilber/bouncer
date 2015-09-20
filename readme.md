@@ -275,7 +275,7 @@ Bouncer::is($user)->all(['moderator', 'editor']);
 
 $user->is('subscriber');
 $user->is(['moderator', 'editor']);
-$user->is(['moderator', 'editor'], 'and');
+$user->isAll(['moderator', 'editor']);
 
 Bouncer::allows('ban-users');
 Bouncer::allows('edit', Post::class);
