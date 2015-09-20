@@ -200,6 +200,6 @@ Bouncer::denies($ability);
 
 These call directly into the `Gate` class.
 
-### License
+## License
 
 Bouncer is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)
