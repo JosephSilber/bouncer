@@ -179,7 +179,7 @@ Bouncer::disallow($user)->to('delete', Post::class);
 
 ### Checking a user's roles
 
-The bouncer can also check if a user has a specific role:
+The bouncer can check if a user has a specific role:
 
 ```php
 Bouncer::is($user)->a('moderator');
@@ -197,16 +197,22 @@ To check if a user has one of many roles, pass the roles as an array:
 Bouncer::is($user)->a(['moderator', 'editor']);
 ```
 
-You can also specify that you want to check if the user has *all* of the given roles:
+You can also check if the user has *all* of the given roles:
 
 ```php
-Bouncer::is($user)->an(['editor', 'moderator'], 'and');
+Bouncer::is($user)->all(['editor', 'moderator']);
 ```
 
 All of the above checks can also be done directly on the user model:
 
 ```php
 $user->is('admin');
+```
+
+You can also check if a user has *all* of the given abilities directly from the model:
+
+```php
+$user->is(['editor', 'moderator'], 'and');
 ```
 
 ### Listing a user's abilities

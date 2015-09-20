@@ -33,26 +33,49 @@ class ChecksRole
      */
     public function a($role, $boolean = 'or')
     {
-        $roles = (array) $role;
-
-        $query = $this->user->roles()->whereIn('title', $roles);
-
         if ($boolean == 'or') {
-            return $query->exists();
+            return $this->query($role)->exists();
         }
 
-        return $query->count() == count($roles);
+        return $this->query($role)->count() == count((array) $role);
     }
 
     /**
      * Alias to the "a" method.
      *
      * @param  string|array  $role
-     * @param  string  $boolean
      * @return bool
      */
-    public function an($role, $boolean = 'or')
+    public function an($role)
     {
-        return $this->a($role, $boolean);
+        return $this->a($role);
+    }
+
+    /**
+     * Check if the user has all of the given roles.
+     *
+     * @param  string|array  $role
+     * @return bool
+     */
+    public function all($role)
+    {
+        return $this->a($role, 'and');
+    }
+
+    /**
+     * Create the base query to check for roles.
+     *
+     * @param  array|string  $role
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    protected function query($role)
+    {
+        $relation = $this->user->roles();
+
+        if (is_array($role)) {
+            return $relation->whereIn('title', $role);
+        }
+
+        return $relation->where('title', $role);
     }
 }
