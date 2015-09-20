@@ -39,4 +39,29 @@ class BouncerSimpleTest extends BaseTestCase
 
         $this->assertTrue($bouncer->denies('edit-site'));
     }
+
+    public function test_bouncer_can_check_user_roles()
+    {
+        $bouncer = $this->bouncer($user = User::create());
+
+        $bouncer->assign('moderator')->to($user);
+        $bouncer->assign('editor')->to($user);
+
+        $this->assertTrue($bouncer->is($user)->a('moderator'));
+        $this->assertTrue($bouncer->is($user)->an('editor'));
+        $this->assertFalse($bouncer->is($user)->an('admin'));
+    }
+
+    public function test_bouncer_can_check_multiple_user_roles()
+    {
+        $bouncer = $this->bouncer($user = User::create());
+
+        $bouncer->assign('moderator')->to($user);
+        $bouncer->assign('editor')->to($user);
+
+        $this->assertTrue($bouncer->is($user)->a(['moderator', 'admin']));
+        $this->assertTrue($bouncer->is($user)->an(['editor', 'moderator']));
+        $this->assertTrue($bouncer->is($user)->an(['editor', 'moderator'], 'and'));
+        $this->assertFalse($bouncer->is($user)->an(['admin', 'moderator'], 'and'));
+    }
 }

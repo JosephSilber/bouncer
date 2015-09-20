@@ -3,6 +3,7 @@
 namespace Silber\Bouncer\Database;
 
 use Silber\Bouncer\Clipboard;
+use Silber\Bouncer\Conductors\ChecksRole;
 use Silber\Bouncer\Conductors\AssignsRole;
 use Silber\Bouncer\Conductors\RemovesRole;
 use Silber\Bouncer\Conductors\GivesAbility;
@@ -90,5 +91,17 @@ trait HasRolesAndAbilities
         (new RemovesRole($role))->from($this);
 
         return $this;
+    }
+
+    /**
+     * Check if the user has the given role.
+     *
+     * @param  string|array  $role
+     * @param  string  $boolean
+     * @return bool
+     */
+    public function is($role, $boolean = 'or')
+    {
+        return (new ChecksRole($this))->a($role, $boolean);
     }
 }

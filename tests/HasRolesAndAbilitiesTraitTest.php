@@ -40,4 +40,29 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
 
         $this->assertTrue($bouncer->denies('edit-site'));
     }
+
+    public function test_can_check_roles()
+    {
+        $gate = $this->gate($user = User::create());
+
+        $user->assign('moderator');
+        $user->assign('editor');
+
+        $this->assertTrue($user->is('moderator'));
+        $this->assertTrue($user->is('editor'));
+        $this->assertFalse($user->is('admin'));
+    }
+
+    public function test_can_check_multiple_roles()
+    {
+        $gate = $this->gate($user = User::create());
+
+        $user->assign('moderator');
+        $user->assign('editor');
+
+        $this->assertTrue($user->is(['moderator', 'admin']));
+        $this->assertTrue($user->is(['editor', 'moderator']));
+        $this->assertTrue($user->is(['editor', 'moderator'], 'and'));
+        $this->assertFalse($user->is(['admin', 'moderator'], 'and'));
+    }
 }

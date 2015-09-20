@@ -3,8 +3,10 @@
 namespace Silber\Bouncer;
 
 use RuntimeException;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Access\Gate;
 
+use Silber\Bouncer\Conductors\ChecksRole;
 use Silber\Bouncer\Conductors\AssignsRole;
 use Silber\Bouncer\Conductors\RemovesRole;
 use Silber\Bouncer\Conductors\GivesAbility;
@@ -61,6 +63,17 @@ class Bouncer
     public function retract($role)
     {
         return new RemovesRole($role);
+    }
+
+    /**
+     * Start a chain, to check if the given user has a certain role.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $user
+     * @return \Silber\Bouncer\Conductors\ChecksRole
+     */
+    public function is(Model $user)
+    {
+        return new ChecksRole($user);
     }
 
     /**
