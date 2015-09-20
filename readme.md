@@ -187,6 +187,8 @@ $abilities = $user->listAbilities();
 
 This returns an instance of `Illuminate\Support\Collection` with the names of all abilities this user has. It includes abilities granted directly as well as those granted through the user's roles.
 
+> **Note:** If an ability is limited to a specific model, an array with its details is included instead of just the ability's name.
+
 ### Authorizing users
 
 Authorizing users is handled directly at [Laravel's `Gate`](http://laravel.com/docs/5.1/authorization#checking-abilities), or on the user model (`$user->can($ability)`).
