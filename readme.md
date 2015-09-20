@@ -240,6 +240,52 @@ Bouncer::denies($ability);
 
 These call directly into the `Gate` class.
 
+## Cheat Sheet
+
+```php
+Bouncer::allow($user)->to('ban-users');
+Bouncer::allow($user)->to('edit', Post::class);
+Bouncer::allow($user)->to('delete', $post);
+
+$user->allow('ban-users');
+$user->allow('edit', Post::class);
+$user->allow('delete', $post);
+
+Bouncer::disallow($user)->to('ban-users');
+Bouncer::disallow($user)->to('edit', Post::class);
+Bouncer::disallow($user)->to('delete', $post);
+
+$user->disallow('ban-users');
+$user->disallow('edit', Post::class);
+$user->disallow('delete', $post);
+
+Bouncer::allow('admin')->to('ban-users');
+Bouncer::disallow('admin')->to('ban-users');
+
+Bouncer::give('admin')->to($user);
+Bouncer::retract('admin')->from($user);
+
+$user->assign('admin');
+$user->retract('admin');
+
+Bouncer::is($user)->a('subscriber');
+Bouncer::is($user)->an('admin');
+Bouncer::is($user)->a(['moderator', 'editor']);
+Bouncer::is($user)->all(['moderator', 'editor']);
+
+$user->is('subscriber');
+$user->is(['moderator', 'editor']);
+$user->is(['moderator', 'editor'], 'and');
+
+Bouncer::allows('ban-users');
+Bouncer::allows('edit', Post::class);
+Bouncer::allows('delete', $post);
+
+Bouncer::disallows('ban-users');
+Bouncer::disallows('edit', Post::class);
+Bouncer::disallows('delete', $post);
+```
+
 ## License
 
 Bouncer is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)
