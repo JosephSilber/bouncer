@@ -177,7 +177,39 @@ To remove an ability for all models of a given type, pass the fully qualified cl
 Bouncer::disallow($user)->to('delete', Post::class);
 ```
 
-### Listing a user's capabilities
+### Checking a user's roles
+
+The bouncer can also check if a user has a specific role:
+
+```php
+Bouncer::is($user)->a('moderator');
+```
+
+If the role you're checking starts with a vowel, you might want to use the `an` alias method:
+
+```php
+Bouncer::is($user)->an('admin');
+```
+
+To check if a user has one of many roles, pass the roles as an array:
+
+```php
+Bouncer::is($user)->a(['moderator', 'editor']);
+```
+
+You can also specify that you want to check if the user has *all* of the given roles:
+
+```php
+Bouncer::is($user)->an(['editor', 'moderator'], 'and');
+```
+
+All of the above checks can also be done directly on the user model:
+
+```php
+$user->is('admin');
+```
+
+### Listing a user's abilities
 
 You can get a list of a user's abilities directly off the user model:
 
