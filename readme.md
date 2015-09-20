@@ -212,7 +212,7 @@ $user->is('admin');
 You can also check if a user has all of the given abilities directly from the model:
 
 ```php
-$user->is(['editor', 'moderator'], 'and');
+$user->isAll(['editor', 'moderator']);
 ```
 
 ### Listing a user's abilities

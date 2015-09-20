@@ -62,7 +62,7 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
 
         $this->assertTrue($user->is(['moderator', 'admin']));
         $this->assertTrue($user->is(['editor', 'moderator']));
-        $this->assertTrue($user->is(['editor', 'moderator'], 'and'));
-        $this->assertFalse($user->is(['admin', 'moderator'], 'and'));
+        $this->assertTrue($user->isAll(['editor', 'moderator']));
+        $this->assertFalse($user->isAll(['admin', 'moderator']));
     }
 }

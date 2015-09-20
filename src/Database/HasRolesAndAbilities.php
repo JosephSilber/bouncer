@@ -96,17 +96,29 @@ trait HasRolesAndAbilities
     }
 
     /**
-     * Check if the user has the given role.
+     * Check if the user has any of the given roles.
      *
-     * @param  string|array  $role
-     * @param  string  $boolean
+     * @param  string|array  $roles
      * @return bool
      */
-    public function is($role, $boolean = 'or')
+    public function is($roles)
     {
         $clipboard = $this->getClipboardInstance();
 
-        return $clipboard->checkUserRole($this, $role, $boolean);
+        return $clipboard->checkUserRole($this, $roles, 'or');
+    }
+
+    /**
+     * Check if the user has all of the given roles.
+     *
+     * @param  string|array  $roles
+     * @return bool
+     */
+    public function isAll($roles)
+    {
+        $clipboard = $this->getClipboardInstance();
+
+        return $clipboard->checkUserRole($this, $roles, 'and');
     }
 
     /**
