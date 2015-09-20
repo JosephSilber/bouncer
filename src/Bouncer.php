@@ -15,11 +15,28 @@ use Silber\Bouncer\Conductors\RemovesAbility;
 class Bouncer
 {
     /**
+     * The bouncer clipboard instance.
+     *
+     * @var \Silber\Bouncer\Clipboard
+     */
+    protected $clipboard;
+
+    /**
      * The access gate instance.
      *
      * @var \Illuminate\Contracts\Auth\Access\Gate|null
      */
     protected $gate;
+
+    /**
+     * Constructor.
+     *
+     * @param \Silber\Bouncer\Clipboard
+     */
+    public function __construct(Clipboard $clipboard)
+    {
+        $this->clipboard = $clipboard;
+    }
 
     /**
      * Start a chain, to allow the given role a ability.
@@ -73,7 +90,7 @@ class Bouncer
      */
     public function is(Model $user)
     {
-        return new ChecksRole($user);
+        return new ChecksRole($user, $this->clipboard);
     }
 
     /**

@@ -105,7 +105,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
      */
     protected function bouncer(User $user)
     {
-        return (new Bouncer)->setGate($this->gate($user));
+        return (new Bouncer(new Clipboard))->setGate($this->gate($user));
     }
 
     /**
@@ -175,4 +175,11 @@ class ConnectionResolver implements ConnectionResolverInterface
     {
         //
     }
+}
+
+function app($type)
+{
+    $container = new Container;
+
+    return $container->make($type);
 }

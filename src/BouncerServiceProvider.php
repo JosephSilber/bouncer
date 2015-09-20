@@ -31,7 +31,9 @@ class BouncerServiceProvider extends ServiceProvider
         $this->app->singleton(Clipboard::class);
 
         $this->app->bind(Bouncer::class, function () {
-            return (new Bouncer)->setGate($this->app->make(Gate::class));
+            $bouncer = new Bouncer($this->app->make(Clipboard::class));
+
+            return $bouncer->setGate($this->app->make(Gate::class));
         });
     }
 

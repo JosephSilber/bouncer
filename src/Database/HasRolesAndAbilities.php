@@ -38,7 +38,7 @@ trait HasRolesAndAbilities
      */
     public function listAbilities()
     {
-        return (new Clipboard)->getUserAbilities($this);
+        return $this->getClipboardInstance()->getUserAbilities($this);
     }
 
     /**
@@ -102,6 +102,18 @@ trait HasRolesAndAbilities
      */
     public function is($role, $boolean = 'or')
     {
-        return (new ChecksRole($this))->a($role, $boolean);
+        $checker = new ChecksRole($this, $this->getClipboardInstance());
+
+        return $checker->a($role, $boolean);
+    }
+
+    /**
+     * Get an instance of the bouncer's clipboard.
+     *
+     * @return \Silber\Bouncer\Clipboard
+     */
+    protected function getClipboardInstance()
+    {
+        return app(Clipboard::class);
     }
 }

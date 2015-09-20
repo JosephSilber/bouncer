@@ -2,6 +2,7 @@
 
 namespace Silber\Bouncer\Conductors;
 
+use Silber\Bouncer\Clipboard;
 use Silber\Bouncer\Database\Role;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,13 +16,22 @@ class ChecksRole
     protected $user;
 
     /**
+     * The bouncer clipboard instance.
+     *
+     * @var \Silber\Bouncer\Clipboard
+     */
+    protected $clipboard;
+
+    /**
      * Constructor.
      *
      * @param \Illuminate\Database\Eloquent\Model  $user
+     * @param Silber\Bouncer\Clipboard  $clipboard
      */
-    public function __construct(Model $user)
+    public function __construct(Model $user, Clipboard $clipboard)
     {
         $this->user = $user;
+        $this->clipboard = $clipboard;
     }
 
     /**
@@ -33,22 +43,19 @@ class ChecksRole
      */
     public function a($role, $boolean = 'or')
     {
-        if ($boolean == 'or') {
-            return $this->query($role)->exists();
-        }
-
-        return $this->query($role)->count() == count((array) $role);
+        return $this->clipboard->checkUserRole($this->user, $role, $boolean);
     }
 
     /**
      * Alias to the "a" method.
      *
      * @param  string|array  $role
+     * @param  string  $boolean
      * @return bool
      */
-    public function an($role)
+    public function an($role, $boolean = 'or')
     {
-        return $this->a($role);
+        return $this->clipboard->checkUserRole($this->user, $role, $boolean);
     }
 
     /**
@@ -59,23 +66,6 @@ class ChecksRole
      */
     public function all($role)
     {
-        return $this->a($role, 'and');
-    }
-
-    /**
-     * Create the base query to check for roles.
-     *
-     * @param  array|string  $role
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    protected function query($role)
-    {
-        $relation = $this->user->roles();
-
-        if (is_array($role)) {
-            return $relation->whereIn('title', $role);
-        }
-
-        return $relation->where('title', $role);
+        return $this->clipboard->checkUserRole($this->user, $role, 'and');
     }
 }

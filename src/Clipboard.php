@@ -12,7 +12,10 @@ class Clipboard
      *
      * @var array
      */
-    protected $cache = [];
+    protected $cache = [
+        'abilities' => [],
+        'roles' => [],
+    ];
 
     /**
      * Determine if the given user has the given ability.
@@ -33,6 +36,25 @@ class Clipboard
         }
 
         return false;
+    }
+
+    /**
+     * Check if a user has the given role.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $user
+     * @param  array|string  $role
+     * @param  string  $boolean
+     * @return bool
+     */
+    public function checkUserRole(Model $user, $role, $boolean = 'or')
+    {
+        $roles = $this->getUserRoles($user)->intersect($role);
+
+        if ($boolean == 'or') {
+            return $roles->count() > 0;
+        }
+
+        return $roles->count() == count((array) $role);
     }
 
     /**
@@ -92,34 +114,56 @@ class Clipboard
     {
         $id = $user->getKey();
 
-        if ( ! isset($this->cache[$id]) || $fresh) {
-            $this->cache[$id] = $this->getFreshUserAbilities($user);
+        if ( ! isset($this->cache['abilities'][$id]) || $fresh) {
+            $this->cache['abilities'][$id] = $this->getFreshUserAbilities($user);
         }
 
-        return $this->cache[$id];
+        return $this->cache['abilities'][$id];
     }
 
     /**
-     * Clear the abilities cache.
+     * Get the given user's roles.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $user
+     * @param  bool  $fresh
+     * @return \Illuminate\Support\Collection
+     */
+    public function getUserRoles(Model $user, $fresh = false)
+    {
+        $id = $user->getKey();
+
+        if ( ! isset($this->cache['roles'][$id]) || $fresh) {
+            $this->cache['roles'][$id] = $this->getFreshUserRoles($user);
+        }
+
+        return $this->cache['roles'][$id];
+    }
+
+    /**
+     * Clear the cache.
      *
      * @return $this
      */
     public function refresh()
     {
-        $this->cache = [];
+        $this->cache['abilities'] = [];
+
+        $this->cache['roles'] = [];
 
         return $this;
     }
 
     /**
-     * Clear the abilities cache for the given user.
+     * Clear the cache for the given user.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $user
      * @return $this
      */
     public function refreshForUser(Model $user)
     {
-        unset($this->cache[$user->getKey()]);
+        unset($this->cache['abilities'][$user->getKey()]);
+
+        unset($this->cache['roles'][$user->getKey()]);
 
         return $this;
     }
@@ -180,5 +224,16 @@ class Clipboard
 
             $query->where($column, $user->getKey());
         };
+    }
+
+    /**
+     * Get a fresh list of the given user's roles.
+     *
+     * @param  array|string  $role
+     * @return \Illuminate\Support\Collection
+     */
+    protected function getFreshUserRoles(Model $user)
+    {
+        return $user->roles()->lists('title');
     }
 }
