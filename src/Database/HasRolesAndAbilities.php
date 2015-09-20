@@ -104,9 +104,9 @@ trait HasRolesAndAbilities
      */
     public function is($role, $boolean = 'or')
     {
-        $checker = new ChecksRole($this, $this->getClipboardInstance());
+        $clipboard = $this->getClipboardInstance();
 
-        return $checker->a($role, $boolean);
+        return $clipboard->checkUserRole($this, $role, $boolean);
     }
 
     /**
