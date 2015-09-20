@@ -262,7 +262,7 @@ $user->disallow('delete', $post);
 Bouncer::allow('admin')->to('ban-users');
 Bouncer::disallow('admin')->to('ban-users');
 
-Bouncer::give('admin')->to($user);
+Bouncer::assign('admin')->to($user);
 Bouncer::retract('admin')->from($user);
 
 $user->assign('admin');
