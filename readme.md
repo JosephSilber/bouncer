@@ -197,7 +197,7 @@ To check if a user has one of many roles, pass the roles as an array:
 Bouncer::is($user)->a(['moderator', 'editor']);
 ```
 
-You can also check if the user has *all* of the given roles:
+You can also check if the user has all of the given roles:
 
 ```php
 Bouncer::is($user)->all(['editor', 'moderator']);
@@ -209,7 +209,7 @@ All of the above checks can also be done directly on the user model:
 $user->is('admin');
 ```
 
-You can also check if a user has *all* of the given abilities directly from the model:
+You can also check if a user has all of the given abilities directly from the model:
 
 ```php
 $user->is(['editor', 'moderator'], 'and');
