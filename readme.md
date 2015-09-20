@@ -2,6 +2,21 @@
 
 This package adds a Bouncer at Laravel's Access Gate.
 
+- [Introduction](#introduction)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Creating roles and abilities](#creating-roles-and-abilities)
+  - [Assigning roles to a user](#assigning-roles-to-a-user)
+  - [Giving a user an ability directly](#giving-a-user-an-ability-directly)
+  - [Giving an ability for certain models](#giving-an-ability-for-certain-models)
+  - [Retracting a role from a user](#retracting-a-role-from-a-user)
+  - [Removing an ability](#removing-an-ability)
+  - [Checking a users roles](#checking-a-users-roles)
+  - [Listing a users abilities](#listing-a-users-abilities)
+  - [Authorizing users](#authorizing-users)
+- [Cheat sheet](#cheat-sheet)
+- [License](#license)
+
 ## Introduction
 
 Bouncer provides a mechanism to handle simple roles and abilities in [Laravel's ACL](http://laravel.com/docs/5.1/authorization). With an expressive and fluent syntax, it stays out of your way as much as possible: use it when you want, ignore it when you don't.
