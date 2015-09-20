@@ -39,6 +39,8 @@ Bouncer::allow($user)->to('edit', $post);
 
 When you check abilities at the gate, the bouncer will be consulted first. If he sees an ability that has been granted to the current user (whether directly, or through a role) he'll authorize the check.
 
+For a quick glanceable list of the bouncer's features, check out [the cheat sheet](#cheat-sheet).
+
 ## Installation
 
 Simply install the bouncer package with composer:
