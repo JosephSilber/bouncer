@@ -298,9 +298,9 @@ Bouncer::allows('ban-users');
 Bouncer::allows('edit', Post::class);
 Bouncer::allows('delete', $post);
 
-Bouncer::disallows('ban-users');
-Bouncer::disallows('edit', Post::class);
-Bouncer::disallows('delete', $post);
+Bouncer::denies('ban-users');
+Bouncer::denies('edit', Post::class);
+Bouncer::denies('delete', $post);
 ```
 
 ## License
