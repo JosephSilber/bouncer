@@ -176,10 +176,3 @@ class ConnectionResolver implements ConnectionResolverInterface
         //
     }
 }
-
-function app($type)
-{
-    $container = new Container;
-
-    return $container->make($type);
-}

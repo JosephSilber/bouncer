@@ -2,6 +2,8 @@
 
 namespace Silber\Bouncer\Database;
 
+use Illuminate\Container\Container;
+
 use Silber\Bouncer\Clipboard;
 use Silber\Bouncer\Conductors\ChecksRole;
 use Silber\Bouncer\Conductors\AssignsRole;
@@ -114,6 +116,8 @@ trait HasRolesAndAbilities
      */
     protected function getClipboardInstance()
     {
-        return app(Clipboard::class);
+        $container = Container::getInstance() ?: new Container;
+
+        return $container->make(Clipboard::class);
     }
 }

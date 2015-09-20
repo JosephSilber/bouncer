@@ -18,6 +18,7 @@
         "classmap": ["tests"]
     },
     "require": {
+        "illuminate/container": "^5.1.16",
         "illuminate/contracts": "^5.1.16",
         "illuminate/database": "^5.1.16"
     },
