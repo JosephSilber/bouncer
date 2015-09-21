@@ -12,7 +12,7 @@ This package adds a Bouncer at Laravel's Access Gate.
   - [Retracting a role from a user](#retracting-a-role-from-a-user)
   - [Removing an ability](#removing-an-ability)
   - [Checking a user's roles](#checking-a-users-roles)
-  - [Listing a user's abilities](#listing-a-users-abilities)
+  - [Getting all abilities for a user](#getting-all-abilities-for-a-user)
   - [Authorizing users](#authorizing-users)
 - [Cheat sheet](#cheat-sheet)
 - [License](#license)
@@ -232,7 +232,7 @@ You can also check if a user has all of the given abilities directly from the mo
 $user->isAll(['editor', 'moderator']);
 ```
 
-### Listing a user's abilities
+### Getting all abilities for a user
 
 You can get all abilities for a user directly from the model:
 
