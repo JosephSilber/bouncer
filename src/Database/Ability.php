@@ -64,6 +64,26 @@ class Ability extends Model
     }
 
     /**
+     * Get the ability's "slug" attribute.
+     *
+     * @return string
+     */
+    public function getSlugAttribute()
+    {
+        $slug = $this->attributes['title'];
+
+        if ($this->attributes['entity_type']) {
+            $slug .= '-'.$this->attributes['entity_type'];
+        }
+
+        if ($this->attributes['entity_id']) {
+            $slug .= '-'.$this->attributes['entity_id'];
+        }
+
+        return strtolower($slug);
+    }
+
+    /**
      * Constrain a query to simple abilities.
      *
      * @param  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder  $query

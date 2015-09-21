@@ -234,15 +234,11 @@ $user->isAll(['editor', 'moderator']);
 
 ### Listing a user's abilities
 
-You can get a list of a user's abilities directly off the user model:
+You can get all abilities for a user directly from the model:
 
 ```php
-$abilities = $user->listAbilities();
+$abilities = $user->getAbilities();
 ```
-
-This returns an instance of `Illuminate\Support\Collection` with the names of all abilities this user has. It includes abilities granted directly as well as those granted through the user's roles.
-
-> **Note:** If an ability is limited to a specific model, an array with its details is included instead of just the ability's name.
 
 ### Authorizing users
 
@@ -293,6 +289,8 @@ Bouncer::is($user)->all(['moderator', 'editor']);
 $user->is('subscriber');
 $user->is(['moderator', 'editor']);
 $user->isAll(['moderator', 'editor']);
+
+$abilities = $user->getAbilities();
 
 Bouncer::allows('ban-users');
 Bouncer::allows('edit', Post::class);

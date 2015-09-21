@@ -11,7 +11,10 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $bouncer->allow('editor')->to('edit-posts');
         $bouncer->assign('admin')->to($user);
 
-        $this->assertEquals(['create-posts', 'edit-site'], $user->listAbilities()->sort()->all());
+        $this->assertEquals(
+            ['create-posts', 'edit-site'],
+            $user->getAbilities()->pluck('title')->sort()->values()->all()
+        );
     }
 
     public function test_can_give_and_remove_abilities()

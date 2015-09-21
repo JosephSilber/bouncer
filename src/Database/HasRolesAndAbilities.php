@@ -34,11 +34,11 @@ trait HasRolesAndAbilities
     }
 
     /**
-     * Get a list of the current user's abilities.
+     * Get all of the user's abilities.
      *
-     * @return \Illuminate\Support\Collection
+     * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function listAbilities()
+    public function getAbilities()
     {
         return $this->getClipboardInstance()->getUserAbilities($this);
     }
