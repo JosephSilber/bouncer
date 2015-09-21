@@ -58,6 +58,6 @@ class RemovesRole
             return $role;
         }
 
-        return Role::where('title', $this->role)->first();
+        return Role::where('name', $this->role)->first();
     }
 }

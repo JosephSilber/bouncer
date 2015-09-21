@@ -13,7 +13,7 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
 
         $this->assertEquals(
             ['create-posts', 'edit-site'],
-            $user->getAbilities()->pluck('title')->sort()->values()->all()
+            $user->getAbilities()->pluck('name')->sort()->values()->all()
         );
     }
 

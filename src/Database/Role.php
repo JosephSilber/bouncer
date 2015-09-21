@@ -25,7 +25,7 @@ class Role extends Model
      *
      * @var array
      */
-    protected $fillable = ['title'];
+    protected $fillable = ['name'];
 
     /**
      * The abilities relationship.

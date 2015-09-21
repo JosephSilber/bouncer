@@ -203,6 +203,6 @@ class Clipboard
      */
     protected function getFreshUserRoles(Model $user)
     {
-        return $user->roles()->lists('title');
+        return $user->roles()->lists('name');
     }
 }

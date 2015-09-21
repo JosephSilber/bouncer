@@ -55,7 +55,7 @@ class GivesAbility
             return $this->model;
         }
 
-        return Role::firstOrCreate(['title' => $this->model]);
+        return Role::firstOrCreate(['name' => $this->model]);
     }
 
     /**
@@ -75,7 +75,7 @@ class GivesAbility
             return [$this->getModelAbility($abilities, $model)->getKey()];
         }
 
-        return $this->abilitiesByTitle($abilities)->pluck('id')->all();
+        return $this->abilitiesByName($abilities)->pluck('id')->all();
     }
 
     /**
@@ -89,7 +89,7 @@ class GivesAbility
     {
         $entity = $this->getEntityInstance($entity);
 
-        $model = Ability::where('title', $ability)->forModel($entity)->first();
+        $model = Ability::where('name', $ability)->forModel($entity)->first();
 
         return $model ?: Ability::createForModel($entity, $ability);
     }
@@ -119,16 +119,16 @@ class GivesAbility
     }
 
     /**
-     * Get or create abilities by their title.
+     * Get or create abilities by their name.
      *
      * @param  array|string  $ability
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    protected function abilitiesByTitle($ability)
+    protected function abilitiesByName($ability)
     {
         $abilities = array_unique(is_array($ability) ? $ability : [$ability]);
 
-        $models = Ability::simpleAbility()->whereIn('title', $abilities)->get();
+        $models = Ability::simpleAbility()->whereIn('name', $abilities)->get();
 
         $created = $this->createMissingAbilities($models, $abilities);
 
@@ -136,7 +136,7 @@ class GivesAbility
     }
 
     /**
-     * Create abilities whose title is not in the given list.
+     * Create abilities whose name is not in the given list.
      *
      * @param  \Illuminate\Database\Eloquent\Collection  $models
      * @param  array  $abilities
@@ -144,12 +144,12 @@ class GivesAbility
      */
     protected function createMissingAbilities(Collection $models, array $abilities)
     {
-        $missing = array_diff($abilities, $models->pluck('title')->all());
+        $missing = array_diff($abilities, $models->pluck('name')->all());
 
         $created = [];
 
         foreach ($missing as $ability) {
-            $created[] = Ability::create(['title' => $ability]);
+            $created[] = Ability::create(['name' => $ability]);
         }
 
         return $created;

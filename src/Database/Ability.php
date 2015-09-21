@@ -25,19 +25,19 @@ class Ability extends Model
      *
      * @var array
      */
-    protected $fillable = ['title'];
+    protected $fillable = ['name'];
 
     /**
      * Create a new ability for a specific model.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @param  string  $title
+     * @param  string  $name
      * @return static
      */
-    public static function createForModel(Model $model, $title)
+    public static function createForModel(Model $model, $name)
     {
         return static::forceCreate([
-            'title'       => $title,
+            'name'       => $name,
             'entity_type' => $model->getMorphClass(),
             'entity_id'   => $model->exists ? $model->getKey() : null,
         ]);
@@ -70,7 +70,7 @@ class Ability extends Model
      */
     public function getSlugAttribute()
     {
-        $slug = $this->attributes['title'];
+        $slug = $this->attributes['name'];
 
         if ($this->attributes['entity_type']) {
             $slug .= '-'.$this->attributes['entity_type'];

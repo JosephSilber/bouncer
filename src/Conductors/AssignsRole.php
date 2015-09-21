@@ -56,6 +56,6 @@ class AssignsRole
             return $this->role;
         }
 
-        return Role::firstOrCreate(['title' => $this->role]);
+        return Role::firstOrCreate(['name' => $this->role]);
     }
 }

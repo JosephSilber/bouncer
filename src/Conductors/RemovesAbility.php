@@ -56,7 +56,7 @@ class RemovesAbility
             return $this->model;
         }
 
-        return Role::where('title', $this->model)->first();
+        return Role::where('name', $this->model)->first();
     }
 
     /**
@@ -92,7 +92,7 @@ class RemovesAbility
     {
         $model = $model instanceof Model ? $model : new $model;
 
-        return Ability::where('title', $ability)->forModel($model)->value('id');
+        return Ability::where('name', $ability)->forModel($model)->value('id');
     }
 
     /**
@@ -126,19 +126,19 @@ class RemovesAbility
     }
 
     /**
-     * Get the ability IDs from the titles present in the given array.
+     * Get the ability IDs from the names present in the given array.
      *
      * @param  array  $abilities
      * @return array
      */
     protected function getAbilityIdsFromStrings(array $abilities)
     {
-        $titles = array_filter($abilities, 'is_string');
+        $names = array_filter($abilities, 'is_string');
 
-        if ( ! count($titles)) {
+        if ( ! count($names)) {
             return [];
         }
 
-        return Ability::whereIn('title', $titles)->lists('id')->all();
+        return Ability::whereIn('name', $names)->lists('id')->all();
     }
 }
