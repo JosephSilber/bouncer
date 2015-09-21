@@ -292,8 +292,6 @@ $user->is('subscriber');
 $user->is(['moderator', 'editor']);
 $user->isAll(['moderator', 'editor']);
 
-$abilities = $user->getAbilities();
-
 Bouncer::allows('ban-users');
 Bouncer::allows('edit', Post::class);
 Bouncer::allows('delete', $post);
