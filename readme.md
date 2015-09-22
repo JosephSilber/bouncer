@@ -283,22 +283,22 @@ Bouncer::retract('admin')->from($user);
 $user->assign('admin');
 $user->retract('admin');
 
-Bouncer::is($user)->a('subscriber');
-Bouncer::is($user)->an('admin');
-Bouncer::is($user)->a(['moderator', 'editor']);
-Bouncer::is($user)->all(['moderator', 'editor']);
+$check = Bouncer::is($user)->a('subscriber');
+$check = Bouncer::is($user)->an('admin');
+$check = Bouncer::is($user)->a(['moderator', 'editor']);
+$check = Bouncer::is($user)->all(['moderator', 'editor']);
 
-$user->is('subscriber');
-$user->is(['moderator', 'editor']);
-$user->isAll(['moderator', 'editor']);
+$check = $user->is('subscriber');
+$check = $user->is(['moderator', 'editor']);
+$check = $user->isAll(['moderator', 'editor']);
 
-Bouncer::allows('ban-users');
-Bouncer::allows('edit', Post::class);
-Bouncer::allows('delete', $post);
+$check = Bouncer::allows('ban-users');
+$check = Bouncer::allows('edit', Post::class);
+$check = Bouncer::allows('delete', $post);
 
-Bouncer::denies('ban-users');
-Bouncer::denies('edit', Post::class);
-Bouncer::denies('delete', $post);
+$check = Bouncer::denies('ban-users');
+$check = Bouncer::denies('edit', Post::class);
+$check = Bouncer::denies('delete', $post);
 ```
 
 ## License
