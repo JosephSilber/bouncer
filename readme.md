@@ -1,6 +1,6 @@
 # Bouncer
 
-This package adds a Bouncer at Laravel's Access Gate.
+This package adds a bouncer at Laravel's access gate.
 
 - [Introduction](#introduction)
 - [Installation](#installation)
