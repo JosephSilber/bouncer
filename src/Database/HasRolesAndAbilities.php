@@ -105,7 +105,7 @@ trait HasRolesAndAbilities
     {
         $clipboard = $this->getClipboardInstance();
 
-        return $clipboard->checkUserRole($this, $roles, 'or');
+        return $clipboard->checkRole($this, $roles, 'or');
     }
 
     /**
@@ -118,7 +118,7 @@ trait HasRolesAndAbilities
     {
         $clipboard = $this->getClipboardInstance();
 
-        return $clipboard->checkUserRole($this, $roles, 'and');
+        return $clipboard->checkRole($this, $roles, 'and');
     }
 
     /**

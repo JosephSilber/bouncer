@@ -42,7 +42,7 @@ class ChecksRole
      */
     public function a($roles)
     {
-        return $this->clipboard->checkUserRole($this->user, $roles, 'or');
+        return $this->clipboard->checkRole($this->user, $roles, 'or');
     }
 
     /**
@@ -53,7 +53,7 @@ class ChecksRole
      */
     public function an($roles)
     {
-        return $this->clipboard->checkUserRole($this->user, $roles, 'or');
+        return $this->clipboard->checkRole($this->user, $roles, 'or');
     }
 
     /**
@@ -64,6 +64,6 @@ class ChecksRole
      */
     public function all($roles)
     {
-        return $this->clipboard->checkUserRole($this->user, $roles, 'and');
+        return $this->clipboard->checkRole($this->user, $roles, 'and');
     }
 }

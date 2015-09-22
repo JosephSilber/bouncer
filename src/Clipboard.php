@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Clipboard
 {
     /**
-     * Holds the cache of user's abilities.
+     * Holds the cache of users' roles and abilities.
      *
      * @var array
      */
@@ -35,22 +35,22 @@ class Clipboard
     }
 
     /**
-     * Check if a user has the given role.
+     * Check if a user has the given roles.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $user
-     * @param  array|string  $role
+     * @param  array|string  $roles
      * @param  string  $boolean
      * @return bool
      */
-    public function checkUserRole(Model $user, $role, $boolean = 'or')
+    public function checkRole(Model $user, $roles, $boolean = 'or')
     {
-        $roles = $this->getUserRoles($user)->intersect($role);
+        $available = $this->getUserRoles($user)->intersect($roles);
 
         if ($boolean == 'or') {
-            return $roles->count() > 0;
+            return $available->count() > 0;
         }
 
-        return $roles->count() == count((array) $role);
+        return $available->count() == count((array) $roles);
     }
 
     /**
