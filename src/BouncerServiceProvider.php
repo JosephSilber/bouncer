@@ -66,15 +66,9 @@ class BouncerServiceProvider extends ServiceProvider
     {
         $gate = $this->app->make(Gate::class);
 
-        $gate->before(function ($user, $ability, $model = null, $additional = null) {
-            if ( ! is_null($additional)) {
-                return;
-            }
+        $clipboard = $this->app->make(Clipboard::class);
 
-            if ($this->app->make(Clipboard::class)->check($user, $ability)) {
-                return true;
-            }
-        });
+        $clipboard->registerAtGate($gate);
     }
 
     /**

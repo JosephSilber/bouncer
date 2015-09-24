@@ -10,18 +10,21 @@ class AbilitiesForModels extends BaseTestCase
         $bouncer = $this->bouncer($user1);
 
         $bouncer->allow($user1)->to('edit', User::class);
+        $this->clipboard->refresh();
 
         $this->assertTrue($bouncer->denies('edit'));
         $this->assertTrue($bouncer->allows('edit', User::class));
         $this->assertTrue($bouncer->allows('edit', $user2));
 
         $bouncer->disallow($user1)->to('edit', User::class);
+        $this->clipboard->refresh();
 
         $this->assertTrue($bouncer->denies('edit'));
         $this->assertTrue($bouncer->denies('edit', User::class));
         $this->assertTrue($bouncer->denies('edit', $user2));
 
         $bouncer->disallow($user1)->to('edit');
+        $this->clipboard->refresh();
 
         $this->assertTrue($bouncer->denies('edit'));
         $this->assertTrue($bouncer->denies('edit', User::class));
@@ -43,14 +46,17 @@ class AbilitiesForModels extends BaseTestCase
         $this->assertTrue($bouncer->allows('edit', $user2));
 
         $bouncer->disallow($user1)->to('edit', User::class);
+        $this->clipboard->refresh();
 
         $this->assertTrue($bouncer->allows('edit', $user2));
 
         $bouncer->disallow($user1)->to('edit', $user1);
+        $this->clipboard->refresh();
 
         $this->assertTrue($bouncer->allows('edit', $user2));
 
         $bouncer->disallow($user1)->to('edit', $user2);
+        $this->clipboard->refresh();
 
         $this->assertTrue($bouncer->denies('edit'));
         $this->assertTrue($bouncer->denies('edit', User::class));

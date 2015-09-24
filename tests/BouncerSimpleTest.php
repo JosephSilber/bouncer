@@ -11,6 +11,7 @@ class BouncerSimpleTest extends BaseTestCase
         $this->assertTrue($bouncer->allows('edit-site'));
 
         $bouncer->disallow($user)->to('edit-site');
+        $this->clipboard->refresh();
 
         $this->assertTrue($bouncer->denies('edit-site'));
     }
@@ -25,6 +26,7 @@ class BouncerSimpleTest extends BaseTestCase
         $this->assertTrue($bouncer->allows('edit-site'));
 
         $bouncer->retract('admin')->from($user);
+        $this->clipboard->refresh();
 
         $this->assertTrue($bouncer->denies('edit-site'));
     }

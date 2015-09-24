@@ -4,6 +4,7 @@ namespace Silber\Bouncer;
 
 use Silber\Bouncer\Database\Ability;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Contracts\Auth\Access\Gate;
 
 class Clipboard
 {
@@ -16,6 +17,25 @@ class Clipboard
         'abilities' => [],
         'roles' => [],
     ];
+
+    /**
+     * Register the clipboard at the gate.
+     *
+     * @param  \Illuminate\Contracts\Auth\Access\Gate  $gate
+     * @return void
+     */
+    public function registerAtGate(Gate $gate)
+    {
+        $gate->before(function ($user, $ability, $model = null, $additional = null) {
+            if ( ! is_null($additional)) {
+                return;
+            }
+
+            if ($this->check($user, $ability, $model)) {
+                return true;
+            }
+        });
+    }
 
     /**
      * Determine if the given user has the given ability.

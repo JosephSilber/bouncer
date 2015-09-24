@@ -26,6 +26,7 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $this->assertTrue($gate->allows('edit-site'));
 
         $user->disallow('edit-site');
+        $this->clipboard->refresh();
 
         $this->assertTrue($gate->denies('edit-site'));
     }
@@ -40,6 +41,7 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $this->assertTrue($bouncer->allows('edit-site'));
 
         $user->retract('admin');
+        $this->clipboard->refresh();
 
         $this->assertTrue($bouncer->denies('edit-site'));
     }

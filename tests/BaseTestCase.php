@@ -16,6 +16,13 @@ use Illuminate\Database\ConnectionResolverInterface;
 abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 {
     /**
+     * The clipboard instance.
+     *
+     * @var \Silber\Bouncer\Clipboard
+     */
+    protected $clipboard;
+
+    /**
      * Bootstrap Eloquent.
      *
      * @return void
@@ -80,6 +87,8 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
             $table->integer('ability_id')->unsigned();
             $table->integer('role_id')->unsigned();
         });
+
+        $this->clipboard = new Clipboard;
     }
 
     /**
@@ -95,6 +104,8 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         $this->schema()->drop('user_roles');
         $this->schema()->drop('user_abilities');
         $this->schema()->drop('role_abilities');
+
+        $this->clipboard = null;
     }
 
     /**
@@ -120,15 +131,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
             return $user;
         });
 
-        $gate->before(function ($user, $ability, $model = null, $additional = null) {
-            if ( ! is_null($additional)) {
-                return;
-            }
-
-            if ((new Clipboard)->check($user, $ability, $model)) {
-                return true;
-            }
-        });
+        $this->clipboard->registerAtGate($gate);
 
         return $gate;
     }
