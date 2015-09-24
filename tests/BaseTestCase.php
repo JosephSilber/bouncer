@@ -131,7 +131,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
             return $user;
         });
 
-        $this->clipboard->registerAtGate($gate);
+        $this->clipboard->registerAt($gate);
 
         return $gate;
     }

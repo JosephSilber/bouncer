@@ -19,12 +19,12 @@ class Clipboard
     ];
 
     /**
-     * Register the clipboard at the gate.
+     * Register the clipboard at the given gate.
      *
      * @param  \Illuminate\Contracts\Auth\Access\Gate  $gate
      * @return void
      */
-    public function registerAtGate(Gate $gate)
+    public function registerAt(Gate $gate)
     {
         $gate->before(function ($user, $ability, $model = null, $additional = null) {
             if ( ! is_null($additional)) {

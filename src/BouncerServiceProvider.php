@@ -68,7 +68,7 @@ class BouncerServiceProvider extends ServiceProvider
 
         $clipboard = $this->app->make(Clipboard::class);
 
-        $clipboard->registerAtGate($gate);
+        $clipboard->registerAt($gate);
     }
 
     /**
