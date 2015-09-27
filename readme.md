@@ -232,15 +232,11 @@ You can also check if the user has all of the given roles:
 Bouncer::is($user)->all(['editor', 'moderator']);
 ```
 
-All of the above checks can also be done directly on the user model:
+These checks can also be done directly on the user model:
 
 ```php
 $user->is('admin');
-```
 
-You can also check if a user has all of the given abilities directly from the model:
-
-```php
 $user->isAll(['editor', 'moderator']);
 ```
 
@@ -294,17 +290,9 @@ Bouncer::allow($user)->to('ban-users');
 Bouncer::allow($user)->to('edit', Post::class);
 Bouncer::allow($user)->to('delete', $post);
 
-$user->allow('ban-users');
-$user->allow('edit', Post::class);
-$user->allow('delete', $post);
-
 Bouncer::disallow($user)->to('ban-users');
 Bouncer::disallow($user)->to('edit', Post::class);
 Bouncer::disallow($user)->to('delete', $post);
-
-$user->disallow('ban-users');
-$user->disallow('edit', Post::class);
-$user->disallow('delete', $post);
 
 Bouncer::allow('admin')->to('ban-users');
 Bouncer::disallow('admin')->to('ban-users');
@@ -312,17 +300,10 @@ Bouncer::disallow('admin')->to('ban-users');
 Bouncer::assign('admin')->to($user);
 Bouncer::retract('admin')->from($user);
 
-$user->assign('admin');
-$user->retract('admin');
-
 $check = Bouncer::is($user)->a('subscriber');
 $check = Bouncer::is($user)->an('admin');
 $check = Bouncer::is($user)->a(['moderator', 'editor']);
 $check = Bouncer::is($user)->all(['moderator', 'editor']);
-
-$check = $user->is('subscriber');
-$check = $user->is(['moderator', 'editor']);
-$check = $user->isAll(['moderator', 'editor']);
 
 $check = Bouncer::allows('ban-users');
 $check = Bouncer::allows('edit', Post::class);
@@ -335,6 +316,25 @@ $check = Bouncer::denies('delete', $post);
 Bouncer::useCache($cache);
 Bouncer::refresh();
 Bouncer::refreshForUser($user);
+```
+
+Some of this functionality is also available directly on the user model:
+
+```php
+$user->allow('ban-users');
+$user->allow('edit', Post::class);
+$user->allow('delete', $post);
+
+$user->disallow('ban-users');
+$user->disallow('edit', Post::class);
+$user->disallow('delete', $post);
+
+$user->assign('admin');
+$user->retract('admin');
+
+$check = $user->is('subscriber');
+$check = $user->is(['moderator', 'editor']);
+$check = $user->isAll(['moderator', 'editor']);
 ```
 
 ## License
