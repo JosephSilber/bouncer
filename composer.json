@@ -28,6 +28,6 @@
         "phpunit/phpunit": "^4.8"
     },
     "suggest": {
-        "illuminate/cache": "Allows caching the bouncer's checks"
-    },
+        "illuminate/cache": "Allows caching the bouncer's database queries"
+    }
 }
