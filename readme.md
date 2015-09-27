@@ -313,7 +313,7 @@ $check = Bouncer::denies('ban-users');
 $check = Bouncer::denies('edit', Post::class);
 $check = Bouncer::denies('delete', $post);
 
-Bouncer::useCache($cache);
+Bouncer::cache($cache);
 Bouncer::refresh();
 Bouncer::refreshForUser($user);
 ```
