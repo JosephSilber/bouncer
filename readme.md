@@ -337,6 +337,8 @@ $user->retract('admin');
 $check = $user->is('subscriber');
 $check = $user->is('moderator', 'editor');
 $check = $user->isAll('moderator', 'editor');
+
+$abilities = $user->getAbilities();
 ```
 
 ## License
