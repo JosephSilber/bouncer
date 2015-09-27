@@ -17,7 +17,7 @@ class CachedClipboard extends Clipboard
      *
      * @var string
      */
-    protected $tag = 'bouncer';
+    protected $tag = 'silber-bouncer';
 
     /**
      * The cache store.
