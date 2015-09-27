@@ -61,9 +61,9 @@ class BouncerSimpleTest extends BaseTestCase
         $bouncer->assign('moderator')->to($user);
         $bouncer->assign('editor')->to($user);
 
-        $this->assertTrue($bouncer->is($user)->a(['moderator', 'admin']));
-        $this->assertTrue($bouncer->is($user)->an(['editor', 'moderator']));
-        $this->assertTrue($bouncer->is($user)->all(['editor', 'moderator']));
-        $this->assertFalse($bouncer->is($user)->all(['admin', 'moderator']));
+        $this->assertTrue($bouncer->is($user)->a('moderator', 'admin'));
+        $this->assertTrue($bouncer->is($user)->an('editor', 'moderator'));
+        $this->assertTrue($bouncer->is($user)->all('editor', 'moderator'));
+        $this->assertFalse($bouncer->is($user)->all('admin', 'moderator'));
     }
 }

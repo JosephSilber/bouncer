@@ -98,11 +98,13 @@ trait HasRolesAndAbilities
     /**
      * Check if the user has any of the given roles.
      *
-     * @param  string|array  $roles
+     * @param  string  $role
      * @return bool
      */
-    public function is($roles)
+    public function is($role)
     {
+        $roles = func_get_args();
+
         $clipboard = $this->getClipboardInstance();
 
         return $clipboard->checkRole($this, $roles, 'or');
@@ -111,11 +113,13 @@ trait HasRolesAndAbilities
     /**
      * Check if the user has all of the given roles.
      *
-     * @param  string|array  $roles
+     * @param  string  $role
      * @return bool
      */
-    public function isAll($roles)
+    public function isAll($role)
     {
+        $roles = func_get_args();
+
         $clipboard = $this->getClipboardInstance();
 
         return $clipboard->checkRole($this, $roles, 'and');

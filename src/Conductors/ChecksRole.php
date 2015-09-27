@@ -37,33 +37,39 @@ class ChecksRole
     /**
      * Check if the user has any of the given roles.
      *
-     * @param  string|array  $roles
+     * @param  string  $role
      * @return bool
      */
-    public function a($roles)
+    public function a($role)
     {
+        $roles = func_get_args();
+
         return $this->clipboard->checkRole($this->user, $roles, 'or');
     }
 
     /**
      * Alias to the "a" method.
      *
-     * @param  string|array  $roles
+     * @param  string  $role
      * @return bool
      */
-    public function an($roles)
+    public function an($role)
     {
+        $roles = func_get_args();
+
         return $this->clipboard->checkRole($this->user, $roles, 'or');
     }
 
     /**
      * Check if the user has all of the given roles.
      *
-     * @param  string|array  $roles
+     * @param  string  $role
      * @return bool
      */
-    public function all($roles)
+    public function all($role)
     {
+        $roles = func_get_args();
+
         return $this->clipboard->checkRole($this->user, $roles, 'and');
     }
 }

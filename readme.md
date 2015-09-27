@@ -223,13 +223,13 @@ Bouncer::is($user)->an('admin');
 To check if a user has one of many roles, pass the roles as an array:
 
 ```php
-Bouncer::is($user)->a(['moderator', 'editor']);
+Bouncer::is($user)->a('moderator', 'editor');
 ```
 
 You can also check if the user has all of the given roles:
 
 ```php
-Bouncer::is($user)->all(['editor', 'moderator']);
+Bouncer::is($user)->all('editor', 'moderator');
 ```
 
 These checks can also be done directly on the user model:
@@ -237,7 +237,7 @@ These checks can also be done directly on the user model:
 ```php
 $user->is('admin');
 
-$user->isAll(['editor', 'moderator']);
+$user->isAll('editor', 'moderator');
 ```
 
 ### Getting all abilities for a user
@@ -302,8 +302,8 @@ Bouncer::retract('admin')->from($user);
 
 $check = Bouncer::is($user)->a('subscriber');
 $check = Bouncer::is($user)->an('admin');
-$check = Bouncer::is($user)->a(['moderator', 'editor']);
-$check = Bouncer::is($user)->all(['moderator', 'editor']);
+$check = Bouncer::is($user)->a('moderator', 'editor');
+$check = Bouncer::is($user)->all('moderator', 'editor');
 
 $check = Bouncer::allows('ban-users');
 $check = Bouncer::allows('edit', Post::class);
@@ -333,8 +333,8 @@ $user->assign('admin');
 $user->retract('admin');
 
 $check = $user->is('subscriber');
-$check = $user->is(['moderator', 'editor']);
-$check = $user->isAll(['moderator', 'editor']);
+$check = $user->is('moderator', 'editor');
+$check = $user->isAll('moderator', 'editor');
 ```
 
 ## License
