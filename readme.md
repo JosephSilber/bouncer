@@ -4,6 +4,7 @@ This package adds a bouncer at Laravel's access gate.
 
 - [Introduction](#introduction)
 - [Installation](#installation)
+  - [Enabling cache](#enabe)
 - [Usage](#usage)
   - [Creating roles and abilities](#creating-roles-and-abilities)
   - [Assigning roles to a user](#assigning-roles-to-a-user)
@@ -14,6 +15,7 @@ This package adds a bouncer at Laravel's access gate.
   - [Checking a user's roles](#checking-a-users-roles)
   - [Getting all abilities for a user](#getting-all-abilities-for-a-user)
   - [Authorizing users](#authorizing-users)
+  - [Refreshing the cache](#refreshing-the-cache)
 - [Cheat sheet](#cheat-sheet)
 - [License](#license)
 
@@ -87,6 +89,16 @@ $ php artisan vendor:publish --provider="Silber\Bouncer\BouncerServiceProvider" 
 ```
 $ php artisan migrate
 ```
+
+### Enabling cache
+
+All queries executed by the bouncer are cached for the current request. For better performance, you might want to use a real caching system. To enable cross-request caching, add this to your `AppServiceProvider`'s `boot` method:
+
+```php
+Bouncer::useCache($this->app['cache']->store());
+```
+
+> **Warning:** if you enable caching, you are responsible to refresh the cache whenever you make changes to user's abilities/roles. For how to refresh the cache, read [refreshing the cache](#refreshing-the-cache).
 
 ## Usage
 
@@ -255,6 +267,26 @@ Bouncer::denies($ability);
 
 These call directly into the `Gate` class.
 
+### Refreshing the cache
+
+All queries executed by the bouncer are cached for the current request. If you enable [cross-request caching](#enabling-cache), the cache will presist across different requests.
+
+Whenever you need, you can fully refresh the bouncer's cache:
+
+```php
+Bouncer::refresh();
+```
+
+> **Note:** fully refreshing the cache **for all users** requires cache tags. Not all cache drivers support this. Refer to [Laravel's documentation](http://laravel.com/docs/5.1/cache#cache-tags) to see if your driver supports cache tags.
+
+Alternatively, you can refresh the cache only for a specific user:
+
+```php
+Bouncer::refreshForUser($user);
+```
+
+> **Note:** refreshing the cache **for a specific user** is available even if your cache driver does not support cache tags.
+
 ## Cheat Sheet
 
 ```php
@@ -299,6 +331,10 @@ $check = Bouncer::allows('delete', $post);
 $check = Bouncer::denies('ban-users');
 $check = Bouncer::denies('edit', Post::class);
 $check = Bouncer::denies('delete', $post);
+
+Bouncer::useCache($cache);
+Bouncer::refresh();
+Bouncer::refreshForUser($user);
 ```
 
 ## License

@@ -3,11 +3,30 @@
 namespace Silber\Bouncer;
 
 use Silber\Bouncer\Database\Ability;
+
+use Exception;
+use Illuminate\Cache\TaggedCache;
+use Illuminate\Contracts\Cache\Store;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Access\Gate;
+use Illuminate\Database\Eloquent\Collection;
 
 class Clipboard
 {
+    /**
+     * The tag used for caching.
+     *
+     * @var string
+     */
+    protected $tag = 'bouncer';
+
+    /**
+     * Whether we're truly caching the database results.
+     *
+     * @var \Illuminate\Contracts\Cache\Store
+     */
+    protected $store;
+
     /**
      * Holds the cache of users' roles and abilities.
      *
@@ -17,6 +36,20 @@ class Clipboard
         'abilities' => [],
         'roles' => [],
     ];
+
+    /**
+     * Set the cache instance.
+     *
+     * @param \Illuminate\Contracts\Cache\Store  $store
+     */
+    public function useCache(Store $store)
+    {
+        if (method_exists($store, 'tags')) {
+            $store = $store->tags($this->tag);
+        }
+
+        $this->store = $store;
+    }
 
     /**
      * Register the clipboard at the given gate.
@@ -113,48 +146,86 @@ class Clipboard
      * Get the given user's abilities.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $user
-     * @param  bool  $fresh
-     * @return \Illuminate\Support\Collection
+     * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getUserAbilities(Model $user, $fresh = false)
+    public function getUserAbilities(Model $user)
     {
         $id = $user->getKey();
 
-        if ( ! isset($this->cache['abilities'][$id]) || $fresh) {
-            $this->cache['abilities'][$id] = $this->getFreshUserAbilities($user);
+        $key = $this->tag.'-abilities-'.$id;
+
+        if (isset($this->cache['abilities'][$id])) {
+            return $this->cache['abilities'][$id];
         }
 
-        return $this->cache['abilities'][$id];
+        // If the developer has elected to use proper caching, we will first check
+        // if the abilities have already been cached. If we find cached results,
+        // we will decode them into a collection instance of eloquent models.
+        if ($this->store && ($abilities = $this->store->get($key))) {
+            return $this->cache['abilities'][$id] = $this->deserializeAbilities($abilities);
+        }
+
+        $abilities = $this->cache['abilities'][$id] = $this->getFreshUserAbilities($user);
+
+        if ($this->store) {
+            $this->store->forever($key, $this->serializeAbilities($abilities));
+        }
+
+        return $abilities;
     }
 
     /**
      * Get the given user's roles.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $user
-     * @param  bool  $fresh
      * @return \Illuminate\Support\Collection
      */
-    public function getUserRoles(Model $user, $fresh = false)
+    public function getUserRoles(Model $user)
     {
         $id = $user->getKey();
 
-        if ( ! isset($this->cache['roles'][$id]) || $fresh) {
-            $this->cache['roles'][$id] = $this->getFreshUserRoles($user);
+        $key = $this->tag.'-roles-'.$id;
+
+        if (isset($this->cache['roles'][$id])) {
+            return $this->cache['roles'][$id];
         }
 
-        return $this->cache['roles'][$id];
+        // If the developer has elected to use proper caching, we'll
+        // check if the roles have been cached. If we find cached
+        // roles, we will use them for better query efficiency.
+        if ($this->store && ($roles = $this->store->get($key))) {
+            return $this->cache['roles'][$id] = $roles;
+        }
+
+        $roles = $this->cache['roles'][$id] = $this->getFreshUserRoles($user);
+
+        if ($this->store) {
+            $this->store->forever($key, $roles);
+        }
+
+        return $roles;
     }
 
     /**
      * Clear the cache.
      *
      * @return $this
+     *
+     * @throws \Exception
      */
     public function refresh()
     {
         $this->cache['abilities'] = [];
 
         $this->cache['roles'] = [];
+
+        if ($this->store) {
+            if ( ! $this->store instanceof TaggedCache) {
+                throw new Exception('Your cache driver does not support blanket cache purging. Use [refreshForUser] instead.');
+            }
+
+            $this->store->flush();
+        }
 
         return $this;
     }
@@ -167,11 +238,43 @@ class Clipboard
      */
     public function refreshForUser(Model $user)
     {
-        unset($this->cache['abilities'][$user->getKey()]);
+        $id = $user->getKey();
 
-        unset($this->cache['roles'][$user->getKey()]);
+        unset($this->cache['abilities'][$id]);
+
+        unset($this->cache['roles'][$id]);
+
+        if ($this->store) {
+            $this->store->forget($this->tag.'-abilities-'.$id);
+
+            $this->store->forget($this->tag.'-roles-'.$id);
+        }
 
         return $this;
+    }
+
+    /**
+     * Deserialize an array of abilities into a collection of models.
+     *
+     * @param  array  $abilities
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    protected function deserializeAbilities(array $abilities)
+    {
+        return Ability::hydrate($abilities);
+    }
+
+    /**
+     * Serialize a collection of ability models into a plain array.
+     *
+     * @param  \Illuminate\Database\Eloquent\Collection  $abilities
+     * @return array
+     */
+    protected function serializeAbilities(Collection $abilities)
+    {
+        return $abilities->map(function ($ability) {
+            return $ability->getAttributes();
+        })->all();
     }
 
     /**

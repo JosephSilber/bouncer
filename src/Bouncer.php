@@ -3,6 +3,7 @@
 namespace Silber\Bouncer;
 
 use RuntimeException;
+use Illuminate\Contracts\Cache\Store;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Access\Gate;
 
@@ -91,6 +92,44 @@ class Bouncer
     public function is(Model $user)
     {
         return new ChecksRole($user, $this->clipboard);
+    }
+
+    /**
+     * Use the given cache instance.
+     *
+     * @param  \Illuminate\Contracts\Cache\Store  $cache
+     * @return $this
+     */
+    public function useCache(Store $cache)
+    {
+        $this->clipboard->useCache($cache);
+
+        return $this;
+    }
+
+    /**
+     * Clear the cache.
+     *
+     * @return $this
+     */
+    public function refresh()
+    {
+        $this->clipboard->refresh();
+
+        return $this;
+    }
+
+    /**
+     * Clear the cache for the given user.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $user
+     * @return $this
+     */
+    public function refreshForUser(Model $user)
+    {
+        $this->clipboard->refreshForUser($user);
+
+        return $this;
     }
 
     /**
