@@ -100,7 +100,7 @@ class Bouncer
      * @param  \Illuminate\Contracts\Cache\Store  $cache
      * @return $this
      */
-    public function useCache(Store $cache)
+    public function cache(Store $cache)
     {
         $this->clipboard->setCache($cache);
 

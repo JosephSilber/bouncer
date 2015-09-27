@@ -11,7 +11,7 @@ class CachedClipboardTest extends BaseTestCase
     {
         $cache = new ArrayStore;
 
-        $bouncer = $this->bouncer($user = User::create())->useCache($cache);
+        $bouncer = $this->bouncer($user = User::create())->cache($cache);
 
         $bouncer->allow($user)->to('ban-users');
 
@@ -26,7 +26,7 @@ class CachedClipboardTest extends BaseTestCase
     {
         $cache = new ArrayStore;
 
-        $bouncer = $this->bouncer($user = User::create())->useCache($cache);
+        $bouncer = $this->bouncer($user = User::create())->cache($cache);
 
         $bouncer->assign('editor')->to($user);
 
@@ -41,7 +41,7 @@ class CachedClipboardTest extends BaseTestCase
     {
         $cache = new ArrayStore;
 
-        $bouncer = $this->bouncer($user = User::create())->useCache($cache);
+        $bouncer = $this->bouncer($user = User::create())->cache($cache);
 
         $bouncer->allow($user)->to('create-posts');
         $bouncer->assign('editor')->to($user);
@@ -66,7 +66,7 @@ class CachedClipboardTest extends BaseTestCase
 
         $cache = new ArrayStore;
 
-        $bouncer = $this->bouncer($user = User::create())->useCache($cache);
+        $bouncer = $this->bouncer($user = User::create())->cache($cache);
 
         $bouncer->allow('admin')->to('ban-users');
         $bouncer->assign('admin')->to($user1);

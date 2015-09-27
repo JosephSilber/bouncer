@@ -95,7 +95,7 @@ $ php artisan migrate
 All queries executed by the bouncer are cached for the current request. For better performance, you may want to use a real caching system. To enable cross-request caching, add this to your `AppServiceProvider`'s `boot` method:
 
 ```php
-Bouncer::useCache($this->app['cache']->store());
+Bouncer::cache($this->app['cache']->store());
 ```
 
 > **Warning:** if you enable caching, you are responsible to refresh the cache whenever you make changes to user's abilities/roles. For how to refresh the cache, read [refreshing the cache](#refreshing-the-cache).
