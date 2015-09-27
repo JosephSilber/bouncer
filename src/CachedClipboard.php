@@ -46,7 +46,7 @@ class CachedClipboard extends Clipboard
      * @param  \Illuminate\Database\Eloquent\Model  $user
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getUserAbilities(Model $user)
+    public function getAbilities(Model $user)
     {
         $key = $this->tag.'-abilities-'.$user->getKey();
 
@@ -67,7 +67,7 @@ class CachedClipboard extends Clipboard
      * @param  \Illuminate\Database\Eloquent\Model  $user
      * @return \Illuminate\Support\Collection
      */
-    public function getUserRoles(Model $user)
+    public function getRoles(Model $user)
     {
         $key = $this->tag.'-roles-'.$user->getKey();
 

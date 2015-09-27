@@ -47,7 +47,7 @@ class Clipboard
      */
     public function check(Model $user, $ability, $model = null)
     {
-        $abilities = $this->getUserAbilities($user)->toBase()->lists('slug');
+        $abilities = $this->getAbilities($user)->toBase()->lists('slug');
 
         $requested = $this->compileAbilitySlugs($ability, $model);
 
@@ -64,7 +64,7 @@ class Clipboard
      */
     public function checkRole(Model $user, $roles, $boolean = 'or')
     {
-        $available = $this->getUserRoles($user)->intersect($roles);
+        $available = $this->getRoles($user)->intersect($roles);
 
         if ($boolean == 'or') {
             return $available->count() > 0;
@@ -115,7 +115,7 @@ class Clipboard
      * @param  \Illuminate\Database\Eloquent\Model  $user
      * @return \Illuminate\Support\Collection
      */
-    public function getUserAbilities(Model $user)
+    public function getAbilities(Model $user)
     {
         $id = $user->getKey();
 
@@ -132,7 +132,7 @@ class Clipboard
      * @param  \Illuminate\Database\Eloquent\Model  $user
      * @return \Illuminate\Support\Collection
      */
-    public function getUserRoles(Model $user)
+    public function getRoles(Model $user)
     {
         $id = $user->getKey();
 

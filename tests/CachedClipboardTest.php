@@ -93,7 +93,7 @@ class CachedClipboardTest extends BaseTestCase
     {
         $clipboard = new CachedClipboard($cache);
 
-        $abilities = $clipboard->getUserAbilities($user)->lists('name');
+        $abilities = $clipboard->getAbilities($user)->lists('name');
 
         return $abilities->sort()->values()->all();
     }
@@ -109,6 +109,6 @@ class CachedClipboardTest extends BaseTestCase
     {
         $clipboard = new CachedClipboard($cache);
 
-        return $clipboard->getUserRoles($user)->all();
+        return $clipboard->getRoles($user)->all();
     }
 }

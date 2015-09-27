@@ -40,7 +40,7 @@ trait HasRolesAndAbilities
      */
     public function getAbilities()
     {
-        return $this->getClipboardInstance()->getUserAbilities($this);
+        return $this->getClipboardInstance()->getAbilities($this);
     }
 
     /**
