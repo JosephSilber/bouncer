@@ -4,7 +4,7 @@ namespace Silber\Bouncer;
 
 use Silber\Bouncer\Database\Ability;
 
-use Exception;
+use RuntimeException;
 use Illuminate\Cache\TaggedCache;
 use Illuminate\Contracts\Cache\Store;
 use Illuminate\Database\Eloquent\Model;
@@ -104,12 +104,12 @@ class CachedClipboard extends Clipboard
      *
      * @return $this
      *
-     * @throws \Exception
+     * @throws \RuntimeException
      */
     public function refresh()
     {
         if ( ! $this->cache instanceof TaggedCache) {
-            throw new Exception('Your cache driver does not support blanket cache purging. Use [refreshForUser] instead.');
+            throw new RuntimeException('Your cache driver does not support blanket cache purging. Use [refreshForUser] instead.');
         }
 
         $this->cache->flush();
