@@ -285,7 +285,7 @@ Alternatively, you can refresh the cache only for a specific user:
 Bouncer::refreshForUser($user);
 ```
 
-> **Note:** refreshing the cache **for a specific user** is available even if your cache driver does not support cache tags.
+Refreshing the cache **for a specific user** is available even if your cache driver does not support cache tags.
 
 ## Cheat Sheet
 
