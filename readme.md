@@ -206,6 +206,8 @@ To remove an ability for all models of a given type, pass the fully qualified cl
 Bouncer::disallow($user)->to('delete', Post::class);
 ```
 
+> **Note:** if the user has an ability to `delete` a specific `$post`, the code above will *not* remove that ability. You will have to remove the ability separately - by passing in the actual `$post` as a second argument - as shown above.
+
 ### Checking a user's roles
 
 The bouncer can check if a user has a specific role:
