@@ -33,11 +33,34 @@ class CachedClipboard extends Clipboard
      */
     public function __construct(Store $cache)
     {
+        $this->setCache($cache);
+    }
+
+    /**
+     * Set the cache instance.
+     *
+     * @param  \Illuminate\Contracts\Cache\Store  $cache
+     * @return $this
+     */
+    public function setCache(Store $cache)
+    {
         if (method_exists($cache, 'tags')) {
             $cache = $cache->tags($this->tag);
         }
 
         $this->cache = $cache;
+
+        return $this;
+    }
+
+    /**
+     * Get the cache instance.
+     *
+     * @return \Illuminate\Contracts\Cache\Store
+     */
+    public function getCache()
+    {
+        return $this->cache;
     }
 
     /**
@@ -54,7 +77,7 @@ class CachedClipboard extends Clipboard
             return $this->deserializeAbilities($abilities);
         }
 
-        $abilities = $this->getFreshUserAbilities($user);
+        $abilities = parent::getAbilities($user);
 
         $this->cache->forever($key, $this->serializeAbilities($abilities));
 
@@ -72,7 +95,7 @@ class CachedClipboard extends Clipboard
         $key = $this->tag.'-roles-'.$user->getKey();
 
         return $this->cache->sear($key, function () use ($user) {
-            return $this->getFreshUserRoles($user);
+            return parent::getRoles($user);
         });
     }
 

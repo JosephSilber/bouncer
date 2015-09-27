@@ -3,7 +3,6 @@
 namespace Silber\Bouncer;
 
 use RuntimeException;
-use Illuminate\Container\Container;
 use Illuminate\Contracts\Cache\Store;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Access\Gate;
@@ -19,7 +18,7 @@ class Bouncer
     /**
      * The bouncer clipboard instance.
      *
-     * @var \Silber\Bouncer\Clipboard
+     * @var \Silber\Bouncer\CachedClipboard
      */
     protected $clipboard;
 
@@ -33,9 +32,9 @@ class Bouncer
     /**
      * Constructor.
      *
-     * @param \Silber\Bouncer\Clipboard
+     * @param \Silber\Bouncer\CachedClipboard
      */
-    public function __construct(Clipboard $clipboard)
+    public function __construct(CachedClipboard $clipboard)
     {
         $this->clipboard = $clipboard;
     }
@@ -103,11 +102,7 @@ class Bouncer
      */
     public function useCache(Store $cache)
     {
-        $this->clipboard = new CachedClipboard($cache);
-
-        $container = Container::getInstance() ?: new Container;
-
-        $container->singleton(Clipboard::class, $this->clipboard);
+        $this->clipboard->setCache($cache);
 
         return $this;
     }

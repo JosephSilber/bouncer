@@ -1,12 +1,13 @@
 <?php
 
 use Silber\Bouncer\Bouncer;
-use Silber\Bouncer\Clipboard;
 use Silber\Bouncer\Database\Role;
+use Silber\Bouncer\CachedClipboard;
 use Silber\Bouncer\Database\Ability;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 
 use Illuminate\Auth\Access\Gate;
+use Illuminate\Cache\ArrayStore;
 use Illuminate\Container\Container;
 use Illuminate\Database\Connection;
 use Illuminate\Database\SQLiteConnection;
@@ -18,7 +19,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
     /**
      * The clipboard instance.
      *
-     * @var \Silber\Bouncer\Clipboard
+     * @var \Silber\Bouncer\CachedClipboard
      */
     protected $clipboard;
 
@@ -88,7 +89,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
             $table->integer('role_id')->unsigned();
         });
 
-        $this->clipboard = new Clipboard;
+        $this->clipboard = new CachedClipboard(new ArrayStore);
     }
 
     /**
@@ -116,7 +117,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
      */
     protected function bouncer(User $user)
     {
-        return (new Bouncer(new Clipboard))->setGate($this->gate($user));
+        return (new Bouncer($this->clipboard))->setGate($this->gate($user));
     }
 
     /**

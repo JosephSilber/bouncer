@@ -9,16 +9,6 @@ use Illuminate\Contracts\Auth\Access\Gate;
 class Clipboard
 {
     /**
-     * Holds the cache of users' roles and abilities.
-     *
-     * @var array
-     */
-    protected $cache = [
-        'abilities' => [],
-        'roles' => [],
-    ];
-
-    /**
      * Register the clipboard at the given gate.
      *
      * @param  \Illuminate\Contracts\Auth\Access\Gate  $gate
@@ -110,23 +100,6 @@ class Clipboard
     }
 
     /**
-     * Get the given user's abilities.
-     *
-     * @param  \Illuminate\Database\Eloquent\Model  $user
-     * @return \Illuminate\Support\Collection
-     */
-    public function getAbilities(Model $user)
-    {
-        $id = $user->getKey();
-
-        if ( ! isset($this->cache['abilities'][$id])) {
-            $this->cache['abilities'][$id] = $this->getFreshUserAbilities($user);
-        }
-
-        return $this->cache['abilities'][$id];
-    }
-
-    /**
      * Get the given user's roles.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $user
@@ -134,51 +107,16 @@ class Clipboard
      */
     public function getRoles(Model $user)
     {
-        $id = $user->getKey();
-
-        if ( ! isset($this->cache['roles'][$id])) {
-            $this->cache['roles'][$id] = $this->getFreshUserRoles($user);
-        }
-
-        return $this->cache['roles'][$id];
+        return $user->roles()->lists('name');
     }
 
     /**
-     * Clear the cache.
-     *
-     * @return $this
-     */
-    public function refresh()
-    {
-        $this->cache['abilities'] = [];
-
-        $this->cache['roles'] = [];
-
-        return $this;
-    }
-
-    /**
-     * Clear the cache for the given user.
-     *
-     * @param  \Illuminate\Database\Eloquent\Model  $user
-     * @return $this
-     */
-    public function refreshForUser(Model $user)
-    {
-        unset($this->cache['abilities'][$user->getKey()]);
-
-        unset($this->cache['roles'][$user->getKey()]);
-
-        return $this;
-    }
-
-    /**
-     * Get a fresh list of the user's abilities.
+     * Get a list of the user's abilities.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $user
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    protected function getFreshUserAbilities(Model $user)
+    public function getAbilities(Model $user)
     {
         $query = Ability::whereHas('roles', $this->getRoleUsersConstraint($user));
 
@@ -211,16 +149,5 @@ class Clipboard
 
             $query->where($column, $user->getKey());
         };
-    }
-
-    /**
-     * Get a fresh list of the given user's roles.
-     *
-     * @param  array|string  $role
-     * @return \Illuminate\Support\Collection
-     */
-    protected function getFreshUserRoles(Model $user)
-    {
-        return $user->roles()->lists('name');
     }
 }

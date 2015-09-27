@@ -4,6 +4,8 @@ namespace Silber\Bouncer;
 
 use Silber\Bouncer\Database\Role;
 use Silber\Bouncer\Database\Ability;
+
+use Illuminate\Cache\ArrayStore;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Auth\Access\Gate;
 
@@ -28,7 +30,9 @@ class BouncerServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(Clipboard::class);
+        $this->app->singleton(Clipboard::class, function () {
+            return new CachedClipboard(new ArrayStore);
+        });
 
         $this->app->bind(Bouncer::class, function () {
             $bouncer = new Bouncer($this->app->make(Clipboard::class));
