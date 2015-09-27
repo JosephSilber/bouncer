@@ -4,7 +4,7 @@ This package adds a bouncer at Laravel's access gate.
 
 - [Introduction](#introduction)
 - [Installation](#installation)
-  - [Enabling cache](#enabe)
+  - [Enabling cache](#enabling-cache)
 - [Usage](#usage)
   - [Creating roles and abilities](#creating-roles-and-abilities)
   - [Assigning roles to a user](#assigning-roles-to-a-user)
@@ -92,7 +92,7 @@ $ php artisan migrate
 
 ### Enabling cache
 
-All queries executed by the bouncer are cached for the current request. For better performance, you might want to use a real caching system. To enable cross-request caching, add this to your `AppServiceProvider`'s `boot` method:
+All queries executed by the bouncer are cached for the current request. For better performance, you may want to use a real caching system. To enable cross-request caching, add this to your `AppServiceProvider`'s `boot` method:
 
 ```php
 Bouncer::useCache($this->app['cache']->store());
