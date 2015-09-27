@@ -3,6 +3,7 @@
 namespace Silber\Bouncer;
 
 use RuntimeException;
+use Illuminate\Container\Container;
 use Illuminate\Contracts\Cache\Store;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Access\Gate;
@@ -102,7 +103,11 @@ class Bouncer
      */
     public function useCache(Store $cache)
     {
-        $this->clipboard->useCache($cache);
+        $this->clipboard = new CachedClipboard($cache);
+
+        $container = Container::getInstance() ?: new Container;
+
+        $container->singleton(Clipboard::class, $this->clipboard);
 
         return $this;
     }
