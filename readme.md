@@ -9,7 +9,7 @@ This package adds a bouncer at Laravel's access gate.
   - [Creating roles and abilities](#creating-roles-and-abilities)
   - [Assigning roles to a user](#assigning-roles-to-a-user)
   - [Giving a user an ability directly](#giving-a-user-an-ability-directly)
-  - [Giving an ability for certain models](#giving-an-ability-for-certain-models)
+  - [Restricting an ability to a model](#restricting-an-ability-to-a-model)
   - [Retracting a role from a user](#retracting-a-role-from-a-user)
   - [Removing an ability](#removing-an-ability)
   - [Checking a user's roles](#checking-a-users-roles)
@@ -144,18 +144,18 @@ Here too you can accomplish the same directly off of the user model:
 $user->allow('ban-users');
 ```
 
-### Giving an ability for certain models
+### Restricting an ability to a model
 
-Sometimes you might want to only allow users to take action on a specific model. Simply pass the model as a second argument:
-
-```php
-Bouncer::allow($user)->to('edit', $post);
-```
-
-To allow an ability on all models of a certain type, pass the fully qualified class name instead:
+Sometimes you might want to restrict an ability to a specific model type. Simply pass the model name as a second argument:
 
 ```php
 Bouncer::allow($user)->to('edit', Post::class);
+```
+
+If you want to restrict the ability to a specific model instance, pass in the actual model instead:
+
+```php
+Bouncer::allow($user)->to('edit', $post);
 ```
 
 ### Retracting a role from a user
@@ -194,19 +194,19 @@ If the ability has been granted through a role, tell the bouncer to remove the a
 Bouncer::disallow('admin')->to('ban-users');
 ```
 
-To remove an ability for a specific model, pass it as a second argument:
-
-```php
-Bouncer::disallow($user)->to('delete', $post);
-```
-
-To remove an ability for all models of a given type, pass the fully qualified class name as a second argument:
+To remove an ability for a specific model type, pass in its name as a second argument:
 
 ```php
 Bouncer::disallow($user)->to('delete', Post::class);
 ```
 
-> **Note:** if the user has an ability to `delete` a specific `$post`, the code above will *not* remove that ability. You will have to remove the ability separately - by passing in the actual `$post` as a second argument - as shown above.
+> **Warning:** if the user has an ability to `delete` a specific `$post` instance, the code above will *not* remove that ability. You will have to remove the ability separately - by passing in the actual `$post` as a second argument - as shown below.
+
+To remove an ability for a specific model instance, pass in the actual model instead:
+
+```php
+Bouncer::disallow($user)->to('delete', $post);
+```
 
 ### Checking a user's roles
 
