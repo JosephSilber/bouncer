@@ -92,13 +92,13 @@ $ php artisan migrate
 
 ### Enabling cache
 
-All queries executed by the bouncer are cached for the current request. For better performance, you may want to use a real caching system. To enable cross-request caching, add this to your `AppServiceProvider`'s `boot` method:
+All queries executed by the bouncer are cached for the current request. For better performance, you may want to use cross-request caching. To enable cross-request caching, add this to your `AppServiceProvider`'s `boot` method:
 
 ```php
 Bouncer::cache();
 ```
 
-> **Warning:** if you enable caching, you are responsible to refresh the cache whenever you make changes to user's abilities/roles. For how to refresh the cache, read [refreshing the cache](#refreshing-the-cache).
+> **Warning:** if you enable cross-request caching, you are responsible to refresh the cache whenever you make changes to user's abilities/roles. For how to refresh the cache, read [refreshing the cache](#refreshing-the-cache).
 
 ## Usage
 
@@ -280,7 +280,7 @@ Bouncer::refresh();
 Alternatively, you can refresh the cache only for a specific user:
 
 ```php
-Bouncer::refreshForUser($user);
+Bouncer::refreshFor($user);
 ```
 
 Refreshing the cache **for a specific user** is available even if your cache driver does not support cache tags.
@@ -317,7 +317,7 @@ $check = Bouncer::denies('delete', $post);
 
 Bouncer::cache();
 Bouncer::refresh();
-Bouncer::refreshForUser($user);
+Bouncer::refreshFor($user);
 ```
 
 Some of this functionality is also available directly on the user model:

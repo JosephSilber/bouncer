@@ -113,11 +113,12 @@ class Bouncer
     /**
      * Clear the cache.
      *
+     * @param  null|\Illuminate\Database\Eloquent\Model  $user
      * @return $this
      */
-    public function refresh()
+    public function refresh(Model $user = null)
     {
-        $this->clipboard->refresh();
+        $this->clipboard->refresh($user);
 
         return $this;
     }
@@ -128,9 +129,9 @@ class Bouncer
      * @param  \Illuminate\Database\Eloquent\Model  $user
      * @return $this
      */
-    public function refreshForUser(Model $user)
+    public function refreshFor(Model $user)
     {
-        $this->clipboard->refreshForUser($user);
+        $this->clipboard->refreshFor($user);
 
         return $this;
     }

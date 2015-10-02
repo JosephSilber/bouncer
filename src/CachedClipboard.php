@@ -102,14 +102,19 @@ class CachedClipboard extends Clipboard
     /**
      * Clear the cache.
      *
+     * @param  null|\Illuminate\Database\Eloquent\Model  $user
      * @return $this
      *
      * @throws \RuntimeException
      */
-    public function refresh()
+    public function refresh(Model $user = null)
     {
+        if ( ! is_null($user)) {
+            return $this->refreshFor($user);
+        }
+
         if ( ! $this->cache instanceof TaggedCache) {
-            throw new RuntimeException('Your cache driver does not support blanket cache purging. Use [refreshForUser] instead.');
+            throw new RuntimeException('Your cache driver does not support blanket cache purging. Use [refreshFor] instead.');
         }
 
         $this->cache->flush();
@@ -123,7 +128,7 @@ class CachedClipboard extends Clipboard
      * @param  \Illuminate\Database\Eloquent\Model  $user
      * @return $this
      */
-    public function refreshForUser(Model $user)
+    public function refreshFor(Model $user)
     {
         $id = $user->getKey();
 

@@ -76,7 +76,7 @@ class CachedClipboardTest extends BaseTestCase
         $this->assertEquals(['ban-users'], $this->getAbliities($cache, $user2));
 
         $bouncer->disallow('admin')->to('ban-users');
-        $bouncer->refreshForUser($user1);
+        $bouncer->refreshFor($user1);
 
         $this->assertEquals([], $this->getAbliities($cache, $user1));
         $this->assertEquals(['ban-users'], $this->getAbliities($cache, $user2));
