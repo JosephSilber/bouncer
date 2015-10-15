@@ -12,11 +12,6 @@ class CreateBouncerTables extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->increments('id');
-            $table->timestamps();
-        });
-
         Schema::create('abilities', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
@@ -56,7 +51,6 @@ class CreateBouncerTables extends Migration
      */
     public function down()
     {
-        Schema::drop('users');
         Schema::drop('abilities');
         Schema::drop('roles');
         Schema::drop('user_roles');
