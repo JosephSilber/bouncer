@@ -30,7 +30,7 @@ trait HasRolesAndAbilities
      */
     public function abilities()
     {
-        return $this->belongsToMany(Ability::class, 'user_Abilities');
+        return $this->belongsToMany(Ability::class, 'user_abilities');
     }
 
     /**
