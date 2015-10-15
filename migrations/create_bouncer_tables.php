@@ -12,6 +12,10 @@ class CreateBouncerTables extends Migration
      */
     public function up()
     {
+        $user = app('config')->get('auth.model');
+
+        $usersTable = (new $user)->getTable();
+
         Schema::create('abilities', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
@@ -28,19 +32,34 @@ class CreateBouncerTables extends Migration
             $table->timestamps();
         });
 
-        Schema::create('user_roles', function (Blueprint $table) {
+        Schema::create('user_roles', function (Blueprint $table) use ($usersTable) {
             $table->integer('role_id')->unsigned();
             $table->integer('user_id')->unsigned();
+
+            $table->unique(['role_id', 'user_id']);
+
+            $table->foreign('role_id')->references('id')->on('roles');
+            $table->foreign('user_id')->references('id')->on($usersTable);
         });
 
-        Schema::create('user_abilities', function (Blueprint $table) {
+        Schema::create('user_abilities', function (Blueprint $table) use ($usersTable) {
             $table->integer('ability_id')->unsigned();
             $table->integer('user_id')->unsigned();
+
+            $table->unique(['ability_id', 'user_id']);
+
+            $table->foreign('ability_id')->references('id')->on('abilities');
+            $table->foreign('user_id')->references('id')->on($usersTable);
         });
 
         Schema::create('role_abilities', function (Blueprint $table) {
             $table->integer('ability_id')->unsigned();
             $table->integer('role_id')->unsigned();
+
+            $table->unique(['ability_id', 'role_id']);
+
+            $table->foreign('ability_id')->references('id')->on('abilities');
+            $table->foreign('role_id')->references('id')->on('roles');
         });
     }
 
