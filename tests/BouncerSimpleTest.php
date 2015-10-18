@@ -70,17 +70,35 @@ class BouncerSimpleTest extends BaseTestCase
         $this->assertFalse($bouncer->is($user)->all('admin', 'moderator'));
     }
 
-    public function test_bouncer_can_get_role_model()
+    public function test_bouncer_can_get_an_empty_role_model()
     {
         $bouncer = $this->bouncer($user = User::create());
 
         $this->assertInstanceOf(Role::class, $bouncer->role());
     }
 
-    public function test_bouncer_can_get_ability_model()
+    public function test_bouncer_can_fill_a_role_model()
+    {
+        $bouncer = $this->bouncer($user = User::create());
+        $role = $bouncer->role(['name' => 'test-role']);
+
+        $this->assertInstanceOf(Role::class, $role);
+        $this->assertEquals('test-role', $role->name);
+    }
+
+    public function test_bouncer_can_get_an_empty_ability_model()
     {
         $bouncer = $this->bouncer($user = User::create());
 
         $this->assertInstanceOf(Ability::class, $bouncer->ability());
+    }
+
+    public function test_bouncer_can_fill_an_ability_model()
+    {
+        $bouncer = $this->bouncer($user = User::create());
+        $ability = $bouncer->ability(['name' => 'test-ability']);
+
+        $this->assertInstanceOf(Ability::class, $ability);
+        $this->assertEquals('test-ability', $ability->name);
     }
 }

@@ -198,20 +198,22 @@ class Bouncer
     /**
      * Get an instance of the role model.
      *
+     * @param  array  $attributes
      * @return \Silber\Bouncer\Database\Role
      */
-    public function role()
+    public function role(array $attributes = [])
     {
-        return new Role;
+        return new Role($attributes);
     }
 
     /**
      * Get an instance of the ability model.
      *
+     * @param  array  $attributes
      * @return \Silber\Bouncer\Database\Ability
      */
-    public function ability()
+    public function ability(array $attributes = [])
     {
-        return new Ability;
+        return new Ability($attributes);
     }
 }
