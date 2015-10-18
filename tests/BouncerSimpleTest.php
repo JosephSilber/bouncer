@@ -1,5 +1,8 @@
 <?php
 
+use Silber\Bouncer\Database\Role;
+use Silber\Bouncer\Database\Ability;
+
 class BouncerSimpleTest extends BaseTestCase
 {
     public function test_bouncer_can_give_and_remove_abilities()
@@ -70,14 +73,14 @@ class BouncerSimpleTest extends BaseTestCase
     public function test_bouncer_can_get_role_model()
     {
         $bouncer = $this->bouncer($user = User::create());
-        $roleModel = $bouncer->role();
-        $this->assertInstanceOf('\Silber\Bouncer\Database\Role', $roleModel);
+
+        $this->assertInstanceOf(Role::class, $bouncer->role());
     }
 
     public function test_bouncer_can_get_ability_model()
     {
         $bouncer = $this->bouncer($user = User::create());
-        $abilityModel = $bouncer->ability();
-        $this->assertInstanceOf('\Silber\Bouncer\Database\Ability', $abilityModel);
+
+        $this->assertInstanceOf(Ability::class, $bouncer->ability());
     }
 }

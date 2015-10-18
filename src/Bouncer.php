@@ -8,13 +8,13 @@ use Illuminate\Contracts\Cache\Store;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Access\Gate;
 
+use Silber\Bouncer\Database\Role;
+use Silber\Bouncer\Database\Ability;
 use Silber\Bouncer\Conductors\ChecksRole;
 use Silber\Bouncer\Conductors\AssignsRole;
 use Silber\Bouncer\Conductors\RemovesRole;
 use Silber\Bouncer\Conductors\GivesAbility;
 use Silber\Bouncer\Conductors\RemovesAbility;
-use Silber\Bouncer\Database\Ability;
-use Silber\Bouncer\Database\Role;
 
 class Bouncer
 {
