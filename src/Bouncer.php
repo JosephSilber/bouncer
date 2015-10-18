@@ -13,6 +13,8 @@ use Silber\Bouncer\Conductors\AssignsRole;
 use Silber\Bouncer\Conductors\RemovesRole;
 use Silber\Bouncer\Conductors\GivesAbility;
 use Silber\Bouncer\Conductors\RemovesAbility;
+use Silber\Bouncer\Database\Ability;
+use Silber\Bouncer\Database\Role;
 
 class Bouncer
 {
