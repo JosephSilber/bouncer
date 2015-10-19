@@ -3,11 +3,15 @@
 namespace Silber\Bouncer;
 
 use Silber\Bouncer\Database\Ability;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Access\Gate;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class Clipboard
 {
+    use HandlesAuthorization;
+
     /**
      * Register the clipboard at the given gate.
      *
@@ -21,8 +25,8 @@ class Clipboard
                 return;
             }
 
-            if ($this->check($user, $ability, $model)) {
-                return true;
+            if ($id = $this->checkGetId($user, $ability, $model)) {
+                return $this->allow('Bouncer granted permission via ability #'.$id);
             }
         });
     }
@@ -37,11 +41,30 @@ class Clipboard
      */
     public function check(Model $user, $ability, $model = null)
     {
-        $abilities = $this->getAbilities($user)->toBase()->lists('slug');
+        return (bool) $this->checkGetId($user, $ability, $model);
+    }
+
+    /**
+     * Determine if the given user has the given ability and return the ability ID.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $user
+     * @param  string  $ability
+     * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
+     * @return int|bool
+     */
+    protected function checkGetId(Model $user, $ability, $model = null)
+    {
+        $abilities = $this->getAbilities($user)->toBase()->lists('slug', 'id');
 
         $requested = $this->compileAbilitySlugs($ability, $model);
 
-        return $abilities->intersect($requested)->count() > 0;
+        foreach ($abilities as $id => $ability) {
+            if (in_array($ability, $requested)) {
+                return $id;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -68,12 +91,12 @@ class Clipboard
      *
      * @param  string  $ability
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
-     * @return array|string
+     * @return array
      */
     protected function compileAbilitySlugs($ability, $model)
     {
         if (is_null($model)) {
-            return strtolower($ability);
+            return [strtolower($ability)];
         }
 
         return $this->compileModelAbilitySlugs($ability, $model);
@@ -84,7 +107,7 @@ class Clipboard
      *
      * @param  string  $ability
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
-     * @return array|string
+     * @return array
      */
     protected function compileModelAbilitySlugs($ability, $model)
     {
@@ -93,7 +116,7 @@ class Clipboard
         $slug = strtolower($ability.'-'.$model->getMorphClass());
 
         if ( ! $model->exists) {
-            return $slug;
+            return [$slug];
         }
 
         return [$slug, $slug.'-'.$model->getKey()];
