@@ -7,6 +7,7 @@ use Illuminate\Container\Container;
 use Illuminate\Contracts\Cache\Store;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Access\Gate;
+use Illuminate\Contracts\Cache\Repository as CacheRepository;
 
 use Silber\Bouncer\Database\Role;
 use Silber\Bouncer\Database\Ability;
@@ -105,7 +106,7 @@ class Bouncer
      */
     public function cache(Store $cache = null)
     {
-        $cache = $cache ?: Container::getInstance()->make(Store::class);
+        $cache = $cache ?: $this->make(CacheRepository::class)->getStore();
 
         $this->clipboard->setCache($cache);
 
@@ -215,5 +216,17 @@ class Bouncer
     public function ability(array $attributes = [])
     {
         return new Ability($attributes);
+    }
+
+    /**
+     * Resolve the given type from the container.
+     *
+     * @param  string  $abstract
+     * @param  array  $parameters
+     * @return mixed
+     */
+    public function make($abstract, array $parameters = [])
+    {
+        return Container::getInstance()->make($abstract, $parameters);
     }
 }
