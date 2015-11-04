@@ -99,12 +99,12 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
      */
     public function tearDown()
     {
-        $this->schema()->drop('users');
-        $this->schema()->drop('abilities');
-        $this->schema()->drop('roles');
-        $this->schema()->drop('user_roles');
-        $this->schema()->drop('user_abilities');
         $this->schema()->drop('role_abilities');
+        $this->schema()->drop('user_abilities');
+        $this->schema()->drop('user_roles');
+        $this->schema()->drop('roles');
+        $this->schema()->drop('abilities');
+        $this->schema()->drop('users');
 
         $this->clipboard = null;
     }
