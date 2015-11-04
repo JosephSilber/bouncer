@@ -225,7 +225,7 @@ class Bouncer
      * @param  array  $parameters
      * @return mixed
      */
-    public function make($abstract, array $parameters = [])
+    protected function make($abstract, array $parameters = [])
     {
         return Container::getInstance()->make($abstract, $parameters);
     }
