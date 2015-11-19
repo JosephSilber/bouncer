@@ -77,16 +77,31 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         $this->schema()->create('user_roles', function ($table) {
             $table->integer('role_id')->unsigned();
             $table->integer('user_id')->unsigned();
+
+            $table->unique(['role_id', 'user_id']);
+
+            $table->foreign('role_id')->references('id')->on('roles');
+            $table->foreign('user_id')->references('id')->on('users');
         });
 
         $this->schema()->create('user_abilities', function ($table) {
             $table->integer('ability_id')->unsigned();
             $table->integer('user_id')->unsigned();
+
+            $table->unique(['ability_id', 'user_id']);
+
+            $table->foreign('ability_id')->references('id')->on('abilities');
+            $table->foreign('user_id')->references('id')->on('users');
         });
 
         $this->schema()->create('role_abilities', function ($table) {
             $table->integer('ability_id')->unsigned();
             $table->integer('role_id')->unsigned();
+
+            $table->unique(['ability_id', 'role_id']);
+
+            $table->foreign('ability_id')->references('id')->on('abilities');
+            $table->foreign('role_id')->references('id')->on('roles');
         });
 
         $this->clipboard = new CachedClipboard(new ArrayStore);
