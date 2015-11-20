@@ -34,6 +34,14 @@ class BouncerSimpleTest extends BaseTestCase
         $this->assertTrue($bouncer->denies('edit-site'));
     }
 
+    public function test_bouncer_can_ignore_duplicate_role_assignments()
+    {
+        $bouncer = $this->bouncer($user = User::create());
+
+        $bouncer->assign('admin')->to($user);
+        $bouncer->assign('admin')->to($user);
+    }
+
     public function test_bouncer_can_disallow_abilities_on_roles()
     {
         $bouncer = $this->bouncer($user = User::create());

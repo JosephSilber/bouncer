@@ -38,9 +38,9 @@ class AssignsRole
             $user = $user->getKey();
         }
 
-        $users = is_array($user) ? $user : [$user];
+        $ids = is_array($user) ? $user : [$user];
 
-        $role->users()->attach($users);
+        $this->assignRole($role, $ids);
 
         return true;
     }
@@ -57,5 +57,21 @@ class AssignsRole
         }
 
         return Role::firstOrCreate(['name' => $this->role]);
+    }
+
+    /**
+     * Assign the role to the users with the given ids.
+     *
+     * @param  \Silber\Bouncer\Database\Role  $role
+     * @param  array  $ids
+     * @return void
+     */
+    protected function assignRole(Role $role, array $ids)
+    {
+        $existing = $role->users()->whereIn('id', $ids)->lists('id')->all();
+
+        $ids = array_diff($ids, $existing);
+
+        $role->users()->attach($ids);
     }
 }
