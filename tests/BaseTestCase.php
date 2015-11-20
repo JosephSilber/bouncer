@@ -9,38 +9,25 @@ use Silber\Bouncer\Database\HasRolesAndAbilities;
 use Illuminate\Auth\Access\Gate;
 use Illuminate\Cache\ArrayStore;
 use Illuminate\Container\Container;
-use Illuminate\Database\Connection;
-use Illuminate\Database\SQLiteConnection;
+use Illuminate\Database\Capsule\Manager as DB;
 use Illuminate\Database\Eloquent\Model as Eloquent;
-use Illuminate\Database\ConnectionResolverInterface;
+
 
 abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 {
+    /**
+     * The database capsule instance.
+     *
+     * @var \Illuminate\Database\Capsule\Manager
+     */
+    protected $db;
+
     /**
      * The clipboard instance.
      *
      * @var \Silber\Bouncer\CachedClipboard
      */
     protected $clipboard;
-
-    /**
-     * Bootstrap Eloquent.
-     *
-     * @return void
-     */
-    public static function setUpBeforeClass()
-    {
-        Eloquent::setConnectionResolver(new ConnectionResolver);
-    }
-
-    /**
-     * Tear down Eloquent.
-     *
-     */
-    public static function tearDownAfterClass()
-    {
-        Eloquent::unsetConnectionResolver();
-    }
 
     /**
      * Setup the database schema.
@@ -121,7 +108,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         $this->schema()->drop('abilities');
         $this->schema()->drop('users');
 
-        $this->clipboard = null;
+        $this->clipboard = $this->db = null;
     }
 
     /**
@@ -159,7 +146,27 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
      */
     protected function schema()
     {
-        return Eloquent::getConnectionResolver()->connection()->getSchemaBuilder();
+        return $this->db()->connection()->getSchemaBuilder();
+    }
+
+    protected function db()
+    {
+        if ($this->db) {
+            return $this->db;
+        }
+
+        $this->db = new DB;
+
+        $this->db->addConnection([
+            'driver'    => 'sqlite',
+            'database'  => ':memory:',
+        ]);
+
+        $this->db->bootEloquent();
+
+        $this->db->setAsGlobal();
+
+        return $this->db;
     }
 }
 
@@ -168,30 +175,4 @@ class User extends Eloquent
     use HasRolesAndAbilities;
 
     protected $table = 'users';
-}
-
-class ConnectionResolver implements ConnectionResolverInterface
-{
-    protected $connection;
-
-    public function connection($name = null)
-    {
-        if (isset($this->connection)) {
-            return $this->connection;
-        }
-
-        $pdo = new PDO('sqlite::memory:');
-
-        return $this->connection = new SQLiteConnection($pdo);
-    }
-
-    public function getDefaultConnection()
-    {
-        return 'default';
-    }
-
-    public function setDefaultConnection($name)
-    {
-        //
-    }
 }
