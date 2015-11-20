@@ -39,9 +39,25 @@ class GivesAbility
     {
         $ids = $this->getAbilityIds($abilities, $model);
 
-        $this->getModel()->abilities()->attach($ids);
+        $this->giveAbilities($ids, $this->getModel());
 
         return true;
+    }
+
+    /**
+     * Give abilities to the given model.
+     *
+     * @param  array  $ids
+     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @return void
+     */
+    protected function giveAbilities(array $ids, Model $model)
+    {
+        $existing = $model->abilities()->whereIn('id', $ids)->lists('id')->all();
+
+        $ids = array_diff($ids, $existing);
+
+        $model->abilities()->attach($ids);
     }
 
     /**

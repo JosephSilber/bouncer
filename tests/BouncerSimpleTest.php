@@ -19,6 +19,26 @@ class BouncerSimpleTest extends BaseTestCase
         $this->assertTrue($bouncer->denies('edit-site'));
     }
 
+    public function test_bouncer_can_ignore_duplicate_ability_allowances()
+    {
+        $user1 = User::create();
+        $user2 = User::create();
+
+        $bouncer = $this->bouncer($user1);
+
+        $bouncer->allow($user1)->to('ban-users');
+        $bouncer->allow($user1)->to('ban-users');
+
+        $bouncer->allow($user1)->to('ban', $user2);
+        $bouncer->allow($user1)->to('ban', $user2);
+
+        $bouncer->allow('admin')->to('ban-users');
+        $bouncer->allow('admin')->to('ban-users');
+
+        $bouncer->allow('admin')->to('ban', $user1);
+        $bouncer->allow('admin')->to('ban', $user1);
+    }
+
     public function test_bouncer_can_give_and_remove_roles()
     {
         $bouncer = $this->bouncer($user = User::create());
