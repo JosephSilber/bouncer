@@ -34,7 +34,12 @@ class Role extends Model
      */
     public function abilities()
     {
-        return $this->belongsToMany(Ability::class, 'role_abilities');
+        return $this->belongsToMany(
+            Ability::class,
+            'role_abilities',
+            'role_id',
+            'ability_id'
+        );
     }
 
     /**
@@ -44,6 +49,11 @@ class Role extends Model
      */
     public function users()
     {
-        return $this->belongsToMany(static::$userModel, 'user_roles');
+        return $this->belongsToMany(
+            static::$userModel,
+            'user_roles',
+            'role_id',
+            'user_id'
+        );
     }
 }

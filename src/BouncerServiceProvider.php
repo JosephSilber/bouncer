@@ -18,9 +18,10 @@ class BouncerServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->publishConfig();
         $this->publishMigrations();
         $this->registerAtGate();
-        $this->setUserModel();
+        $this->setModelOverrides();
     }
 
     /**
@@ -30,12 +31,23 @@ class BouncerServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(Clipboard::class, function () {
-            return new CachedClipboard(new ArrayStore);
+        $roleModelClass = config('bouncer.role', 'Silber\Bouncer\Database\Role');
+        $abilityModelClass = config('bouncer.ability', 'Silber\Bouncer\Database\Ability');
+
+        $this->app->singleton(Clipboard::class, function () use ($roleModelClass, $abilityModelClass) {
+            return new CachedClipboard(
+                new ArrayStore(),
+                $roleModelClass,
+                $abilityModelClass
+            );
         });
 
-        $this->app->bind(Bouncer::class, function () {
-            $bouncer = new Bouncer($this->app->make(Clipboard::class));
+        $this->app->bind(Bouncer::class, function () use ($roleModelClass, $abilityModelClass) {
+            $bouncer = new Bouncer(
+                $this->app->make(Clipboard::class),
+                $roleModelClass,
+                $abilityModelClass
+            );
 
             return $bouncer->setGate($this->app->make(Gate::class));
         });
@@ -62,6 +74,16 @@ class BouncerServiceProvider extends ServiceProvider
     }
 
     /**
+     * Publish the config file to the application config directory
+     */
+    public function publishConfig()
+    {
+        $this->publishes([
+            __DIR__ . '/../../config/bouncer.php' => config_path('bouncer.php'),
+        ], 'config');
+    }
+
+    /**
      * Register the bouncer's clipboard at the gate.
      *
      * @return void
@@ -80,12 +102,18 @@ class BouncerServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function setUserModel()
+    protected function setModelOverrides()
     {
         $model = $this->app->make('config')->get('auth.model');
 
         Ability::$userModel = $model;
 
         Role::$userModel = $model;
+
+        $roleModelClass = config('bouncer.role', 'Silber\Bouncer\Database\Role');
+        Role::$overrideModelClass = $roleModelClass;
+
+        $abilityModelClass = config('bouncer.ability', 'Silber\Bouncer\Database\Ability');
+        Ability::$overrideModelClass = $abilityModelClass;
     }
 }

@@ -20,7 +20,13 @@ trait HasRolesAndAbilities
      */
     public function roles()
     {
-        return $this->belongsToMany(Role::class, 'user_roles');
+        $roleModelClass = $this->roleModelClass ?: Role::class;
+        return $this->belongsToMany(
+            $roleModelClass,
+            'user_roles',
+            'user_id',
+            'role_id'
+        );
     }
 
     /**
@@ -30,7 +36,13 @@ trait HasRolesAndAbilities
      */
     public function abilities()
     {
-        return $this->belongsToMany(Ability::class, 'user_abilities');
+        $abilityModelClass = $this->abilityModelClass ?: Ability::class;
+        return $this->belongsToMany(
+            $abilityModelClass,
+            'user_abilities',
+            'user_id',
+            'ability_id'
+        );
     }
 
     /**
@@ -51,7 +63,10 @@ trait HasRolesAndAbilities
      */
     public function allow($abilities)
     {
-        (new GivesAbility($this))->to($abilities);
+        $roleModelClass = $this->roleModelClass ?: Role::class;
+        $abilityModelClass = $this->abilityModelClass ?: Ability::class;
+
+        (new GivesAbility($this, $roleModelClass, $abilityModelClass))->to($abilities);
 
         return $this;
     }
@@ -64,7 +79,10 @@ trait HasRolesAndAbilities
      */
     public function disallow($abilities)
     {
-        (new RemovesAbility($this))->to($abilities);
+        $roleModelClass = $this->roleModelClass ?: Role::class;
+        $abilityModelClass = $this->abilityModelClass ?: Ability::class;
+
+        (new RemovesAbility($this, $roleModelClass, $abilityModelClass))->to($abilities);
 
         return $this;
     }
@@ -77,7 +95,9 @@ trait HasRolesAndAbilities
      */
     public function assign($role)
     {
-        (new AssignsRole($role))->to($this);
+        $roleModelClass = $this->roleModelClass ?: Role::class;
+
+        (new AssignsRole($role, $roleModelClass))->to($this);
 
         return $this;
     }
@@ -90,7 +110,10 @@ trait HasRolesAndAbilities
      */
     public function retract($role)
     {
-        (new RemovesRole($role))->from($this);
+        $roleModelClass = $this->roleModelClass ?: Role::class;
+        $abilityModelClass = $this->abilityModelClass ?: Ability::class;
+
+        (new RemovesRole($role, $roleModelClass, $abilityModelClass))->from($this);
 
         return $this;
     }

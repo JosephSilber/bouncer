@@ -29,10 +29,13 @@ class CachedClipboard extends Clipboard
     /**
      * Constructor.
      *
-     * @param \Illuminate\Contracts\Cache\Store  $cache
+     * @param \Illuminate\Contracts\Cache\Store $cache
+     * @param string $roleModelClass
+     * @param string $abilityModelClass
      */
-    public function __construct(Store $cache)
+    public function __construct($cache, $roleModelClass = 'Silber\Bouncer\Database\Role', $abilityModelClass = 'Silber\Bouncer\Database\Ability')
     {
+        parent::__construct($roleModelClass, $abilityModelClass);
         $this->setCache($cache);
     }
 
@@ -147,7 +150,7 @@ class CachedClipboard extends Clipboard
      */
     protected function deserializeAbilities(array $abilities)
     {
-        return Ability::hydrate($abilities);
+        return call_user_func($this->abilityModelClass."::hydrate", $abilities);
     }
 
     /**

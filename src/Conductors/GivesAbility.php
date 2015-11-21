@@ -17,15 +17,27 @@ class GivesAbility
      * @var \Illuminate\Database\Eloquent\Model|string
      */
     protected $model;
+    /**
+     * @var string
+     */
+    private $abilityModelClass;
+    /**
+     * @var string
+     */
+    private $roleModelClass;
 
     /**
      * Constructor.
      *
-     * @param \Illuminate\Database\Eloquent\Model|string  $model
+     * @param \Illuminate\Database\Eloquent\Model|string $model
+     * @param string $roleModelClass
+     * @param string $abilityModelClass
      */
-    public function __construct($model)
+    public function __construct($model, $roleModelClass = 'Silber\Bouncer\Database\Role', $abilityModelClass = 'Silber\Bouncer\Database\Ability')
     {
         $this->model = $model;
+        $this->abilityModelClass = $abilityModelClass;
+        $this->roleModelClass = $roleModelClass;
     }
 
     /**
@@ -71,7 +83,7 @@ class GivesAbility
             return $this->model;
         }
 
-        return Role::firstOrCreate(['name' => $this->model]);
+        return call_user_func($this->roleModelClass."::firstOrCreate", ['name' => $this->model]);
     }
 
     /**
@@ -105,16 +117,16 @@ class GivesAbility
     {
         $entity = $this->getEntityInstance($entity);
 
-        $model = Ability::where('name', $ability)->forModel($entity)->first();
+        $model = call_user_func($this->abilityModelClass."::where", 'name', $ability)->forModel($entity)->first();
 
-        return $model ?: Ability::createForModel($entity, $ability);
+        return $model ?: call_user_func($this->abilityModelClass."::createForModel", $entity, $ability);
     }
 
     /**
      * Get an instance of the given model.
      *
      * @param  \Illuminate\Database\Eloquent\Model|string  $model
-     * @return \Illuminate\Database\Eloquent\Mo
+     * @return \Illuminate\Database\Eloquent\Model
      */
     protected function getEntityInstance($model)
     {
@@ -144,7 +156,8 @@ class GivesAbility
     {
         $abilities = array_unique(is_array($ability) ? $ability : [$ability]);
 
-        $models = Ability::simpleAbility()->whereIn('name', $abilities)->get();
+        /** @var \Illuminate\Database\Eloquent\Collection $models */
+        $models = call_user_func($this->abilityModelClass."::simpleAbility")->whereIn('name', $abilities)->get();
 
         $created = $this->createMissingAbilities($models, $abilities);
 
@@ -165,7 +178,7 @@ class GivesAbility
         $created = [];
 
         foreach ($missing as $ability) {
-            $created[] = Ability::create(['name' => $ability]);
+            $created[] = call_user_func($this->abilityModelClass."::create", ['name' => $ability]);
         }
 
         return $created;

@@ -15,13 +15,20 @@ class AssignsRole
     protected $role;
 
     /**
+     * @var string
+     */
+    private $roleModelClass;
+
+    /**
      * Constructor.
      *
-     * @param \Silber\Bouncer\Database\Role|string  $role
+     * @param \Silber\Bouncer\Database\Role|string $role
+     * @param string $roleModelClass
      */
-    public function __construct($role)
+    public function __construct($role, $roleModelClass = 'Silber\Bouncer\Database\Role')
     {
         $this->role = $role;
+        $this->roleModelClass = $roleModelClass;
     }
 
     /**
@@ -56,7 +63,7 @@ class AssignsRole
             return $this->role;
         }
 
-        return Role::firstOrCreate(['name' => $this->role]);
+        return call_user_func($this->roleModelClass."::firstOrCreate", ['name' => $this->role]);
     }
 
     /**

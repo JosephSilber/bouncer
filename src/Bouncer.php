@@ -34,13 +34,27 @@ class Bouncer
     protected $gate;
 
     /**
+     * @var string Role model class name
+     */
+    private $roleModelClass;
+
+    /**
+     * @var string Ability model class name
+     */
+    private $abilityModelClass;
+
+    /**
      * Constructor.
      *
-     * @param \Silber\Bouncer\CachedClipboard
+     * @param CachedClipboard $clipboard
+     * @param string $roleModelClass
+     * @param string $abilityModelClass
      */
-    public function __construct(CachedClipboard $clipboard)
+    public function __construct(CachedClipboard $clipboard, $roleModelClass = 'Silber\Bouncer\Database\Role', $abilityModelClass = 'Silber\Bouncer\Database\Ability')
     {
         $this->clipboard = $clipboard;
+        $this->roleModelClass = $roleModelClass;
+        $this->abilityModelClass = $abilityModelClass;
     }
 
     /**
@@ -51,7 +65,7 @@ class Bouncer
      */
     public function allow($role)
     {
-        return new GivesAbility($role);
+        return new GivesAbility($role, $this->roleModelClass, $this->abilityModelClass);
     }
 
     /**
@@ -62,7 +76,7 @@ class Bouncer
      */
     public function disallow($role)
     {
-        return new RemovesAbility($role);
+        return new RemovesAbility($role, $this->roleModelClass, $this->abilityModelClass);
     }
 
     /**
@@ -73,7 +87,7 @@ class Bouncer
      */
     public function assign($role)
     {
-        return new AssignsRole($role);
+        return new AssignsRole($role, $this->roleModelClass);
     }
 
     /**
@@ -84,7 +98,7 @@ class Bouncer
      */
     public function retract($role)
     {
-        return new RemovesRole($role);
+        return new RemovesRole($role, $this->roleModelClass);
     }
 
     /**
@@ -204,7 +218,7 @@ class Bouncer
      */
     public function role(array $attributes = [])
     {
-        return new Role($attributes);
+        return new $this->roleModelClass($attributes);
     }
 
     /**
@@ -215,7 +229,7 @@ class Bouncer
      */
     public function ability(array $attributes = [])
     {
-        return new Ability($attributes);
+        return new $this->abilityModelClass($attributes);
     }
 
     /**

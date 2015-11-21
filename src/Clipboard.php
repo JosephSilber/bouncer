@@ -13,6 +13,28 @@ class Clipboard
     use HandlesAuthorization;
 
     /**
+     * @var string
+     */
+    protected $roleModelClass = 'Silber\Bouncer\Database\Role';
+
+    /**
+     * @var string
+     */
+    protected $abilityModelClass = 'Silber\Bouncer\Database\Ability';
+
+    /**
+     * Clipboard constructor.
+     * @param string $roleModelClass
+     * @param string $abilityModelClass
+     */
+    public function __construct($roleModelClass = 'Silber\Bouncer\Database\Role', $abilityModelClass = 'Silber\Bouncer\Database\Ability')
+    {
+        $this->roleModelClass = $roleModelClass;
+        $this->abilityModelClass = $abilityModelClass;
+    }
+
+
+    /**
      * Register the clipboard at the given gate.
      *
      * @param  \Illuminate\Contracts\Auth\Access\Gate  $gate
@@ -141,7 +163,7 @@ class Clipboard
      */
     public function getAbilities(Model $user)
     {
-        $query = Ability::whereHas('roles', $this->getRoleUsersConstraint($user));
+        $query = call_user_func($this->abilityModelClass."::whereHas", 'roles', $this->getRoleUsersConstraint($user));
 
         return $query->orWhereHas('users', $this->getUserConstraint($user))->get();
     }
