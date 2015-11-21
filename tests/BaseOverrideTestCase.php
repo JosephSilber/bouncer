@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Schema\Builder;
 use Silber\Bouncer\Bouncer;
+use Silber\Bouncer\Clipboard;
 use Silber\Bouncer\Database\Role;
 use Silber\Bouncer\CachedClipboard;
 use Silber\Bouncer\Database\Ability;
@@ -92,7 +93,23 @@ abstract class BaseOverrideTestCase extends PHPUnit_Framework_TestCase
             $table->foreign('id_role')->references('id')->on('role');
         });
 
-        $this->clipboard = new CachedClipboard(new ArrayStore, MyRole::class, MyAbility::class);
+        $container = $this->getContainer();
+        $container->singleton(
+            Clipboard::class,
+            function() {
+                return new CachedClipboard(new ArrayStore, MyRole::class, MyAbility::class);
+            }
+        );
+        $this->clipboard = $container->make(Clipboard::class);
+    }
+
+    /**
+     * @return Container
+     */
+    public function getContainer() {
+        $container = Container::getInstance() ?: new Container;
+        Container::setInstance($container);
+        return $container;
     }
 
     /**
@@ -150,7 +167,16 @@ abstract class BaseOverrideTestCase extends PHPUnit_Framework_TestCase
      */
     protected function bouncer(MyUser $user)
     {
-        return (new Bouncer($this->clipboard, MyRole::class, MyAbility::class))->setGate($this->gate($user));
+        $container = $this->getContainer();
+
+        $container->singleton(
+            Bouncer::class,
+            function() {
+                return new Bouncer($this->clipboard, MyRole::class, MyAbility::class);
+            }
+        );
+
+        return $container->make(Bouncer::class)->setGate($this->gate($user));
     }
 
     /**
@@ -174,9 +200,6 @@ abstract class BaseOverrideTestCase extends PHPUnit_Framework_TestCase
 class MyUser extends Eloquent
 {
     use HasRolesAndAbilities;
-
-    protected $roleModelClass = MyRole::class;
-    protected $abilityModelClass = MyAbility::class;
 
     protected $table = 'user';
 

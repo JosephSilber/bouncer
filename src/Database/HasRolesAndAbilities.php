@@ -4,6 +4,7 @@ namespace Silber\Bouncer\Database;
 
 use Illuminate\Container\Container;
 
+use Silber\Bouncer\Bouncer;
 use Silber\Bouncer\Clipboard;
 use Silber\Bouncer\Conductors\ChecksRole;
 use Silber\Bouncer\Conductors\AssignsRole;
@@ -20,9 +21,8 @@ trait HasRolesAndAbilities
      */
     public function roles()
     {
-        $roleModelClass = $this->roleModelClass ?: Role::class;
         return $this->belongsToMany(
-            $roleModelClass,
+            Role::class,
             'user_roles',
             'user_id',
             'role_id'
@@ -36,9 +36,8 @@ trait HasRolesAndAbilities
      */
     public function abilities()
     {
-        $abilityModelClass = $this->abilityModelClass ?: Ability::class;
         return $this->belongsToMany(
-            $abilityModelClass,
+            Ability::class,
             'user_abilities',
             'user_id',
             'ability_id'
@@ -63,10 +62,7 @@ trait HasRolesAndAbilities
      */
     public function allow($abilities)
     {
-        $roleModelClass = $this->roleModelClass ?: Role::class;
-        $abilityModelClass = $this->abilityModelClass ?: Ability::class;
-
-        (new GivesAbility($this, $roleModelClass, $abilityModelClass))->to($abilities);
+        $this->getBouncer()->allow($this)->to($abilities);
 
         return $this;
     }
@@ -79,10 +75,7 @@ trait HasRolesAndAbilities
      */
     public function disallow($abilities)
     {
-        $roleModelClass = $this->roleModelClass ?: Role::class;
-        $abilityModelClass = $this->abilityModelClass ?: Ability::class;
-
-        (new RemovesAbility($this, $roleModelClass, $abilityModelClass))->to($abilities);
+        $this->getBouncer()->disallow($this)->to($abilities);
 
         return $this;
     }
@@ -95,9 +88,7 @@ trait HasRolesAndAbilities
      */
     public function assign($role)
     {
-        $roleModelClass = $this->roleModelClass ?: Role::class;
-
-        (new AssignsRole($role, $roleModelClass))->to($this);
+        $this->getBouncer()->assign($role)->to($this);
 
         return $this;
     }
@@ -110,10 +101,7 @@ trait HasRolesAndAbilities
      */
     public function retract($role)
     {
-        $roleModelClass = $this->roleModelClass ?: Role::class;
-        $abilityModelClass = $this->abilityModelClass ?: Ability::class;
-
-        (new RemovesRole($role, $roleModelClass, $abilityModelClass))->from($this);
+        $this->getBouncer()->retract($role)->from($this);
 
         return $this;
     }
@@ -158,5 +146,17 @@ trait HasRolesAndAbilities
         $container = Container::getInstance() ?: new Container;
 
         return $container->make(Clipboard::class);
+    }
+
+    /**
+     * Get an instance of the bouncer's clipboard.
+     *
+     * @return \Silber\Bouncer\Bouncer
+     */
+    protected function getBouncer()
+    {
+        $container = Container::getInstance() ?: new Container;
+
+        return $container->make(Bouncer::class);
     }
 }
