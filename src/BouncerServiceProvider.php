@@ -79,7 +79,7 @@ class BouncerServiceProvider extends ServiceProvider
     public function publishConfig()
     {
         $this->publishes([
-            __DIR__ . '/../config/bouncer.php' => config_path('bouncer.php'),
+            __DIR__ . '/config/bouncer.php' => config_path('bouncer.php'),
         ], 'config');
     }
 
