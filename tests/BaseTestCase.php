@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Database\Schema\Builder;
 use Silber\Bouncer\Bouncer;
 use Silber\Bouncer\Database\Role;
 use Silber\Bouncer\CachedClipboard;
@@ -142,7 +143,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
     /**
      * Get a schema builder instance.
      *
-     * @return \Schema\Builder
+     * @return Builder
      */
     protected function schema()
     {
