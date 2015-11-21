@@ -26,7 +26,7 @@ class ChecksRole
      * Constructor.
      *
      * @param \Illuminate\Database\Eloquent\Model  $user
-     * @param Silber\Bouncer\Clipboard  $clipboard
+     * @param \Silber\Bouncer\Clipboard  $clipboard
      */
     public function __construct(Model $user, Clipboard $clipboard)
     {
