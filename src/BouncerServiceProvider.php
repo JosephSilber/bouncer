@@ -110,10 +110,5 @@ class BouncerServiceProvider extends ServiceProvider
 
         Role::$userModel = $model;
 
-        $roleModelClass = config('bouncer.role', 'Silber\Bouncer\Database\Role');
-        Role::$overrideModelClass = $roleModelClass;
-
-        $abilityModelClass = config('bouncer.ability', 'Silber\Bouncer\Database\Ability');
-        Ability::$overrideModelClass = $abilityModelClass;
     }
 }

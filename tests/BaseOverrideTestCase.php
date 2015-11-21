@@ -96,7 +96,7 @@ abstract class BaseOverrideTestCase extends PHPUnit_Framework_TestCase
         $container = $this->getContainer();
         $container->singleton(
             Clipboard::class,
-            function() {
+            function () {
                 return new CachedClipboard(new ArrayStore, MyRole::class, MyAbility::class);
             }
         );
@@ -106,7 +106,8 @@ abstract class BaseOverrideTestCase extends PHPUnit_Framework_TestCase
     /**
      * @return Container
      */
-    public function getContainer() {
+    public function getContainer()
+    {
         $container = Container::getInstance() ?: new Container;
         Container::setInstance($container);
         return $container;
@@ -171,7 +172,7 @@ abstract class BaseOverrideTestCase extends PHPUnit_Framework_TestCase
 
         $container->singleton(
             Bouncer::class,
-            function() {
+            function () {
                 return new Bouncer($this->clipboard, MyRole::class, MyAbility::class);
             }
         );

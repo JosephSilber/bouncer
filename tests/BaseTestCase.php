@@ -96,7 +96,8 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         $container = $this->getContainer();
         $container->singleton(
             Clipboard::class,
-            function() {
+            function ()
+            {
                 return new CachedClipboard(new ArrayStore);
             }
         );
@@ -123,7 +124,8 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
     /**
      * @return Container
      */
-    public function getContainer() {
+    public function getContainer()
+    {
         $container = Container::getInstance() ?: new Container;
         Container::setInstance($container);
         return $container;
@@ -141,7 +143,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 
         $container->singleton(
             Bouncer::class,
-            function() {
+            function () {
                 return new Bouncer($this->clipboard);
             }
         );
