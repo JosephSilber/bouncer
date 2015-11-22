@@ -114,7 +114,7 @@ class GivesAbility
      * Get an instance of the given model.
      *
      * @param  \Illuminate\Database\Eloquent\Model|string  $model
-     * @return \Illuminate\Database\Eloquent\Mo
+     * @return \Illuminate\Database\Eloquent\Model
      */
     protected function getEntityInstance($model)
     {
