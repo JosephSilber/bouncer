@@ -1,5 +1,7 @@
 <?php
 
+require __DIR__.'/../migrations/create_bouncer_tables.php';
+
 use Silber\Bouncer\Bouncer;
 use Silber\Bouncer\CachedClipboard;
 use Silber\Bouncer\Database\Models;
@@ -10,7 +12,6 @@ use Illuminate\Cache\ArrayStore;
 use Illuminate\Container\Container;
 use Illuminate\Database\Capsule\Manager as DB;
 use Illuminate\Database\Eloquent\Model as Eloquent;
-
 
 abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 {
@@ -37,58 +38,21 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
     {
         Models::setUsersModel(User::class);
 
-        $this->schema()->create('users', function ($table) {
-            $table->increments('id');
-            $table->timestamps();
-        });
-
-        $this->schema()->create('abilities', function ($table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->integer('entity_id')->unsigned()->nullable();
-            $table->string('entity_type')->nullable();
-            $table->timestamps();
-
-            $table->unique(['name', 'entity_id', 'entity_type']);
-        });
-
-        $this->schema()->create('roles', function ($table) {
-            $table->increments('id');
-            $table->string('name')->unique();
-            $table->timestamps();
-        });
-
-        $this->schema()->create('user_roles', function ($table) {
-            $table->integer('role_id')->unsigned();
-            $table->integer('user_id')->unsigned();
-
-            $table->unique(['role_id', 'user_id']);
-
-            $table->foreign('role_id')->references('id')->on('roles');
-            $table->foreign('user_id')->references('id')->on('users');
-        });
-
-        $this->schema()->create('user_abilities', function ($table) {
-            $table->integer('ability_id')->unsigned();
-            $table->integer('user_id')->unsigned();
-
-            $table->unique(['ability_id', 'user_id']);
-
-            $table->foreign('ability_id')->references('id')->on('abilities');
-            $table->foreign('user_id')->references('id')->on('users');
-        });
-
-        $this->schema()->create('role_abilities', function ($table) {
-            $table->integer('ability_id')->unsigned();
-            $table->integer('role_id')->unsigned();
-
-            $table->unique(['ability_id', 'role_id']);
-
-            $table->foreign('ability_id')->references('id')->on('abilities');
-            $table->foreign('role_id')->references('id')->on('roles');
-        });
-
         $this->clipboard = new CachedClipboard(new ArrayStore);
+
+        $this->migrate();
+    }
+
+    protected function migrate()
+    {
+        $this->db();
+
+        (new CreateBouncerTables)->up();
+
+        Schema::create('users', function ($table) {
+            $table->increments('id');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -98,12 +62,9 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
      */
     public function tearDown()
     {
-        $this->schema()->drop('role_abilities');
-        $this->schema()->drop('user_abilities');
-        $this->schema()->drop('user_roles');
-        $this->schema()->drop('roles');
-        $this->schema()->drop('abilities');
-        $this->schema()->drop('users');
+        Schema::drop('users');
+
+        (new CreateBouncerTables)->down();
 
         $this->clipboard = $this->db = null;
     }
@@ -137,15 +98,10 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Get a schema builder instance.
+     * Get an instance of the database capsule manager.
      *
-     * @return \Schema\Builder
+     * @return \Illuminate\Database\Capsule\Manager
      */
-    protected function schema()
-    {
-        return $this->db()->connection()->getSchemaBuilder();
-    }
-
     protected function db()
     {
         if ($this->db) {
@@ -172,4 +128,14 @@ class User extends Eloquent
     use HasRolesAndAbilities;
 
     protected $table = 'users';
+}
+
+class Schema
+{
+    public static function __callStatic($method, array $parameters)
+    {
+        $schema = DB::connection()->getSchemaBuilder();
+
+        return call_user_func_array([$schema, $method], $parameters);
+    }
 }
