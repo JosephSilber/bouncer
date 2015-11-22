@@ -220,6 +220,36 @@ class Bouncer
     }
 
     /**
+     * Set the model to be used for abilities.
+     *
+     * @param string  $model
+     */
+    public static function useAbilityModel($model)
+    {
+        Models::setAbilitiesModel($model);
+    }
+
+    /**
+     * Set the model to be used for roles.
+     *
+     * @param string  $model
+     */
+    public static function useRoleModel($model)
+    {
+        Models::setRolesModel($model);
+    }
+
+    /**
+     * Set the model to be used for users.
+     *
+     * @param string  $model
+     */
+    public static function useUserModel($model)
+    {
+        Models::setUsersModel($model);
+    }
+
+    /**
      * Resolve the given type from the container.
      *
      * @param  string  $abstract
