@@ -2,7 +2,7 @@
 
 namespace Silber\Bouncer;
 
-use Silber\Bouncer\Database\Ability;
+use Silber\Bouncer\Database\Models;
 
 use RuntimeException;
 use Illuminate\Cache\TaggedCache;
@@ -147,7 +147,7 @@ class CachedClipboard extends Clipboard
      */
     protected function deserializeAbilities(array $abilities)
     {
-        return Ability::hydrate($abilities);
+        return Models::ability()->hydrate($abilities);
     }
 
     /**

@@ -1,9 +1,8 @@
 <?php
 
 use Silber\Bouncer\Bouncer;
-use Silber\Bouncer\Database\Role;
 use Silber\Bouncer\CachedClipboard;
-use Silber\Bouncer\Database\Ability;
+use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 
 use Illuminate\Auth\Access\Gate;
@@ -36,9 +35,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        Role::$userModel = User::class;
-
-        Ability::$userModel = User::class;
+        Models::setUsersModel(User::class);
 
         $this->schema()->create('users', function ($table) {
             $table->increments('id');

@@ -2,8 +2,9 @@
 
 namespace Silber\Bouncer\Conductors;
 
-use Silber\Bouncer\Database\Role;
+use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Database\Ability;
+
 use Illuminate\Database\Eloquent\Model;
 
 class RemovesAbility
@@ -56,7 +57,7 @@ class RemovesAbility
             return $this->model;
         }
 
-        return Role::where('name', $this->model)->first();
+        return Models::role()->where('name', $this->model)->first();
     }
 
     /**
@@ -92,7 +93,7 @@ class RemovesAbility
     {
         $model = $model instanceof Model ? $model : new $model;
 
-        return Ability::where('name', $ability)->forModel($model)->value('id');
+        return Models::ability()->where('name', $ability)->forModel($model)->value('id');
     }
 
     /**
@@ -139,6 +140,6 @@ class RemovesAbility
             return [];
         }
 
-        return Ability::whereIn('name', $names)->lists('id')->all();
+        return Models::ability()->whereIn('name', $names)->lists('id')->all();
     }
 }

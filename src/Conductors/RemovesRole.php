@@ -3,6 +3,8 @@
 namespace Silber\Bouncer\Conductors;
 
 use Silber\Bouncer\Database\Role;
+use Silber\Bouncer\Database\Models;
+
 use Illuminate\Database\Eloquent\Model;
 
 class RemovesRole
@@ -58,6 +60,6 @@ class RemovesRole
             return $role;
         }
 
-        return Role::where('name', $this->role)->first();
+        return Models::role()->where('name', $this->role)->first();
     }
 }

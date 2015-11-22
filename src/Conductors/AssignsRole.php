@@ -3,6 +3,8 @@
 namespace Silber\Bouncer\Conductors;
 
 use Silber\Bouncer\Database\Role;
+use Silber\Bouncer\Database\Models;
+
 use Illuminate\Database\Eloquent\Model;
 
 class AssignsRole
@@ -56,7 +58,7 @@ class AssignsRole
             return $this->role;
         }
 
-        return Role::firstOrCreate(['name' => $this->role]);
+        return Models::role()->firstOrCreate(['name' => $this->role]);
     }
 
     /**

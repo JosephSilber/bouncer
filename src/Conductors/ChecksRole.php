@@ -3,7 +3,6 @@
 namespace Silber\Bouncer\Conductors;
 
 use Silber\Bouncer\Clipboard;
-use Silber\Bouncer\Database\Role;
 use Illuminate\Database\Eloquent\Model;
 
 class ChecksRole

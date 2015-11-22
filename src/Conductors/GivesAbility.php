@@ -2,10 +2,11 @@
 
 namespace Silber\Bouncer\Conductors;
 
+use Silber\Bouncer\Database\Models;
+use Silber\Bouncer\Database\Ability;
+
 use Exception;
 use InvalidArgumentException;
-use Silber\Bouncer\Database\Role;
-use Silber\Bouncer\Database\Ability;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -71,7 +72,7 @@ class GivesAbility
             return $this->model;
         }
 
-        return Role::firstOrCreate(['name' => $this->model]);
+        return Models::role()->firstOrCreate(['name' => $this->model]);
     }
 
     /**
@@ -105,9 +106,9 @@ class GivesAbility
     {
         $entity = $this->getEntityInstance($entity);
 
-        $model = Ability::where('name', $ability)->forModel($entity)->first();
+        $model = Models::ability()->where('name', $ability)->forModel($entity)->first();
 
-        return $model ?: Ability::createForModel($entity, $ability);
+        return $model ?: Models::ability()->createForModel($entity, $ability);
     }
 
     /**
@@ -144,7 +145,7 @@ class GivesAbility
     {
         $abilities = array_unique(is_array($ability) ? $ability : [$ability]);
 
-        $models = Ability::simpleAbility()->whereIn('name', $abilities)->get();
+        $models = Models::ability()->simpleAbility()->whereIn('name', $abilities)->get();
 
         $created = $this->createMissingAbilities($models, $abilities);
 
@@ -165,7 +166,7 @@ class GivesAbility
         $created = [];
 
         foreach ($missing as $ability) {
-            $created[] = Ability::create(['name' => $ability]);
+            $created[] = Models::ability()->create(['name' => $ability]);
         }
 
         return $created;

@@ -2,7 +2,7 @@
 
 namespace Silber\Bouncer;
 
-use Silber\Bouncer\Database\Ability;
+use Silber\Bouncer\Database\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Access\Gate;
@@ -141,7 +141,7 @@ class Clipboard
      */
     public function getAbilities(Model $user)
     {
-        $query = Ability::whereHas('roles', $this->getRoleUsersConstraint($user));
+        $query = Models::ability()->whereHas('roles', $this->getRoleUsersConstraint($user));
 
         return $query->orWhereHas('users', $this->getUserConstraint($user))->get();
     }

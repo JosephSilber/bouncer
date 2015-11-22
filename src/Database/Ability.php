@@ -2,17 +2,11 @@
 
 namespace Silber\Bouncer\Database;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 
 class Ability extends Model
 {
-    /**
-     * The name of the user model.
-     *
-     * @var string
-     */
-    public static $userModel;
-
     /**
      * The table associated with the model.
      *
@@ -37,7 +31,7 @@ class Ability extends Model
     public static function createForModel(Model $model, $name)
     {
         return static::forceCreate([
-            'name'       => $name,
+            'name'        => $name,
             'entity_type' => $model->getMorphClass(),
             'entity_id'   => $model->exists ? $model->getKey() : null,
         ]);
@@ -50,7 +44,7 @@ class Ability extends Model
      */
     public function roles()
     {
-        return $this->belongsToMany(Role::class, 'role_abilities');
+        return $this->belongsToMany(Models::classname(Role::class), 'role_abilities');
     }
 
     /**
@@ -60,7 +54,7 @@ class Ability extends Model
      */
     public function users()
     {
-        return $this->belongsToMany(static::$userModel, 'user_abilities');
+        return $this->belongsToMany(Models::classname(User::class), 'user_abilities');
     }
 
     /**

@@ -2,8 +2,7 @@
 
 namespace Silber\Bouncer;
 
-use Silber\Bouncer\Database\Role;
-use Silber\Bouncer\Database\Ability;
+use Silber\Bouncer\Database\Models;
 
 use Illuminate\Cache\ArrayStore;
 use Illuminate\Support\ServiceProvider;
@@ -76,7 +75,7 @@ class BouncerServiceProvider extends ServiceProvider
     }
 
     /**
-     * Set the name of the user model on the role and Ability classes.
+     * Set the classname of the user model to be used by Bouncer.
      *
      * @return void
      */
@@ -84,8 +83,6 @@ class BouncerServiceProvider extends ServiceProvider
     {
         $model = $this->app->make('config')->get('auth.model');
 
-        Ability::$userModel = $model;
-
-        Role::$userModel = $model;
+        Models::setUsersModel($model);
     }
 }

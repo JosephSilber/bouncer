@@ -2,17 +2,11 @@
 
 namespace Silber\Bouncer\Database;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 
 class Role extends Model
 {
-    /**
-     * The name of the user model.
-     *
-     * @var string
-     */
-    public static $userModel;
-
     /**
      * The table associated with the model.
      *
@@ -34,7 +28,7 @@ class Role extends Model
      */
     public function abilities()
     {
-        return $this->belongsToMany(Ability::class, 'role_abilities');
+        return $this->belongsToMany(Models::classname(Ability::class), 'role_abilities');
     }
 
     /**
@@ -44,6 +38,6 @@ class Role extends Model
      */
     public function users()
     {
-        return $this->belongsToMany(static::$userModel, 'user_roles');
+        return $this->belongsToMany(Models::classname(User::class), 'user_roles');
     }
 }

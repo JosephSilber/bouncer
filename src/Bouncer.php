@@ -9,8 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 
-use Silber\Bouncer\Database\Role;
-use Silber\Bouncer\Database\Ability;
+use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Conductors\ChecksRole;
 use Silber\Bouncer\Conductors\AssignsRole;
 use Silber\Bouncer\Conductors\RemovesRole;
@@ -37,6 +36,8 @@ class Bouncer
      * Constructor.
      *
      * @param \Silber\Bouncer\CachedClipboard
+     * @param string|null  $roles
+     * @param string|null  $abilities
      */
     public function __construct(CachedClipboard $clipboard)
     {
@@ -204,7 +205,7 @@ class Bouncer
      */
     public function role(array $attributes = [])
     {
-        return new Role($attributes);
+        return Models::role($attributes);
     }
 
     /**
@@ -215,7 +216,7 @@ class Bouncer
      */
     public function ability(array $attributes = [])
     {
-        return new Ability($attributes);
+        return Models::ability($attributes);
     }
 
     /**
