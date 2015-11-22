@@ -88,7 +88,7 @@ class Models
     }
 
     /**
-     * Get an instance of the role model.
+     * Get an instance of the user model.
      *
      * @param  array  $attributes
      * @return \Illuminate\Database\Eloquent\Model
