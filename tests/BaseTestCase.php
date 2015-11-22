@@ -1,6 +1,8 @@
 <?php
 
+use Illuminate\Database\Schema\Builder;
 use Silber\Bouncer\Bouncer;
+use Silber\Bouncer\Clipboard;
 use Silber\Bouncer\Database\Role;
 use Silber\Bouncer\CachedClipboard;
 use Silber\Bouncer\Database\Ability;
@@ -91,7 +93,15 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
             $table->foreign('role_id')->references('id')->on('roles');
         });
 
-        $this->clipboard = new CachedClipboard(new ArrayStore);
+        $container = $this->getContainer();
+        $container->singleton(
+            Clipboard::class,
+            function ()
+            {
+                return new CachedClipboard(new ArrayStore);
+            }
+        );
+        $this->clipboard = $container->make(Clipboard::class);
     }
 
     /**
@@ -112,6 +122,16 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @return Container
+     */
+    public function getContainer()
+    {
+        $container = Container::getInstance() ?: new Container;
+        Container::setInstance($container);
+        return $container;
+    }
+
+    /**
      * Get a bouncer instance.
      *
      * @param  \User  $user
@@ -119,7 +139,17 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
      */
     protected function bouncer(User $user)
     {
-        return (new Bouncer($this->clipboard))->setGate($this->gate($user));
+        $container = $this->getContainer();
+
+        $container->singleton(
+            Bouncer::class,
+            function () {
+                return new Bouncer($this->clipboard);
+            }
+        );
+
+        return $container->make(Bouncer::class)->setGate($this->gate($user));
+
     }
 
     /**
@@ -142,7 +172,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
     /**
      * Get a schema builder instance.
      *
-     * @return \Schema\Builder
+     * @return Builder
      */
     protected function schema()
     {

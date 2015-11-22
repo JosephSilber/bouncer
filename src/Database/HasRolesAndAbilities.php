@@ -4,6 +4,7 @@ namespace Silber\Bouncer\Database;
 
 use Illuminate\Container\Container;
 
+use Silber\Bouncer\Bouncer;
 use Silber\Bouncer\Clipboard;
 use Silber\Bouncer\Conductors\ChecksRole;
 use Silber\Bouncer\Conductors\AssignsRole;
@@ -20,7 +21,12 @@ trait HasRolesAndAbilities
      */
     public function roles()
     {
-        return $this->belongsToMany(Role::class, 'user_roles');
+        return $this->belongsToMany(
+            Role::class,
+            'user_roles',
+            'user_id',
+            'role_id'
+        );
     }
 
     /**
@@ -30,7 +36,12 @@ trait HasRolesAndAbilities
      */
     public function abilities()
     {
-        return $this->belongsToMany(Ability::class, 'user_abilities');
+        return $this->belongsToMany(
+            Ability::class,
+            'user_abilities',
+            'user_id',
+            'ability_id'
+        );
     }
 
     /**
@@ -51,7 +62,7 @@ trait HasRolesAndAbilities
      */
     public function allow($abilities)
     {
-        (new GivesAbility($this))->to($abilities);
+        $this->getBouncer()->allow($this)->to($abilities);
 
         return $this;
     }
@@ -64,7 +75,7 @@ trait HasRolesAndAbilities
      */
     public function disallow($abilities)
     {
-        (new RemovesAbility($this))->to($abilities);
+        $this->getBouncer()->disallow($this)->to($abilities);
 
         return $this;
     }
@@ -77,7 +88,7 @@ trait HasRolesAndAbilities
      */
     public function assign($role)
     {
-        (new AssignsRole($role))->to($this);
+        $this->getBouncer()->assign($role)->to($this);
 
         return $this;
     }
@@ -90,7 +101,7 @@ trait HasRolesAndAbilities
      */
     public function retract($role)
     {
-        (new RemovesRole($role))->from($this);
+        $this->getBouncer()->retract($role)->from($this);
 
         return $this;
     }
@@ -135,5 +146,17 @@ trait HasRolesAndAbilities
         $container = Container::getInstance() ?: new Container;
 
         return $container->make(Clipboard::class);
+    }
+
+    /**
+     * Get an instance of the bouncer's clipboard.
+     *
+     * @return \Silber\Bouncer\Bouncer
+     */
+    protected function getBouncer()
+    {
+        $container = Container::getInstance() ?: new Container;
+
+        return $container->make(Bouncer::class);
     }
 }

@@ -50,7 +50,12 @@ class Ability extends Model
      */
     public function roles()
     {
-        return $this->belongsToMany(Role::class, 'role_abilities');
+        return $this->belongsToMany(
+            Role::class,
+            'role_abilities',
+            'ability_id',
+            'role_id'
+        );
     }
 
     /**
@@ -60,7 +65,12 @@ class Ability extends Model
      */
     public function users()
     {
-        return $this->belongsToMany(static::$userModel, 'user_abilities');
+        return $this->belongsToMany(
+            static::$userModel,
+            'user_abilities',
+            'ability_id',
+            'user_id'
+        );
     }
 
     /**

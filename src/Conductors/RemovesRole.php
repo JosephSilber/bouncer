@@ -15,13 +15,27 @@ class RemovesRole
     protected $role;
 
     /**
+     * @var string
+     */
+    private $roleModelClass;
+
+    /**
+     * @var string
+     */
+    private $abilityModelClass;
+
+    /**
      * Constructor.
      *
-     * @param \Silber\Bouncer\Database\Role|string  $role
+     * @param \Silber\Bouncer\Database\Role|string $role
+     * @param string $roleModelClass
+     * @param string $abilityModelClass
      */
-    public function __construct($role)
+    public function __construct($role, $roleModelClass = 'Silber\Bouncer\Database\Role', $abilityModelClass = 'Silber\Bouncer\Database\Ability')
     {
         $this->role = $role;
+        $this->roleModelClass = $roleModelClass;
+        $this->abilityModelClass = $abilityModelClass;
     }
 
     /**
@@ -55,9 +69,9 @@ class RemovesRole
     protected function role()
     {
         if ($this->role instanceof Role) {
-            return $role;
+            return $this->role;
         }
 
-        return Role::where('name', $this->role)->first();
+        return call_user_func($this->roleModelClass."::where", 'name', $this->role)->first();
     }
 }

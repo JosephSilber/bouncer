@@ -16,13 +16,27 @@ class RemovesAbility
     protected $model;
 
     /**
+     * @var string
+     */
+    private $roleModelClass;
+
+    /**
+     * @var string
+     */
+    private $abilityModelClass;
+
+    /**
      * Constructor.
      *
-     * @param \Illuminate\Database\Eloquent\Model|string  $model
+     * @param \Illuminate\Database\Eloquent\Model|string $model
+     * @param string $roleModelClass
+     * @param string $abilityModelClass
      */
-    public function __construct($model)
+    public function __construct($model, $roleModelClass = 'Silber\Bouncer\Database\Role', $abilityModelClass = 'Silber\Bouncer\Database\Ability')
     {
         $this->model = $model;
+        $this->roleModelClass = $roleModelClass;
+        $this->abilityModelClass = $abilityModelClass;
     }
 
     /**
@@ -48,7 +62,7 @@ class RemovesAbility
     /**
      * Get the model from which to remove the abilities.
      *
-     * @return \Illuminate\Database\Eloquent\Model|null
+     * @return \Illuminate\Database\Eloquent\Model|Role|null
      */
     protected function getModel()
     {
@@ -56,14 +70,14 @@ class RemovesAbility
             return $this->model;
         }
 
-        return Role::where('name', $this->model)->first();
+        return call_user_func($this->roleModelClass."::where", 'name', $this->model)->first();
     }
 
     /**
      * Get the IDs of the provided abilities.
      *
      * @param  mixed  $abilities
-     * @param  \ELoquent\Database\Eloquent\Model|string|null  $model
+     * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
      * @return array|int
      */
     protected function getAbilityIds($abilities, $model)
@@ -92,7 +106,7 @@ class RemovesAbility
     {
         $model = $model instanceof Model ? $model : new $model;
 
-        return Ability::where('name', $ability)->forModel($model)->value('id');
+        return call_user_func($this->abilityModelClass."::where", 'name', $ability)->forModel($model)->value('id');
     }
 
     /**
@@ -139,6 +153,6 @@ class RemovesAbility
             return [];
         }
 
-        return Ability::whereIn('name', $names)->lists('id')->all();
+        return call_user_func($this->abilityModelClass."::whereIn",'name', $names)->lists('id')->all();
     }
 }
