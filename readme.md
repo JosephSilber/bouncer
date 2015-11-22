@@ -138,7 +138,7 @@ Sometimes you might want to give a user an ability directly, without using a rol
 Bouncer::allow($user)->to('ban-users');
 ```
 
-Here too you can accomplish the same directly off of the user model:
+Here too you can accomplish the same directly off of the user:
 
 ```php
 $user->allow('ban-users');
@@ -180,7 +180,7 @@ The bouncer can also remove an ability previously granted to a user:
 Bouncer::disallow($user)->to('ban-users');
 ```
 
-Or directly on the model:
+Or directly on the user:
 
 ```php
 $user->disallow('ban-users');
@@ -222,7 +222,7 @@ If the role you're checking starts with a vowel, you might want to use the `an` 
 Bouncer::is($user)->an('admin');
 ```
 
-To check if a user has one of many roles, pass the roles as an array:
+You can check if a user has one of many roles:
 
 ```php
 Bouncer::is($user)->a('moderator', 'editor');
@@ -234,7 +234,7 @@ You can also check if the user has all of the given roles:
 Bouncer::is($user)->all('editor', 'moderator');
 ```
 
-These checks can also be done directly on the user model:
+These checks can also be done directly on the user:
 
 ```php
 $user->is('admin');
@@ -244,7 +244,7 @@ $user->isAll('editor', 'moderator');
 
 ### Getting all abilities for a user
 
-You can get all abilities for a user directly from the model:
+You can get all abilities for a user directly from the user model:
 
 ```php
 $abilities = $user->getAbilities();
