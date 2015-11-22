@@ -49,7 +49,7 @@ class Models
     }
 
     /**
-     * Get the final class name for the given parent model.
+     * Get the classname mapping for the given model.
      *
      * @param  string  $model
      * @return string
