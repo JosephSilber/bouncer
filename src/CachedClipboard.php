@@ -4,7 +4,6 @@ namespace Silber\Bouncer;
 
 use Silber\Bouncer\Database\Models;
 
-use RuntimeException;
 use Illuminate\Cache\TaggedCache;
 use Illuminate\Contracts\Cache\Store;
 use Illuminate\Database\Eloquent\Model;
@@ -102,22 +101,24 @@ class CachedClipboard extends Clipboard
     /**
      * Clear the cache.
      *
-     * @param  null|\Illuminate\Database\Eloquent\Model  $user
+     * @param  null|int|\Illuminate\Database\Eloquent\Model  $user
      * @return $this
-     *
-     * @throws \RuntimeException
      */
-    public function refresh(Model $user = null)
+    public function refresh($user = null)
     {
         if ( ! is_null($user)) {
             return $this->refreshFor($user);
         }
 
-        if ( ! $this->cache instanceof TaggedCache) {
-            throw new RuntimeException('Your cache driver does not support blanket cache purging. Use [refreshFor] instead.');
+        if ($this->cache instanceof TaggedCache) {
+            $this->cache->flush();
+
+            return $this;
         }
 
-        $this->cache->flush();
+        foreach (Models::user()->lists('id') as $id) {
+            $this->refreshFor($id);
+        }
 
         return $this;
     }
@@ -125,12 +126,12 @@ class CachedClipboard extends Clipboard
     /**
      * Clear the cache for the given user.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $user
+     * @param  \Illuminate\Database\Eloquent\Model|int  $user
      * @return $this
      */
-    public function refreshFor(Model $user)
+    public function refreshFor($user)
     {
-        $id = $user->getKey();
+        $id = $user instanceof Model ? $user->getKey() : $user;
 
         $this->cache->forget($this->tag.'-abilities-'.$id);
 
