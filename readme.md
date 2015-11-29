@@ -16,6 +16,7 @@ This package adds a bouncer at Laravel's access gate.
   - [Getting all abilities for a user](#getting-all-abilities-for-a-user)
   - [Authorizing users](#authorizing-users)
   - [Refreshing the cache](#refreshing-the-cache)
+  - [Seeding roles and abilities](#seeding-roles-and-abilities)
 - [Cheat sheet](#cheat-sheet)
 - [License](#license)
 
@@ -285,6 +286,41 @@ Bouncer::refreshFor($user);
 
 Refreshing the cache **for a specific user** is available even if your cache driver does not support cache tags.
 
+### Seeding roles and abilities
+
+Depending on your project, you might have a set of roles and abilities that you want to pre-seed when you deploy your application. Bouncer ships with seeding functionality to make this as easy as possible.
+
+First, register your seeding callback in your `AppServiceProvider`'s `boot` method:
+
+```php
+Bouncer::seed(function () {
+    Bouncer::allow('admin')->to(['ban-users', 'delete-posts']);
+    Bouncer::allow('editor')->to(['delete-posts']);
+});
+```
+
+You can also register a seeder class to be used for seeding:
+
+```php
+Bouncer::seed('MySeeder');
+```
+
+By default, the `seed` method will be called. You can specify a different method by using `@` notation e.g. `MySeeder@run`.
+
+Once you've registered your seeder, you can run the seeds via the included artisan command:
+
+```
+$ php artisan bouncer:seed
+```
+
+You can also run the seeds from within your codebase:
+
+```php
+Bouncer::runSeeds();
+```
+
+Note that it's ok to run the seeds multiple times. If you make a change to your seeder, simply run the seeder again. Do note however that any information that has previously been seeded will *not* be automatically reverted.
+
 ## Cheat Sheet
 
 ```php
@@ -318,6 +354,9 @@ $check = Bouncer::denies('delete', $post);
 Bouncer::cache();
 Bouncer::refresh();
 Bouncer::refreshFor($user);
+
+Bouncer::seed($callback);
+Bouncer::runSeeds();
 ```
 
 Some of this functionality is also available directly on the user model:
