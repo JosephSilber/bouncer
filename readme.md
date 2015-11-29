@@ -300,10 +300,14 @@ Bouncer::seeder(function () {
 You can also register a seeder class to be used for seeding:
 
 ```php
-Bouncer::seeder('MySeeder');
+Bouncer::seeder(MySeeder::class);
 ```
 
-By default, the `seed` method will be called. You can specify a different method by using `@` notation e.g. `MySeeder@run`.
+By default, the `seed` method will be used. If you need to, you can specify a different method:
+
+```php
+Bouncer::seeder('MySeeder@run');
+```
 
 Once you've registered your seeder, you can run the seeds via the included artisan command:
 
@@ -317,7 +321,7 @@ Should you find a need to run the seeds from within your codebase, you can do th
 Bouncer::seed();
 ```
 
-Note that it's ok to run the seeds multiple times. If you make a change to your seeder, simply run the seeder again. Do note however that any information that has previously been seeded will *not* be automatically reverted.
+Note that it's ok to run the seeds multiple times. If you make a change to your seeder, simply run the seeds again. However, do note that any information that has previously been seeded will *not* be automatically reverted.
 
 ## Cheat Sheet
 
