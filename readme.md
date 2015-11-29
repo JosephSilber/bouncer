@@ -284,8 +284,6 @@ Alternatively, you can refresh the cache only for a specific user:
 Bouncer::refreshFor($user);
 ```
 
-Refreshing the cache **for a specific user** is available even if your cache driver does not support cache tags.
-
 ### Seeding roles and abilities
 
 Depending on your project, you might have a set of roles and abilities that you want to pre-seed when you deploy your application. Bouncer ships with seeding functionality to make this as easy as possible.
