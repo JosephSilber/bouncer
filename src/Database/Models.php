@@ -3,7 +3,6 @@
 namespace Silber\Bouncer\Database;
 
 use App\User;
-use InvalidArgumentException;
 
 class Models
 {
@@ -12,11 +11,7 @@ class Models
      *
      * @var array
      */
-    protected static $models = [
-        User::class => User::class,
-        Role::class => Role::class,
-        Ability::class => Ability::class,
-    ];
+    protected static $models = [];
 
     /**
      * Set the model to be used for abilities.
@@ -53,8 +48,6 @@ class Models
      *
      * @param  string  $model
      * @return string
-     *
-     * @throws \InvalidArgumentException
      */
     public static function classname($model)
     {
@@ -62,7 +55,7 @@ class Models
             return static::$models[$model];
         }
 
-        throw new InvalidArgumentException("The '{$model}' classname has no mapping.");
+        return $model;
     }
 
     /**
