@@ -58,7 +58,7 @@ class Bouncer
      * @param  \Closure|string  $seeder
      * @return $this
      */
-    public function seed($seeder)
+    public function seeder($seeder)
     {
         $this->seeder->register($seeder);
 
@@ -70,7 +70,7 @@ class Bouncer
      *
      * @return $this
      */
-    public function runSeeds()
+    public function seed()
     {
         $this->seeder->run();
 

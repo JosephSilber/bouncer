@@ -291,7 +291,7 @@ Depending on your project, you might have a set of roles and abilities that you 
 First, register your seeding callback in your `AppServiceProvider`'s `boot` method:
 
 ```php
-Bouncer::seed(function () {
+Bouncer::seeder(function () {
     Bouncer::allow('admin')->to(['ban-users', 'delete-posts']);
     Bouncer::allow('editor')->to(['delete-posts']);
 });
@@ -300,7 +300,7 @@ Bouncer::seed(function () {
 You can also register a seeder class to be used for seeding:
 
 ```php
-Bouncer::seed('MySeeder');
+Bouncer::seeder('MySeeder');
 ```
 
 By default, the `seed` method will be called. You can specify a different method by using `@` notation e.g. `MySeeder@run`.
@@ -311,10 +311,10 @@ Once you've registered your seeder, you can run the seeds via the included artis
 $ php artisan bouncer:seed
 ```
 
-You can also run the seeds from within your codebase:
+Should you find a need to run the seeds from within your codebase, you can do that too:
 
 ```php
-Bouncer::runSeeds();
+Bouncer::seed();
 ```
 
 Note that it's ok to run the seeds multiple times. If you make a change to your seeder, simply run the seeder again. Do note however that any information that has previously been seeded will *not* be automatically reverted.
@@ -353,8 +353,8 @@ Bouncer::cache();
 Bouncer::refresh();
 Bouncer::refreshFor($user);
 
-Bouncer::seed($callback);
-Bouncer::runSeeds();
+Bouncer::seeder($callback);
+Bouncer::seed();
 ```
 
 Some of this functionality is also available directly on the user model:
