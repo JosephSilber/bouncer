@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 
+use Silber\Bouncer\Seed\Seeder;
 use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Conductors\ChecksRole;
 use Silber\Bouncer\Conductors\AssignsRole;
@@ -26,6 +27,13 @@ class Bouncer
     protected $clipboard;
 
     /**
+     * The bouncer seeder instance.
+     *
+     * @var \Silber\Bouncer\Seeder
+     */
+    protected $seeder;
+
+    /**
      * The access gate instance.
      *
      * @var \Illuminate\Contracts\Auth\Access\Gate|null
@@ -35,13 +43,38 @@ class Bouncer
     /**
      * Constructor.
      *
-     * @param \Silber\Bouncer\CachedClipboard
-     * @param string|null  $roles
-     * @param string|null  $abilities
+     * @param \Silber\Bouncer\CachedClipboard  $clipboard
+     * @param \Silber\Bouncer\Seeder  $seeder
      */
-    public function __construct(CachedClipboard $clipboard)
+    public function __construct(CachedClipboard $clipboard, Seeder $seeder)
     {
         $this->clipboard = $clipboard;
+        $this->seeder = $seeder;
+    }
+
+    /**
+     * Register a seeder callback.
+     *
+     * @param  \Closure|string  $seeder
+     * @return $this
+     */
+    public function seed($seeder)
+    {
+        $this->seeder->register($seeder);
+
+        return $this;
+    }
+
+    /**
+     * Run the registered seeders.
+     *
+     * @return $this
+     */
+    public function runSeeds()
+    {
+        $this->seeder->run();
+
+        return $this;
     }
 
     /**

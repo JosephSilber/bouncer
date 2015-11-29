@@ -3,6 +3,7 @@
 require __DIR__.'/../migrations/create_bouncer_tables.php';
 
 use Silber\Bouncer\Bouncer;
+use Silber\Bouncer\Seed\Seeder;
 use Silber\Bouncer\CachedClipboard;
 use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
@@ -77,7 +78,9 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
      */
     protected function bouncer(User $user)
     {
-        return (new Bouncer($this->clipboard))->setGate($this->gate($user));
+        $bouncer = new Bouncer($this->clipboard, new Seeder(new Container));
+
+        return $bouncer->setGate($this->gate($user));
     }
 
     /**

@@ -18,16 +18,18 @@
         "classmap": ["tests"]
     },
     "require": {
+        "illuminate/auth": "^5.1.20",
         "illuminate/container": "^5.1.20",
         "illuminate/contracts": "^5.1.20",
         "illuminate/database": "^5.1.20"
     },
     "require-dev": {
-        "illuminate/auth": "^5.1.20",
         "illuminate/cache": "^5.1.20",
+        "illuminate/console": "^5.1.20",
         "phpunit/phpunit": "^4.8"
     },
     "suggest": {
-        "illuminate/cache": "Allows caching the bouncer's database queries"
+        "illuminate/cache": "Allows caching the bouncer's database queries",
+        "illuminate/console": "Allows running registered bouncer seeders via artisan"
     }
 }

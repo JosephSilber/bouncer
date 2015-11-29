@@ -2,7 +2,9 @@
 
 namespace Silber\Bouncer;
 
+use Silber\Bouncer\Seed\Seeder;
 use Silber\Bouncer\Database\Models;
+use Silber\Bouncer\Seed\SeedCommand;
 
 use Illuminate\Cache\ArrayStore;
 use Illuminate\Support\ServiceProvider;
@@ -10,6 +12,19 @@ use Illuminate\Contracts\Auth\Access\Gate;
 
 class BouncerServiceProvider extends ServiceProvider
 {
+    /**
+     * Register any application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->registerSeedCommand();
+        $this->registerClipboard();
+        $this->registerBouncer();
+        $this->registerSeeder();
+    }
+
     /**
      * Bootstrap any application services.
      *
@@ -23,21 +38,52 @@ class BouncerServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register any application services.
+     * Register the seed command with artisan.
      *
      * @return void
      */
-    public function register()
+    protected function registerSeedCommand()
+    {
+        $this->commands(SeedCommand::class);
+    }
+
+    /**
+     * Register the cache clipboard as a singleton.
+     *
+     * @return void
+     */
+    protected function registerClipboard()
     {
         $this->app->singleton(Clipboard::class, function () {
             return new CachedClipboard(new ArrayStore);
         });
+    }
 
-        $this->app->bind(Bouncer::class, function () {
-            $bouncer = new Bouncer($this->app->make(Clipboard::class));
+    /**
+     * Register the bouncer as a singleton.
+     *
+     * @return void
+     */
+    protected function registerBouncer()
+    {
+        $this->app->singleton(Bouncer::class, function () {
+            $bouncer = new Bouncer(
+                $this->app->make(Clipboard::class),
+                $this->app->make(Seeder::class)
+            );
 
             return $bouncer->setGate($this->app->make(Gate::class));
         });
+    }
+
+    /**
+     * Register the seeder as a singleton.
+     *
+     * @return void
+     */
+    protected function registerSeeder()
+    {
+        $this->app->singleton(Seeder::class);
     }
 
     /**
