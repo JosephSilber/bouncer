@@ -293,7 +293,7 @@ First, register your seeding callback in your `AppServiceProvider`'s `boot` meth
 ```php
 Bouncer::seeder(function () {
     Bouncer::allow('admin')->to(['ban-users', 'delete-posts']);
-    Bouncer::allow('editor')->to(['delete-posts']);
+    Bouncer::allow('editor')->to('delete-posts');
 });
 ```
 
