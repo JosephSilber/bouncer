@@ -24,7 +24,10 @@ This package adds a bouncer at Laravel's access gate.
 
 Bouncer provides a mechanism to handle simple roles and abilities in [Laravel's ACL](http://laravel.com/docs/5.1/authorization). With an expressive and fluent syntax, it stays out of your way as much as possible: use it when you want, ignore it when you don't.
 
+For a quick glanceable list of the bouncer's features, check out [the cheat sheet](#cheat-sheet).
+
 Bouncer works well with other abilities you have hard-coded in your own app. Your code always takes precedence: if your code allows an action, the bouncer will not interfere.
+
 
 Once installed, you can simply tell the bouncer what you want to allow at the gate:
 
@@ -41,8 +44,6 @@ Bouncer::allow($user)->to('edit', $post);
 ```
 
 When you check abilities at the gate, the bouncer will be consulted first. If he sees an ability that has been granted to the current user (whether directly, or through a role) he'll authorize the check.
-
-For a quick glanceable list of the bouncer's features, check out [the cheat sheet](#cheat-sheet).
 
 ## Installation
 
