@@ -22,9 +22,9 @@ This package adds a bouncer at Laravel's access gate.
 
 ## Introduction
 
-Bouncer provides a mechanism to handle simple roles and abilities in [Laravel's ACL](http://laravel.com/docs/5.1/authorization). With an expressive and fluent syntax, it stays out of your way as much as possible: use it when you want, ignore it when you don't.
+Bouncer provides a mechanism to handle roles and abilities in [Laravel's ACL](http://laravel.com/docs/5.1/authorization). With an expressive and fluent syntax, it stays out of your way as much as possible: use it when you want, ignore it when you don't.
 
-For a quick glanceable list of the bouncer's features, check out [the cheat sheet](#cheat-sheet).
+For a quick, glanceable list of Bouncer's features, check out [the cheat sheet](#cheat-sheet).
 
 Bouncer works well with other abilities you have hard-coded in your own app. Your code always takes precedence: if your code allows an action, the bouncer will not interfere.
 
