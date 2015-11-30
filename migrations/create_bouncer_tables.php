@@ -1,10 +1,7 @@
 <?php
 
-use Silber\Bouncer\Database\Role;
 use Silber\Bouncer\Database\Models;
-use Silber\Bouncer\Database\Ability;
 
-use App\User;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
@@ -17,7 +14,7 @@ class CreateBouncerTables extends Migration
      */
     public function up()
     {
-        Schema::create($this->table(Ability::class), function (Blueprint $table) {
+        Schema::create($this->abilities(), function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->integer('entity_id')->unsigned()->nullable();
@@ -27,7 +24,7 @@ class CreateBouncerTables extends Migration
             $table->unique(['name', 'entity_id', 'entity_type']);
         });
 
-        Schema::create($this->table(Role::class), function (Blueprint $table) {
+        Schema::create($this->roles(), function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->unique();
             $table->timestamps();
@@ -39,8 +36,8 @@ class CreateBouncerTables extends Migration
 
             $table->unique(['role_id', 'user_id']);
 
-            $table->foreign('role_id')->references('id')->on($this->table(Role::class));
-            $table->foreign('user_id')->references('id')->on($this->table(User::class));
+            $table->foreign('role_id')->references('id')->on($this->roles());
+            $table->foreign('user_id')->references('id')->on($this->users());
         });
 
         Schema::create('user_abilities', function (Blueprint $table) {
@@ -49,8 +46,8 @@ class CreateBouncerTables extends Migration
 
             $table->unique(['ability_id', 'user_id']);
 
-            $table->foreign('ability_id')->references('id')->on($this->table(Ability::class));
-            $table->foreign('user_id')->references('id')->on($this->table(User::class));
+            $table->foreign('ability_id')->references('id')->on($this->abilities());
+            $table->foreign('user_id')->references('id')->on($this->users());
         });
 
         Schema::create('role_abilities', function (Blueprint $table) {
@@ -59,8 +56,8 @@ class CreateBouncerTables extends Migration
 
             $table->unique(['ability_id', 'role_id']);
 
-            $table->foreign('ability_id')->references('id')->on($this->table(Ability::class));
-            $table->foreign('role_id')->references('id')->on($this->table(Role::class));
+            $table->foreign('ability_id')->references('id')->on($this->abilities());
+            $table->foreign('role_id')->references('id')->on($this->roles());
         });
     }
 
@@ -74,20 +71,37 @@ class CreateBouncerTables extends Migration
         Schema::drop('role_abilities');
         Schema::drop('user_abilities');
         Schema::drop('user_roles');
-        Schema::drop($this->table(Role::class));
-        Schema::drop($this->table(Ability::class));
+        Schema::drop($this->roles());
+        Schema::drop($this->abilities());
     }
 
     /**
-     * Get the table for the given type.
+     * Get the table name for the ability model.
      *
-     * @param  string  $type
      * @return string
      */
-    protected function table($type)
+    protected function abilities()
     {
-        $class = Models::classname($type);
+        return Models::ability()->getTable();
+    }
 
-        return (new $class)->getTable();
+    /**
+     * Get the table name for the role model.
+     *
+     * @return string
+     */
+    protected function roles()
+    {
+        return Models::role()->getTable();
+    }
+
+    /**
+     * Get the table name for the user model.
+     *
+     * @return string
+     */
+    protected function users()
+    {
+        return Models::user()->getTable();
     }
 }
