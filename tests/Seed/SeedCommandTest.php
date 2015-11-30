@@ -49,7 +49,7 @@ class SeedCommandTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Run the seed command with the given seeder and output onjects.
+     * Run the seed command with the given seeder and output objects.
      *
      * @param  \Silber\Bouncer\Seed\Seeder  $seeder
      * @param  \Symfony\Component\Console\Output\NullOutput  $output
