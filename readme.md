@@ -277,7 +277,7 @@ Whenever you need, you can fully refresh the bouncer's cache:
 Bouncer::refresh();
 ```
 
-> **Note:** fully refreshing the cache for all users uses cache tags if they're available. Not all cache drivers support this. Refer to [Laravel's documentation](http://laravel.com/docs/5.1/cache#cache-tags) to see if your driver supports cache tags. If your driver does not support cache tags, calling `refresh` might be a little slow, depending on the amount of users in your system.
+> **Note:** fully refreshing the cache for all users uses [cache tags](http://laravel.com/docs/5.1/cache#cache-tags) if they're available. Not all cache drivers support this. Refer to [Laravel's documentation](http://laravel.com/docs/5.1/cache#cache-tags) to see if your driver supports cache tags. If your driver does not support cache tags, calling `refresh` might be a little slow, depending on the amount of users in your system.
 
 Alternatively, you can refresh the cache only for a specific user:
 
