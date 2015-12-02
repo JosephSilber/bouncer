@@ -46,9 +46,14 @@ class BouncerSimpleTest extends BaseTestCase
         $bouncer->allow('admin')->to('edit-site');
         $bouncer->assign('admin')->to($user);
 
+        $editor = $bouncer->role()->create(['name' => 'editor']);
+        $bouncer->allow($editor)->to('edit-site');
+        $bouncer->assign($editor)->to($user);
+
         $this->assertTrue($bouncer->allows('edit-site'));
 
         $bouncer->retract('admin')->from($user);
+        $bouncer->retract($editor)->from($user);
         $this->clipboard->refresh();
 
         $this->assertTrue($bouncer->denies('edit-site'));

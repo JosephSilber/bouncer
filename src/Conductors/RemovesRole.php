@@ -57,7 +57,7 @@ class RemovesRole
     protected function role()
     {
         if ($this->role instanceof Role) {
-            return $role;
+            return $this->role;
         }
 
         return Models::role()->where('name', $this->role)->first();
