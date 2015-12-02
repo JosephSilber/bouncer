@@ -269,7 +269,7 @@ These call directly into the `Gate` class.
 
 ### Refreshing the cache
 
-All queries executed by the bouncer are cached for the current request. If you enable [cross-request caching](#enabling-cache), the cache will presist across different requests.
+All queries executed by the bouncer are cached for the current request. If you enable [cross-request caching](#enabling-cache), the cache will persist across different requests.
 
 Whenever you need, you can fully refresh the bouncer's cache:
 
