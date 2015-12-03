@@ -218,10 +218,19 @@ The bouncer can check if a user has a specific role:
 Bouncer::is($user)->a('moderator');
 ```
 
+For readability, you can also check if a user doesn't have a specific role:
+
+```php
+Bouncer::is($user)->notA('moderator');
+```
+
 If the role you're checking starts with a vowel, you might want to use the `an` alias method:
 
 ```php
 Bouncer::is($user)->an('admin');
+
+// Inverse
+Bouncer::is($user)->notAn('admin');
 ```
 
 You can check if a user has one of many roles:
@@ -236,12 +245,20 @@ You can also check if the user has all of the given roles:
 Bouncer::is($user)->all('editor', 'moderator');
 ```
 
+You can also check if a user has none of the given roles:
+
+```php
+Bouncer::is($user)->notAn('editor', 'moderator');
+```
+
 These checks can also be done directly on the user:
 
 ```php
 $user->is('admin');
 
 $user->isAll('editor', 'moderator');
+
+$user->isNotAn('admin');
 ```
 
 ### Getting all abilities for a user
@@ -346,6 +363,10 @@ $check = Bouncer::is($user)->an('admin');
 $check = Bouncer::is($user)->a('moderator', 'editor');
 $check = Bouncer::is($user)->all('moderator', 'editor');
 
+$check = Bouncer::is($user)->notA('subscriber');
+$check = Bouncer::is($user)->notAn('admin');
+$check = Bouncer::is($user)->notAn('admin', 'editor');
+
 $check = Bouncer::allows('ban-users');
 $check = Bouncer::allows('edit', Post::class);
 $check = Bouncer::allows('delete', $post);
@@ -379,6 +400,9 @@ $user->retract('admin');
 $check = $user->is('subscriber');
 $check = $user->is('moderator', 'editor');
 $check = $user->isAll('moderator', 'editor');
+
+$check = $user->isNotA('subscriber');
+$check = $user->isNotAn('editor', 'moderator');
 
 $abilities = $user->getAbilities();
 ```

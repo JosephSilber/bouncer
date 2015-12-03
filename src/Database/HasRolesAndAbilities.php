@@ -111,6 +111,36 @@ trait HasRolesAndAbilities
     }
 
     /**
+     * Check if the user has none of the given roles.
+     *
+     * @param  string  $role
+     * @return bool
+     */
+    public function isNotA($role)
+    {
+        $roles = func_get_args();
+
+        $clipboard = $this->getClipboardInstance();
+
+        return $clipboard->checkRole($this, $roles, 'not');
+    }
+
+    /**
+     * Alias of "isNotA" method.
+     *
+     * @param  string  $role
+     * @return bool
+     */
+    public function isNotAn($role)
+    {
+        $roles = func_get_args();
+
+        $clipboard = $this->getClipboardInstance();
+
+        return $clipboard->checkRole($this, $roles, 'not');
+    }
+
+    /**
      * Check if the user has all of the given roles.
      *
      * @param  string  $role

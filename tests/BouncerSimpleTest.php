@@ -82,11 +82,18 @@ class BouncerSimpleTest extends BaseTestCase
     {
         $bouncer = $this->bouncer($user = User::create());
 
+        $this->assertTrue($bouncer->is($user)->notA('moderator'));
+        $this->assertTrue($bouncer->is($user)->notAn('editor'));
+        $this->assertFalse($bouncer->is($user)->an('admin'));
+
+        $bouncer = $this->bouncer($user = User::create());
+
         $bouncer->assign('moderator')->to($user);
         $bouncer->assign('editor')->to($user);
 
         $this->assertTrue($bouncer->is($user)->a('moderator'));
         $this->assertTrue($bouncer->is($user)->an('editor'));
+        $this->assertFalse($bouncer->is($user)->notAn('editor'));
         $this->assertFalse($bouncer->is($user)->an('admin'));
     }
 
@@ -94,12 +101,17 @@ class BouncerSimpleTest extends BaseTestCase
     {
         $bouncer = $this->bouncer($user = User::create());
 
+        $this->assertTrue($bouncer->is($user)->notAn('editor', 'moderator'));
+        $this->assertTrue($bouncer->is($user)->notAn('admin', 'moderator'));
+
+        $bouncer = $this->bouncer($user = User::create());
         $bouncer->assign('moderator')->to($user);
         $bouncer->assign('editor')->to($user);
 
         $this->assertTrue($bouncer->is($user)->a('subscriber', 'moderator'));
         $this->assertTrue($bouncer->is($user)->an('admin', 'editor'));
         $this->assertTrue($bouncer->is($user)->all('editor', 'moderator'));
+        $this->assertFalse($bouncer->is($user)->notAn('editor', 'moderator'));
         $this->assertFalse($bouncer->is($user)->all('admin', 'moderator'));
     }
 

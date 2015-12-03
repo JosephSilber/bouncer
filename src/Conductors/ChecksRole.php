@@ -47,6 +47,19 @@ class ChecksRole
     }
 
     /**
+     * Check if the user doesn't have any of the given roles.
+     *
+     * @param  string  $role
+     * @return bool
+     */
+    public function notA($role)
+    {
+        $roles = func_get_args();
+
+        return $this->clipboard->checkRole($this->user, $roles, 'not');
+    }
+
+    /**
      * Alias to the "a" method.
      *
      * @param  string  $role
@@ -57,6 +70,19 @@ class ChecksRole
         $roles = func_get_args();
 
         return $this->clipboard->checkRole($this->user, $roles, 'or');
+    }
+
+    /**
+     * Alias to the "notA" method.
+     *
+     * @param  string  $role
+     * @return bool
+     */
+    public function notAn($role)
+    {
+        $roles = func_get_args();
+
+        return $this->clipboard->checkRole($this->user, $roles, 'not');
     }
 
     /**

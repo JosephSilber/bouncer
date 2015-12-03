@@ -82,6 +82,9 @@ class Clipboard
         if ($boolean == 'or') {
             return $available->count() > 0;
         }
+        elseif ($boolean === 'not') {
+            return $available->count() === 0;
+        }
 
         return $available->count() == count((array) $roles);
     }
