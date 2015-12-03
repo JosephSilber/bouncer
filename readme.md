@@ -222,6 +222,7 @@ If the role you're checking starts with a vowel, you might want to use the `an` 
 
 ```php
 Bouncer::is($user)->an('admin');
+```
 
 For the inverse, you can also check if a user *doesn't* have a specific role:
 
