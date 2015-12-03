@@ -2,7 +2,7 @@
 
 class HasRolesAndAbilitiesTraitTest extends BaseTestCase
 {
-    public function test_list_abilities_gets_all_abilities()
+    public function test_get_abilities_gets_all_abilities()
     {
         $bouncer = $this->bouncer($user = User::create());
 
@@ -50,34 +50,30 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
     {
         $gate = $this->gate($user = User::create());
 
-        $this->assertTrue($user->isNotA('moderator'));
-        $this->assertTrue($user->isNotAn('editor'));
-
-        $user->assign('moderator');
-        $user->assign('editor');
-
-        $this->assertTrue($user->is('moderator'));
-        $this->assertTrue($user->is('editor'));
-        $this->assertFalse($user->isNotAn('editor'));
+        $this->assertTrue($user->isNot('admin'));
         $this->assertFalse($user->is('admin'));
+
+        $user->assign('admin');
+
+        $this->assertTrue($user->is('admin'));
+        $this->assertFalse($user->is('editor'));
+        $this->assertFalse($user->isNot('admin'));
+        $this->assertTrue($user->isNot('editor'));
     }
 
     public function test_can_check_multiple_roles()
     {
         $gate = $this->gate($user = User::create());
 
-        $this->assertTrue($user->isNotA('moderator', 'admin'));
-        $this->assertTrue($user->isNotAn('editor', 'moderator'));
-        $this->assertTrue($user->isNotAn('editor', 'moderator'));
+        $this->assertTrue($user->isNot('admin', 'editor'));
+        $this->assertFalse($user->is('admin', 'editor'));
 
         $user->assign('moderator');
         $user->assign('editor');
 
-        $this->assertTrue($user->is('moderator', 'admin'));
-        $this->assertTrue($user->is('editor', 'moderator'));
-        $this->assertFalse($user->isNotAn('editor', 'moderator'));
+        $this->assertTrue($user->is('admin', 'moderator'));
+        $this->assertFalse($user->isNot('admin', 'moderator'));
         $this->assertTrue($user->isAll('editor', 'moderator'));
-        $this->assertFalse($user->isAll('admin', 'moderator'));
-        $this->assertFalse($user->isNotAn('editor', 'moderator'));
+        $this->assertFalse($user->isAll('moderator', 'admin'));
     }
 }

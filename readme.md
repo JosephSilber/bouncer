@@ -218,18 +218,16 @@ The bouncer can check if a user has a specific role:
 Bouncer::is($user)->a('moderator');
 ```
 
-For readability, you can also check if a user doesn't have a specific role:
-
-```php
-Bouncer::is($user)->notA('moderator');
-```
-
 If the role you're checking starts with a vowel, you might want to use the `an` alias method:
 
 ```php
 Bouncer::is($user)->an('admin');
 
-// Inverse
+For the inverse, you can also check if a user *doesn't* have a specific role:
+
+```php
+Bouncer::is($user)->notA('moderator');
+
 Bouncer::is($user)->notAn('admin');
 ```
 
@@ -256,9 +254,9 @@ These checks can also be done directly on the user:
 ```php
 $user->is('admin');
 
-$user->isAll('editor', 'moderator');
+$user->isNot('admin');
 
-$user->isNotAn('admin');
+$user->isAll('editor', 'moderator');
 ```
 
 ### Getting all abilities for a user
@@ -360,12 +358,10 @@ Bouncer::retract('admin')->from($user);
 
 $check = Bouncer::is($user)->a('subscriber');
 $check = Bouncer::is($user)->an('admin');
-$check = Bouncer::is($user)->a('moderator', 'editor');
-$check = Bouncer::is($user)->all('moderator', 'editor');
-
 $check = Bouncer::is($user)->notA('subscriber');
 $check = Bouncer::is($user)->notAn('admin');
-$check = Bouncer::is($user)->notAn('admin', 'editor');
+$check = Bouncer::is($user)->a('moderator', 'editor');
+$check = Bouncer::is($user)->all('moderator', 'editor');
 
 $check = Bouncer::allows('ban-users');
 $check = Bouncer::allows('edit', Post::class);
@@ -400,9 +396,7 @@ $user->retract('admin');
 $check = $user->is('subscriber');
 $check = $user->is('moderator', 'editor');
 $check = $user->isAll('moderator', 'editor');
-
-$check = $user->isNotA('subscriber');
-$check = $user->isNotAn('editor', 'moderator');
+$check = $user->isNot('subscriber', 'moderator');
 
 $abilities = $user->getAbilities();
 ```

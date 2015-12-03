@@ -116,22 +116,7 @@ trait HasRolesAndAbilities
      * @param  string  $role
      * @return bool
      */
-    public function isNotA($role)
-    {
-        $roles = func_get_args();
-
-        $clipboard = $this->getClipboardInstance();
-
-        return $clipboard->checkRole($this, $roles, 'not');
-    }
-
-    /**
-     * Alias of "isNotA" method.
-     *
-     * @param  string  $role
-     * @return bool
-     */
-    public function isNotAn($role)
+    public function isNot($role)
     {
         $roles = func_get_args();
 
