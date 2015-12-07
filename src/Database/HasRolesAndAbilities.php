@@ -47,11 +47,12 @@ trait HasRolesAndAbilities
      * Give abilities to the user.
      *
      * @param  mixed  $abilities
+     * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
      * @return $this
      */
-    public function allow($abilities)
+    public function allow($abilities, $model = null)
     {
-        (new GivesAbility($this))->to($abilities);
+        (new GivesAbility($this))->to($abilities, $model);
 
         return $this;
     }
