@@ -46,12 +46,13 @@ trait HasRolesAndAbilities
     /**
      * Give abilities to the user.
      *
-     * @param  mixed  $abilities
+     * @param  mixed  $ability
+     * @param  mixed|null  $model
      * @return $this
      */
-    public function allow($abilities)
+    public function allow($ability, $model = null)
     {
-        (new GivesAbility($this))->to($abilities);
+        (new GivesAbility($this))->to($ability, $model);
 
         return $this;
     }
@@ -59,12 +60,13 @@ trait HasRolesAndAbilities
     /**
      * Remove abilities from the user.
      *
-     * @param  mixed  $abilities
+     * @param  mixed  $ability
+     * @param  mixed|null  $model
      * @return $this
      */
-    public function disallow($abilities)
+    public function disallow($ability, $model = null)
     {
-        (new RemovesAbility($this))->to($abilities);
+        (new RemovesAbility($this))->to($ability, $model);
 
         return $this;
     }

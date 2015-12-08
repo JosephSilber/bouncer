@@ -31,6 +31,22 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $this->assertTrue($gate->denies('edit-site'));
     }
 
+    public function test_can_give_and_remove_model_abilities()
+    {
+        $gate = $this->gate($user = User::create());
+
+        $user->allow('delete', $user);
+
+        $this->assertTrue($gate->denies('delete'));
+        $this->assertTrue($gate->denies('delete', User::class));
+        $this->assertTrue($gate->allows('delete', $user));
+
+        $user->disallow('delete', $user);
+        $this->clipboard->refresh();
+
+        $this->assertTrue($gate->denies('delete', $user));
+    }
+
     public function test_can_assign_and_retract_roles()
     {
         $bouncer = $this->bouncer($user = User::create());
