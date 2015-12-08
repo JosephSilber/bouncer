@@ -118,6 +118,9 @@ class Ability extends Model
                     $query->orWhere('entity_id', $model->getKey());
                 }
 
+                // If the model does not exist, we want to search for blanket abilities
+                // that cover all instances of this model. If it does exist, we only
+                // want to find blanket abilities if we're not using strict mode.
                 if ( ! $model->exists || ! $strict) {
                     $query->whereNull('entity_id');
                 }
