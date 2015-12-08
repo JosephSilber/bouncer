@@ -212,6 +212,8 @@ Bouncer::disallow($user)->to('delete', $post);
 
 ### Checking a user's roles
 
+> **Note**: Generally speaking, you should not have a need to check roles directly. It is better to allow a role certain abilities, then check for those abilities instead. If what you need is very general, you can create very broad abilities. For example, an `access-dashboard` ability is always better than checking for `admin` or `editor` roles directly. For the rare occasion that you do want to check a role, that functionality is available here.
+
 The bouncer can check if a user has a specific role:
 
 ```php
