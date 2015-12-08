@@ -58,11 +58,11 @@ class Ability extends Model
     }
 
     /**
-     * Get the ability's "slug" attribute.
+     * Get the identifier for this ability.
      *
      * @return string
      */
-    public function getSlugAttribute()
+    final public function getIdentifierAttribute()
     {
         $slug = $this->attributes['name'];
 
@@ -75,6 +75,16 @@ class Ability extends Model
         }
 
         return strtolower($slug);
+    }
+
+    /**
+     * Get the ability's "slug" attribute.
+     *
+     * @return string
+     */
+    public function getSlugAttribute()
+    {
+        return $this->getIdentifierAttribute();
     }
 
     /**

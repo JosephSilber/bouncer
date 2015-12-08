@@ -54,9 +54,9 @@ class Clipboard
      */
     protected function checkGetId(Model $user, $ability, $model = null)
     {
-        $abilities = $this->getAbilities($user)->toBase()->lists('slug', 'id');
+        $abilities = $this->getAbilities($user)->toBase()->lists('identifier', 'id');
 
-        $requested = $this->compileAbilitySlugs($ability, $model);
+        $requested = $this->compileAbilityIdentifiers($ability, $model);
 
         foreach ($abilities as $id => $ability) {
             if (in_array($ability, $requested)) {
@@ -90,39 +90,39 @@ class Clipboard
     }
 
     /**
-     * Compile a list of ability slugs that match the provided parameters.
+     * Compile a list of ability identifiers that match the provided parameters.
      *
      * @param  string  $ability
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
      * @return array
      */
-    protected function compileAbilitySlugs($ability, $model)
+    protected function compileAbilityIdentifiers($ability, $model)
     {
         if (is_null($model)) {
             return [strtolower($ability)];
         }
 
-        return $this->compileModelAbilitySlugs($ability, $model);
+        return $this->compileModelAbilityIdentifiers($ability, $model);
     }
 
     /**
-     * Compile a list of ability slugs that match the given model.
+     * Compile a list of ability identifiers that match the given model.
      *
      * @param  string  $ability
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
      * @return array
      */
-    protected function compileModelAbilitySlugs($ability, $model)
+    protected function compileModelAbilityIdentifiers($ability, $model)
     {
         $model = $model instanceof Model ? $model : new $model;
 
-        $slug = strtolower($ability.'-'.$model->getMorphClass());
+        $identifier = strtolower($ability.'-'.$model->getMorphClass());
 
         if ( ! $model->exists) {
-            return [$slug];
+            return [$identifier];
         }
 
-        return [$slug, $slug.'-'.$model->getKey()];
+        return [$identifier, $identifier.'-'.$model->getKey()];
     }
 
     /**
