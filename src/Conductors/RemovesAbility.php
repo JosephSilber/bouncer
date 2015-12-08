@@ -93,7 +93,7 @@ class RemovesAbility
     {
         $model = $model instanceof Model ? $model : new $model;
 
-        return Models::ability()->where('name', $ability)->forModel($model)->value('id');
+        return Models::ability()->where('name', $ability)->forModel($model, true)->value('id');
     }
 
     /**

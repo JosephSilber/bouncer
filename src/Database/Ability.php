@@ -95,18 +95,23 @@ class Ability extends Model
      *
      * @param  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder  $query
      * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  bool  $strict
      * @return void
      */
-    public function scopeForModel($query, Model $model)
+    public function scopeForModel($query, Model $model, $strict = false)
     {
-        $query->where(function ($query) use ($model) {
+        $query->where(function ($query) use ($model, $strict) {
             $query->where('entity_type', $model->getMorphClass());
 
-            $query->where(function ($query) use ($model) {
-                $query->whereNull('entity_id');
-
+            $query->where(function ($query) use ($model, $strict) {
                 if ($model->exists) {
-                    $query->orWhere('entity_id', $model->getKey());
+                    $method = $strict ? 'where' : 'orWhere';
+
+                    $query->{$method}('entity_id', $model->getKey());
+                }
+
+                if ( ! $model->exists || ! $strict) {
+                    $query->whereNull('entity_id');
                 }
             });
         });

@@ -106,7 +106,7 @@ class GivesAbility
     {
         $entity = $this->getEntityInstance($entity);
 
-        $model = Models::ability()->where('name', $ability)->forModel($entity)->first();
+        $model = Models::ability()->where('name', $ability)->forModel($entity, true)->first();
 
         return $model ?: Models::ability()->createForModel($entity, $ability);
     }
