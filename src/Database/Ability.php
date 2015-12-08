@@ -103,10 +103,10 @@ class Ability extends Model
             $query->where('entity_type', $model->getMorphClass());
 
             $query->where(function ($query) use ($model) {
-                $query->whereNull('entity_id');
-
                 if ($model->exists) {
                     $query->orWhere('entity_id', $model->getKey());
+                } else {
+                    $query->whereNull('entity_id');
                 }
             });
         });
