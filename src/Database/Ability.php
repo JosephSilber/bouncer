@@ -115,9 +115,7 @@ class Ability extends Model
 
             $query->where(function ($query) use ($model, $strict) {
                 if ($model->exists) {
-                    $method = $strict ? 'where' : 'orWhere';
-
-                    $query->{$method}('entity_id', $model->getKey());
+                    $query->orWhere('entity_id', $model->getKey());
                 }
 
                 if ( ! $model->exists || ! $strict) {
