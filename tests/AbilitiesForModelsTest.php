@@ -10,7 +10,6 @@ class AbilitiesForModelsTest extends BaseTestCase
         $bouncer = $this->bouncer($user1);
 
         $bouncer->allow($user1)->to('edit', User::class);
-        $this->clipboard->refresh();
 
         $this->assertTrue($bouncer->denies('edit'));
         $this->assertTrue($bouncer->allows('edit', User::class));
