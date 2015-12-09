@@ -45,7 +45,7 @@ class Role extends Model
     /**
      * Constrain the given query by the provided ability.
      *
-     * @param  \Illuminate\Database\Eloquent\Query  $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @param  string  $ability
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
      * @return void

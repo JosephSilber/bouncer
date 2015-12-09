@@ -7,10 +7,10 @@ class Abilities
     /**
      * Constrain the given users query by the provided ability.
      *
-     * @param  \Illuminate\Database\Eloquent\Query  $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @param  string  $ability
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
-     * @return \Illuminate\Database\Eloquent\Query
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function constrainUsers($query, $ability, $model = null)
     {
@@ -24,10 +24,10 @@ class Abilities
     /**
      * Constrain the given roles query by the provided ability.
      *
-     * @param  \Illuminate\Database\Eloquent\Query  $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @param  string  $ability
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
-     * @return \Illuminate\Database\Eloquent\Query
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function constrainRoles($query, $ability, $model = null)
     {

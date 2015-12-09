@@ -7,9 +7,9 @@ class Roles
     /**
      * Constrain the given users query by the provided role.
      *
-     * @param  \Illuminate\Database\Eloquent\Query  $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @param  string  $role
-     * @return \Illuminate\Database\Eloquent\Query
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function constrainWhereIs($query, $role)
     {
@@ -23,9 +23,9 @@ class Roles
     /**
      * Constrain the given users query by all provided roles.
      *
-     * @param  \Illuminate\Database\Eloquent\Query  $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @param  string  $role
-     * @return \Illuminate\Database\Eloquent\Query
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function constrainWhereIsAll($query, $role)
     {
