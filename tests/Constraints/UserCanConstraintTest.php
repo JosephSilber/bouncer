@@ -1,7 +1,5 @@
 <?php
 
-use Silber\Bouncer\Database\Ability;
-
 class UserCanConstraintTest extends BaseTestCase
 {
     public function test_users_can_be_constrained_to_an_ability()
