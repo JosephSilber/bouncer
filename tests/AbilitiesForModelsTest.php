@@ -1,6 +1,6 @@
 <?php
 
-class AbilitiesForModels extends BaseTestCase
+class AbilitiesForModelsTest extends BaseTestCase
 {
     public function test_model_blanket_ability()
     {
