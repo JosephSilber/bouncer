@@ -21,7 +21,7 @@ class UserCanConstraintTest extends BaseTestCase
         $user1 = User::create(['name' => 'Joseph']);
         $user2 = User::create(['name' => 'Silber']);
 
-        $bouncer = $this->bouncer($user1);
+        $bouncer = $this->bouncer();
 
         $bouncer->allow('admin')->to('ban-users');
         $bouncer->assign('admin')->to($user1);
@@ -57,7 +57,7 @@ class UserCanConstraintTest extends BaseTestCase
         $user1 = User::create(['name' => 'Joseph']);
         $user2 = User::create(['name' => 'Silber']);
 
-        $bouncer = $this->bouncer($user1);
+        $bouncer = $this->bouncer();
 
         $bouncer->allow('moderator')->to('ban', $user2);
         $bouncer->assign('moderator')->to($user1);
@@ -94,7 +94,7 @@ class UserCanConstraintTest extends BaseTestCase
         $user1 = User::create(['name' => 'Joseph']);
         $user2 = User::create(['name' => 'Silber']);
 
-        $bouncer = $this->bouncer($user1);
+        $bouncer = $this->bouncer();
 
         $bouncer->allow('admin')->to('ban', User::class);
         $bouncer->assign('admin')->to($user1);
