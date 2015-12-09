@@ -10,6 +10,7 @@ use Silber\Bouncer\Conductors\AssignsRole;
 use Silber\Bouncer\Conductors\RemovesRole;
 use Silber\Bouncer\Conductors\GivesAbility;
 use Silber\Bouncer\Conductors\RemovesAbility;
+use Silber\Bouncer\Database\Constraints\Roles as RolesConstraint;
 use Silber\Bouncer\Database\Constraints\Abilities as AbilitiesConstraint;
 
 trait HasRolesAndAbilities
@@ -154,6 +155,42 @@ trait HasRolesAndAbilities
     public function scopeWhereCan($query, $ability, $model = null)
     {
         (new AbilitiesConstraint)->constrainUsers($query, $ability, $model);
+    }
+
+    /**
+     * Constrain the given query by the provided role.
+     *
+     * @param  \Illuminate\Database\Eloquent\Query  $query
+     * @param  string  $role
+     * @return void
+     */
+    public function scopeWhereIs($query, $role)
+    {
+        $constrainer = new RolesConstraint;
+
+        $params = array_slice(func_get_args(), 1);
+
+        array_unshift($params, $query);
+
+        call_user_func_array([$constrainer, 'constrainWhereIs'], $params);
+    }
+
+    /**
+     * Constrain the given query by all provided roles.
+     *
+     * @param  \Illuminate\Database\Eloquent\Query  $query
+     * @param  string  $role
+     * @return void
+     */
+    public function scopeWhereIsAll($query, $role)
+    {
+        $constrainer = new RolesConstraint;
+
+        $params = array_slice(func_get_args(), 1);
+
+        array_unshift($params, $query);
+
+        call_user_func_array([$constrainer, 'constrainWhereIsAll'], $params);
     }
 
     /**
