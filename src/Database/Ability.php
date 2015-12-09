@@ -104,25 +104,27 @@ class Ability extends Model
      * Constrain a query to an ability for a specific model.
      *
      * @param  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder  $query
-     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  \Illuminate\Database\Eloquent\Model|string  $model
      * @param  bool  $strict
      * @return void
      */
-    public function scopeForModel($query, Model $model, $strict = false)
+    public function scopeForModel($query, $model, $strict = false)
     {
+        $model = is_string($model) ? new $model : $model;
+
         $query->where(function ($query) use ($model, $strict) {
             $query->where('entity_type', $model->getMorphClass());
 
             $query->where(function ($query) use ($model, $strict) {
-                if ($model->exists) {
-                    $query->orWhere('entity_id', $model->getKey());
-                }
-
                 // If the model does not exist, we want to search for blanket abilities
                 // that cover all instances of this model. If it does exist, we only
                 // want to find blanket abilities if we're not using strict mode.
                 if ( ! $model->exists || ! $strict) {
                     $query->whereNull('entity_id');
+                }
+
+                if ($model->exists) {
+                    $query->orWhere('entity_id', $model->getKey());
                 }
             });
         });

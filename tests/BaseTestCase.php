@@ -52,6 +52,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 
         Schema::create('users', function ($table) {
             $table->increments('id');
+            $table->string('name')->nullable();
             $table->timestamps();
         });
     }
@@ -131,6 +132,8 @@ class User extends Eloquent
     use HasRolesAndAbilities;
 
     protected $table = 'users';
+
+    protected $guarded = [];
 }
 
 class Schema

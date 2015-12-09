@@ -10,6 +10,7 @@ use Silber\Bouncer\Conductors\AssignsRole;
 use Silber\Bouncer\Conductors\RemovesRole;
 use Silber\Bouncer\Conductors\GivesAbility;
 use Silber\Bouncer\Conductors\RemovesAbility;
+use Silber\Bouncer\Database\Constraints\Abilities as AbilitiesConstraint;
 
 trait HasRolesAndAbilities
 {
@@ -140,6 +141,19 @@ trait HasRolesAndAbilities
         $clipboard = $this->getClipboardInstance();
 
         return $clipboard->checkRole($this, $roles, 'and');
+    }
+
+    /**
+     * Constrain the given query by the provided ability.
+     *
+     * @param  \Illuminate\Database\Eloquent\Query  $query
+     * @param  string  $ability
+     * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
+     * @return void
+     */
+    public function scopeWhereCan($query, $ability, $model = null)
+    {
+        (new AbilitiesConstraint)->constrainUsers($query, $ability, $model);
     }
 
     /**
