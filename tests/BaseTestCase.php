@@ -74,14 +74,14 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
     /**
      * Get a bouncer instance.
      *
-     * @param  \User  $user
+     * @param  \User|null  $user
      * @return \Silber\Bouncer\Bouncer
      */
-    protected function bouncer(User $user)
+    protected function bouncer(User $user = null)
     {
         $bouncer = new Bouncer($this->clipboard, new Seeder(new Container));
 
-        return $bouncer->setGate($this->gate($user));
+        return $bouncer->setGate($this->gate($user ?: User::create()));
     }
 
     /**
