@@ -2,6 +2,8 @@
 
 namespace Silber\Bouncer\Database\Constraints;
 
+use Silber\Bouncer\Database\Models;
+
 class Abilities
 {
     /**
@@ -46,7 +48,9 @@ class Abilities
     protected function getAbilityConstraint($ability, $model)
     {
         return function ($query) use ($ability, $model) {
-            $query->where('name', $ability);
+            $table = Models::ability()->getTable();
+
+            $query->where("{$table}.name", $ability);
 
             if ( ! is_null($model)) {
                 $query->forModel($model);
