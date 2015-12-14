@@ -39,7 +39,7 @@ Bouncer::allow($user)->to('create', Post::class);
 Bouncer::allow('admin')->to('create', Post::class);
 Bouncer::assign('admin')->to($user);
 
-// You can also restrict abilities to a specific model
+// You can also grant an ability only to a specific model
 Bouncer::allow($user)->to('edit', $post);
 ```
 
