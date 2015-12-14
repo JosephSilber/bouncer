@@ -165,13 +165,13 @@ Bouncer::allow($user)->to('edit', $post);
 The bouncer can also retract a previously-assigned role from a user:
 
 ```php
-Bouncer::retract('ban-users')->from($user);
+Bouncer::retract('admin')->from($user);
 ```
 
 Or do it directly on the user:
 
 ```php
-$user->retract('ban-users');
+$user->retract('admin');
 ```
 
 ### Removing an ability
