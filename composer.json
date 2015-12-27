@@ -18,14 +18,14 @@
         "classmap": ["tests"]
     },
     "require": {
-        "illuminate/auth": "^5.1.20",
-        "illuminate/container": "^5.1.20",
-        "illuminate/contracts": "^5.1.20",
-        "illuminate/database": "^5.1.20"
+        "illuminate/auth": "~5.1.20|5.2.*",
+        "illuminate/container": "~5.1.20|5.2.*",
+        "illuminate/contracts": "~5.1.20|5.2.*",
+        "illuminate/database": "~5.1.20|5.2.*"
     },
     "require-dev": {
-        "illuminate/cache": "^5.1.20",
-        "illuminate/console": "^5.1.20",
+        "illuminate/cache": "~5.1.20|5.2.*",
+        "illuminate/console": "~5.1.20|5.2.*",
         "phpunit/phpunit": "^4.8"
     },
     "suggest": {
