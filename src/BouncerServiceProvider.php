@@ -127,7 +127,11 @@ class BouncerServiceProvider extends ServiceProvider
      */
     protected function setUserModel()
     {
-        $model = $this->app->make('config')->get('auth.model');
+        $config = $this->app->make('config');
+
+        $model = $config->get('auth.providers.users.model', function () use ($config) {
+            return $config->get('auth.model', \App\User::class);
+        });
 
         Models::setUsersModel($model);
     }
