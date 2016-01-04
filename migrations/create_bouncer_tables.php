@@ -31,8 +31,8 @@ class CreateBouncerTables extends Migration
         });
 
         Schema::create('user_roles', function (Blueprint $table) {
-            $table->integer('role_id')->unsigned();
-            $table->integer('user_id')->unsigned();
+            $table->integer('role_id')->unsigned()->index();
+            $table->integer('user_id')->unsigned()->index();
 
             $table->primary(['role_id', 'user_id']);
 
@@ -44,8 +44,8 @@ class CreateBouncerTables extends Migration
         });
 
         Schema::create('user_abilities', function (Blueprint $table) {
-            $table->integer('ability_id')->unsigned();
-            $table->integer('user_id')->unsigned();
+            $table->integer('ability_id')->unsigned()->index();
+            $table->integer('user_id')->unsigned()->index();
 
             $table->primary(['ability_id', 'user_id']);
 
@@ -57,8 +57,8 @@ class CreateBouncerTables extends Migration
         });
 
         Schema::create('role_abilities', function (Blueprint $table) {
-            $table->integer('ability_id')->unsigned();
-            $table->integer('role_id')->unsigned();
+            $table->integer('ability_id')->unsigned()->index();
+            $table->integer('role_id')->unsigned()->index();
 
             $table->primary(['ability_id', 'role_id']);
 
