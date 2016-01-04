@@ -34,7 +34,7 @@ class CreateBouncerTables extends Migration
             $table->integer('role_id')->unsigned();
             $table->integer('user_id')->unsigned();
 
-            $table->unique(['role_id', 'user_id']);
+            $table->primary(['role_id', 'user_id']);
 
             $table->foreign('role_id')->references('id')->on($this->roles())
                   ->onUpdate('cascade')->onDelete('cascade');
@@ -47,7 +47,7 @@ class CreateBouncerTables extends Migration
             $table->integer('ability_id')->unsigned();
             $table->integer('user_id')->unsigned();
 
-            $table->unique(['ability_id', 'user_id']);
+            $table->primary(['ability_id', 'user_id']);
 
             $table->foreign('ability_id')->references('id')->on($this->abilities())
                   ->onUpdate('cascade')->onDelete('cascade');
@@ -60,7 +60,7 @@ class CreateBouncerTables extends Migration
             $table->integer('ability_id')->unsigned();
             $table->integer('role_id')->unsigned();
 
-            $table->unique(['ability_id', 'role_id']);
+            $table->primary(['ability_id', 'role_id']);
 
             $table->foreign('ability_id')->references('id')->on($this->abilities())
                   ->onUpdate('cascade')->onDelete('cascade');
