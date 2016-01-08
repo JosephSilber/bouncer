@@ -58,13 +58,13 @@ Once the composer installation completes, you can add the service provider and a
 1) Add a new item to the `providers` array:
 
 ```php
-Silber\Bouncer\BouncerServiceProvider::class
+Silber\Bouncer\BouncerServiceProvider::class,
 ```
 
 2) Add a new item to the `aliases` array:
 
 ```php
-'Bouncer' => Silber\Bouncer\BouncerFacade::class
+'Bouncer' => Silber\Bouncer\BouncerFacade::class,
 ```
 
 This part is optional. If you don't want to use the facade, you can skip step 2.
