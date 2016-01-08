@@ -83,13 +83,13 @@ class User extends Model
 4) Now, to run the bouncer's migrations, first publish the package's migrations into your app's `migrations` directory, by running the following command:
 
 ```
-$ php artisan vendor:publish --provider="Silber\Bouncer\BouncerServiceProvider" --tag="migrations"
+php artisan vendor:publish --provider="Silber\Bouncer\BouncerServiceProvider" --tag="migrations"
 ```
 
 5) Finally, run the migrations:
 
 ```
-$ php artisan migrate
+php artisan migrate
 ```
 
 ### Enabling cache
