@@ -70,7 +70,9 @@ class AssignsRole
      */
     protected function assignRole(Role $role, array $ids)
     {
-        $existing = $role->users()->whereIn('id', $ids)->lists('id')->all();
+        $key = Models::user()->getKeyName();
+
+        $existing = $role->users()->whereIn($key, $ids)->lists($key)->all();
 
         $ids = array_diff($ids, $existing);
 

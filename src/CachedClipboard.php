@@ -116,11 +116,7 @@ class CachedClipboard extends Clipboard
             return $this;
         }
 
-        foreach (Models::user()->lists('id') as $id) {
-            $this->refreshFor($id);
-        }
-
-        return $this;
+        return $this->refreshForAllUsersIteratively();
     }
 
     /**
@@ -136,6 +132,22 @@ class CachedClipboard extends Clipboard
         $this->cache->forget($this->tag.'-abilities-'.$id);
 
         $this->cache->forget($this->tag.'-roles-'.$id);
+
+        return $this;
+    }
+
+    /**
+     * Refresh the cache for all users, iteratively.
+     *
+     * @return $this
+     */
+    protected function refreshForAllUsersIteratively()
+    {
+        $user = Models::user();
+
+        foreach ($user->lists($user->getKeyName()) as $id) {
+            $this->refreshFor($id);
+        }
 
         return $this;
     }
