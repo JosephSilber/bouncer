@@ -70,12 +70,26 @@ class AssignsRole
      */
     protected function assignRole(Role $role, array $ids)
     {
-        $key = Models::user()->getKeyName();
-
-        $existing = $role->users()->whereIn($key, $ids)->lists($key)->all();
+        $existing = $this->getUsersWithRole($role, $ids)->all();
 
         $ids = array_diff($ids, $existing);
 
         $role->users()->attach($ids);
+    }
+
+    /**
+     * Get the IDs of the users that already have the given role.
+     *
+     * @param  \Silber\Bouncer\Database\Role  $role
+     * @param  array  $ids
+     * @return \Illuminate\Support\Collection
+     */
+    protected function getUsersWithRole(Role $role, array $ids)
+    {
+        $user = Models::user();
+
+        $key = $user->getKeyName();
+
+        return $role->users()->whereIn($user->getTable().'.'.$key, $ids)->lists($key);
     }
 }
