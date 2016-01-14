@@ -86,10 +86,10 @@ class AssignsRole
      */
     protected function getUsersWithRole(Role $role, array $ids)
     {
-        $user = Models::user();
+        $model = Models::user();
 
-        $key = $user->getKeyName();
+        $column = $model->getTable().'.'.$model->getKeyName();
 
-        return $role->users()->whereIn($user->getTable().'.'.$key, $ids)->lists($key);
+        return $role->users()->whereIn($column, $ids)->lists($column);
     }
 }
