@@ -13,6 +13,13 @@ class Clipboard
     use HandlesAuthorization;
 
     /**
+     * Whether the bouncer is the only authorization system used.
+     *
+     * @var bool
+     */
+    protected $exclusive = false;
+
+    /**
      * Register the clipboard at the given gate.
      *
      * @param  \Illuminate\Contracts\Auth\Access\Gate  $gate
@@ -28,7 +35,22 @@ class Clipboard
             if ($id = $this->checkGetId($user, $ability, $model)) {
                 return $this->allow('Bouncer granted permission via ability #'.$id);
             }
+
+            if ($this->exclusive) {
+                return false;
+            }
         });
+    }
+
+    /**
+     * Set the bouncer's exclusivity.
+     *
+     * @param  bool  $bool
+     * @return $this
+     */
+    public function setExclusivity($bool)
+    {
+        $this->exclusive = $bool;
     }
 
     /**
