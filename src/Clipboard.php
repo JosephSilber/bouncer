@@ -13,7 +13,7 @@ class Clipboard
     use HandlesAuthorization;
 
     /**
-     * Whether the bouncer is the only authorization system used.
+     * Whether the bouncer is the exclusive authority on gate access.
      *
      * @var bool
      */
@@ -43,7 +43,7 @@ class Clipboard
     }
 
     /**
-     * Set the bouncer's exclusivity.
+     * Set whether the bouncer is the exclusive authority on gate access.
      *
      * @param  bool  $bool
      * @return $this
