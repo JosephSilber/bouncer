@@ -61,7 +61,7 @@ class Models
      */
     public static function setTables(array $map)
     {
-        $this->tables = array_merge($this->tables, $map);
+        self::$tables = array_merge(self::$tables, $map);
     }
 
     /**
