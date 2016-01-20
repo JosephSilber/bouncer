@@ -283,6 +283,17 @@ class Bouncer
     }
 
     /**
+     * Set custom table names.
+     *
+     * @param  array  $map
+     * @return void
+     */
+    public static function tables(array $map)
+    {
+        Models::setTables($map);
+    }
+
+    /**
      * Set the bouncer to be the exclusive authority on gate access.
      *
      * @param  bool  $boolean

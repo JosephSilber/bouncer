@@ -8,18 +8,21 @@ use Illuminate\Database\Eloquent\Model;
 class Ability extends Model
 {
     /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'abilities';
-
-    /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = ['name'];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function __construct(array $attributes = [])
+    {
+        $this->table = Models::table('abilities');
+
+        parent::__construct($attributes);
+    }
 
     /**
      * Create a new ability for a specific model.
@@ -44,7 +47,10 @@ class Ability extends Model
      */
     public function roles()
     {
-        return $this->belongsToMany(Models::classname(Role::class), 'role_abilities');
+        return $this->belongsToMany(
+            Models::classname(Role::class),
+            Models::table('role_abilities')
+        );
     }
 
     /**
@@ -54,7 +60,10 @@ class Ability extends Model
      */
     public function users()
     {
-        return $this->belongsToMany(Models::classname(User::class), 'user_abilities');
+        return $this->belongsToMany(
+            Models::classname(User::class),
+            Models::table('user_abilities')
+        );
     }
 
     /**

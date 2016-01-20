@@ -9,18 +9,21 @@ use Silber\Bouncer\Database\Constraints\Abilities as AbilitiesConstraint;
 class Role extends Model
 {
     /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'roles';
-
-    /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = ['name'];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function __construct(array $attributes = [])
+    {
+        $this->table = Models::table('roles');
+
+        parent::__construct($attributes);
+    }
 
     /**
      * The abilities relationship.
@@ -29,7 +32,10 @@ class Role extends Model
      */
     public function abilities()
     {
-        return $this->belongsToMany(Models::classname(Ability::class), 'role_abilities');
+        return $this->belongsToMany(
+            Models::classname(Ability::class),
+            Models::table('role_abilities')
+        );
     }
 
     /**
@@ -39,7 +45,10 @@ class Role extends Model
      */
     public function users()
     {
-        return $this->belongsToMany(Models::classname(User::class), 'user_roles');
+        return $this->belongsToMany(
+            Models::classname(User::class),
+            Models::table('user_roles')
+        );
     }
 
     /**

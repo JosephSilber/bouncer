@@ -134,5 +134,9 @@ class BouncerServiceProvider extends ServiceProvider
         });
 
         Models::setUsersModel($model);
+
+        Models::setTables([
+            'users' => Models::user()->getTable(),
+        ]);
     }
 }

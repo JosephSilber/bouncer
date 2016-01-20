@@ -14,9 +14,17 @@ class Models
     protected static $models = [];
 
     /**
+     * Map for the bouncer's tables.
+     *
+     * @var array
+     */
+    protected static $tables = [];
+
+    /**
      * Set the model to be used for abilities.
      *
-     * @param string  $model
+     * @param  string  $model
+     * @return void
      */
     public static function setAbilitiesModel($model)
     {
@@ -26,7 +34,8 @@ class Models
     /**
      * Set the model to be used for roles.
      *
-     * @param string  $model
+     * @param  string  $model
+     * @return void
      */
     public static function setRolesModel($model)
     {
@@ -36,11 +45,38 @@ class Models
     /**
      * Set the model to be used for users.
      *
-     * @param string  $model
+     * @param  string  $model
+     * @return void
      */
     public static function setUsersModel($model)
     {
         static::$models[User::class] = $model;
+    }
+
+    /**
+     * Set custom table names.
+     *
+     * @param  array  $map
+     * @return void
+     */
+    public static function setTables(array $map)
+    {
+        $this->tables = array_merge($this->tables, $map);
+    }
+
+    /**
+     * Get a custom table name mapping for the given table.
+     *
+     * @param  string  $table
+     * @return string
+     */
+    public static function table($table)
+    {
+        if (isset(static::$tables[$table])) {
+            return static::$tables[$table];
+        }
+
+        return $table;
     }
 
     /**

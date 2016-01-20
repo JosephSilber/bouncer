@@ -48,7 +48,7 @@ class Abilities
     protected function getAbilityConstraint($ability, $model)
     {
         return function ($query) use ($ability, $model) {
-            $table = Models::ability()->getTable();
+            $table = Models::table('abilities');
 
             $query->where("{$table}.name", $ability);
 

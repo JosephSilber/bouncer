@@ -22,7 +22,10 @@ trait HasRolesAndAbilities
      */
     public function roles()
     {
-        return $this->belongsToMany(Models::classname(Role::class), 'user_roles');
+        return $this->belongsToMany(
+            Models::classname(Role::class),
+            Models::table('user_roles')
+        );
     }
 
     /**
@@ -32,7 +35,10 @@ trait HasRolesAndAbilities
      */
     public function abilities()
     {
-        return $this->belongsToMany(Models::classname(Ability::class), 'user_abilities');
+        return $this->belongsToMany(
+            Models::classname(Ability::class),
+            Models::table('user_abilities')
+        );
     }
 
     /**
