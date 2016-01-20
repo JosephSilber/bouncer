@@ -45,12 +45,12 @@ class Clipboard
     /**
      * Set whether the bouncer is the exclusive authority on gate access.
      *
-     * @param  bool  $bool
+     * @param  bool  $boolean
      * @return $this
      */
-    public function setExclusivity($bool)
+    public function setExclusivity($boolean)
     {
-        $this->exclusive = $bool;
+        $this->exclusive = $boolean;
     }
 
     /**
@@ -103,8 +103,7 @@ class Clipboard
 
         if ($boolean == 'or') {
             return $available->count() > 0;
-        }
-        elseif ($boolean === 'not') {
+        } elseif ($boolean === 'not') {
             return $available->count() === 0;
         }
 
