@@ -24,7 +24,8 @@ trait HasRolesAndAbilities
     {
         return $this->belongsToMany(
             Models::classname(Role::class),
-            Models::table('user_roles')
+            Models::table('user_roles'),
+            'user_id'
         );
     }
 
@@ -37,7 +38,8 @@ trait HasRolesAndAbilities
     {
         return $this->belongsToMany(
             Models::classname(Ability::class),
-            Models::table('user_abilities')
+            Models::table('user_abilities'),
+            'user_id'
         );
     }
 
