@@ -63,20 +63,20 @@ class CachedClipboard extends Clipboard
     }
 
     /**
-     * Get the given user's abilities.
+     * Get the given authority's abilities.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $user
+     * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getAbilities(Model $user)
+    public function getAbilities(Model $authority)
     {
-        $key = $this->tag.'-abilities-'.$user->getKey();
+        $key = $key = $this->getCacheKey($authority, 'abilities');
 
         if ($abilities = $this->cache->get($key)) {
             return $this->deserializeAbilities($abilities);
         }
 
-        $abilities = parent::getAbilities($user);
+        $abilities = parent::getAbilities($authority);
 
         $this->cache->forever($key, $this->serializeAbilities($abilities));
 
@@ -84,24 +84,24 @@ class CachedClipboard extends Clipboard
     }
 
     /**
-     * Get the given user's roles.
+     * Get the given authority's roles.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $user
+     * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @return \Illuminate\Support\Collection
      */
-    public function getRoles(Model $user)
+    public function getRoles(Model $authority)
     {
-        $key = $this->tag.'-roles-'.$user->getKey();
+        $key = $this->getCacheKey($authority, 'roles');
 
-        return $this->cache->sear($key, function () use ($user) {
-            return parent::getRoles($user);
+        return $this->cache->sear($key, function () use ($authority) {
+            return parent::getRoles($authority);
         });
     }
 
     /**
      * Clear the cache.
      *
-     * @param  null|int|\Illuminate\Database\Eloquent\Model  $user
+     * @param  null|\Illuminate\Database\Eloquent\Model  $user
      * @return $this
      */
     public function refresh($user = null)
@@ -120,18 +120,16 @@ class CachedClipboard extends Clipboard
     }
 
     /**
-     * Clear the cache for the given user.
+     * Clear the cache for the given model.
      *
-     * @param  \Illuminate\Database\Eloquent\Model|int  $user
+     * @param  \Illuminate\Database\Eloquent\Model  $model
      * @return $this
      */
-    public function refreshFor($user)
+    public function refreshFor(Model $model)
     {
-        $id = $user instanceof Model ? $user->getKey() : $user;
+        $this->cache->forget($this->getCacheKey($model, 'abilities'));
 
-        $this->cache->forget($this->tag.'-abilities-'.$id);
-
-        $this->cache->forget($this->tag.'-roles-'.$id);
+        $this->cache->forget($this->getCacheKey($model, 'roles'));
 
         return $this;
     }
@@ -145,11 +143,28 @@ class CachedClipboard extends Clipboard
     {
         $user = Models::user();
 
-        foreach ($user->lists($user->getKeyName()) as $id) {
-            $this->refreshFor($id);
+        foreach (Models::user()->all() as $user) {
+            $this->refreshFor($user);
         }
 
         return $this;
+    }
+
+    /**
+     * Get the cache key for the given model's cache type.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  string  $type
+     * @return string
+     */
+    protected function getCacheKey(Model $model, $type)
+    {
+        return implode('-', [
+            $this->tag,
+            $type,
+            $model->getMorphClass(),
+            $model->getKey(),
+        ]);
     }
 
     /**

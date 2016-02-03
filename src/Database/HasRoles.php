@@ -14,14 +14,14 @@ trait HasRoles
     /**
      * The roles relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
     public function roles()
     {
-        return $this->belongsToMany(
+        return $this->morphToMany(
             Models::classname(Role::class),
-            Models::table('user_roles'),
-            'user_id'
+            'entity',
+            Models::table('assigned_roles')
         );
     }
 

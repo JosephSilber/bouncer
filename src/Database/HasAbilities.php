@@ -14,14 +14,14 @@ trait HasAbilities
     /**
      * The abilities relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
     public function abilities()
     {
-        return $this->belongsToMany(
+        return $this->morphToMany(
             Models::classname(Ability::class),
-            Models::table('user_abilities'),
-            'user_id'
+            'entity',
+            Models::table('permissions')
         );
     }
 
@@ -73,7 +73,7 @@ trait HasAbilities
      */
     public function scopeWhereCan($query, $ability, $model = null)
     {
-        (new AbilitiesConstraint)->constrainUsers($query, $ability, $model);
+        (new AbilitiesConstraint)->constrain($query, $ability, $model);
     }
 
     /**

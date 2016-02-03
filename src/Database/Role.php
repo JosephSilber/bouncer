@@ -8,6 +8,8 @@ use Silber\Bouncer\Database\Constraints\Abilities as AbilitiesConstraint;
 
 class Role extends Model
 {
+    use HasAbilities;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -26,28 +28,16 @@ class Role extends Model
     }
 
     /**
-     * The abilities relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function abilities()
-    {
-        return $this->belongsToMany(
-            Models::classname(Ability::class),
-            Models::table('role_abilities')
-        );
-    }
-
-    /**
      * The users relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphedByMany
      */
     public function users()
     {
-        return $this->belongsToMany(
+        return $this->morphedByMany(
             Models::classname(User::class),
-            Models::table('user_roles')
+            'entity',
+            Models::table('assigned_roles')
         );
     }
 

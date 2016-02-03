@@ -43,26 +43,28 @@ class Ability extends Model
     /**
      * The roles relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
     public function roles()
     {
-        return $this->belongsToMany(
+        return $this->morphedByMany(
             Models::classname(Role::class),
-            Models::table('role_abilities')
+            'entity',
+            Models::table('permissions')
         );
     }
 
     /**
      * The users relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
     public function users()
     {
-        return $this->belongsToMany(
+        return $this->morphedByMany(
             Models::classname(User::class),
-            Models::table('user_abilities')
+            'entity',
+            Models::table('permissions')
         );
     }
 
@@ -122,18 +124,18 @@ class Ability extends Model
         $model = is_string($model) ? new $model : $model;
 
         $query->where(function ($query) use ($model, $strict) {
-            $query->where('entity_type', $model->getMorphClass());
+            $query->where($this->table.'.entity_type', $model->getMorphClass());
 
             $query->where(function ($query) use ($model, $strict) {
                 // If the model does not exist, we want to search for blanket abilities
                 // that cover all instances of this model. If it does exist, we only
                 // want to find blanket abilities if we're not using strict mode.
                 if ( ! $model->exists || ! $strict) {
-                    $query->whereNull('entity_id');
+                    $query->whereNull($this->table.'.entity_id');
                 }
 
                 if ($model->exists) {
-                    $query->orWhere('entity_id', $model->getKey());
+                    $query->orWhere($this->table.'.entity_id', $model->getKey());
                 }
             });
         });
