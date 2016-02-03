@@ -14,12 +14,14 @@ class Abilities
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function constrainUsers($query, $ability, $model = null)
+    public function constrain($query, $ability, $model = null)
     {
         return $query->where(function ($query) use ($ability, $model) {
             $query->whereHas('abilities', $this->getAbilityConstraint($ability, $model));
 
-            $query->orWhereHas('roles', $this->getRoleConstraint($ability, $model));
+            if (method_exists($query->getModel(), 'roles')) {
+                $query->orWhereHas('roles', $this->getRoleConstraint($ability, $model));
+            }
         });
     }
 

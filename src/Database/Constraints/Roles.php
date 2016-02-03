@@ -5,7 +5,7 @@ namespace Silber\Bouncer\Database\Constraints;
 class Roles
 {
     /**
-     * Constrain the given users query by the provided role.
+     * Constrain the given query by the provided role.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @param  string  $role
@@ -21,7 +21,7 @@ class Roles
     }
 
     /**
-     * Constrain the given users query by all provided roles.
+     * Constrain the given query by all provided roles.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @param  string  $role
