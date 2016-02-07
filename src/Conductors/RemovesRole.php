@@ -2,11 +2,9 @@
 
 namespace Silber\Bouncer\Conductors;
 
+use Silber\Bouncer\Helper;
 use Silber\Bouncer\Database\Role;
 use Silber\Bouncer\Database\Models;
-
-use App\User;
-use Illuminate\Database\Eloquent\Model;
 
 class RemovesRole
 {
@@ -41,7 +39,7 @@ class RemovesRole
 
         $authorities = is_array($authority) ? $authority : [$authority];
 
-        foreach ($this->mapAuthorityByClass($authorities) as $class => $keys) {
+        foreach (Helper::mapAuthorityByClass($authorities) as $class => $keys) {
             $role->retractFrom($class, $keys);
         }
 
@@ -60,26 +58,5 @@ class RemovesRole
         }
 
         return Models::role()->where('name', $this->role)->first();
-    }
-
-    /**
-     * Map a list of authorities by their class name.
-     *
-     * @param  array  $authorities
-     * @return array
-     */
-    protected function mapAuthorityByClass(array $authorities)
-    {
-        $map = [];
-
-        foreach ($authorities as $authority) {
-            if ($authority instanceof Model) {
-                $map[get_class($authority)][] = $authority->getKey();
-            } else {
-                $map[Models::classname(User::class)][] = $authority;
-            }
-        }
-
-        return $map;
     }
 }
