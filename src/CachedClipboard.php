@@ -117,13 +117,13 @@ class CachedClipboard extends Clipboard
     /**
      * Clear the cache.
      *
-     * @param  null|\Illuminate\Database\Eloquent\Model  $user
+     * @param  null|\Illuminate\Database\Eloquent\Model  $authority
      * @return $this
      */
-    public function refresh($user = null)
+    public function refresh($authority = null)
     {
-        if ( ! is_null($user)) {
-            return $this->refreshFor($user);
+        if ( ! is_null($authority)) {
+            return $this->refreshFor($authority);
         }
 
         if ($this->cache instanceof TaggedCache) {
@@ -157,8 +157,6 @@ class CachedClipboard extends Clipboard
      */
     protected function refreshForAllUsersIteratively()
     {
-        $user = Models::user();
-
         foreach (Models::user()->all() as $user) {
             $this->refreshFor($user);
         }

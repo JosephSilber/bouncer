@@ -27,14 +27,14 @@ class Clipboard
      */
     public function registerAt(Gate $gate)
     {
-        $gate->before(function ($user, $ability, $arguments = [], $additional = null) {
+        $gate->before(function ($authority, $ability, $arguments = [], $additional = null) {
             list($model, $additional) = $this->parseGateArguments($arguments, $additional);
 
             if ( ! is_null($additional)) {
                 return;
             }
 
-            if ($id = $this->checkGetId($user, $ability, $model)) {
+            if ($id = $this->checkGetId($authority, $ability, $model)) {
                 return $this->allow('Bouncer granted permission via ability #'.$id);
             }
 
@@ -82,29 +82,29 @@ class Clipboard
     }
 
     /**
-     * Determine if the given user has the given ability.
+     * Determine if the given authority has the given ability.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $user
+     * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @param  string  $ability
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
      * @return bool
      */
-    public function check(Model $user, $ability, $model = null)
+    public function check(Model $authority, $ability, $model = null)
     {
-        return (bool) $this->checkGetId($user, $ability, $model);
+        return (bool) $this->checkGetId($authority, $ability, $model);
     }
 
     /**
-     * Determine if the given user has the given ability and return the ability ID.
+     * Determine if the given authority has the given ability, and return the ability ID.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $user
+     * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @param  string  $ability
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
      * @return int|bool
      */
-    protected function checkGetId(Model $user, $ability, $model = null)
+    protected function checkGetId(Model $authority, $ability, $model = null)
     {
-        $abilities = $this->getAbilities($user)->toBase()->lists('identifier', 'id');
+        $abilities = $this->getAbilities($authority)->toBase()->lists('identifier', 'id');
 
         $requested = $this->compileAbilityIdentifiers($ability, $model);
 
@@ -118,16 +118,16 @@ class Clipboard
     }
 
     /**
-     * Check if a user has the given roles.
+     * Check if an authority has the given roles.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $user
+     * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @param  array|string  $roles
      * @param  string  $boolean
      * @return bool
      */
-    public function checkRole(Model $user, $roles, $boolean = 'or')
+    public function checkRole(Model $authority, $roles, $boolean = 'or')
     {
-        $available = $this->getRoles($user)->intersect($roles);
+        $available = $this->getRoles($authority)->intersect($roles);
 
         if ($boolean == 'or') {
             return $available->count() > 0;
@@ -175,54 +175,91 @@ class Clipboard
     }
 
     /**
-     * Get the given user's roles.
+     * Get the given authority's roles.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $user
+     * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @return \Illuminate\Support\Collection
      */
-    public function getRoles(Model $user)
+    public function getRoles(Model $authority)
     {
-        return $user->roles()->lists('name');
+        return $authority->roles()->lists('name');
     }
 
     /**
-     * Get a list of the user's abilities.
+     * Get a list of the authority's abilities.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $user
+     * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getAbilities(Model $user)
+    public function getAbilities(Model $authority)
     {
-        $query = Models::ability()->whereHas('roles', $this->getRoleUsersConstraint($user));
-
-        return $query->orWhereHas('users', $this->getUserConstraint($user))->get();
+        return Models::ability()
+                     ->whereExists($this->getRoleConstraint($authority))
+                     ->orWhereExists($this->getAuthorityConstraint($authority))
+                     ->get();
     }
 
     /**
-     * Constrain a roles query by the given user.
+     * Get a constraint for abilities that have been granted to the given authority through a role.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $user
+     * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @return \Closure
      */
-    protected function getRoleUsersConstraint(Model $user)
+    protected function getRoleConstraint(Model $authority)
     {
-        return function ($query) use ($user) {
-            $query->whereHas('users', $this->getUserConstraint($user));
+        return function ($query) use ($authority) {
+            $permissions = Models::table('permissions');
+            $abilities   = Models::table('abilities');
+            $roles       = Models::table('roles');
+
+            $query->from($roles)
+                  ->join($permissions, $roles.'.id', '=', $permissions.'.entity_id')
+                  ->whereRaw($permissions.".ability_id = ".$abilities.".id")
+                  ->where($permissions.".entity_type", Models::role()->getMorphClass());
+
+            $query->whereExists($this->getAuthorityRoleConstraint($authority));
         };
     }
 
     /**
-     * Constrain a related query to the given user.
+     * Get a constraint for roles that are assigned to the given authority.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $user
+     * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @return \Closure
      */
-    protected function getUserConstraint(Model $user)
+    protected function getAuthorityRoleConstraint(Model $authority)
     {
-        return function ($query) use ($user) {
-            $column = "{$user->getTable()}.{$user->getKeyName()}";
+        return function ($query) use ($authority) {
+            $pivot = Models::table('assigned_roles');
+            $roles = Models::table('roles');
+            $table = $authority->getTable();
 
-            $query->where($column, $user->getKey());
+            $query->from($table)
+                  ->join($pivot, $table.'.'.$authority->getKeyName(), '=', $pivot.'.entity_id')
+                  ->whereRaw($pivot.'.role_id = '.$roles.'.id')
+                  ->where($pivot.'.entity_type', $authority->getMorphClass())
+                  ->where($table.'.id', $authority->getKey());
+        };
+    }
+
+    /**
+     * Get a constraint for abilities that have been granted to the given authority.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $authority
+     * @return \Closure
+     */
+    protected function getAuthorityConstraint(Model $authority)
+    {
+        return function ($query) use ($authority) {
+            $permissions = Models::table('permissions');
+            $abilities   = Models::table('abilities');
+            $table       = $authority->getTable();
+
+            $query->from($table)
+                  ->join($permissions, $table.'.id', '=', $permissions.'.entity_id')
+                  ->whereRaw("{$permissions}.ability_id = {$abilities}.id")
+                  ->where("{$permissions}.entity_type", $authority->getMorphClass())
+                  ->where("{$table}.{$authority->getKeyName()}", $authority->getKey());
         };
     }
 }

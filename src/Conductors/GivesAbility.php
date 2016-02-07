@@ -123,7 +123,7 @@ class GivesAbility
             return new $model;
         }
 
-        // Creating an ability for a model that doesn't exist gives the user the
+        // Creating an ability for a non-existent model gives the authority that
         // ability on all instances of that model. If the developer passed in
         // a model instance that does not exist, it is probably a mistake.
         if ( ! $model->exists) {

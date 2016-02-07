@@ -5,12 +5,13 @@ namespace Silber\Bouncer\Conductors;
 use Silber\Bouncer\Database\Role;
 use Silber\Bouncer\Database\Models;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 
 class RemovesRole
 {
     /**
-     * The role to be removed from a user.
+     * The role to be removed from an authority.
      *
      * @var \Silber\Bouncer\Database\Role|string
      */
@@ -27,24 +28,22 @@ class RemovesRole
     }
 
     /**
-     * Remove the role from the given user.
+     * Remove the role from the given authority.
      *
-     * @param  \Illuminate\Database\Eloquent\Model|array|int  $user
+     * @param  \Illuminate\Database\Eloquent\Model|array|int  $authority
      * @return bool
      */
-    public function from($user)
+    public function from($authority)
     {
-        if ( ! $role = $this->role()) {
+        if (is_null($role = $this->role())) {
             return false;
         }
 
-        if ($user instanceof Model) {
-            $user = $user->getKey();
+        $authorities = is_array($authority) ? $authority : [$authority];
+
+        foreach ($this->mapAuthorityByClass($authorities) as $class => $keys) {
+            $role->retractFrom($class, $keys);
         }
-
-        $users = is_array($user) ? $user : [$user];
-
-        $role->users()->detach($user);
 
         return true;
     }
@@ -61,5 +60,26 @@ class RemovesRole
         }
 
         return Models::role()->where('name', $this->role)->first();
+    }
+
+    /**
+     * Map a list of authorities by their class name.
+     *
+     * @param  array  $authorities
+     * @return array
+     */
+    protected function mapAuthorityByClass(array $authorities)
+    {
+        $map = [];
+
+        foreach ($authorities as $authority) {
+            if ($authority instanceof Model) {
+                $map[get_class($authority)][] = $authority->getKey();
+            } else {
+                $map[Models::classname(User::class)][] = $authority;
+            }
+        }
+
+        return $map;
     }
 }
