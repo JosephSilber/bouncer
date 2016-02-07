@@ -2,10 +2,12 @@
 
 namespace Silber\Bouncer\Database;
 
+use Silber\Bouncer\Helper;
+use Silber\Bouncer\Database\Constraints\Abilities as AbilitiesConstraint;
+
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
-use Silber\Bouncer\Database\Constraints\Abilities as AbilitiesConstraint;
 
 class Role extends Model
 {
@@ -51,7 +53,7 @@ class Role extends Model
      */
     public function assignTo($model, array $keys = null)
     {
-        list($model, $keys) = $this->extractModelAndKeys($model, $keys);
+        list($model, $keys) = Helper::extractModelAndKeys($model, $keys);
 
         $query = $this->newBaseQueryBuilder()->from(Models::table('assigned_roles'));
 
@@ -69,7 +71,7 @@ class Role extends Model
      */
     public function retractFrom($model, array $keys = null)
     {
-        list($model, $keys) = $this->extractModelAndKeys($model, $keys);
+        list($model, $keys) = Helper::extractModelAndKeys($model, $keys);
 
         $this->newBaseQueryBuilder()
              ->from(Models::table('assigned_roles'))
@@ -99,31 +101,5 @@ class Role extends Model
                 'entity_id'   => $key,
             ];
         }, $keys);
-    }
-
-    /**
-     * Extract the model instance and model keys from the given parameters.
-     *
-     * @param  string|\Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection  $model
-     * @param  array  $keys
-     * @return array
-     */
-    protected function extractModelAndKeys($model, array $keys = null)
-    {
-        if (is_null($keys)) {
-            if ($model instanceof Model) {
-                return [$model, [$model->getKey()]];
-            }
-
-            if ($model instanceof Collection) {
-                return [$model->first(), $model->modelKeys()];
-            }
-        } else {
-            if (is_string($model)) {
-                $model = new $model;
-            }
-
-            return [$model, $keys];
-        }
     }
 }
