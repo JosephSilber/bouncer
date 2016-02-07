@@ -6,9 +6,36 @@ use Silber\Bouncer\Database\Models;
 
 use App\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Collection;
 
 class Helper
 {
+    /**
+     * Extract the model instance and model keys from the given parameters.
+     *
+     * @param  string|\Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection  $model
+     * @param  array  $keys
+     * @return array
+     */
+    public static function extractModelAndKeys($model, array $keys = null)
+    {
+        if (is_null($keys)) {
+            if ($model instanceof Model) {
+                return [$model, [$model->getKey()]];
+            }
+
+            if ($model instanceof Collection) {
+                return [$model->first(), $model->modelKeys()];
+            }
+        } else {
+            if (is_string($model)) {
+                $model = new $model;
+            }
+
+            return [$model, $keys];
+        }
+    }
+
     /**
      * Map a list of authorities by their class name.
      *
