@@ -50,6 +50,11 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 
         (new CreateBouncerTables)->up();
 
+        $this->migratedTestTables();
+    }
+
+    protected function migratedTestTables()
+    {
         Schema::create('users', function ($table) {
             $table->increments('id');
             $table->string('name')->nullable();
@@ -64,36 +69,41 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
      */
     public function tearDown()
     {
-        Schema::drop('users');
+        $this->rollbackTestTables();
 
         (new CreateBouncerTables)->down();
 
         $this->clipboard = $this->db = null;
     }
 
+    protected function rollbackTestTables()
+    {
+        Schema::drop('users');
+    }
+
     /**
      * Get a bouncer instance.
      *
-     * @param  \User|null  $user
+     * @param  \Illuminate\Database\Eloquent\Model|null  $user
      * @return \Silber\Bouncer\Bouncer
      */
-    protected function bouncer(User $user = null)
+    protected function bouncer(Eloquent $authority = null)
     {
         $bouncer = new Bouncer($this->clipboard, new Seeder(new Container));
 
-        return $bouncer->setGate($this->gate($user ?: User::create()));
+        return $bouncer->setGate($this->gate($authority ?: User::create()));
     }
 
     /**
      * Get an access gate instance.
      *
-     * @param  \User  $user
+     * @param  \Illuminate\Database\Eloquent\Model  $user
      * @return \Illuminate\Auth\Access\Gate
      */
-    protected function gate(User $user)
+    protected function gate(Eloquent $authority)
     {
-        $gate = new Gate(new Container, function () use ($user) {
-            return $user;
+        $gate = new Gate(new Container, function () use ($authority) {
+            return $authority;
         });
 
         $this->clipboard->registerAt($gate);

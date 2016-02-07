@@ -100,7 +100,7 @@ class Bouncer
     }
 
     /**
-     * Start a chain, to assign the given role to a user.
+     * Start a chain, to assign the given role to a model.
      *
      * @param  \Silber\Bouncer\Database\Role|string  $role
      * @return \Silber\Bouncer\Conductors\AssignsRole
@@ -111,7 +111,7 @@ class Bouncer
     }
 
     /**
-     * Start a chain, to retract the given role from a user.
+     * Start a chain, to retract the given role from a model.
      *
      * @param  \Silber\Bouncer\Database\Role|string  $role
      * @return \Silber\Bouncer\Conductors\RemovesRole
@@ -122,14 +122,14 @@ class Bouncer
     }
 
     /**
-     * Start a chain, to check if the given user has a certain role.
+     * Start a chain, to check if the given authority has a certain role.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $user
+     * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @return \Silber\Bouncer\Conductors\ChecksRole
      */
-    public function is(Model $user)
+    public function is(Model $authority)
     {
-        return new ChecksRole($user, $this->clipboard);
+        return new ChecksRole($authority, $this->clipboard);
     }
 
     /**
@@ -150,25 +150,25 @@ class Bouncer
     /**
      * Clear the cache.
      *
-     * @param  null|\Illuminate\Database\Eloquent\Model  $user
+     * @param  null|\Illuminate\Database\Eloquent\Model  $authority
      * @return $this
      */
-    public function refresh(Model $user = null)
+    public function refresh(Model $authority = null)
     {
-        $this->clipboard->refresh($user);
+        $this->clipboard->refresh($authority);
 
         return $this;
     }
 
     /**
-     * Clear the cache for the given user.
+     * Clear the cache for the given authority.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $user
+     * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @return $this
      */
-    public function refreshFor(Model $user)
+    public function refreshFor(Model $authority)
     {
-        $this->clipboard->refreshFor($user);
+        $this->clipboard->refreshFor($authority);
 
         return $this;
     }
@@ -207,7 +207,7 @@ class Bouncer
     }
 
     /**
-     * Determine if the given ability should be granted for the current user.
+     * Determine if the given ability should be granted for the current authority.
      *
      * @param  string  $ability
      * @param  array|mixed  $arguments
@@ -219,7 +219,7 @@ class Bouncer
     }
 
     /**
-     * Determine if the given ability should be denied for the current user.
+     * Determine if the given ability should be denied for the current authority.
      *
      * @param  string  $ability
      * @param  array|mixed  $arguments

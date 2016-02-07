@@ -5,12 +5,13 @@ namespace Silber\Bouncer\Conductors;
 use Silber\Bouncer\Database\Role;
 use Silber\Bouncer\Database\Models;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 
 class AssignsRole
 {
     /**
-     * The role to be assigned to a user.
+     * The role to be assigned to an authority.
      *
      * @var \Silber\Bouncer\Database\Role|string
      */
@@ -27,24 +28,41 @@ class AssignsRole
     }
 
     /**
-     * Assign the role to the given user.
+     * Assign the role to the given authority.
      *
-     * @param  \Illuminate\Database\Eloquent\Model|array|int  $user
+     * @param  \Illuminate\Database\Eloquent\Model|array|int  $authority
      * @return bool
      */
-    public function to($user)
+    public function to($authority)
     {
-        $role = $this->role();
+        $authorities = is_array($authority) ? $authority : [$authority];
 
-        if ($user instanceof Model) {
-            $user = $user->getKey();
+        foreach ($this->mapAuthorityByClass($authorities) as $class => $keys) {
+            $this->assignRole($this->role(), $class, $keys);
         }
 
-        $ids = is_array($user) ? $user : [$user];
-
-        $this->assignRole($role, $ids);
-
         return true;
+    }
+
+    /**
+     * Map a list of authorities by their class name.
+     *
+     * @param  array  $authorities
+     * @return array
+     */
+    protected function mapAuthorityByClass(array $authorities)
+    {
+        $map = [];
+
+        foreach ($authorities as $authority) {
+            if ($authority instanceof Model) {
+                $map[get_class($authority)][] = $authority->getKey();
+            } else {
+                $map[Models::classname(User::class)][] = $authority;
+            }
+        }
+
+        return $map;
     }
 
     /**
@@ -62,34 +80,36 @@ class AssignsRole
     }
 
     /**
-     * Assign the role to the users with the given ids.
+     * Assign the role to the authorities with the given keys.
      *
      * @param  \Silber\Bouncer\Database\Role  $role
-     * @param  array  $ids
+     * @param  string  $class
+     * @param  array  $keys
      * @return void
      */
-    protected function assignRole(Role $role, array $ids)
+    protected function assignRole(Role $role, $class, array $keys)
     {
-        $existing = $this->getUsersWithRole($role, $ids)->all();
+        $existing = $this->getAuthoritiesWithRole($role, $class, $keys)->all();
 
-        $ids = array_diff($ids, $existing);
+        $keys = array_diff($keys, $existing);
 
-        $role->users()->attach($ids);
+        $role->assignTo($class, $keys);
     }
 
     /**
-     * Get the IDs of the users that already have the given role.
+     * Get the keys of the authorities that already have the given role.
      *
      * @param  \Silber\Bouncer\Database\Role  $role
+     * @param  string  $class
      * @param  array  $ids
      * @return \Illuminate\Support\Collection
      */
-    protected function getUsersWithRole(Role $role, array $ids)
+    protected function getAuthoritiesWithRole(Role $role, $class, array $ids)
     {
-        $model = Models::user();
+        $model = new $class;
 
         $column = $model->getTable().'.'.$model->getKeyName();
 
-        return $role->users()->whereIn($column, $ids)->lists($column);
+        return $model->whereIn($column, $ids)->whereIs($role->name)->lists($column);
     }
 }

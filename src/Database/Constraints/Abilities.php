@@ -7,7 +7,7 @@ use Silber\Bouncer\Database\Models;
 class Abilities
 {
     /**
-     * Constrain the given users query by the provided ability.
+     * Constrain the given query by the provided ability.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @param  string  $ability
@@ -23,21 +23,6 @@ class Abilities
                 $query->orWhereHas('roles', $this->getRoleConstraint($ability, $model));
             }
         });
-    }
-
-    /**
-     * Constrain the given roles query by the provided ability.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $ability
-     * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function constrainRoles($query, $ability, $model = null)
-    {
-        $constraint = $this->getAbilityConstraint($ability, $model);
-
-        return $query->whereHas('abilities', $constraint);
     }
 
     /**
