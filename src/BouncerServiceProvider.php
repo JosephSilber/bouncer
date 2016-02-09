@@ -9,6 +9,7 @@ use Silber\Bouncer\Seed\SeedCommand;
 use Illuminate\Cache\ArrayStore;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Auth\Access\Gate;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 class BouncerServiceProvider extends ServiceProvider
 {
@@ -22,6 +23,7 @@ class BouncerServiceProvider extends ServiceProvider
         $this->registerSeedCommand();
         $this->registerClipboard();
         $this->registerBouncer();
+        $this->registerMorphs();
         $this->registerSeeder();
     }
 
@@ -74,6 +76,19 @@ class BouncerServiceProvider extends ServiceProvider
 
             return $bouncer->setGate($this->app->make(Gate::class));
         });
+    }
+
+    /**
+     * Register Bouncer's models in the relation morph map.
+     *
+     * @return void
+     */
+    protected function registerMorphs()
+    {
+        Relation::morphMap([
+            \Silber\Bouncer\Database\Role::class,
+            \Silber\Bouncer\Database\Ability::class,
+        ]);
     }
 
     /**
