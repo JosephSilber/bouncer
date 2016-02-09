@@ -4,7 +4,7 @@ use Silber\Bouncer\Database\Role;
 
 class RoleConstraintTest extends BaseTestCase
 {
-    public function test_role_can_be_constrained_to_an_ability()
+    public function test_roles_can_be_constrained_to_an_ability()
     {
         $bouncer = $this->bouncer();
 
