@@ -14,7 +14,7 @@ class Helper
      * Extract the model instance and model keys from the given parameters.
      *
      * @param  string|\Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection  $model
-     * @param  array  $keys
+     * @param  array|null  $keys
      * @return array
      */
     public static function extractModelAndKeys($model, array $keys = null)

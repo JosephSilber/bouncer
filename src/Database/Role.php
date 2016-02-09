@@ -3,7 +3,7 @@
 namespace Silber\Bouncer\Database;
 
 use Silber\Bouncer\Helper;
-use Silber\Bouncer\Database\Constraints\Abilities as AbilitiesConstraint;
+use Silber\Bouncer\Database\Constraints\Roles as RolesConstraint;
 
 use App\User;
 use Illuminate\Database\Eloquent\Model;
@@ -101,5 +101,18 @@ class Role extends Model
                 'entity_id'   => $key,
             ];
         }, $keys);
+    }
+
+    /**
+     * Constrain the given query to roles that were assigned to the given authorities.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string|\Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection  $model
+     * @param  array  $keys
+     * @return void
+     */
+    public function scopeWhereAssignedTo($query, $model, array $keys = null)
+    {
+        (new RolesConstraint)->constrainWhereAssignedTo($query, $model, $keys);
     }
 }
