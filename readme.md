@@ -355,17 +355,17 @@ Note that it's ok to run the seeds multiple times. If you make a change to your 
 
 ### Blade directives
 
-Bouncer does not add its own blade directives. Since Bouncer works directly with Laravel's gate, simply use the `@can` directive to check for current user's abilities:
+Bouncer does not add its own blade directives. Since Bouncer works directly with Laravel's gate, simply use its `@can` directive to check for the current user's abilities:
 
-```
-@can('update', $post)
+```html
+@can ('update', $post)
     <a href="{{ route('post.update', $post) }}">Edit Post</a>
 @endcan
 ```
 
-Sometimes you may want to check for a role directly. Since this is generally [not recommended](#checking-a-users-roles), Bouner does not ship with a separate directive for that. If you insist on checking for roles directly, you can do so using the simple `@if` directive:
+Since checking for roles directly is generally [not recommended](#checking-a-users-roles), Bouncer does not ship with a separate directive for that. If you still insist on checking for roles, you can do so using the general `@if` directive:
 
-```
+```php
 @if ($user->is('admin'))
     //
 @endif
