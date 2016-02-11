@@ -4,6 +4,7 @@ This package adds a bouncer at Laravel's access gate.
 
 - [Introduction](#introduction)
 - [Installation](#installation)
+  - [Bouncer facade](#bouncer-facade)
   - [Enabling cache](#enabling-cache)
 - [Usage](#usage)
   - [Creating roles and abilities](#creating-roles-and-abilities)
@@ -17,6 +18,7 @@ This package adds a bouncer at Laravel's access gate.
   - [Authorizing users](#authorizing-users)
   - [Refreshing the cache](#refreshing-the-cache)
   - [Seeding roles and abilities](#seeding-roles-and-abilities)
+  - [Using Bouncer in Blade templates](#using-bouncer-in-blade-templates)
 - [Cheat sheet](#cheat-sheet)
 - [License](#license)
 
@@ -91,6 +93,15 @@ php artisan vendor:publish --provider="Silber\Bouncer\BouncerServiceProvider" --
 ```
 php artisan migrate
 ```
+### Bouncer facade
+
+To use the Bouncer Facade, remember to add this line to your files:
+
+```php
+use Bouncer;
+```
+
+See Laravel documentation about [Using Facades](https://laravel.com/docs/5.2/facades#using-facades).
 
 ### Enabling cache
 
@@ -341,6 +352,20 @@ Bouncer::seed();
 ```
 
 Note that it's ok to run the seeds multiple times. If you make a change to your seeder, simply run the seeds again. However, do note that any information that has previously been seeded will *not* be automatically reverted.
+
+### Using Bouncer in Blade templates
+
+Bouncer does not add any function or feature to be used in Blade templates. Bouncer works directly with Laravel's gate, so you can simply use `@can` blade directive to check for current user's abilities:
+
+```
+@can('do-something')
+```
+
+If you want to check for a role, which is not recommended (see this [discussion](https://github.com/JosephSilber/bouncer/issues/36#issuecomment-172357685)), you can do it with simple PHP code in a Blade if statement:
+
+```
+@if($user->is('role'))
+```
 
 ## Cheat Sheet
 
