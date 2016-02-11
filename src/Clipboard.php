@@ -120,7 +120,7 @@ class Clipboard
     protected function compileAbilityIdentifiers($ability, $model)
     {
         if (is_null($model)) {
-            return [strtolower($ability)];
+            return [strtolower($ability), '*'];
         }
 
         return $this->compileModelAbilityIdentifiers($ability, $model);
@@ -137,13 +137,20 @@ class Clipboard
     {
         $model = $model instanceof Model ? $model : new $model;
 
-        $identifier = strtolower($ability.'-'.$model->getMorphClass());
+        $suffix = strtolower('-'.$model->getMorphClass());
 
-        if ( ! $model->exists) {
-            return [$identifier];
+        $abilities = [
+            $ability.$suffix,
+            '*'.$suffix,
+            '*',
+        ];
+
+        if ($model->exists) {
+            $abilities[] = $ability.$suffix.'-'.$model->getKey();
+            $abilities[] = '*'.$suffix.'-'.$model->getKey();
         }
 
-        return [$identifier, $identifier.'-'.$model->getKey()];
+        return $abilities;
     }
 
     /**

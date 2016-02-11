@@ -19,6 +19,22 @@ class BouncerSimpleTest extends BaseTestCase
         $this->assertTrue($bouncer->denies('edit-site'));
     }
 
+    public function test_bouncer_can_give_and_remove_wildcard_abilities()
+    {
+        $bouncer = $this->bouncer($user = User::create());
+
+        $bouncer->allow($user)->to('*');
+
+        $this->assertTrue($bouncer->allows('edit-site'));
+        $this->assertTrue($bouncer->allows('ban-users'));
+        $this->assertTrue($bouncer->allows('*'));
+
+        $bouncer->disallow($user)->to('*');
+        $this->clipboard->refresh();
+
+        $this->assertTrue($bouncer->denies('edit-site'));
+    }
+
     public function test_bouncer_can_deny_access_if_set_to_work_exclusively()
     {
         $bouncer = $this->bouncer();
