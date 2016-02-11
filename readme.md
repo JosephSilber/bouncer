@@ -16,9 +16,9 @@ This package adds a bouncer at Laravel's access gate.
   - [Checking a user's roles](#checking-a-users-roles)
   - [Getting all abilities for a user](#getting-all-abilities-for-a-user)
   - [Authorizing users](#authorizing-users)
+  - [Blade directives](#blade-directives)
   - [Refreshing the cache](#refreshing-the-cache)
   - [Seeding roles and abilities](#seeding-roles-and-abilities)
-  - [Blade directives](#blade-directives)
 - [Cheat sheet](#cheat-sheet)
 - [License](#license)
 
@@ -296,6 +296,24 @@ Bouncer::denies($ability);
 
 These call directly into the `Gate` class.
 
+### Blade directives
+
+Bouncer does not add its own blade directives. Since Bouncer works directly with Laravel's gate, simply use its `@can` directive to check for the current user's abilities:
+
+```html
+@can ('update', $post)
+    <a href="{{ route('post.update', $post) }}">Edit Post</a>
+@endcan
+```
+
+Since checking for roles directly is generally [not recommended](#checking-a-users-roles), Bouncer does not ship with a separate directive for that. If you still insist on checking for roles, you can do so using the general `@if` directive:
+
+```php
+@if ($user->is('admin'))
+    //
+@endif
+```
+
 ### Refreshing the cache
 
 All queries executed by the bouncer are cached for the current request. If you enable [cross-request caching](#enabling-cache), the cache will persist across different requests.
@@ -352,24 +370,6 @@ Bouncer::seed();
 ```
 
 Note that it's ok to run the seeds multiple times. If you make a change to your seeder, simply run the seeds again. However, do note that any information that has previously been seeded will *not* be automatically reverted.
-
-### Blade directives
-
-Bouncer does not add its own blade directives. Since Bouncer works directly with Laravel's gate, simply use its `@can` directive to check for the current user's abilities:
-
-```html
-@can ('update', $post)
-    <a href="{{ route('post.update', $post) }}">Edit Post</a>
-@endcan
-```
-
-Since checking for roles directly is generally [not recommended](#checking-a-users-roles), Bouncer does not ship with a separate directive for that. If you still insist on checking for roles, you can do so using the general `@if` directive:
-
-```php
-@if ($user->is('admin'))
-    //
-@endif
-```
 
 ## Cheat Sheet
 
