@@ -7,7 +7,6 @@ use Silber\Bouncer\Database\Constraints\Roles as RolesConstraint;
 
 use App\User;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Collection;
 
 class Role extends Model
 {
