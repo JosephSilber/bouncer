@@ -77,6 +77,19 @@ trait HasAbilities
     }
 
     /**
+     * Constrain the given query by where the provided ability has not been allowed.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $ability
+     * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
+     * @return void
+     */
+    public function scopeWhereCannot($query, $ability, $model = null)
+    {
+        (new AbilitiesConstraint)->constrain($query, $ability, $model, false);
+    }
+
+    /**
      * Get an instance of the bouncer's clipboard.
      *
      * @return \Silber\Bouncer\Clipboard

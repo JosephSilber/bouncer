@@ -49,6 +49,60 @@ class RoleConstraintTest extends BaseTestCase
         $this->assertEquals('admin', $roles->first()->name);
     }
 
+    public function test_roles_can_be_constrained_to_not_having_an_ability()
+    {
+        $bouncer = $this->bouncer();
+
+        $bouncer->allow('admin')->to('administer-site');
+        $bouncer->allow('editor')->to('view-dashboard');
+
+        $roles = Role::whereCannot('administer-site')->get();
+
+        $this->assertCount(1, $roles);
+        $this->assertEquals('editor', $roles->first()->name);
+    }
+
+    public function test_roles_can_be_constrained_to_not_having_a_model_ability()
+    {
+        $bouncer = $this->bouncer($user = User::create());
+
+        $bouncer->allow('moderator')->to('ban', $user);
+        $bouncer->allow('editor')->to('ban');
+
+        $roles = Role::whereCannot('ban', $user)->get();
+
+        $this->assertCount(1, $roles);
+        $this->assertEquals('editor', $roles->first()->name);
+
+        $roles = Role::whereCannot('ban')->get();
+
+        $this->assertCount(1, $roles);
+        $this->assertEquals('moderator', $roles->first()->name);
+
+        $bouncer->allow('editor')->to('ban', User::class);
+
+        $roles = Role::whereCannot('ban', $user)->get();
+
+        $this->assertCount(0, $roles);
+    }
+
+    public function test_roles_can_be_constrained_to_not_having_a_model_blanket_ability()
+    {
+        $bouncer = $this->bouncer($user = User::create());
+
+        $bouncer->allow('admin')->to('ban', User::class);
+        $bouncer->allow('moderator')->to('ban', $user);
+
+        $roles = Role::whereCannot('ban', User::class)->get();
+
+        $this->assertCount(1, $roles);
+        $this->assertEquals('moderator', $roles->first()->name);
+
+        $roles = Role::whereCannot('ban', $user)->get();
+
+        $this->assertCount(0, $roles);
+    }
+
     public function test_roles_can_be_constrained_by_a_user()
     {
         $bouncer = $this->bouncer($user = User::create());
