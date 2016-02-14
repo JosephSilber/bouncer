@@ -146,6 +146,15 @@ class User extends Eloquent
     protected $guarded = [];
 }
 
+class Account extends Eloquent
+{
+    use HasRolesAndAbilities;
+
+    protected $table = 'accounts';
+
+    protected $guarded = [];
+}
+
 class Schema
 {
     public static function __callStatic($method, array $parameters)

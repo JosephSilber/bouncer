@@ -147,8 +147,10 @@ class Clipboard
      */
     protected function compileAbilityIdentifiers($ability, $model)
     {
+        $ability = strtolower($ability);
+
         if (is_null($model)) {
-            return [strtolower($ability), '*'];
+            return [$ability, '*-*', '*'];
         }
 
         return $this->compileModelAbilityIdentifiers($ability, $model);
@@ -158,24 +160,29 @@ class Clipboard
      * Compile a list of ability identifiers that match the given model.
      *
      * @param  string  $ability
-     * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
+     * @param  \Illuminate\Database\Eloquent\Model|string  $model
      * @return array
      */
     protected function compileModelAbilityIdentifiers($ability, $model)
     {
+        if ($model == '*') {
+            return ["{$ability}-*", "*-*"];
+        }
+
         $model = $model instanceof Model ? $model : new $model;
 
-        $suffix = strtolower('-'.$model->getMorphClass());
+        $type = strtolower($model->getMorphClass());
 
         $abilities = [
-            $ability.$suffix,
-            '*'.$suffix,
-            '*',
+            "{$ability}-{$type}",
+            "{$ability}-*",
+            "*-{$type}",
+            "*-*",
         ];
 
         if ($model->exists) {
-            $abilities[] = $ability.$suffix.'-'.$model->getKey();
-            $abilities[] = '*'.$suffix.'-'.$model->getKey();
+            $abilities[] = "{$ability}-{$type}-{$model->getKey()}";
+            $abilities[] = "*-{$type}-{$model->getKey()}";
         }
 
         return $abilities;

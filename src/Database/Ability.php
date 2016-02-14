@@ -4,6 +4,7 @@ namespace Silber\Bouncer\Database;
 
 use App\User;
 use Illuminate\Database\Eloquent\Model;
+use Silber\Bouncer\Database\Constraints\AbilitiesForModel;
 
 class Ability extends Model
 {
@@ -27,16 +28,34 @@ class Ability extends Model
     /**
      * Create a new ability for a specific model.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  \Illuminate\Database\Eloquent\Model|string  $model
      * @param  string  $name
      * @return static
      */
-    public static function createForModel(Model $model, $name)
+    public static function createForModel($model, $name)
     {
+        if ($model == '*') {
+            return static::createForModelWildcard($name);
+        }
+
         return static::forceCreate([
             'name'        => $name,
             'entity_type' => $model->getMorphClass(),
             'entity_id'   => $model->exists ? $model->getKey() : null,
+        ]);
+    }
+
+    /**
+     * Create a new ability for all model.
+     *
+     * @param  string  $name
+     * @return static
+     */
+    public static function createForModelWildcard($name)
+    {
+        return static::forceCreate([
+            'name'        => $name,
+            'entity_type' => '*',
         ]);
     }
 
@@ -99,6 +118,25 @@ class Ability extends Model
     }
 
     /**
+     * Constrain a query to having the given name.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder  $query
+     * @return string|array  $name
+     * @return bool  $strict
+     * @return void
+     */
+    public function scopeByName($query, $name, $strict = false)
+    {
+        $names = (array) $name;
+
+        if ( ! $strict) {
+            $names[] = '*';
+        }
+
+        $query->whereIn("{$this->table}.name", $names);
+    }
+
+    /**
      * Constrain a query to simple abilities.
      *
      * @param  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder  $query
@@ -121,23 +159,6 @@ class Ability extends Model
      */
     public function scopeForModel($query, $model, $strict = false)
     {
-        $model = is_string($model) ? new $model : $model;
-
-        $query->where(function ($query) use ($model, $strict) {
-            $query->where($this->table.'.entity_type', $model->getMorphClass());
-
-            $query->where(function ($query) use ($model, $strict) {
-                // If the model does not exist, we want to search for blanket abilities
-                // that cover all instances of this model. If it does exist, we only
-                // want to find blanket abilities if we're not using strict mode.
-                if ( ! $model->exists || ! $strict) {
-                    $query->whereNull($this->table.'.entity_id');
-                }
-
-                if ($model->exists) {
-                    $query->orWhere($this->table.'.entity_id', $model->getKey());
-                }
-            });
-        });
+        (new AbilitiesForModel)->constrain($query, $model, $strict);
     }
 }

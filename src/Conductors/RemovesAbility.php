@@ -91,9 +91,10 @@ class RemovesAbility
      */
     protected function getModelAbilityId($ability, $model)
     {
-        $model = $model instanceof Model ? $model : new $model;
-
-        return Models::ability()->where('name', $ability)->forModel($model, true)->value('id');
+        return Models::ability()
+                     ->byName($ability, true)
+                     ->forModel($model, true)
+                     ->value('id');
     }
 
     /**

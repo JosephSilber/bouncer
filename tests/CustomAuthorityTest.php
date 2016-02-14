@@ -2,8 +2,6 @@
 
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 
-use Illuminate\Database\Eloquent\Model as Eloquent;
-
 class CustomAuthorityTest extends BaseTestCase
 {
     protected function migratedTestTables()
@@ -144,13 +142,4 @@ class CustomAuthorityTest extends BaseTestCase
         $this->assertFalse($bouncer->is($account)->notAn('editor', 'moderator'));
         $this->assertFalse($bouncer->is($account)->all('admin', 'moderator'));
     }
-}
-
-class Account extends Eloquent
-{
-    use HasRolesAndAbilities;
-
-    protected $table = 'accounts';
-
-    protected $guarded = [];
 }
