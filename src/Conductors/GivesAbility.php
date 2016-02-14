@@ -115,10 +115,14 @@ class GivesAbility
      * Get an instance of the given model.
      *
      * @param  \Illuminate\Database\Eloquent\Model|string  $model
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return \Illuminate\Database\Eloquent\Model|string
      */
     protected function getEntityInstance($model)
     {
+        if ($model == '*') {
+            return '*';
+        }
+
         if ( ! $model instanceof Model) {
             return new $model;
         }
