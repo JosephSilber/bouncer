@@ -2,10 +2,14 @@
 
 This package adds a bouncer at Laravel's access gate.
 
+> **Note:** If you are upgrading from an earlier version of Bouncer, be sure to checkout [the upgrade guide](#upgrade).
+
 - [Introduction](#introduction)
 - [Installation](#installation)
   - [Facade](#facade)
   - [Enabling cache](#enabling-cache)
+- [Upgrade](#upgrade)
+  - [Upgrading to 0.2](#upgrading-to-02)
 - [Usage](#usage)
   - [Creating roles and abilities](#creating-roles-and-abilities)
   - [Assigning roles to a user](#assigning-roles-to-a-user)
@@ -112,6 +116,30 @@ Bouncer::cache();
 ```
 
 > **Warning:** if you enable cross-request caching, you are responsible to refresh the cache whenever you make changes to user's abilities/roles. For how to refresh the cache, read [refreshing the cache](#refreshing-the-cache).
+
+## Upgrade
+
+### Upgrading to 0.2
+
+The table structure in Bouncer 0.2 has changed significantly. To make the upgrade as easy as possible, Bouncer ships with an upgrade migration file which will migrate your schema *and your data* to the new structure.
+
+After updating to Bouncer 0.2 through composer, run the following command to create a new migration file:
+
+```
+php artisan make:migration upgrade_bouncer_to_02
+```
+
+This will create a new file under `database/migrations`. Delete everything in this newly created file, and copy the contents of the file located at `vendor/silber/bouncer/migrations/upgrade_to_bouncer_02.php` into this new migration file.
+
+If you have previously changed Bouncer's default table names, you will have to change them in this migration file. Otherwise just continue to the next step.
+
+Now that you have your new migration file all ready, simply migrate the database:
+
+```
+php artisan migrate
+```
+
+You have now successfuly completed your upgrade!
 
 ## Usage
 
