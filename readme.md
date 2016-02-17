@@ -129,7 +129,9 @@ After updating to Bouncer 0.2 through composer, run the following command:
 php artisan bouncer:upgrade
 ```
 
-This will create a new migration file under `database/migrations`, and will automatically call artisan's `migrate` command to migrate the database. Congratulations, you're done with your upgrade!
+This will create a new migration file under `database/migrations`, and will automatically call artisan's `migrate` command to migrate the database.
+
+Congratulations, you're done with your upgrade!
 
 If you have previously changed Bouncer's default table names, you will have to change them in this migration file. To prevent the `bouncer:upgrade` command from calling `migrate`, call it with the `no-migrate` flag:
 
