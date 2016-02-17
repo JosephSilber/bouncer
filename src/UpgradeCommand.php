@@ -37,7 +37,7 @@ class UpgradeCommand extends Command
 
         $this->line("<info>Created Migration:</info> {$file}");
 
-        if (! $this->getOption('no-migrate')) {
+        if (! $this->input->getOption('no-migrate')) {
             $this->call('migrate');
         }
     }
