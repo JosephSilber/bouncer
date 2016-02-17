@@ -27,7 +27,7 @@ class UpgradeCommand extends Command
      */
     public function handle()
     {
-        $source = realpath(__DIR__.'/../../upgrade_to_bouncer_02.php');
+        $source = realpath(__DIR__.'/../migrations/upgrade_to_bouncer_02.php');
 
         $file = date('Y_m_d_His').'_upgrade_to_bouncer_02.php';
 
