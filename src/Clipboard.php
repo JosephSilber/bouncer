@@ -27,10 +27,12 @@ class Clipboard
      */
     public function registerAt(Gate $gate)
     {
-        $gate->before(function ($authority, $ability, $model = null, $additional = null) {
-            if ( ! is_null($additional)) {
+        $gate->before(function ($authority, $ability, array $arguments) {
+            if (count($arguments) > 1) {
                 return;
             }
+
+            $model = head($arguments) ?: null;
 
             if ($id = $this->checkGetId($authority, $ability, $model)) {
                 return $this->allow('Bouncer granted permission via ability #'.$id);
