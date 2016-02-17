@@ -3,6 +3,7 @@
 namespace Silber\Bouncer;
 
 use Silber\Bouncer\Seed\Seeder;
+use Silber\Bouncer\UpgradeCommand;
 use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Seed\SeedCommand;
 
@@ -20,8 +21,8 @@ class BouncerServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->registerSeedCommand();
         $this->registerClipboard();
+        $this->registerCommands();
         $this->registerBouncer();
         $this->registerMorphs();
         $this->registerSeeder();
@@ -40,13 +41,14 @@ class BouncerServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register the seed command with artisan.
+     * Register Bouncer's commands with artisan.
      *
      * @return void
      */
-    protected function registerSeedCommand()
+    protected function registerCommands()
     {
         $this->commands(SeedCommand::class);
+        $this->commands(UpgradeCommand::class);
     }
 
     /**

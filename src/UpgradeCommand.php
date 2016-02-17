@@ -1,0 +1,44 @@
+<?php
+
+namespace Silber\Bouncer;
+
+use Illuminate\Console\Command;
+
+class UpgradeCommand extends Command
+{
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'bouncer:upgrade {--no-migrate}';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Upgrade from Bouncer < 0.2';
+
+    /**
+     * Execute the console command.
+     *
+     * @return void
+     */
+    public function handle()
+    {
+        $source = realpath(__DIR__.'/../../upgrade_to_bouncer_02.php');
+
+        $file = date('Y_m_d_His').'_upgrade_to_bouncer_02.php';
+
+        $target = $this->laravel->databasePath().'/migrations/'.$file;
+
+        copy($source, $target);
+
+        $this->line("<info>Created Migration:</info> {$file}");
+
+        if (! $this->getOption('no-migrate')) {
+            $this->call('migrate');
+        }
+    }
+}
