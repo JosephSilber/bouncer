@@ -46,7 +46,7 @@ class Ability extends Model
     }
 
     /**
-     * Create a new ability for all model.
+     * Create a new ability for all models.
      *
      * @param  string  $name
      * @return static
@@ -144,9 +144,7 @@ class Ability extends Model
      */
     public function scopeSimpleAbility($query)
     {
-        $query->where(function ($query) {
-            $query->whereNull('entity_id')->whereNull('entity_type');
-        });
+        $query->whereNull("{$this->table}.entity_type");
     }
 
     /**

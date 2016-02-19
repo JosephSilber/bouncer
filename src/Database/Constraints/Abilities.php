@@ -90,13 +90,10 @@ class Abilities
     protected function getAbilityNameConstraint($ability, $model)
     {
         return function ($query) use ($ability, $model) {
-            $abilities = Models::table('abilities');
-
-            $query->whereIn("{$abilities}.name", [$ability, '*']);
+            $query->byName($ability);
 
             if (is_null($model)) {
-                $query->whereNull("{$abilities}.entity_id")
-                      ->whereNull("{$abilities}.entity_type");
+                $query->simpleAbility();
             }
         };
     }
