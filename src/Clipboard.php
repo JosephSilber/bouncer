@@ -67,10 +67,7 @@ class Clipboard
             ];
         }
 
-        return [
-            head($arguments) ?: null,
-            null
-        ];
+        return [$arguments, null];
     }
 
     /**
