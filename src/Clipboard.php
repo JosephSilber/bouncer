@@ -67,10 +67,7 @@ class Clipboard
             ];
         }
 
-        return [
-            head($arguments) ?: null,
-            null
-        ];
+        return [$arguments, null];
     }
 
     /**
@@ -145,87 +142,4 @@ class Clipboard
      * Compile a list of ability identifiers that match the provided parameters.
      *
      * @param  string  $ability
-     * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
-     * @return array
-     */
-    protected function compileAbilityIdentifiers($ability, $model)
-    {
-        if (is_null($model)) {
-            return [strtolower($ability)];
-        }
-
-        return $this->compileModelAbilityIdentifiers($ability, $model);
-    }
-
-    /**
-     * Compile a list of ability identifiers that match the given model.
-     *
-     * @param  string  $ability
-     * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
-     * @return array
-     */
-    protected function compileModelAbilityIdentifiers($ability, $model)
-    {
-        $model = $model instanceof Model ? $model : new $model;
-
-        $identifier = strtolower($ability.'-'.$model->getMorphClass());
-
-        if ( ! $model->exists) {
-            return [$identifier];
-        }
-
-        return [$identifier, $identifier.'-'.$model->getKey()];
-    }
-
-    /**
-     * Get the given user's roles.
-     *
-     * @param  \Illuminate\Database\Eloquent\Model  $user
-     * @return \Illuminate\Support\Collection
-     */
-    public function getRoles(Model $user)
-    {
-        return $user->roles()->lists('name');
-    }
-
-    /**
-     * Get a list of the user's abilities.
-     *
-     * @param  \Illuminate\Database\Eloquent\Model  $user
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public function getAbilities(Model $user)
-    {
-        $query = Models::ability()->whereHas('roles', $this->getRoleUsersConstraint($user));
-
-        return $query->orWhereHas('users', $this->getUserConstraint($user))->get();
-    }
-
-    /**
-     * Constrain a roles query by the given user.
-     *
-     * @param  \Illuminate\Database\Eloquent\Model  $user
-     * @return \Closure
-     */
-    protected function getRoleUsersConstraint(Model $user)
-    {
-        return function ($query) use ($user) {
-            $query->whereHas('users', $this->getUserConstraint($user));
-        };
-    }
-
-    /**
-     * Constrain a related query to the given user.
-     *
-     * @param  \Illuminate\Database\Eloquent\Model  $user
-     * @return \Closure
-     */
-    protected function getUserConstraint(Model $user)
-    {
-        return function ($query) use ($user) {
-            $column = "{$user->getTable()}.{$user->getKeyName()}";
-
-            $query->where($column, $user->getKey());
-        };
-    }
-}
+     * @param  \Illuminate\Database\Eloquent
