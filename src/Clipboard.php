@@ -27,7 +27,7 @@ class Clipboard
      */
     public function registerAt(Gate $gate)
     {
-        $gate->before(function ($user, $ability, array $arguments, $additional = null) {
+        $gate->before(function ($user, $ability, $arguments, $additional = null) {
             list($model, $additional) = $this->parseGateArguments($arguments, $additional);
 
             if ( ! is_null($additional)) {
