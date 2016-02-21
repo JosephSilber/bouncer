@@ -27,12 +27,12 @@ class Clipboard
      */
     public function registerAt(Gate $gate)
     {
-        $gate->before(function ($user, $ability, array $arguments) {
-            if (count($arguments) > 1) {
+        $gate->before(function ($user, $ability, array $arguments, $additional = null) {
+            list($model, $additional) = $this->parseGateArguments($arguments, $additional);
+
+            if ( ! is_null($additional)) {
                 return;
             }
-
-            $model = head($arguments) ?: null;
 
             if ($id = $this->checkGetId($user, $ability, $model)) {
                 return $this->allow('Bouncer granted permission via ability #'.$id);
@@ -42,6 +42,35 @@ class Clipboard
                 return false;
             }
         });
+    }
+
+    /**
+     * Parse the arguments we got from the gate.
+     *
+     * @param  mixed  $arguments
+     * @param  mixed  $additional
+     * @return array
+     */
+    protected function parseGateArguments($arguments, $additional)
+    {
+        // The way arguments are passed into the gate's before callback has changed in Laravel
+        // in the middle of the 5.2 release. Before, arguments were spread out. Now they're
+        // all supplied in a single array instead. We will normalize it into two values.
+        if ( ! is_null($additional)) {
+            return [$arguments, $additional];
+        }
+
+        if (is_array($arguments)) {
+            return [
+                isset($arguments[0]) ? $arguments[0] : null,
+                isset($arguments[1]) ? $arguments[1] : null,
+            ];
+        }
+
+        return [
+            head($arguments) ?: null,
+            null
+        ];
     }
 
     /**
