@@ -1,5 +1,9 @@
 language: php
 
+env: 
+  - ILLUMINATE_VERSION="~5.1.20"
+  - ILLUMINATE_VERSION="5.2.*"
+
 php:
   - 5.5
   - 5.6
@@ -8,7 +12,14 @@ php:
 
 before_script:
   - travis_retry composer self-update
+  - travis_retry composer require --no-update illuminate/auth:${ILLUMINATE_VERSION}
+  - travis_retry composer require --no-update illuminate/container:${ILLUMINATE_VERSION}
+  - travis_retry composer require --no-update illuminate/contracts:${ILLUMINATE_VERSION}
+  - travis_retry composer require --no-update illuminate/database:${ILLUMINATE_VERSION}
+  - travis_retry composer require --no-update --dev illuminate/cache:${ILLUMINATE_VERSION}
+  - travis_retry composer require --no-update --dev illuminate/console:${ILLUMINATE_VERSION}
   - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-source
 
 script:
   - phpunit
+  
