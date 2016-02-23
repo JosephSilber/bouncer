@@ -12,12 +12,12 @@ php:
 
 before_script:
   - travis_retry composer self-update
-  - travis_retry composer require illuminate/auth:${ILLUMINATE_VERSION}
-  - travis_retry composer require illuminate/container:${ILLUMINATE_VERSION}
-  - travis_retry composer require illuminate/contracts:${ILLUMINATE_VERSION}
-  - travis_retry composer require illuminate/database:${ILLUMINATE_VERSION}
-  - travis_retry composer require --dev illuminate/cache:${ILLUMINATE_VERSION}
-  - travis_retry composer require --dev illuminate/console:${ILLUMINATE_VERSION}
+  - travis_retry composer require --no-update illuminate/auth:${ILLUMINATE_VERSION}
+  - travis_retry composer require --no-update illuminate/container:${ILLUMINATE_VERSION}
+  - travis_retry composer require --no-update illuminate/contracts:${ILLUMINATE_VERSION}
+  - travis_retry composer require --no-update illuminate/database:${ILLUMINATE_VERSION}
+  - travis_retry composer require --no-update --dev illuminate/cache:${ILLUMINATE_VERSION}
+  - travis_retry composer require --no-update --dev illuminate/console:${ILLUMINATE_VERSION}
   - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-source
 
 script:
