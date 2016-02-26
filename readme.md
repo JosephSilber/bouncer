@@ -95,7 +95,7 @@ php artisan migrate
 ```
 ### Facade
 
-Whenever you use the `Bouncer` facade in yout code, remember to add this line to your namespace imports at the top of the file:
+Whenever you use the `Bouncer` facade in your code, remember to add this line to your namespace imports at the top of the file:
 
 ```php
 use Bouncer;
