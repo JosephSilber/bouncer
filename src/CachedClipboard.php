@@ -93,9 +93,25 @@ class CachedClipboard extends Clipboard
     {
         $key = $this->tag.'-roles-'.$user->getKey();
 
-        return $this->cache->sear($key, function () use ($user) {
+        return $this->sear($key, function () use ($user) {
             return parent::getRoles($user);
         });
+    }
+
+    /**
+     * Get an item from the cache, or store the default value forever.
+     *
+     * @param  string  $key
+     * @param  callable  $callback
+     * @return mixed
+     */
+    protected function sear($key, callable $callback)
+    {
+        if (is_null($value = $this->cache->get($key))) {
+            $this->cache->forever($key, $value = $callback());
+        }
+
+        return $value;
     }
 
     /**

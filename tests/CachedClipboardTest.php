@@ -24,17 +24,15 @@ class CachedClipboardTest extends BaseTestCase
 
     public function test_it_caches_roles()
     {
-        $cache = new ArrayStore;
-
-        $bouncer = $this->bouncer($user = User::create())->cache($cache);
+        $bouncer = $this->bouncer($user = User::create())->cache(new ArrayStore);
 
         $bouncer->assign('editor')->to($user);
 
-        $this->assertEquals(['editor'], $this->getRoles($cache, $user));
+        $this->assertTrue($bouncer->is($user)->an('editor'));
 
         $bouncer->assign('moderator')->to($user);
 
-        $this->assertEquals(['editor'], $this->getRoles($cache, $user));
+        $this->assertFalse($bouncer->is($user)->a('moderator'));
     }
 
     public function test_it_can_refresh_the_cache()
