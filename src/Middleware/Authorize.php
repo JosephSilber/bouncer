@@ -44,9 +44,28 @@ class Authorize
             return $this->unauthorized($request);
         }
 
-        $this->gate->authorize($ability, $model ? $request->route($model) : []);
+        $this->gate->authorize($ability, $this->getGateArguments($model));
 
         return $next($request);
+    }
+
+    /**
+     * Get the arguments parameter for the gate.
+     *
+     * @param  string|null  $model
+     * @return array|string|\Illuminate\Database\Eloquent\Model
+     */
+    protected function getGateArguments($model)
+    {
+        if (is_null($model)) {
+            return [];
+        }
+
+        if (strpos($str, '\\') !== false) {
+            return $model;
+        }
+
+        return $request->route($model);
     }
 
     /**
