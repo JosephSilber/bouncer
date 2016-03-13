@@ -57,6 +57,9 @@ class Authorize
      */
     protected function getGateArguments($model)
     {
+        // If there's no model, we'll pass an empty array to the gate. If it
+        // looks like a FQCN of a model, we'll send it to the gate as is.
+        // Otherwise, we'll resolve the Eloquent model from the route.
         if (is_null($model)) {
             return [];
         }
