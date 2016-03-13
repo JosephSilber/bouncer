@@ -4,12 +4,9 @@ namespace Silber\Bouncer\Middleware;
 
 use Closure;
 use Illuminate\Auth\Access\Gate;
-use Illuminate\Auth\Access\HandlesAuthorization;
 
 class Authorize
 {
-    use HandlesAuthorization;
-
     /**
      * The access gate instance.
      *
