@@ -27,7 +27,10 @@ class Clipboard
      */
     public function registerAt(Gate $gate)
     {
-        $gate->before(function ($authority, $ability, array $arguments) {
+        $gate->before(function ($authority, $ability, $arguments = []) {
+            
+            $arguments = (array) $arguments;
+            
             if (count($arguments) > 1) {
                 return;
             }
