@@ -9,7 +9,7 @@ This package adds a bouncer at Laravel's access gate.
   - [Facade](#facade)
   - [Enabling cache](#enabling-cache)
 - [Upgrade](#upgrade)
-  - [Upgrading to 0.2](#upgrading-to-02)
+  - [Upgrading to 1.0](#upgrading-to-10)
 - [Usage](#usage)
   - [Creating roles and abilities](#creating-roles-and-abilities)
   - [Assigning roles to a user](#assigning-roles-to-a-user)
@@ -119,11 +119,11 @@ Bouncer::cache();
 
 ## Upgrade
 
-### Upgrading to 0.2
+### Upgrading to 1.0
 
-The table structure in Bouncer 0.2 has changed significantly. To make the upgrade as easy as possible, Bouncer ships with an upgrade migration file which will migrate your schema *and your data* to the new structure.
+The table structure in Bouncer 1.0 has changed significantly. To make the upgrade as easy as possible, Bouncer ships with an upgrade migration file which will migrate your schema *and your data* to the new structure.
 
-After updating to Bouncer 0.2 through composer, run the following command:
+After updating to Bouncer 1.0 through composer, run the following command:
 
 ```
 php artisan bouncer:upgrade
@@ -133,13 +133,13 @@ This will create a new migration file under `database/migrations`, and will auto
 
 Congratulations, you're done with your upgrade!
 
-If you have previously changed Bouncer's default table names, you will have to change them in this migration file. To prevent the `bouncer:upgrade` command from calling `migrate`, call it with the `no-migrate` flag:
+If you have previously changed Bouncer's default table names, you will have to change them in this migration file. To prevent the `bouncer:upgrade` command from actually migrating your database, call it with the `no-migrate` flag:
 
 ```
 php artisan bouncer:upgrade --no-migrate
 ```
 
-This will create the migration file, but will not actually migrate the database. You can now manually edit the migration file to make any changes you need. After you've made the necessary changes, remember to run the `migrate` command yourself.
+This will create the migration file, but will not actually migrate the database. You can now manually edit the migration file to make any changes you need. After you've made the necessary changes, remember to run the `php artisan migrate` command yourself.
 
 ## Usage
 
