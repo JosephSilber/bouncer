@@ -49,10 +49,11 @@ class Authorize
     /**
      * Get the arguments parameter for the gate.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  string|null  $model
      * @return array|string|\Illuminate\Database\Eloquent\Model
      */
-    protected function getGateArguments($model)
+    protected function getGateArguments($request, $model)
     {
         // If there's no model, we'll pass an empty array to the gate. If it
         // looks like a FQCN of a model, we'll send it to the gate as is.
@@ -61,7 +62,7 @@ class Authorize
             return [];
         }
 
-        if (strpos($str, '\\') !== false) {
+        if (strpos($model, '\\') !== false) {
             return $model;
         }
 
