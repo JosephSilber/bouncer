@@ -19,7 +19,7 @@ trait AuthorizesResources
     {
         $request = $request ?: request();
 
-        $method = array_last(explode('@', $request->route()->getActionName()));
+        $method = array_get(explode('@', $request->route()->getActionName()), 1);
 
         $map = [
             'index' => 'view', 'create' => 'create', 'store' => 'create', 'show' => 'view',
