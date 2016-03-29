@@ -29,7 +29,11 @@ trait AuthorizesResources
         }
 
         if ( ! in_array($method, array_keys($map))) {
-            return new ControllerMiddlewareOptions($options);
+            if (class_exists(ControllerMiddlewareOptions::class)) {
+                return new ControllerMiddlewareOptions($options);
+            }
+
+            return null;
         }
 
         $model = in_array($method, ['index', 'create', 'store']) ? $model : $name;
