@@ -17,7 +17,9 @@ trait AuthorizesResources
      */
     public function authorizeResource($name, $model, array $options = [], $request = null)
     {
-        $method = array_last(explode('@', ($request ?: request())->route()->getActionName()));
+        $request = $request ?: request();
+
+        $method = array_last(explode('@', $request->route()->getActionName()));
 
         $map = [
             'index' => 'view', 'create' => 'create', 'store' => 'create', 'show' => 'view',
