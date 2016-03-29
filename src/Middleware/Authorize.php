@@ -3,7 +3,7 @@
 namespace Silber\Bouncer\Middleware;
 
 use Closure;
-use Illuminate\Auth\Access\Gate;
+use Illuminate\Contracts\Auth\Access\Gate;
 
 class Authorize
 {
