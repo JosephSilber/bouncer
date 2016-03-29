@@ -26,6 +26,7 @@
     "require-dev": {
         "illuminate/cache": "~5.1.20|5.2.*",
         "illuminate/console": "~5.1.20|5.2.*",
+        "illuminate/routing": "^5.2",
         "phpunit/phpunit": "^4.8"
     },
     "suggest": {
