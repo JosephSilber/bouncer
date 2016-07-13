@@ -2,11 +2,18 @@
 
 use Silber\Bouncer\CachedClipboard;
 
+use Mockery as m;
 use Illuminate\Cache\ArrayStore;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Collection;
 
 class CachedClipboardTest extends BaseTestCase
 {
+    public function tearDown()
+    {
+        m::close();
+    }
+
     public function test_it_caches_abilities()
     {
         $cache = new ArrayStore;
@@ -20,6 +27,18 @@ class CachedClipboardTest extends BaseTestCase
         $bouncer->allow($user)->to('create-users');
 
         $this->assertEquals(['ban-users'], $this->getAbliities($cache, $user));
+    }
+
+    public function test_it_caches_empty_abilities()
+    {
+        $user = User::create();
+        $cache = new ArrayStore;
+
+        $clipboard = m::mock(CachedClipboard::class.'[getFreshAbilities]', [$cache]);
+        $clipboard->shouldReceive('getFreshAbilities')->once()->andReturn(new Collection);
+
+        $clipboard->getAbilities($user);
+        $clipboard->getAbilities($user);
     }
 
     public function test_it_caches_roles()

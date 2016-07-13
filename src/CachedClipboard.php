@@ -72,18 +72,26 @@ class CachedClipboard extends Clipboard
     {
         $key = $this->getCacheKey($authority, 'abilities');
 
-        $abilities = $this->cache->get($key);
-
-        if (is_array($abilities)) {
-
+        if (is_array($abilities = $this->cache->get($key))) {
             return $this->deserializeAbilities($abilities);
         }
 
-        $abilities = parent::getAbilities($authority);
+        $abilities = $this->getFreshAbilities($authority);
 
         $this->cache->forever($key, $this->serializeAbilities($abilities));
 
         return $abilities;
+    }
+
+    /**
+     * Get fresh abilities for the given authority.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $authority
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getFreshAbilities(Model $authority)
+    {
+        return parent::getAbilities($authority);
     }
 
     /**
