@@ -84,7 +84,7 @@ class CachedClipboard extends Clipboard
     }
 
     /**
-     * Get fresh abilities for the given authority.
+     * Get a fresh copy of the given authority's abilities.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @return \Illuminate\Database\Eloquent\Collection
