@@ -10,7 +10,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Role extends Model
 {
-    use HasAbilities;
+    use HasAbilities, Authorizable {
+        HasAbilities::getClipboardInstance insteadof Authorizable;
+    }
 
     /**
      * The attributes that are mass assignable.
