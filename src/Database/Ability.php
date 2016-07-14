@@ -14,4 +14,16 @@ class Ability extends Model
      * @var array
      */
     protected $fillable = ['name'];
+
+    /**
+     * Constructor.
+     *
+     * @param array  $attributes
+     */
+    public function __construct(array $attributes = [])
+    {
+        $this->table = Models::table('abilities');
+
+        parent::__construct($attributes);
+    }
 }

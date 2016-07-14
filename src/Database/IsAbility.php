@@ -8,18 +8,6 @@ use Silber\Bouncer\Database\Constraints\AbilitiesForModel;
 trait IsAbility
 {
     /**
-     * Constructor.
-     *
-     * @param array  $attributes
-     */
-    public function __construct(array $attributes = [])
-    {
-        $this->table = Models::table('abilities');
-
-        parent::__construct($attributes);
-    }
-
-    /**
      * Create a new ability for a specific model.
      *
      * @param  \Illuminate\Database\Eloquent\Model|string  $model

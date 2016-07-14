@@ -15,18 +15,6 @@ trait IsRole
     }
 
     /**
-     * Constructor.
-     *
-     * @param array  $attributes
-     */
-    public function __construct(array $attributes = [])
-    {
-        $this->table = Models::table('roles');
-
-        parent::__construct($attributes);
-    }
-
-    /**
      * The users relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphedByMany
