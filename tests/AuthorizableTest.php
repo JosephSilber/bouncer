@@ -23,7 +23,7 @@ class AuthorizableTest extends BaseTestCase
 
         $this->assertTrue($role->can('create', User::class));
         $this->assertTrue($role->cannot('create', Account::class));
-        $this->assertTrue($role->cannot('create'));
         $this->assertTrue($role->cannot('update', User::class));
+        $this->assertTrue($role->cannot('create'));
     }
 }
