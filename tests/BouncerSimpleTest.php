@@ -177,4 +177,20 @@ class BouncerSimpleTest extends BaseTestCase
         $this->assertInstanceOf(Ability::class, $ability);
         $this->assertEquals('test-ability', $ability->name);
     }
+
+    public function test_bouncer_can_allow_abilities_from_a_defined_callback()
+    {
+        $bouncer = $this->bouncer($user = User::create());
+
+        $bouncer->define('edit', function ($user, $account) {
+            if ( ! $account instanceof Account) {
+                return null;
+            }
+
+            return $user->id == $account->user_id;
+        });
+
+        $this->assertTrue($bouncer->allows('edit', new Account(['user_id' => $user->id])));
+        $this->assertFalse($bouncer->allows('edit', new Account(['user_id' => 99])));
+    }
 }

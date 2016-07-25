@@ -207,6 +207,20 @@ class Bouncer
     }
 
     /**
+     * Define a new ability using a callback.
+     *
+     * @param  string  $ability
+     * @param  callable|string  $callback
+     * @return $this
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function define($ability, $callback)
+    {
+        return $this->getGate(true)->define($ability, $callback);
+    }
+
+    /**
      * Determine if the given ability should be granted for the current authority.
      *
      * @param  string  $ability
