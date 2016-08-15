@@ -29,7 +29,7 @@ class CreateBouncerTables extends Migration
             $table->increments('id');
             $table->string('name')->unique();
             $table->string('title')->nullable();
-            $table->integer('level')->unsigned()->default(1);
+            $table->integer('level')->unsigned()->nullable(1);
             $table->timestamps();
         });
 
