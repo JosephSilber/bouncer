@@ -16,6 +16,13 @@ class Role extends Model
     protected $fillable = ['name', 'title', 'level'];
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = ['level' => 'int'];
+
+    /**
      * Constructor.
      *
      * @param array  $attributes
