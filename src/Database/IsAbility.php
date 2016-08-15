@@ -11,33 +11,28 @@ trait IsAbility
      * Create a new ability for a specific model.
      *
      * @param  \Illuminate\Database\Eloquent\Model|string  $model
-     * @param  string  $name
+     * @param  string|array  $attributes
      * @return static
      */
-    public static function createForModel($model, $name)
+    public static function createForModel($model, $attributes)
     {
-        if ($model == '*') {
-            return static::createForModelWildcard($name);
+        if (is_string($attributes)) {
+            $attributes = ['name' => $attributes];
         }
 
-        return static::forceCreate([
-            'name'        => $name,
+        if ($model == '*') {
+            return static::forceCreate($attributes + [
+                'entity_type' => '*',
+            ]);
+        }
+
+        if (is_string($model)) {
+            $model = new $model;
+        }
+
+        return static::forceCreate($attributes + [
             'entity_type' => $model->getMorphClass(),
             'entity_id'   => $model->exists ? $model->getKey() : null,
-        ]);
-    }
-
-    /**
-     * Create a new ability for all models.
-     *
-     * @param  string  $name
-     * @return static
-     */
-    public static function createForModelWildcard($name)
-    {
-        return static::forceCreate([
-            'name'        => $name,
-            'entity_type' => '*',
         ]);
     }
 
