@@ -57,7 +57,7 @@ trait HasRoles
      * @param  string  $role
      * @return bool
      */
-    public function is($role)
+    public function hasRole($role)
     {
         $roles = func_get_args();
 

@@ -104,7 +104,7 @@ class Clipboard
      */
     protected function checkGetId(Model $authority, $ability, $model = null)
     {
-        $abilities = $this->getAbilities($authority)->toBase()->lists('identifier', 'id');
+        $abilities = $this->getAbilities($authority)->toBase()->pluck('identifier', 'id');
 
         $requested = $this->compileAbilityIdentifiers($ability, $model);
 
@@ -196,7 +196,7 @@ class Clipboard
      */
     public function getRoles(Model $authority)
     {
-        return $authority->roles()->lists('name');
+        return $authority->roles()->pluck('name');
     }
 
     /**
