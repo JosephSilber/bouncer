@@ -67,12 +67,12 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $gate = $this->gate($user = User::create());
 
         $this->assertTrue($user->isNot('admin'));
-        $this->assertFalse($user->is('admin'));
+        $this->assertFalse($user->hasRole('admin'));
 
         $user->assign('admin');
 
-        $this->assertTrue($user->is('admin'));
-        $this->assertFalse($user->is('editor'));
+        $this->assertTrue($user->hasRole('admin'));
+        $this->assertFalse($user->hasRole('editor'));
         $this->assertFalse($user->isNot('admin'));
         $this->assertTrue($user->isNot('editor'));
     }
@@ -82,12 +82,12 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $gate = $this->gate($user = User::create());
 
         $this->assertTrue($user->isNot('admin', 'editor'));
-        $this->assertFalse($user->is('admin', 'editor'));
+        $this->assertFalse($user->hasRole('admin', 'editor'));
 
         $user->assign('moderator');
         $user->assign('editor');
 
-        $this->assertTrue($user->is('admin', 'moderator'));
+        $this->assertTrue($user->hasRole('admin', 'moderator'));
         $this->assertFalse($user->isNot('admin', 'moderator'));
         $this->assertTrue($user->isAll('editor', 'moderator'));
         $this->assertFalse($user->isAll('moderator', 'admin'));
