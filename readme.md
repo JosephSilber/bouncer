@@ -294,9 +294,11 @@ Bouncer::is($user)->notAn('editor', 'moderator');
 These checks can also be done directly on the user:
 
 ```php
-$user->is('admin');
+$user->isAn('admin');
+$user->isA('subscriber');
 
-$user->isNot('admin');
+$user->isNotAn('admin');
+$user->isNotA('subscriber');
 
 $user->isAll('editor', 'moderator');
 ```
@@ -337,7 +339,7 @@ Bouncer does not add its own blade directives. Since Bouncer works directly with
 Since checking for roles directly is generally [not recommended](#checking-a-users-roles), Bouncer does not ship with a separate directive for that. If you still insist on checking for roles, you can do so using the general `@if` directive:
 
 ```php
-@if ($user->is('admin'))
+@if ($user->isAn('admin'))
     //
 @endif
 ```
@@ -453,8 +455,8 @@ $user->disallow('delete', $post);
 $user->assign('admin');
 $user->retract('admin');
 
-$check = $user->is('subscriber');
-$check = $user->is('moderator', 'editor');
+$check = $user->isAn('admin');
+$check = $user->isAn('editor', 'moderator');
 $check = $user->isAll('moderator', 'editor');
 $check = $user->isNot('subscriber', 'moderator');
 
