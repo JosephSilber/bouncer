@@ -87,6 +87,6 @@ class AssignsRole
 
         $column = $model->getTable().'.'.$model->getKeyName();
 
-        return $model->whereIn($column, $ids)->whereIs($role->name)->lists($column);
+        return $model->whereIn($column, $ids)->whereIs($role->name)->pluck($column);
     }
 }

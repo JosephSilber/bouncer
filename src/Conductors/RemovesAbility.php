@@ -141,6 +141,6 @@ class RemovesAbility
             return [];
         }
 
-        return Models::ability()->whereIn('name', $names)->lists('id')->all();
+        return Models::ability()->whereIn('name', $names)->pluck('id')->all();
     }
 }

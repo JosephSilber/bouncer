@@ -110,7 +110,7 @@ class CachedClipboardTest extends BaseTestCase
     {
         $clipboard = new CachedClipboard($cache);
 
-        $abilities = $clipboard->getAbilities($user)->lists('name');
+        $abilities = $clipboard->getAbilities($user)->pluck('name');
 
         return $abilities->sort()->values()->all();
     }
