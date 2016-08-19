@@ -196,7 +196,16 @@ class Clipboard
      */
     public function getRoles(Model $authority)
     {
-        return $authority->roles()->get(['name'])->pluck('name')->toBase();
+        $collection = $authority->roles()->get(['name'])->pluck('name');
+
+        // In Laravel 5.1, "pluck" returns an Eloquent collection,
+        // so we call "toBase" on it. In 5.2, "pluck" returns a
+        // base instance, so there is no "toBase" available.
+        if (method_exists($collection, 'toBase')) {
+            $collection = $collection->toBase();
+        }
+
+        return $collection;
     }
 
     /**
