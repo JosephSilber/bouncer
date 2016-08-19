@@ -18,7 +18,7 @@ class CreateBouncerTables extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('title')->nullable();
-            $table->integer('entity_id')->unsigned()->nullable();
+            $table->string('entity_id')->nullable();
             $table->string('entity_type')->nullable();
             $table->timestamps();
 
