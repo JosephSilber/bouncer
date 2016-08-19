@@ -54,7 +54,9 @@ class GivesAbility
      */
     protected function giveAbilities(array $ids, Model $model)
     {
-        $existing = $model->abilities()->whereIn('id', $ids)->pluck('id')->all();
+        $existing = $model->abilities()->whereIn('id', $ids)
+                          ->get(['id'])->pluck('id')
+                          ->all();
 
         $ids = array_diff($ids, $existing);
 

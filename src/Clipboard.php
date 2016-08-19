@@ -196,7 +196,7 @@ class Clipboard
      */
     public function getRoles(Model $authority)
     {
-        return $authority->roles()->pluck('name');
+        return $authority->roles()->get(['name'])->pluck('name')->toBase();
     }
 
     /**
