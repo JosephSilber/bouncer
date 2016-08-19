@@ -66,15 +66,19 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
     {
         $gate = $this->gate($user = User::create());
 
+        $this->assertTrue($user->isNotAn('admin'));
+        $this->assertFalse($user->isAn('admin'));
+
+        $this->assertTrue($user->isNotA('admin'));
         $this->assertTrue($user->isNot('admin'));
-        $this->assertFalse($user->is('admin'));
+        $this->assertFalse($user->isA('admin'));
 
         $user->assign('admin');
 
-        $this->assertTrue($user->is('admin'));
-        $this->assertFalse($user->is('editor'));
-        $this->assertFalse($user->isNot('admin'));
-        $this->assertTrue($user->isNot('editor'));
+        $this->assertTrue($user->isAn('admin'));
+        $this->assertFalse($user->isAn('editor'));
+        $this->assertFalse($user->isNotAn('admin'));
+        $this->assertTrue($user->isNotAn('editor'));
     }
 
     public function test_can_check_multiple_roles()
@@ -82,12 +86,12 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $gate = $this->gate($user = User::create());
 
         $this->assertTrue($user->isNot('admin', 'editor'));
-        $this->assertFalse($user->is('admin', 'editor'));
+        $this->assertFalse($user->isAn('admin', 'editor'));
 
         $user->assign('moderator');
         $user->assign('editor');
 
-        $this->assertTrue($user->is('admin', 'moderator'));
+        $this->assertTrue($user->isAn('admin', 'moderator'));
         $this->assertFalse($user->isNot('admin', 'moderator'));
         $this->assertTrue($user->isAll('editor', 'moderator'));
         $this->assertFalse($user->isAll('moderator', 'admin'));

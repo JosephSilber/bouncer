@@ -57,7 +57,7 @@ trait HasRoles
      * @param  string  $role
      * @return bool
      */
-    public function is($role)
+    public function isAn($role)
     {
         $roles = func_get_args();
 
@@ -67,18 +67,57 @@ trait HasRoles
     }
 
     /**
+     * Check if the model has any of the given roles.
+     *
+     * Alias for the "isAn" method.
+     *
+     * @param  string  $role
+     * @return bool
+     */
+    public function isA($role)
+    {
+        return call_user_func_array([$this, 'isAn'], func_get_args());
+    }
+
+    /**
      * Check if the model has none of the given roles.
      *
      * @param  string  $role
      * @return bool
      */
-    public function isNot($role)
+    public function isNotAn($role)
     {
         $roles = func_get_args();
 
         $clipboard = $this->getClipboardInstance();
 
         return $clipboard->checkRole($this, $roles, 'not');
+    }
+
+    /**
+     * Check if the model has none of the given roles.
+     *
+     * Alias for the "isNotAn" method.
+     *
+     * @param  string  $role
+     * @return bool
+     */
+    public function isNotA($role)
+    {
+        return call_user_func_array([$this, 'isNotAn'], func_get_args());
+    }
+
+    /**
+     * Check if the model has none of the given roles.
+     *
+     * Alias for the "isNotAn" method.
+     *
+     * @param  string  $role
+     * @return bool
+     */
+    public function isNot($role)
+    {
+        return call_user_func_array([$this, 'isNotAn'], func_get_args());
     }
 
     /**
