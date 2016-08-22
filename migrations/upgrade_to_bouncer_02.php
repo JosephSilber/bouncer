@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Collection;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
@@ -73,7 +74,7 @@ class UpgradeToBouncer02 extends Migration
                 'entity_type' => $type,
                 'entity_id'   => $pivot->user_id,
             ];
-        }, $pivots);
+        }, $this->toArray($pivots));
 
         DB::table('assigned_roles')->insert($records);
     }
@@ -95,7 +96,7 @@ class UpgradeToBouncer02 extends Migration
                 'entity_type' => $type,
                 'entity_id'   => $pivot->user_id,
             ];
-        }, $pivots);
+        }, $this->toArray($pivots));
 
         DB::table('permissions')->insert($records);
     }
@@ -117,7 +118,7 @@ class UpgradeToBouncer02 extends Migration
                 'entity_type' => $type,
                 'entity_id'   => $pivot->role_id,
             ];
-        }, $pivots);
+        }, $this->toArray($pivots));
 
         DB::table('permissions')->insert($records);
     }
@@ -132,6 +133,17 @@ class UpgradeToBouncer02 extends Migration
         Schema::drop('role_abilities');
         Schema::drop('user_abilities');
         Schema::drop('user_roles');
+    }
+
+    /**
+     * Convert the given list into an array.
+     *
+     * @param  array|\Illuminate\Support\Collection  $list
+     * @return array
+     */
+    protected function toArray($list)
+    {
+        return $list instanceof Collection ? $list->all() : $list;
     }
 
     /**
