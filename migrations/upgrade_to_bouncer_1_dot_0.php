@@ -6,7 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 
 use Silber\Bouncer\Database\Models;
 
-class UpgradeToBouncer02 extends Migration
+class UpgradeToBouncer1Dot0 extends Migration
 {
     /**
      * Run the migrations.

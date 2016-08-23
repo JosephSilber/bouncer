@@ -18,7 +18,7 @@ class UpgradeCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Upgrade from Bouncer < 0.2';
+    protected $description = 'Upgrade from Bouncer < 1.0';
 
     /**
      * Execute the console command.
@@ -27,9 +27,9 @@ class UpgradeCommand extends Command
      */
     public function handle()
     {
-        $source = realpath(__DIR__.'/../migrations/upgrade_to_bouncer_02.php');
+        $source = realpath(__DIR__.'/../migrations/upgrade_to_bouncer_1_dot_0.php');
 
-        $file = date('Y_m_d_His').'_upgrade_to_bouncer_02.php';
+        $file = date('Y_m_d_His').'_upgrade_to_bouncer_1_dot_0.php';
 
         $target = $this->laravel->databasePath().'/migrations/'.$file;
 
