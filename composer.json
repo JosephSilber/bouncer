@@ -7,7 +7,7 @@
         "capabilities",
         "eloquent",
         "laravel",
-        "permissions"
+        "permissions",
         "roles"
     ],
     "license": "MIT",
