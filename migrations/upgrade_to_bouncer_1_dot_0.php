@@ -146,6 +146,9 @@ class UpgradeToBouncer1Dot0 extends Migration
         Schema::table('abilities', function (Blueprint $table) {
             $table->dropUnique('abilities_name_entity_id_entity_type_unique');
 
+            $table->string('name', 150)->change();
+            $table->string('entity_type', 150)->nullable()->change();
+
             $table->unique(
                 ['name', 'entity_id', 'entity_type', 'only_owned'],
                 'abilities_unique_index'
