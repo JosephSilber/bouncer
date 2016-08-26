@@ -21,7 +21,7 @@ class UpgradeToBouncer1Dot0 extends Migration
     }
 
     /**
-     * Create the new tables in Bouncer 0.2.
+     * Create the new tables in Bouncer 1.0.
      *
      * @return void
      */
