@@ -153,6 +153,20 @@ class UpgradeToBouncer1Dot0 extends Migration
      */
     public function down()
     {
+        // This migration does not have a rollback. The new schema is
+        // polymorphic and has additional data, so creating a down
+        // migration will prove quite difficult and error-prone.
         //
+        // If you anticipate the need to rollback migrations, do this:
+        // after running this migration, delete both this migration
+        // and the original. Then re-publish the main migration.
+        //
+        // If your app is still in development and doesn't have any real
+        // data yet, you should now drop all tables and migrate again.
+        // This'll ensure that the main migration isn't duplicated.
+        //
+        // If you are already in production, you will have to tweak the
+        // migrations table. Delete the records for the 2 migrations
+        // already run, then add a record for the republished one.
     }
 }
