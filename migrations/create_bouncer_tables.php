@@ -20,9 +20,10 @@ class CreateBouncerTables extends Migration
             $table->string('title')->nullable();
             $table->integer('entity_id')->unsigned()->nullable();
             $table->string('entity_type')->nullable();
+            $table->boolean('only_owned')->default(false);
             $table->timestamps();
 
-            $table->unique(['name', 'entity_id', 'entity_type']);
+            $table->unique(['name', 'entity_id', 'entity_type', 'only_owned']);
         });
 
         Schema::create(Models::table('roles'), function (Blueprint $table) {
