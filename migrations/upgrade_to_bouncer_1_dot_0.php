@@ -18,6 +18,7 @@ class UpgradeToBouncer1Dot0 extends Migration
         $this->createNewTables();
         $this->migrateData();
         $this->deleteOldTables();
+        $this->updateIndex();
     }
 
     /**
@@ -133,6 +134,20 @@ class UpgradeToBouncer1Dot0 extends Migration
         Schema::drop('role_abilities');
         Schema::drop('user_abilities');
         Schema::drop('user_roles');
+    }
+
+    /**
+     * Replace the old unique index on the abilities table.
+     *
+     * @return void
+     */
+    protected function updateIndex()
+    {
+        $table->dropUnique('abilities_name_entity_id_entity_type_unique');
+
+        Schema::table('abilities', function (Blueprint $table) {
+            $table->unique(['name', 'entity_id', 'entity_type', 'only_owned']);
+        });
     }
 
     /**
