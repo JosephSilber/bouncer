@@ -122,6 +122,8 @@ Bouncer::cache();
 
 The table structure in Bouncer 1.0 has changed significantly. To make the upgrade as easy as possible, Bouncer ships with an upgrade migration file which will migrate your schema *and your data* to the new structure.
 
+> **Remember:** Before migrating, be sure to run a full backup of your database! If anything goes wrong, you'll want to be able to restore from your backup.
+
 After updating to Bouncer 1.0 through composer, run the following command:
 
 ```
