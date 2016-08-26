@@ -1,7 +1,15 @@
 {
     "name": "silber/bouncer",
     "description": "Bouncer handles roles and abilities for Laravel's ACL.",
-    "keywords": ["laravel", "eloquent", "acl", "roles", "abilities", "capabilities", "permissions"],
+    "keywords": [
+        "abilities",
+        "acl",
+        "capabilities",
+        "eloquent",
+        "laravel",
+        "permissions"
+        "roles",
+    ],
     "license": "MIT",
     "authors": [
         {
