@@ -240,7 +240,15 @@ class Clipboard
                   ->whereRaw($permissions.".ability_id = ".$abilities.".id")
                   ->where($permissions.".entity_type", Models::role()->getMorphClass());
 
-            $query->whereExists($this->getAuthorityRoleConstraint($authority));
+            $query->where(function ($query) use ($roles, $authority) {
+                $query->whereExists($this->getAuthorityRoleConstraint($authority));
+
+                $query->orWhere('level', '<', function ($query) use ($roles, $authority) {
+                    $query->selectRaw('max(level)')
+                          ->from($roles)
+                          ->whereExists($this->getAuthorityRoleConstraint($authority));
+                });
+            });
         };
     }
 
