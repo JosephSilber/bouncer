@@ -8,7 +8,7 @@
         "eloquent",
         "laravel",
         "permissions"
-        "roles",
+        "roles"
     ],
     "license": "MIT",
     "authors": [
