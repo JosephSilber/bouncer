@@ -26,7 +26,7 @@ class RoleLevelsTest extends BaseTestCase
         $this->assertFalse($bouncer->allows('edit-site'));
     }
 
-    public function test_a_role_with_a_no_is_not_allowed_abilities_from_another_level()
+    public function test_a_role_with_no_level_is_not_allowed_abilities_from_another_level()
     {
         $bouncer = $this->prepareLevelsTest(null, 1);
 
