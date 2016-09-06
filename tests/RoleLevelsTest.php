@@ -33,12 +33,12 @@ class RoleLevelsTest extends BaseTestCase
         $this->assertFalse($bouncer->allows('edit-site'));
     }
 
-    protected function prepareLevelsTest($adminLevel, $editorLevel)
+    protected function prepareLevelsTest($grantedLevel, $otherLevel)
     {
         $bouncer = $this->bouncer($user = User::create());
 
-        $admin = Role::create(['name' => 'admin', 'level' => $adminLevel]);
-        $editor = Role::create(['name' => 'editor', 'level' => $editorLevel]);
+        $admin = Role::create(['name' => 'admin', 'level' => $grantedLevel]);
+        $editor = Role::create(['name' => 'editor', 'level' => $otherLevel]);
 
         $bouncer->allow($editor)->to('edit-site');
         $bouncer->assign($admin)->to($user);
