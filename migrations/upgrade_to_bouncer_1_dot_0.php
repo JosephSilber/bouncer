@@ -182,12 +182,8 @@ class UpgradeToBouncer1Dot0 extends Migration
         // after running this migration, delete both this migration
         // and the original. Then re-publish the main migration.
         //
-        // If your app is still in development and doesn't have any real
-        // data yet, you should now drop all tables and migrate again.
-        // This'll ensure that the main migration isn't duplicated.
-        //
-        // If you are already in production, you will have to tweak the
-        // migrations table. Delete the records for the 2 migrations
+        // The final step of the process is to tweak the main migrations
+        // table. Delete the records for the two migrations that have
         // already run, then add a record for the republished one.
     }
 }

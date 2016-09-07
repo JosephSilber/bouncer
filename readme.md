@@ -120,7 +120,15 @@ Bouncer::cache();
 
 ### Upgrading to 1.0
 
-The table structure in Bouncer 1.0 has changed significantly. To make the upgrade as easy as possible, Bouncer ships with an upgrade migration file which will migrate your schema *and your data* to the new structure.
+The table structure in Bouncer 1.0 has changed significantly. To upgrade, you'll have to update your database schema to the new structure.
+
+If your app has not made it to production yet and you can still rollback your migrations, do that. Once you've rolled back all migrations, you can delete the Bouncer migration file and republish it to get the newer version:
+
+```
+php artisan vendor:publish --provider="Silber\Bouncer\BouncerServiceProvider" --tag="migrations"
+```
+
+For apps that are in production and already have real data in the database, Bouncer ships with an upgrade migration file which will migrate your schema *and your data* to the new structure.
 
 > **Remember:** Before migrating, be sure to run a full backup of your database! If anything goes wrong, you'll want to be able to restore from your backup.
 
