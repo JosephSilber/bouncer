@@ -7,7 +7,6 @@ use Illuminate\Container\Container;
 use Silber\Bouncer\Clipboard;
 use Silber\Bouncer\Conductors\GivesAbility;
 use Silber\Bouncer\Conductors\RemovesAbility;
-use Silber\Bouncer\Database\Constraints\Abilities as AbilitiesConstraint;
 
 trait HasAbilities
 {
@@ -61,32 +60,6 @@ trait HasAbilities
         (new RemovesAbility($this))->to($ability, $model);
 
         return $this;
-    }
-
-    /**
-     * Constrain the given query by the provided ability.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $ability
-     * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
-     * @return void
-     */
-    public function scopeWhereCan($query, $ability, $model = null)
-    {
-        (new AbilitiesConstraint)->constrain($query, $ability, $model);
-    }
-
-    /**
-     * Constrain the given query by where the provided ability has not been allowed.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $ability
-     * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
-     * @return void
-     */
-    public function scopeWhereCannot($query, $ability, $model = null)
-    {
-        (new AbilitiesConstraint)->constrain($query, $ability, $model, false);
     }
 
     /**
