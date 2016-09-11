@@ -3,6 +3,7 @@
 namespace Silber\Bouncer;
 
 use RuntimeException;
+use Illuminate\Cache\NullStore;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Cache\Store;
 use Illuminate\Database\Eloquent\Model;
@@ -143,6 +144,18 @@ class Bouncer
         $cache = $cache ?: $this->make(CacheRepository::class)->getStore();
 
         $this->clipboard->setCache($cache);
+
+        return $this;
+    }
+
+    /**
+     * Fully disable all query caching.
+     *
+     * @return $this
+     */
+    public function dontCache()
+    {
+        $this->clipboard->setCache(new NullStore);
 
         return $this;
     }

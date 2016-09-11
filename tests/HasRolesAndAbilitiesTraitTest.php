@@ -19,37 +19,35 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
 
     public function test_can_give_and_remove_abilities()
     {
-        $gate = $this->gate($user = User::create());
+        $bouncer = $this->bouncer($user = User::create())->dontCache();
 
         $user->allow('edit-site');
 
-        $this->assertTrue($gate->allows('edit-site'));
+        $this->assertTrue($bouncer->allows('edit-site'));
 
         $user->disallow('edit-site');
-        $this->clipboard->refresh();
 
-        $this->assertTrue($gate->denies('edit-site'));
+        $this->assertTrue($bouncer->denies('edit-site'));
     }
 
     public function test_can_give_and_remove_model_abilities()
     {
-        $gate = $this->gate($user = User::create());
+        $bouncer = $this->bouncer($user = User::create())->dontCache();
 
         $user->allow('delete', $user);
 
-        $this->assertTrue($gate->denies('delete'));
-        $this->assertTrue($gate->denies('delete', User::class));
-        $this->assertTrue($gate->allows('delete', $user));
+        $this->assertTrue($bouncer->denies('delete'));
+        $this->assertTrue($bouncer->denies('delete', User::class));
+        $this->assertTrue($bouncer->allows('delete', $user));
 
         $user->disallow('delete', $user);
-        $this->clipboard->refresh();
 
-        $this->assertTrue($gate->denies('delete', $user));
+        $this->assertTrue($bouncer->denies('delete', $user));
     }
 
     public function test_can_assign_and_retract_roles()
     {
-        $bouncer = $this->bouncer($user = User::create());
+        $bouncer = $this->bouncer($user = User::create())->dontCache();
 
         $bouncer->allow('admin')->to('edit-site');
         $user->assign('admin');
@@ -57,7 +55,6 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $this->assertTrue($bouncer->allows('edit-site'));
 
         $user->retract('admin');
-        $this->clipboard->refresh();
 
         $this->assertTrue($bouncer->denies('edit-site'));
     }

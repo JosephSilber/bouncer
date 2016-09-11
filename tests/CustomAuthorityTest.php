@@ -20,14 +20,13 @@ class CustomAuthorityTest extends BaseTestCase
 
     public function test_bouncer_can_give_and_remove_abilities()
     {
-        $bouncer = $this->bouncer($account = Account::create());
+        $bouncer = $this->bouncer($account = Account::create())->dontCache();
 
         $bouncer->allow($account)->to('edit-site');
 
         $this->assertTrue($bouncer->allows('edit-site'));
 
         $bouncer->disallow($account)->to('edit-site');
-        $this->clipboard->refresh();
 
         $this->assertTrue($bouncer->denies('edit-site'));
     }
@@ -69,7 +68,7 @@ class CustomAuthorityTest extends BaseTestCase
 
     public function test_bouncer_can_give_and_remove_roles()
     {
-        $bouncer = $this->bouncer($account = Account::create());
+        $bouncer = $this->bouncer($account = Account::create())->dontCache();
 
         $bouncer->allow('admin')->to('edit-site');
         $bouncer->assign('admin')->to($account);
@@ -82,7 +81,6 @@ class CustomAuthorityTest extends BaseTestCase
 
         $bouncer->retract('admin')->from($account);
         $bouncer->retract($editor)->from($account);
-        $this->clipboard->refresh();
 
         $this->assertTrue($bouncer->denies('edit-site'));
     }
