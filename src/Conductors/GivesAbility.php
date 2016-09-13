@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Collection;
 
 class GivesAbility
 {
+    use ConductsAbilities;
+
     /**
      * The model to be given abilities.
      *

@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class RemovesAbility
 {
+    use ConductsAbilities;
+
     /**
      * The model from which to remove a ability.
      *
