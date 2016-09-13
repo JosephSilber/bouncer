@@ -3,7 +3,7 @@
 namespace Silber\Bouncer\Database;
 
 use App\User;
-use Silber\Bouncer\Database\Constraints\AbilitiesForModel;
+use Silber\Bouncer\Database\Queries\AbilitiesForModel;
 
 trait IsAbility
 {

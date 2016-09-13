@@ -7,7 +7,7 @@ use Illuminate\Container\Container;
 use Silber\Bouncer\Clipboard;
 use Silber\Bouncer\Conductors\AssignsRole;
 use Silber\Bouncer\Conductors\RemovesRole;
-use Silber\Bouncer\Database\Constraints\Roles as RolesConstraint;
+use Silber\Bouncer\Database\Queries\Roles as RolesQuery;
 
 trait HasRoles
 {
@@ -144,7 +144,7 @@ trait HasRoles
      */
     public function scopeWhereIs($query, $role)
     {
-        $constraint = new RolesConstraint;
+        $constraint = new RolesQuery;
 
         $params = array_slice(func_get_args(), 1);
 
@@ -162,7 +162,7 @@ trait HasRoles
      */
     public function scopeWhereIsAll($query, $role)
     {
-        $constrainer = new RolesConstraint;
+        $constrainer = new RolesQuery;
 
         $params = array_slice(func_get_args(), 1);
 

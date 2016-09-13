@@ -3,7 +3,7 @@
 namespace Silber\Bouncer\Database;
 
 use Silber\Bouncer\Helper;
-use Silber\Bouncer\Database\Constraints\Roles as RolesConstraint;
+use Silber\Bouncer\Database\Queries\Roles as RolesQuery;
 
 use App\User;
 use Illuminate\Database\Eloquent\Model;
@@ -97,6 +97,6 @@ trait IsRole
      */
     public function scopeWhereAssignedTo($query, $model, array $keys = null)
     {
-        (new RolesConstraint)->constrainWhereAssignedTo($query, $model, $keys);
+        (new RolesQuery)->constrainWhereAssignedTo($query, $model, $keys);
     }
 }

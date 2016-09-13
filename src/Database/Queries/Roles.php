@@ -1,6 +1,6 @@
 <?php
 
-namespace Silber\Bouncer\Database\Constraints;
+namespace Silber\Bouncer\Database\Queries;
 
 use Silber\Bouncer\Helper;
 use Silber\Bouncer\Database\Models;
