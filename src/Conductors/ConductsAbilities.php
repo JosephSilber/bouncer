@@ -5,7 +5,7 @@ namespace Silber\Bouncer\Conductors;
 trait ConductsAbilities
 {
     /**
-     * Allow/disallow all and everything.
+     * Allow/disallow all abilities on everything.
      *
      * @return mixed
      */
