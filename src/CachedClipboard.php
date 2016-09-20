@@ -139,40 +139,42 @@ class CachedClipboard extends Clipboard
 
         if ($this->cache instanceof TaggedCache) {
             $this->cache->flush();
-
-            return $this;
+        } else {
+            $this->refreshAllIteratively();
         }
-
-        return $this->refreshForAllUsersIteratively();
-    }
-
-    /**
-     * Clear the cache for the given model.
-     *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @return $this
-     */
-    public function refreshFor(Model $model)
-    {
-        $this->cache->forget($this->getCacheKey($model, 'abilities'));
-
-        $this->cache->forget($this->getCacheKey($model, 'roles'));
 
         return $this;
     }
 
     /**
-     * Refresh the cache for all users, iteratively.
+     * Clear the cache for the given authority.
      *
+     * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @return $this
      */
-    protected function refreshForAllUsersIteratively()
+    public function refreshFor(Model $authority)
+    {
+        $this->cache->forget($this->getCacheKey($authority, 'abilities'));
+
+        $this->cache->forget($this->getCacheKey($authority, 'roles'));
+
+        return $this;
+    }
+
+    /**
+     * Refresh the cache for all roles and users, iteratively.
+     *
+     * @return void
+     */
+    protected function refreshAllIteratively()
     {
         foreach (Models::user()->all() as $user) {
             $this->refreshFor($user);
         }
 
-        return $this;
+        foreach (Models::role()->all() as $role) {
+            $this->refreshFor($role);
+        }
     }
 
     /**
