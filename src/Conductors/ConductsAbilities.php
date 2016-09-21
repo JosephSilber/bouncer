@@ -17,23 +17,35 @@ trait ConductsAbilities
     /**
      * Allow/disallow all abilities on the given model.
      *
-     * @param  string|\Illuminate\Database\Eloquent\Model  $model
-     * @return mixed
+     * @param  string|array|\Illuminate\Database\Eloquent\Model  $models
+     * @return void
      */
-    public function toManage($model)
+    public function toManage($models)
     {
-        return $this->to('*', $model);
+        if (is_array($models)) {
+            foreach ($models as $model) {
+                $this->to('*', $model);
+            }
+        } else {
+            $this->to('*', $models);
+        }
     }
 
     /**
      * Allow/disallow the given ability on all models.
      *
-     * @param  string  $ability
+     * @param  array|string  $abilities
      * @return mixed
      */
-    public function toAlways($ability)
+    public function toAlways($abilities)
     {
-        return $this->to($ability, '*');
+        if (is_array($abilities)) {
+            foreach ($abilities as $ability) {
+                $this->to($ability, '*');
+            }
+        } else {
+            $this->to($abilities, '*');
+        }
     }
 
     /**
