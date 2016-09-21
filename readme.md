@@ -382,6 +382,22 @@ Bouncer::disallow($user)->to('ban-users');
 Bouncer::disallow($user)->to('edit', Post::class);
 Bouncer::disallow($user)->to('delete', $post);
 
+Bouncer::allow($user)->everything();
+Bouncer::allow($user)->toManage(Post::class);
+Bouncer::allow($user)->toManage($post);
+Bouncer::allow($user)->toAlways('view');
+
+Bouncer::disallow($user)->everything();
+Bouncer::disallow($user)->toManage(Post::class);
+Bouncer::disallow($user)->toManage($post);
+Bouncer::disallow($user)->toAlways('view');
+
+Bouncer::allow($user)->toOwn(Post::class);
+Bouncer::allow($user)->toOwnEverything();
+
+Bouncer::disallow($user)->toOwn(Post::class);
+Bouncer::disallow($user)->toOwnEverything();
+
 Bouncer::allow('admin')->to('ban-users');
 Bouncer::disallow('admin')->to('ban-users');
 
