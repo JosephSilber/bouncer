@@ -36,11 +36,12 @@ class GivesAbility
      *
      * @param  mixed  $abilities
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
+     * @param  bool  $onlyOwned
      * @return bool
      */
-    public function to($abilities, $model = null)
+    public function to($abilities, $model = null, $onlyOwned = false)
     {
-        $ids = $this->getAbilityIds($abilities, $model);
+        $ids = $this->getAbilityIds($abilities, $model, $onlyOwned);
 
         $this->giveAbilities($ids, $this->getModel());
 
@@ -84,16 +85,17 @@ class GivesAbility
      *
      * @param  \Silber\Bouncer\Database\Ability|array|int  $abilities
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
+     * @param  bool  $onlyOwned
      * @return array
      */
-    protected function getAbilityIds($abilities, $model)
+    protected function getAbilityIds($abilities, $model, $onlyOwned)
     {
         if ($abilities instanceof Ability) {
             return [$abilities->getKey()];
         }
 
         if ( ! is_null($model)) {
-            return [$this->getModelAbility($abilities, $model)->getKey()];
+            return [$this->getModelAbility($abilities, $model, $onlyOwned)->getKey()];
         }
 
         return $this->abilitiesByName($abilities)->pluck('id')->all();
@@ -104,15 +106,49 @@ class GivesAbility
      *
      * @param  string  $ability
      * @param  \Illuminate\Database\Eloquent\Model|string  $entity
+     * @param  bool  $onlyOwned
      * @return \Silber\Bouncer\Database\Ability
      */
-    protected function getModelAbility($ability, $entity)
+    protected function getModelAbility($ability, $entity, $onlyOwned)
     {
         $entity = $this->getEntityInstance($entity);
 
-        $model = Models::ability()->where('name', $ability)->forModel($entity, true)->first();
+        $existing = $this->findAbility($ability, $entity, $onlyOwned);
 
-        return $model ?: Models::ability()->createForModel($entity, $ability);
+        return $existing ?: $this->createAbility($ability, $entity, $onlyOwned);
+    }
+
+    /**
+     * Find the ability for the given entity.
+     *
+     * @param  string  $ability
+     * @param  \Illuminate\Database\Eloquent\Model|string  $entity
+     * @param  bool  $onlyOwned
+     * @return \Silber\Bouncer\Database\Ability|null
+     */
+    protected function findAbility($ability, $entity, $onlyOwned)
+    {
+        return Models::ability()
+                     ->where('name', $ability)
+                     ->forModel($entity, true)
+                     ->where('only_owned', $onlyOwned)
+                     ->first();
+    }
+
+    /**
+     * Create an ability for the given entity.
+     *
+     * @param  string  $ability
+     * @param  \Illuminate\Database\Eloquent\Model|string  $entity
+     * @param  bool  $onlyOwned
+     * @return \Silber\Bouncer\Database\Ability
+     */
+    protected function createAbility($ability, $entity, $onlyOwned)
+    {
+        return Models::ability()->createForModel($entity, [
+            'name' => $ability,
+            'only_owned' => $onlyOwned,
+        ]);
     }
 
     /**

@@ -16,12 +16,28 @@ trait IsAbility
      */
     public static function createForModel($model, $attributes)
     {
+        $model = static::makeForModel($model, $attributes);
+
+        $model->save();
+
+        return $model;
+    }
+
+    /**
+     * Make a new ability for a specific model.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model|string  $model
+     * @param  string|array  $attributes
+     * @return static
+     */
+    public static function makeForModel($model, $attributes)
+    {
         if (is_string($attributes)) {
             $attributes = ['name' => $attributes];
         }
 
         if ($model == '*') {
-            return static::forceCreate($attributes + [
+            return (new static)->forceFill($attributes + [
                 'entity_type' => '*',
             ]);
         }
@@ -30,7 +46,7 @@ trait IsAbility
             $model = new $model;
         }
 
-        return static::forceCreate($attributes + [
+        return (new static)->forceFill($attributes + [
             'entity_type' => $model->getMorphClass(),
             'entity_id'   => $model->exists ? $model->getKey() : null,
         ]);
@@ -79,6 +95,10 @@ trait IsAbility
 
         if ($this->attributes['entity_id']) {
             $slug .= '-'.$this->attributes['entity_id'];
+        }
+
+        if ($this->attributes['only_owned']) {
+            $slug .= '-owned';
         }
 
         return strtolower($slug);

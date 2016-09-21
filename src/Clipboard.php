@@ -5,6 +5,7 @@ namespace Silber\Bouncer;
 use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Database\Queries\Abilities as AbilitiesQuery;
 
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -107,15 +108,28 @@ class Clipboard
     {
         $abilities = $this->getAbilities($authority)->toBase()->pluck('identifier', 'id');
 
-        $requested = $this->compileAbilityIdentifiers($ability, $model);
+        $allowed = $this->compileAbilityIdentifiers($ability, $model);
 
-        foreach ($abilities as $id => $ability) {
-            if (in_array($ability, $requested)) {
+        if ($id = $this->getMatchedAbilityId($abilities, $allowed)) {
+            return $id;
+        }
+
+        if ($model instanceof Model && Models::isOwnedBy($authority, $model)) {
+            $id = $this->getMatchedAbilityId($abilities, $allowed->map(function ($identifier) {
+                return $identifier.'-owned';
+            }));
+        }
+
+        return $id ?: false;
+    }
+
+    protected function getMatchedAbilityId(Collection $abilityMap, Collection $allowed)
+    {
+        foreach ($abilityMap as $id => $identifier) {
+            if ($allowed->contains($identifier)) {
                 return $id;
             }
         }
-
-        return false;
     }
 
     /**
@@ -144,17 +158,17 @@ class Clipboard
      *
      * @param  string  $ability
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
-     * @return array
+     * @return \Illuminate\Support\Collection
      */
     protected function compileAbilityIdentifiers($ability, $model)
     {
         $ability = strtolower($ability);
 
         if (is_null($model)) {
-            return [$ability, '*-*', '*'];
+            return new Collection([$ability, '*-*', '*']);
         }
 
-        return $this->compileModelAbilityIdentifiers($ability, $model);
+        return new Collection($this->compileModelAbilityIdentifiers($ability, $model));
     }
 
     /**

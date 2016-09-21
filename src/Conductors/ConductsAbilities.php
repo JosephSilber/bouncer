@@ -35,4 +35,33 @@ trait ConductsAbilities
     {
         return $this->to($ability, '*');
     }
+
+    /**
+     * Allow/disallow owning the given model.
+     *
+     * @param  string  $model
+     * @param  string|array  $abilities
+     * @return void
+     */
+    public function toOwn($model, $abilities = '*')
+    {
+        if (is_string($abilities)) {
+            $this->to($abilities, $model, true);
+        } else {
+            foreach ($abilities as $ability) {
+                $this->to($ability, $model, true);
+            }
+        }
+    }
+
+    /**
+     * Allow/disallow owning all models.
+     *
+     * @param  string|array  $abilities
+     * @return mixed
+     */
+    public function toOwnEverything($abilities = '*')
+    {
+        return $this->toOwn('*', $abilities);
+    }
 }

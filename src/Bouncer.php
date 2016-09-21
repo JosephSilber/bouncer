@@ -280,6 +280,20 @@ class Bouncer
     }
 
     /**
+     * Register an attribute/callback to determine if a model is owned by a given authority.
+     *
+     * @param  string|\Closure  $model
+     * @param  string|\Closure|null  $attribute
+     * @return void
+     */
+    public function ownedVia($model, $attribute = null)
+    {
+        Models::ownedVia($model, $attribute);
+
+        return $this;
+    }
+
+    /**
      * Set the model to be used for abilities.
      *
      * @param string  $model

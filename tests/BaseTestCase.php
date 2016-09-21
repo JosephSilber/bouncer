@@ -50,13 +50,20 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
 
         (new CreateBouncerTables)->up();
 
-        $this->migratedTestTables();
+        $this->migrateTestTables();
     }
 
-    protected function migratedTestTables()
+    protected function migrateTestTables()
     {
         Schema::create('users', function ($table) {
             $table->increments('id');
+            $table->string('name')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('accounts', function ($table) {
+            $table->increments('id');
+            $table->integer('user_id')->unsigned()->nullable();
             $table->string('name')->nullable();
             $table->timestamps();
         });
@@ -79,6 +86,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
     protected function rollbackTestTables()
     {
         Schema::drop('users');
+        Schema::drop('accounts');
     }
 
     /**

@@ -33,15 +33,16 @@ class RemovesAbility
      *
      * @param  mixed  $abilities
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $entity
+     * @param  bool  $onlyOwned
      * @return bool
      */
-    public function to($abilities, $entity = null)
+    public function to($abilities, $entity = null, $onlyOwned = false)
     {
         if ( ! $model = $this->getModel()) {
             return false;
         }
 
-        if ($ids = $this->getAbilityIds($abilities, $entity)) {
+        if ($ids = $this->getAbilityIds($abilities, $entity, $onlyOwned)) {
             $model->abilities()->detach($ids);
         }
 
@@ -66,13 +67,14 @@ class RemovesAbility
      * Get the IDs of the provided abilities.
      *
      * @param  mixed  $abilities
-     * @param  \ELoquent\Database\Eloquent\Model|string|null  $model
+     * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
+     * @param  bool  $onlyOwned
      * @return array|int
      */
-    protected function getAbilityIds($abilities, $model)
+    protected function getAbilityIds($abilities, $model, $onlyOwned)
     {
         if ( ! is_null($model)) {
-            return $this->getModelAbilityId($abilities, $model);
+            return $this->getModelAbilityId($abilities, $model, $onlyOwned);
         }
 
         $abilities = is_array($abilities) ? $abilities : [$abilities];
@@ -89,13 +91,15 @@ class RemovesAbility
      *
      * @param  string  $ability
      * @param  \Illuminate\Database\Eloquent\Model|string  $model
+     * @param  bool  $onlyOwned
      * @return int|null
      */
-    protected function getModelAbilityId($ability, $model)
+    protected function getModelAbilityId($ability, $model, $onlyOwned)
     {
         return Models::ability()
                      ->byName($ability, true)
                      ->forModel($model, true)
+                     ->where('only_owned', $onlyOwned)
                      ->value('id');
     }
 
@@ -143,9 +147,10 @@ class RemovesAbility
             return [];
         }
 
-        return Models::ability()->whereIn('name', $names)
-                                ->get(['id'])
-                                ->pluck('id')
-                                ->all();
+        return Models::ability()
+                     ->whereIn('name', $names)
+                     ->get(['id'])
+                     ->pluck('id')
+                     ->all();
     }
 }

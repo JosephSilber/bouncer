@@ -2,7 +2,9 @@
 
 namespace Silber\Bouncer\Database;
 
+use Closure;
 use App\User;
+use Illuminate\Database\Eloquent\Model;
 
 class Models
 {
@@ -19,6 +21,13 @@ class Models
      * @var array
      */
     protected static $tables = [];
+
+    /**
+     * Holds the map of ownership for models.
+     *
+     * @var array
+     */
+    protected static $ownership = [];
 
     /**
      * Set the model to be used for abilities.
@@ -95,6 +104,61 @@ class Models
     }
 
     /**
+     * Register an attribute/callback to determine if a model is owned by a given authority.
+     *
+     * @param  string|\Closure  $model
+     * @param  string|\Closure|null  $attribute
+     * @return void
+     */
+    public static function ownedVia($model, $attribute = null)
+    {
+        if (is_null($attribute)) {
+            static::$ownership['*'] = $model;
+        }
+
+        static::$ownership[$model] = $attribute;
+    }
+
+    /**
+     * Determines whether the given model is owned by the given authority.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $authority
+     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @return bool
+     */
+    public static function isOwnedBy(Model $authority, Model $model)
+    {
+        $type = strtolower(static::basename($model));
+
+        if (isset(static::$ownership[$type])) {
+            $attribute = static::$ownership[$type];
+        } elseif (isset(static::$ownership['*'])) {
+            $attribute = static::$ownership['*'];
+        } else {
+            $attribute = strtolower(static::basename($authority)).'_id';
+        }
+
+        return static::isOwnedVia($attribute, $authority, $model);
+    }
+
+    /**
+     * Determines ownership via the given attribute.
+     *
+     * @param  string|\Closure  $attribute
+     * @param  \Illuminate\Database\Eloquent\Model  $authority
+     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @return bool
+     */
+    protected static function isOwnedVia($attribute, Model $authority, Model $model)
+    {
+        if ($attribute instanceof Closure) {
+            return $attribute($model, $authority);
+        }
+
+        return $authority->getKey() == $model->{$attribute};
+    }
+
+    /**
      * Get an instance of the ability model.
      *
      * @param  array  $attributes
@@ -128,6 +192,16 @@ class Models
     }
 
     /**
+     * Reset all settings to their original state.
+     *
+     * @return void
+     */
+    public static function reset()
+    {
+        static::$models = static::$tables = static::$ownership = [];
+    }
+
+    /**
      * Get an instance of the given model.
      *
      * @param  string  $model
@@ -139,5 +213,22 @@ class Models
         $model = static::classname($model);
 
         return new $model($attributes);
+    }
+
+    /**
+     * Get the basename of the given class.
+     *
+     * @param  string|object  $class
+     * @return string
+     */
+    protected static function basename($class)
+    {
+        if ( ! is_string($class)) {
+            $class = get_class($class);
+        }
+
+        $segments = explode('\\', $class);
+
+        return end($segments);
     }
 }
