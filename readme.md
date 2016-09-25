@@ -416,6 +416,8 @@ $check = Bouncer::is($user)->a('moderator', 'editor');
 $check = Bouncer::is($user)->all('moderator', 'editor');
 
 Bouncer::cache();
+Bouncer::dontCache();
+
 Bouncer::refresh();
 Bouncer::refreshFor($user);
 ```
