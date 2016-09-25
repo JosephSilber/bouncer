@@ -374,42 +374,31 @@ Bouncer::refreshFor($user);
 ## Cheat Sheet
 
 ```php
+// Adding abilities for users
 Bouncer::allow($user)->to('ban-users');
 Bouncer::allow($user)->to('edit', Post::class);
 Bouncer::allow($user)->to('delete', $post);
-
-Bouncer::disallow($user)->to('ban-users');
-Bouncer::disallow($user)->to('edit', Post::class);
-Bouncer::disallow($user)->to('delete', $post);
 
 Bouncer::allow($user)->everything();
 Bouncer::allow($user)->toManage(Post::class);
 Bouncer::allow($user)->toManage($post);
 Bouncer::allow($user)->toAlways('view');
 
-Bouncer::disallow($user)->everything();
-Bouncer::disallow($user)->toManage(Post::class);
-Bouncer::disallow($user)->toManage($post);
-Bouncer::disallow($user)->toAlways('view');
-
 Bouncer::allow($user)->toOwn(Post::class);
 Bouncer::allow($user)->toOwnEverything();
 
+// Removing abilities uses the same syntax, e.g.
+Bouncer::disallow($user)->to('delete', $post);
+Bouncer::disallow($user)->toManage(Post::class);
 Bouncer::disallow($user)->toOwn(Post::class);
-Bouncer::disallow($user)->toOwnEverything();
 
+// Adding & removing abilities for roles
 Bouncer::allow('admin')->to('ban-users');
 Bouncer::disallow('admin')->to('ban-users');
 
+// Assigning & retracting roles from users
 Bouncer::assign('admin')->to($user);
 Bouncer::retract('admin')->from($user);
-
-$check = Bouncer::is($user)->a('subscriber');
-$check = Bouncer::is($user)->an('admin');
-$check = Bouncer::is($user)->notA('subscriber');
-$check = Bouncer::is($user)->notAn('admin');
-$check = Bouncer::is($user)->a('moderator', 'editor');
-$check = Bouncer::is($user)->all('moderator', 'editor');
 
 $check = Bouncer::allows('ban-users');
 $check = Bouncer::allows('edit', Post::class);
@@ -419,12 +408,16 @@ $check = Bouncer::denies('ban-users');
 $check = Bouncer::denies('edit', Post::class);
 $check = Bouncer::denies('delete', $post);
 
+$check = Bouncer::is($user)->a('subscriber');
+$check = Bouncer::is($user)->an('admin');
+$check = Bouncer::is($user)->notA('subscriber');
+$check = Bouncer::is($user)->notAn('admin');
+$check = Bouncer::is($user)->a('moderator', 'editor');
+$check = Bouncer::is($user)->all('moderator', 'editor');
+
 Bouncer::cache();
 Bouncer::refresh();
 Bouncer::refreshFor($user);
-
-Bouncer::seeder($callback);
-Bouncer::seed();
 ```
 
 Some of this functionality is also available directly on the user model:
