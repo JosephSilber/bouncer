@@ -17,6 +17,8 @@ use Silber\Bouncer\Conductors\AssignsRole;
 use Silber\Bouncer\Conductors\RemovesRole;
 use Silber\Bouncer\Conductors\GivesAbility;
 use Silber\Bouncer\Conductors\RemovesAbility;
+use Silber\Bouncer\Conductors\ForbidsAbility;
+use Silber\Bouncer\Conductors\UnforbidsAbility;
 
 class Bouncer
 {
@@ -79,25 +81,47 @@ class Bouncer
     }
 
     /**
-     * Start a chain, to allow the given role a ability.
+     * Start a chain, to allow the given authority an ability.
      *
-     * @param  \Silber\Bouncer\Database\Role|string  $role
+     * @param  \Illuminate\Database\Eloquent\Model|string  $authority
      * @return \Silber\Bouncer\Conductors\GivesAbility
      */
-    public function allow($role)
+    public function allow($authority)
     {
-        return new GivesAbility($role);
+        return new GivesAbility($authority);
     }
 
     /**
-     * Start a chain, to disallow the given role a ability.
+     * Start a chain, to disallow the given authority an ability.
      *
-     * @param  \Silber\Bouncer\Database\Role|string  $role
+     * @param  \Illuminate\Database\Eloquent\Model|string  $authority
      * @return \Silber\Bouncer\Conductors\RemovesAbility
      */
-    public function disallow($role)
+    public function disallow($authority)
     {
-        return new RemovesAbility($role);
+        return new RemovesAbility($authority);
+    }
+
+    /**
+     * Start a chain, to forbid the given authority an ability.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model|string  $authority
+     * @return \Silber\Bouncer\Conductors\GivesAbility
+     */
+    public function forbid($authority)
+    {
+        return new ForbidsAbility($authority);
+    }
+
+    /**
+     * Start a chain, to unforbid the given authority an ability.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model|string  $authority
+     * @return \Silber\Bouncer\Conductors\RemovesAbility
+     */
+    public function unforbid($authority)
+    {
+        return new UnforbidsAbility($authority);
     }
 
     /**

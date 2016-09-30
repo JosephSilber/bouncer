@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Silber\Bouncer\Conductors\Traits\ConductsAbilities;
 use Silber\Bouncer\Conductors\Traits\AssociatesAbilities;
 
-class GivesAbility
+class ForbidsAbility
 {
     use AssociatesAbilities, ConductsAbilities;
 
     /**
-     * The authority to be given abilities.
+     * The authority to be forbidden from the abilities.
      *
      * @var \Illuminate\Database\Eloquent\Model|string
      */
@@ -28,7 +28,7 @@ class GivesAbility
     }
 
     /**
-     * Give the abilities to the authority.
+     * Forbid the abilities to the authority.
      *
      * @param  mixed  $abilities
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
@@ -39,22 +39,22 @@ class GivesAbility
     {
         $ids = $this->getAbilityIds($abilities, $model, $onlyOwned);
 
-        $this->giveAbilities($ids, $this->getAuthority());
+        $this->forbidAbilities($ids, $this->getAuthority());
 
         return true;
     }
 
     /**
-     * Associate the given abilitiy IDs as allowed abilities.
+     * Associate the given abilitiy IDs as forbidden abilities.
      *
      * @param  array  $ids
      * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @return void
      */
-    protected function giveAbilities(array $ids, Model $authority)
+    protected function forbidAbilities(array $ids, Model $authority)
     {
-        $ids = array_diff($ids, $this->getAssociatedAbilityIds($authority, $ids, false));
+        $ids = array_diff($ids, $this->getAssociatedAbilityIds($authority, $ids, true));
 
-        $authority->abilities()->attach($ids);
+        $authority->abilities()->attach($ids, ['forbidden' => true]);
     }
 }

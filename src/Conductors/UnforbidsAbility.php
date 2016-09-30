@@ -9,12 +9,12 @@ use Silber\Bouncer\Conductors\Traits\DisassociatesAbilities;
 
 use Illuminate\Database\Eloquent\Model;
 
-class RemovesAbility
+class UnforbidsAbility
 {
     use ConductsAbilities, DisassociatesAbilities;
 
     /**
-     * The model from which to remove a ability.
+     * The model from which to remove the forbiddal.
      *
      * @var \Illuminate\Database\Eloquent\Model|string
      */
@@ -40,7 +40,7 @@ class RemovesAbility
     protected function detachAbilities(Model $model, array $ids)
     {
         $this->detachAbilitiesWithPivotConstraints($model, $ids, [
-            'forbidden' => false,
+            'forbidden' => true,
         ]);
     }
 }

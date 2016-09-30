@@ -2,18 +2,37 @@
 
 class HasRolesAndAbilitiesTraitTest extends BaseTestCase
 {
-    public function test_get_abilities_gets_all_abilities()
+    public function test_get_abilities_gets_all_allowed_abilities()
     {
         $bouncer = $this->bouncer($user = User::create());
 
         $bouncer->allow('admin')->to('edit-site');
         $bouncer->allow($user)->to('create-posts');
-        $bouncer->allow('editor')->to('edit-posts');
         $bouncer->assign('admin')->to($user);
+
+        $bouncer->forbid($user)->to('create-sites');
+        $bouncer->allow('editor')->to('edit-posts');
 
         $this->assertEquals(
             ['create-posts', 'edit-site'],
             $user->getAbilities()->pluck('name')->sort()->values()->all()
+        );
+    }
+
+    public function test_get_forbidden_abilities_gets_all_forbidden_abilities()
+    {
+        $bouncer = $this->bouncer($user = User::create());
+
+        $bouncer->forbid('admin')->to('edit-site');
+        $bouncer->forbid($user)->to('create-posts');
+        $bouncer->assign('admin')->to($user);
+
+        $bouncer->allow($user)->to('create-sites');
+        $bouncer->forbid('editor')->to('edit-posts');
+
+        $this->assertEquals(
+            ['create-posts', 'edit-site'],
+            $user->getForbiddenAbilities()->pluck('name')->sort()->values()->all()
         );
     }
 

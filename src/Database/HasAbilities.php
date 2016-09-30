@@ -25,13 +25,23 @@ trait HasAbilities
     }
 
     /**
-     * Get all of the model's abilities.
+     * Get all of the model's allowed abilities.
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getAbilities()
     {
         return $this->getClipboardInstance()->getAbilities($this);
+    }
+
+    /**
+     * Get all of the model's allowed abilities.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getForbiddenAbilities()
+    {
+        return $this->getClipboardInstance()->getAbilities($this, false);
     }
 
     /**

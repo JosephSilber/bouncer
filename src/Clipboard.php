@@ -106,27 +106,61 @@ class Clipboard
      */
     protected function checkGetId(Model $authority, $ability, $model = null)
     {
-        $abilities = $this->getAbilities($authority)->toBase()->pluck('identifier', 'id');
+        $applicable = $this->compileAbilityIdentifiers($ability, $model);
 
-        $allowed = $this->compileAbilityIdentifiers($ability, $model);
+        // We will first check if any of the applicable abilities have been forbidden.
+        // If so, we'll return false right away, so as to not pass the check. Then,
+        // we'll check if any of them have been allowed & return the matched ID.
+        $forbiddenId = $this->findMatchingAbility(
+            $this->getForbiddenAbilities($authority), $applicable, $model, $authority
+        );
 
-        if ($id = $this->getMatchedAbilityId($abilities, $allowed)) {
+        if ($forbiddenId) {
+            return false;
+        }
+
+        $allowedId = $this->findMatchingAbility(
+            $this->getAbilities($authority), $applicable, $model, $authority
+        );
+
+        return $allowedId ?: false;
+    }
+
+    /**
+     * Determine if any of the abilities can be matched against the provided applicable ones.
+     *
+     * @param  \Illuminate\Support\Collection  $abilities
+     * @param  \Illuminate\Support\Collection  $applicable
+     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  \Illuminate\Database\Eloquent\Model  $authority
+     * @return int|null
+     */
+    protected function findMatchingAbility($abilities, $applicable, $model, $authority)
+    {
+        $abilities = $abilities->toBase()->pluck('identifier', 'id');
+
+        if ($id = $this->getMatchedAbilityId($abilities, $applicable)) {
             return $id;
         }
 
         if ($model instanceof Model && Models::isOwnedBy($authority, $model)) {
-            $id = $this->getMatchedAbilityId($abilities, $allowed->map(function ($identifier) {
+            return $this->getMatchedAbilityId($abilities, $applicable->map(function ($identifier) {
                 return $identifier.'-owned';
             }));
         }
-
-        return $id ?: false;
     }
 
-    protected function getMatchedAbilityId(Collection $abilityMap, Collection $allowed)
+    /**
+     * Get the ID of the ability that matches one of the applicable abilities.
+     *
+     * @param  \Illuminate\Support\Collection  $abilityMap
+     * @param  \Illuminate\Support\Collection  $applicable
+     * @return int|null
+     */
+    protected function getMatchedAbilityId(Collection $abilityMap, Collection $applicable)
     {
         foreach ($abilityMap as $id => $identifier) {
-            if ($allowed->contains($identifier)) {
+            if ($applicable->contains($identifier)) {
                 return $id;
             }
         }
@@ -227,10 +261,22 @@ class Clipboard
      * Get a list of the authority's abilities.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $authority
+     * @param  bool  $allowed
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getAbilities(Model $authority)
+    public function getAbilities(Model $authority, $allowed = true)
     {
-        return (new AbilitiesQuery)->getForAuthority($authority);
+        return (new AbilitiesQuery)->getForAuthority($authority, $allowed);
+    }
+
+    /**
+     * Get a list of the authority's forbidden abilities.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $authority
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getForbiddenAbilities(Model $authority)
+    {
+        return $this->getAbilities($authority, false);
     }
 }

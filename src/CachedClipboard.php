@@ -66,17 +66,18 @@ class CachedClipboard extends Clipboard
      * Get the given authority's abilities.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $authority
+     * @param  bool  $allowed
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getAbilities(Model $authority)
+    public function getAbilities(Model $authority, $allowed = true)
     {
-        $key = $this->getCacheKey($authority, 'abilities');
+        $key = $this->getCacheKey($authority, 'abilities', $allowed);
 
         if (is_array($abilities = $this->cache->get($key))) {
             return $this->deserializeAbilities($abilities);
         }
 
-        $abilities = $this->getFreshAbilities($authority);
+        $abilities = $this->getFreshAbilities($authority, $allowed);
 
         $this->cache->forever($key, $this->serializeAbilities($abilities));
 
@@ -87,11 +88,12 @@ class CachedClipboard extends Clipboard
      * Get a fresh copy of the given authority's abilities.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $authority
+     * @param  bool  $allowed
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getFreshAbilities(Model $authority)
+    public function getFreshAbilities(Model $authority, $allowed)
     {
-        return parent::getAbilities($authority);
+        return parent::getAbilities($authority, $allowed);
     }
 
     /**
@@ -154,8 +156,8 @@ class CachedClipboard extends Clipboard
      */
     public function refreshFor(Model $authority)
     {
-        $this->cache->forget($this->getCacheKey($authority, 'abilities'));
-
+        $this->cache->forget($this->getCacheKey($authority, 'abilities', true));
+        $this->cache->forget($this->getCacheKey($authority, 'abilities', false));
         $this->cache->forget($this->getCacheKey($authority, 'roles'));
 
         return $this;
@@ -182,15 +184,17 @@ class CachedClipboard extends Clipboard
      *
      * @param  \Illuminate\Database\Eloquent\Model  $model
      * @param  string  $type
+     * @param  bool  $allowed
      * @return string
      */
-    protected function getCacheKey(Model $model, $type)
+    protected function getCacheKey(Model $model, $type, $allowed = true)
     {
         return implode('-', [
             $this->tag,
             $type,
             $model->getMorphClass(),
             $model->getKey(),
+            $allowed ? 'a' : 'f',
         ]);
     }
 
