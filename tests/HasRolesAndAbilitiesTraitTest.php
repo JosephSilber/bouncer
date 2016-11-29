@@ -64,6 +64,34 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $this->assertTrue($bouncer->denies('delete', $user));
     }
 
+    public function test_can_forbid_and_unforbid_abilities()
+    {
+        $bouncer = $this->bouncer($user = User::create())->dontCache();
+
+        $user->allow('edit-site');
+        $user->forbid('edit-site');
+
+        $this->assertTrue($bouncer->denies('edit-site'));
+
+        $user->unforbid('edit-site');
+
+        $this->assertTrue($bouncer->allows('edit-site'));
+    }
+
+    public function test_can_forbid_and_unforbid_model_abilities()
+    {
+        $bouncer = $this->bouncer($user = User::create())->dontCache();
+
+        $user->allow('delete', $user);
+        $user->forbid('delete', $user);
+
+        $this->assertTrue($bouncer->denies('delete', $user));
+
+        $user->unforbid('delete', $user);
+
+        $this->assertTrue($bouncer->allows('delete', $user));
+    }
+
     public function test_can_assign_and_retract_roles()
     {
         $bouncer = $this->bouncer($user = User::create())->dontCache();

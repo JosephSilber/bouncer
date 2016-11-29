@@ -6,7 +6,9 @@ use Illuminate\Container\Container;
 
 use Silber\Bouncer\Clipboard;
 use Silber\Bouncer\Conductors\GivesAbility;
+use Silber\Bouncer\Conductors\ForbidsAbility;
 use Silber\Bouncer\Conductors\RemovesAbility;
+use Silber\Bouncer\Conductors\UnforbidsAbility;
 
 trait HasAbilities
 {
@@ -45,7 +47,7 @@ trait HasAbilities
     }
 
     /**
-     * Give abilities to the model.
+     * Give an ability to the model.
      *
      * @param  mixed  $ability
      * @param  mixed|null  $model
@@ -59,7 +61,7 @@ trait HasAbilities
     }
 
     /**
-     * Remove abilities from the model.
+     * Remove an ability from the model.
      *
      * @param  mixed  $ability
      * @param  mixed|null  $model
@@ -68,6 +70,34 @@ trait HasAbilities
     public function disallow($ability, $model = null)
     {
         (new RemovesAbility($this))->to($ability, $model);
+
+        return $this;
+    }
+
+    /**
+     * Forbid an ability to the model.
+     *
+     * @param  mixed  $ability
+     * @param  mixed|null  $model
+     * @return $this
+     */
+    public function forbid($ability, $model = null)
+    {
+        (new ForbidsAbility($this))->to($ability, $model);
+
+        return $this;
+    }
+
+    /**
+     * Remove ability forbiddal from the model.
+     *
+     * @param  mixed  $ability
+     * @param  mixed|null  $model
+     * @return $this
+     */
+    public function unforbid($ability, $model = null)
+    {
+        (new UnforbidsAbility($this))->to($ability, $model);
 
         return $this;
     }
