@@ -87,4 +87,49 @@ class ForbidTest extends BaseTestCase
 
         $this->assertTrue($bouncer->denies('delete', $user));
     }
+
+    public function test_forbidding_an_through_a_role()
+    {
+        $bouncer = $this->bouncer($user = User::create())->dontCache();
+
+        $bouncer->forbid('admin')->to('delete', User::class);
+        $bouncer->allow($user)->to('delete', User::class);
+        $bouncer->assign('admin')->to($user);
+
+        $this->assertTrue($bouncer->denies('delete', User::class));
+        $this->assertTrue($bouncer->denies('delete', $user));
+
+        $bouncer->unforbid('admin')->to('delete', User::class);
+
+        $this->assertTrue($bouncer->allows('delete', User::class));
+        $this->assertTrue($bouncer->allows('delete', $user));
+
+        $bouncer->forbid('admin')->to('delete', $user);
+
+        $this->assertTrue($bouncer->allows('delete', User::class));
+        $this->assertTrue($bouncer->denies('delete', $user));
+    }
+
+    public function test_forbidding_an_ability_allowed_through_a_role()
+    {
+        $bouncer = $this->bouncer($user = User::create())->dontCache();
+
+        $bouncer->allow('admin')->to('delete', User::class);
+        $bouncer->forbid($user)->to('delete', User::class);
+        $bouncer->assign('admin')->to($user);
+
+        $this->assertTrue($bouncer->denies('delete', User::class));
+        $this->assertTrue($bouncer->denies('delete', $user));
+    }
+
+    public function test_forbidding_an_ability_when_everything_is_allowed()
+    {
+        $bouncer = $this->bouncer($user = User::create())->dontCache();
+
+        $bouncer->allow($user)->everything();
+        $bouncer->forbid($user)->toManage(User::class);
+
+        $this->assertTrue($bouncer->allows('create', Account::class));
+        $this->assertTrue($bouncer->denies('create', User::class));
+    }
 }
