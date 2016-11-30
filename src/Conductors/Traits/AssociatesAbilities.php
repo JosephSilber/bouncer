@@ -30,20 +30,20 @@ trait AssociatesAbilities
      *
      * @param  \Silber\Bouncer\Database\Ability|array|int  $abilities
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
-     * @param  bool  $onlyOwned
+     * @param  array  $attributes
      * @return array
      */
-    protected function getAbilityIds($abilities, $model, $onlyOwned)
+    protected function getAbilityIds($abilities, $model, $attributes)
     {
         if ($abilities instanceof Ability) {
             return [$abilities->getKey()];
         }
 
         if ( ! is_null($model)) {
-            return [$this->getModelAbility($abilities, $model, $onlyOwned)->getKey()];
+            return [$this->getModelAbility($abilities, $model, $attributes)->getKey()];
         }
 
-        return $this->abilitiesByName($abilities)->pluck('id')->all();
+        return $this->abilitiesByName($abilities, $attributes)->pluck('id')->all();
     }
 
     /**
@@ -51,16 +51,16 @@ trait AssociatesAbilities
      *
      * @param  string  $ability
      * @param  \Illuminate\Database\Eloquent\Model|string  $entity
-     * @param  bool  $onlyOwned
+     * @param  array  $attributes
      * @return \Silber\Bouncer\Database\Ability
      */
-    protected function getModelAbility($ability, $entity, $onlyOwned)
+    protected function getModelAbility($ability, $entity, $attributes)
     {
         $entity = $this->getEntityInstance($entity);
 
-        $existing = $this->findAbility($ability, $entity, $onlyOwned);
+        $existing = $this->findAbility($ability, $entity, $attributes);
 
-        return $existing ?: $this->createAbility($ability, $entity, $onlyOwned);
+        return $existing ?: $this->createAbility($ability, $entity, $attributes);
     }
 
     /**
@@ -68,11 +68,13 @@ trait AssociatesAbilities
      *
      * @param  string  $ability
      * @param  \Illuminate\Database\Eloquent\Model|string  $entity
-     * @param  bool  $onlyOwned
+     * @param  array  $attributes
      * @return \Silber\Bouncer\Database\Ability|null
      */
-    protected function findAbility($ability, $entity, $onlyOwned)
+    protected function findAbility($ability, $entity, $attributes)
     {
+        $onlyOwned = isset($attributes['only_owned']) ? $attributes['only_owned'] : false;
+
         return Models::ability()
                      ->where('name', $ability)
                      ->forModel($entity, true)
@@ -85,14 +87,13 @@ trait AssociatesAbilities
      *
      * @param  string  $ability
      * @param  \Illuminate\Database\Eloquent\Model|string  $entity
-     * @param  bool  $onlyOwned
+     * @param  array  $attributes
      * @return \Silber\Bouncer\Database\Ability
      */
-    protected function createAbility($ability, $entity, $onlyOwned)
+    protected function createAbility($ability, $entity, $attributes)
     {
-        return Models::ability()->createForModel($entity, [
+        return Models::ability()->createForModel($entity, $attributes + [
             'name' => $ability,
-            'only_owned' => $onlyOwned,
         ]);
     }
 
@@ -128,15 +129,16 @@ trait AssociatesAbilities
      * Get or create abilities by their name.
      *
      * @param  array|string  $ability
+     * @param  array  $attributes
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    protected function abilitiesByName($ability)
+    protected function abilitiesByName($ability, $attributes = [])
     {
         $abilities = array_unique(is_array($ability) ? $ability : [$ability]);
 
         $models = Models::ability()->simpleAbility()->whereIn('name', $abilities)->get();
 
-        $created = $this->createMissingAbilities($models, $abilities);
+        $created = $this->createMissingAbilities($models, $abilities, $attributes);
 
         return $models->merge($created);
     }
@@ -146,16 +148,17 @@ trait AssociatesAbilities
      *
      * @param  \Illuminate\Database\Eloquent\Collection  $models
      * @param  array  $abilities
+     * @param  array  $attributes
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    protected function createMissingAbilities(Collection $models, array $abilities)
+    protected function createMissingAbilities(Collection $models, array $abilities, $attributes = [])
     {
         $missing = array_diff($abilities, $models->pluck('name')->all());
 
         $created = [];
 
         foreach ($missing as $ability) {
-            $created[] = Models::ability()->create(['name' => $ability]);
+            $created[] = Models::ability()->create($attributes + ['name' => $ability]);
         }
 
         return $created;

@@ -16,16 +16,16 @@ trait DisassociatesAbilities
      *
      * @param  mixed  $abilities
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $entity
-     * @param  bool  $onlyOwned
+     * @param  array  $attributes
      * @return bool
      */
-    public function to($abilities, $entity = null, $onlyOwned = false)
+    public function to($abilities, $entity = null, array $attributes = [])
     {
         if ( ! $model = $this->getModel()) {
             return false;
         }
 
-        if ($ids = $this->getAbilityIds($abilities, $entity, $onlyOwned)) {
+        if ($ids = $this->getAbilityIds($abilities, $entity, $attributes)) {
             $this->detachAbilities($model, $ids);
         }
 
@@ -71,13 +71,13 @@ trait DisassociatesAbilities
      *
      * @param  mixed  $abilities
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
-     * @param  bool  $onlyOwned
+     * @param  array  $attributes
      * @return array
      */
-    protected function getAbilityIds($abilities, $model, $onlyOwned)
+    protected function getAbilityIds($abilities, $model, $attributes)
     {
         if ( ! is_null($model)) {
-            return (array) $this->getModelAbilityId($abilities, $model, $onlyOwned);
+            return (array) $this->getModelAbilityId($abilities, $model, $attributes);
         }
 
         $abilities = is_array($abilities) ? $abilities : [$abilities];
@@ -94,11 +94,13 @@ trait DisassociatesAbilities
      *
      * @param  string  $ability
      * @param  \Illuminate\Database\Eloquent\Model|string  $model
-     * @param  bool  $onlyOwned
+     * @param  array  $attributes
      * @return int|null
      */
-    protected function getModelAbilityId($ability, $model, $onlyOwned)
+    protected function getModelAbilityId($ability, $model, $attributes)
     {
+        $onlyOwned = isset($attributes['only_owned']) ? $attributes['only_owned'] : false;
+
         return Models::ability()
                      ->byName($ability, true)
                      ->forModel($model, true)

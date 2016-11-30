@@ -32,12 +32,12 @@ class ForbidsAbility
      *
      * @param  mixed  $abilities
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
-     * @param  bool  $onlyOwned
+     * @param  array  $attributes
      * @return bool
      */
-    public function to($abilities, $model = null, $onlyOwned = false)
+    public function to($abilities, $model = null, array $attributes = [])
     {
-        $ids = $this->getAbilityIds($abilities, $model, $onlyOwned);
+        $ids = $this->getAbilityIds($abilities, $model, $attributes);
 
         $this->forbidAbilities($ids, $this->getAuthority());
 
