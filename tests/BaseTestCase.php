@@ -97,7 +97,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
      */
     protected function bouncer(Eloquent $authority = null)
     {
-        $bouncer = new Bouncer($this->clipboard, new Seeder(new Container));
+        $bouncer = new Bouncer($this->clipboard);
 
         return $bouncer->setGate($this->gate($authority ?: User::create()));
     }

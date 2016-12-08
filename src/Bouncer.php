@@ -30,13 +30,6 @@ class Bouncer
     protected $clipboard;
 
     /**
-     * The bouncer seeder instance.
-     *
-     * @var \Silber\Bouncer\Seeder
-     */
-    protected $seeder;
-
-    /**
      * The access gate instance.
      *
      * @var \Illuminate\Contracts\Auth\Access\Gate|null
@@ -47,12 +40,10 @@ class Bouncer
      * Constructor.
      *
      * @param \Silber\Bouncer\CachedClipboard  $clipboard
-     * @param \Silber\Bouncer\Seeder  $seeder
      */
-    public function __construct(CachedClipboard $clipboard, Seeder $seeder)
+    public function __construct(CachedClipboard $clipboard)
     {
         $this->clipboard = $clipboard;
-        $this->seeder = $seeder;
     }
 
     /**
@@ -63,7 +54,7 @@ class Bouncer
      */
     public function seeder($seeder)
     {
-        $this->seeder->register($seeder);
+        $this->make(Seeder::class)->register($seeder);
 
         return $this;
     }
@@ -75,7 +66,7 @@ class Bouncer
      */
     public function seed()
     {
-        $this->seeder->run();
+        $this->make(Seeder::class)->run();
 
         return $this;
     }
