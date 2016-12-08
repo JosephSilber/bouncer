@@ -350,19 +350,6 @@ class Bouncer
     }
 
     /**
-     * Set the bouncer to be the exclusive authority on gate access.
-     *
-     * @param  bool  $boolean
-     * @return $this
-     */
-    public function exclusive($boolean = true)
-    {
-        $this->clipboard->setExclusivity($boolean);
-
-        return $this;
-    }
-
-    /**
      * Resolve the given type from the container.
      *
      * @param  string  $abstract

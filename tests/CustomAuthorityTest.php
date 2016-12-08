@@ -31,21 +31,6 @@ class CustomAuthorityTest extends BaseTestCase
         $this->assertTrue($bouncer->denies('edit-site'));
     }
 
-    public function test_bouncer_can_deny_access_if_set_to_work_exclusively()
-    {
-        $bouncer = $this->bouncer(Account::create());
-
-        $bouncer->getGate()->define('access-dashboard', function () {
-            return true;
-        });
-
-        $this->assertTrue($bouncer->allows('access-dashboard'));
-
-        $bouncer->exclusive();
-
-        $this->assertTrue($bouncer->denies('access-dashboard'));
-    }
-
     public function test_bouncer_can_ignore_duplicate_ability_allowances()
     {
         $account1 = Account::create();
