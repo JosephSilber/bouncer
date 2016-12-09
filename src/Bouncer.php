@@ -19,13 +19,15 @@ use Silber\Bouncer\Conductors\GivesAbility;
 use Silber\Bouncer\Conductors\RemovesAbility;
 use Silber\Bouncer\Conductors\ForbidsAbility;
 use Silber\Bouncer\Conductors\UnforbidsAbility;
+use Silber\Bouncer\Contracts\Clipboard as ClipboardContract;
+use Silber\Bouncer\Contracts\CachedClipboard as CachedClipboardContract;
 
 class Bouncer
 {
     /**
      * The bouncer clipboard instance.
      *
-     * @var \Silber\Bouncer\CachedClipboard
+     * @var \Silber\Bouncer\Contracts\Clipboard
      */
     protected $clipboard;
 
@@ -39,9 +41,9 @@ class Bouncer
     /**
      * Constructor.
      *
-     * @param \Silber\Bouncer\CachedClipboard  $clipboard
+     * @param \Silber\Bouncer\Contracts\Clipboard  $clipboard
      */
-    public function __construct(CachedClipboard $clipboard)
+    public function __construct(ClipboardContract $clipboard)
     {
         $this->clipboard = $clipboard;
     }
@@ -156,6 +158,10 @@ class Bouncer
      */
     public function cache(Store $cache = null)
     {
+        if (! $this->usesCachedClipboard()) {
+            throw new RuntimeException('To use caching, you must use an instance of CachedClipboard.');
+        }
+
         $cache = $cache ?: $this->make(CacheRepository::class)->getStore();
 
         $this->clipboard->setCache($cache);
@@ -170,7 +176,9 @@ class Bouncer
      */
     public function dontCache()
     {
-        $this->clipboard->setCache(new NullStore);
+        if ($this->usesCachedClipboard()) {
+            $this->clipboard->setCache(new NullStore);
+        }
 
         return $this;
     }
@@ -183,7 +191,9 @@ class Bouncer
      */
     public function refresh(Model $authority = null)
     {
-        $this->clipboard->refresh($authority);
+        if ($this->usesCachedClipboard()) {
+            $this->clipboard->refresh($authority);
+        }
 
         return $this;
     }
@@ -196,7 +206,9 @@ class Bouncer
      */
     public function refreshFor(Model $authority)
     {
-        $this->clipboard->refreshFor($authority);
+        if ($this->usesCachedClipboard()) {
+            $this->clipboard->refreshFor($authority);
+        }
 
         return $this;
     }
@@ -347,6 +359,16 @@ class Bouncer
     public static function tables(array $map)
     {
         Models::setTables($map);
+    }
+
+    /**
+     * Determine whether the clipboard used is a cached clipboard.
+     *
+     * @return bool
+     */
+    protected function usesCachedClipboard()
+    {
+        return $this->clipboard instanceof CachedClipboardContract;
     }
 
     /**

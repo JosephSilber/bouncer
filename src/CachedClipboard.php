@@ -3,13 +3,14 @@
 namespace Silber\Bouncer;
 
 use Silber\Bouncer\Database\Models;
+use Silber\Bouncer\Contracts\CachedClipboard as CachedClipboardContract;
 
 use Illuminate\Cache\TaggedCache;
 use Illuminate\Contracts\Cache\Store;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 
-class CachedClipboard extends Clipboard
+class CachedClipboard extends Clipboard implements CachedClipboardContract
 {
     /**
      * The tag used for caching.
