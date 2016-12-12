@@ -49,6 +49,28 @@ class Bouncer
     }
 
     /**
+     * Create a new Bouncer instance.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model|null  $user
+     * @return static
+     */
+    public static function create(Model $user = null)
+    {
+        return static::make()->create($user);
+    }
+
+    /**
+     * Create a bouncer factory instance.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model|null  $user
+     * @return \Silber\Bouncer\Factory.
+     */
+    public static function make(Model $user = null)
+    {
+        return new Factory($user);
+    }
+
+    /**
      * Register a seeder callback.
      *
      * @param  \Closure|string  $seeder
@@ -56,7 +78,7 @@ class Bouncer
      */
     public function seeder($seeder)
     {
-        $this->make(Seeder::class)->register($seeder);
+        $this->resolve(Seeder::class)->register($seeder);
 
         return $this;
     }
@@ -68,7 +90,7 @@ class Bouncer
      */
     public function seed()
     {
-        $this->make(Seeder::class)->run();
+        $this->resolve(Seeder::class)->run();
 
         return $this;
     }
@@ -162,7 +184,7 @@ class Bouncer
             throw new RuntimeException('To use caching, you must use an instance of CachedClipboard.');
         }
 
-        $cache = $cache ?: $this->make(CacheRepository::class)->getStore();
+        $cache = $cache ?: $this->resolve(CacheRepository::class)->getStore();
 
         $this->clipboard->setCache($cache);
 
@@ -244,6 +266,16 @@ class Bouncer
         }
 
         return null;
+    }
+
+    /**
+     * Determine whether the clipboard used is a cached clipboard.
+     *
+     * @return bool
+     */
+    public function usesCachedClipboard()
+    {
+        return $this->clipboard instanceof CachedClipboardContract;
     }
 
     /**
@@ -362,23 +394,13 @@ class Bouncer
     }
 
     /**
-     * Determine whether the clipboard used is a cached clipboard.
-     *
-     * @return bool
-     */
-    protected function usesCachedClipboard()
-    {
-        return $this->clipboard instanceof CachedClipboardContract;
-    }
-
-    /**
      * Resolve the given type from the container.
      *
      * @param  string  $abstract
      * @param  array  $parameters
      * @return mixed
      */
-    protected function make($abstract, array $parameters = [])
+    protected function resolve($abstract, array $parameters = [])
     {
         return Container::getInstance()->make($abstract, $parameters);
     }
