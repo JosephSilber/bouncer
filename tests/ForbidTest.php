@@ -133,6 +133,18 @@ class ForbidTest extends BaseTestCase
         $this->assertTrue($bouncer->denies('create', User::class));
     }
 
+    public function testForbidAnAbilityOnEverything()
+    {
+        $bouncer = $this->bouncer($user = User::create());
+
+        $bouncer->allow($user)->everything();
+        $bouncer->forbid($user)->toEver('delete');
+
+        $this->assertTrue($bouncer->allows('create', Account::class));
+        $this->assertTrue($bouncer->denies('delete', User::class));
+        $this->assertTrue($bouncer->denies('delete', $user));
+    }
+
     public function test_forbidding_an_ability_stops_all_further_checks()
     {
         $bouncer = $this->bouncer($user = User::create())->dontCache();

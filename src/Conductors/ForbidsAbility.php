@@ -45,6 +45,18 @@ class ForbidsAbility
     }
 
     /**
+     * Forbid the given ability on all models.
+     *
+     * @param  array|string  $abilities
+     * @param  array  $attributes
+     * @return mixed
+     */
+    public function toEver($abilities, array $attributes = [])
+    {
+        return $this->toAlways($abilities, $attributes);
+    }
+
+    /**
      * Associate the given abilitiy IDs as forbidden abilities.
      *
      * @param  array  $ids
