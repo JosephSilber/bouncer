@@ -37,7 +37,42 @@ class BouncerServiceProvider extends ServiceProvider
     {
         $this->publishMigrations();
         $this->registerAtGate();
+        $this->setTablePrefix();
         $this->setUserModel();
+    }
+
+    /**
+     * Set the table prefix for Bouncer's tables.
+     *
+     * @return void
+     */
+    protected function setTablePrefix()
+    {
+        if ($prefix = $this->getTablePrefix()) {
+            $tables = ['abilities', 'assigned_roles', 'permissions', 'roles'];
+
+            $tables = array_combine($tables, $tables);
+
+            foreach ($tables as $table) {
+                $tables[$table] = $prefix.$table;
+            }
+
+            Models::setTables($tables);
+        }
+    }
+
+    /**
+     * Get the configured table prefix.
+     *
+     * @return string|null
+     */
+    protected function getTablePrefix()
+    {
+        $config = $this->app->config['database'];
+
+        $connection = array_get($config, 'default');
+
+        return array_get($config, "connections.{$connection}.prefix");
     }
 
     /**
