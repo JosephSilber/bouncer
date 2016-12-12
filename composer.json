@@ -1,6 +1,6 @@
 {
     "name": "silber/bouncer",
-    "description": "Bouncer handles roles and abilities for Laravel's ACL.",
+    "description": "Bouncer handles roles and abilities for Eloquent models.",
     "keywords": [
         "abilities",
         "acl",
