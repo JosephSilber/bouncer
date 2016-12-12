@@ -33,6 +33,11 @@ class Clipboard implements ClipboardContract
             if ($id = $this->checkGetId($authority, $ability, $model)) {
                 return $this->allow('Bouncer granted permission via ability #'.$id);
             }
+
+            // If the response from "checkGetId" is "false", then this ability
+            // has been explicity forbidden. We'll return false so the gate
+            // doesn't run any further checks. Otherwise we return null.
+            return $id;
         });
     }
 
@@ -81,7 +86,7 @@ class Clipboard implements ClipboardContract
      * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @param  string  $ability
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
-     * @return int|bool
+     * @return int|bool|null
      */
     protected function checkGetId(Model $authority, $ability, $model = null)
     {
@@ -98,11 +103,9 @@ class Clipboard implements ClipboardContract
             return false;
         }
 
-        $allowedId = $this->findMatchingAbility(
+        return $this->findMatchingAbility(
             $this->getAbilities($authority), $applicable, $model, $authority
         );
-
-        return $allowedId ?: false;
     }
 
     /**
