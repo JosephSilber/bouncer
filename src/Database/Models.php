@@ -9,6 +9,13 @@ use Illuminate\Database\Eloquent\Model;
 class Models
 {
     /**
+     * The prefix for the tables.
+     *
+     * @var string
+     */
+    protected static $prefix = '';
+
+    /**
      * Map for the bouncer's models.
      *
      * @var array
@@ -16,18 +23,18 @@ class Models
     protected static $models = [];
 
     /**
-     * Map for the bouncer's tables.
-     *
-     * @var array
-     */
-    protected static $tables = [];
-
-    /**
      * Holds the map of ownership for models.
      *
      * @var array
      */
     protected static $ownership = [];
+
+    /**
+     * Map for the bouncer's tables.
+     *
+     * @var array
+     */
+    protected static $tables = [];
 
     /**
      * Set the model to be used for abilities.
@@ -74,6 +81,17 @@ class Models
     }
 
     /**
+     * Set the prefix for the tables.
+     *
+     * @param  string  $prefix
+     * @return void
+     */
+    public static function setPrefix(array $prefix)
+    {
+        static::$prefix = $prefix;
+    }
+
+    /**
      * Get a custom table name mapping for the given table.
      *
      * @param  string  $table
@@ -86,6 +104,16 @@ class Models
         }
 
         return $table;
+    }
+
+    /**
+     * Get the prefix for the tables.
+     *
+     * @return string
+     */
+    public static function prefix()
+    {
+        return static::$prefix;
     }
 
     /**

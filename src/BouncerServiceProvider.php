@@ -49,15 +49,7 @@ class BouncerServiceProvider extends ServiceProvider
     protected function setTablePrefix()
     {
         if ($prefix = $this->getTablePrefix()) {
-            $tables = ['abilities', 'assigned_roles', 'permissions', 'roles'];
-
-            $tables = array_combine($tables, $tables);
-
-            foreach ($tables as $table) {
-                $tables[$table] = $prefix.$table;
-            }
-
-            Models::setTables($tables);
+            Models::setPrefix($prefix);
         }
     }
 

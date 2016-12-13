@@ -52,14 +52,15 @@ class Roles
         list($model, $keys) = Helper::extractModelAndKeys($model, $keys);
 
         $query->whereExists(function ($query) use ($model, $keys) {
-            $table = $model->getTable();
-            $key = "{$table}.{$model->getKeyName()}";
-            $pivot = Models::table('assigned_roles');
-            $roles = Models::table('roles');
+            $table  = $model->getTable();
+            $key    = "{$table}.{$model->getKeyName()}";
+            $pivot  = Models::table('assigned_roles');
+            $roles  = Models::table('roles');
+            $prefix = Models::prefix();
 
             $query->from($table)
                   ->join($pivot, $key, '=', $pivot.'.entity_id')
-                  ->whereRaw("{$pivot}.role_id = {$roles}.id")
+                  ->whereRaw("{$prefix}{$pivot}.role_id = {$prefix}{$roles}.id")
                   ->where("{$pivot}.entity_type", $model->getMorphClass())
                   ->whereIn($key, $keys);
         });

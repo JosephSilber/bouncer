@@ -104,10 +104,11 @@ class Abilities
             $permissions = Models::table('permissions');
             $abilities   = Models::table('abilities');
             $table       = $authority->getTable();
+            $prefix      = Models::prefix();
 
             $query->from($table)
                   ->join($permissions, $table.'.id', '=', $permissions.'.entity_id')
-                  ->whereRaw("{$permissions}.ability_id = {$abilities}.id")
+                  ->whereRaw("{$prefix}{$permissions}.ability_id = {$prefix}{$abilities}.id")
                   ->where("{$permissions}.entity_type", $authority->getMorphClass())
                   ->where("{$permissions}.forbidden", ! $allowed)
                   ->where("{$table}.{$authority->getKeyName()}", $authority->getKey());
