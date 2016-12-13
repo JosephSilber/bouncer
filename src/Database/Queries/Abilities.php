@@ -37,10 +37,11 @@ class Abilities
             $permissions = Models::table('permissions');
             $abilities   = Models::table('abilities');
             $roles       = Models::table('roles');
+            $prefix      = Models::prefix();
 
             $query->from($roles)
                   ->join($permissions, $roles.'.id', '=', $permissions.'.entity_id')
-                  ->whereRaw($permissions.".ability_id = ".$abilities.".id")
+                  ->whereRaw("{$prefix}{$permissions}.ability_id = {$prefix}{$abilities}.id")
                   ->where($permissions.".forbidden", ! $allowed)
                   ->where($permissions.".entity_type", Models::role()->getMorphClass());
 
@@ -79,13 +80,14 @@ class Abilities
     protected function getAuthorityRoleConstraint(Model $authority)
     {
         return function ($query) use ($authority) {
-            $pivot = Models::table('assigned_roles');
-            $roles = Models::table('roles');
-            $table = $authority->getTable();
+            $pivot  = Models::table('assigned_roles');
+            $roles  = Models::table('roles');
+            $table  = $authority->getTable();
+            $prefix = Models::prefix();
 
             $query->from($table)
                   ->join($pivot, $table.'.'.$authority->getKeyName(), '=', $pivot.'.entity_id')
-                  ->whereRaw($pivot.'.role_id = '.$roles.'.id')
+                  ->whereRaw("{$prefix}{$pivot}.role_id = {$prefix}{$roles}.id")
                   ->where($pivot.'.entity_type', $authority->getMorphClass())
                   ->where($table.'.id', $authority->getKey());
         };
