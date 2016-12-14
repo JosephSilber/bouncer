@@ -86,7 +86,7 @@ class Models
      * @param  string  $prefix
      * @return void
      */
-    public static function setPrefix(array $prefix)
+    public static function setPrefix($prefix)
     {
         static::$prefix = $prefix;
     }
