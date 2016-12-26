@@ -144,7 +144,7 @@ class BouncerServiceProvider extends ServiceProvider
 
         $target = $this->app->databasePath().'/migrations/'.$timestamp.'_create_bouncer_tables.php';
 
-        $this->publishes([$stub => $target], 'migrations');
+        $this->publishes([$stub => $target], 'bouncer.migrations');
     }
 
     /**
