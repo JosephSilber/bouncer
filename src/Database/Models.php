@@ -144,7 +144,7 @@ class Models
             static::$ownership['*'] = $model;
         }
 
-        static::$ownership[$model] = $attribute;
+        static::$ownership[strtolower(static::basename($model))] = $attribute;
     }
 
     /**
