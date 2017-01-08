@@ -94,4 +94,19 @@ class OwnershipTest extends BaseTestCase
 
         Models::reset();
     }
+
+    public function test_can_use_custom_ownership_attribute_for_model_type()
+    {
+        $bouncer = $this->bouncer($user = User::create())->dontCache();
+
+        $bouncer->ownedVia(Account::class, 'userId');
+
+        $account = Account::create()->fill(['userId' => $user->id]);
+
+        $bouncer->allow($user)->toOwn(Account::class);
+
+        $this->assertTrue($bouncer->allows('view', $account));
+
+        Models::reset();
+    }
 }

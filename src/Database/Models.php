@@ -156,7 +156,7 @@ class Models
      */
     public static function isOwnedBy(Model $authority, Model $model)
     {
-        $type = strtolower(static::basename($model));
+        $type = get_class($model);
 
         if (isset(static::$ownership[$type])) {
             $attribute = static::$ownership[$type];
