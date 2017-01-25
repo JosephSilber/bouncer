@@ -3,8 +3,8 @@
 namespace Silber\Bouncer\Conductors;
 
 use Illuminate\Database\Eloquent\Model;
-use Silber\Bouncer\Conductors\Traits\ConductsAbilities;
-use Silber\Bouncer\Conductors\Traits\AssociatesAbilities;
+use Silber\Bouncer\Conductors\Concerns\ConductsAbilities;
+use Silber\Bouncer\Conductors\Concerns\AssociatesAbilities;
 
 class GivesAbility
 {

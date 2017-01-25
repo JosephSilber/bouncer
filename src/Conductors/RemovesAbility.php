@@ -4,8 +4,8 @@ namespace Silber\Bouncer\Conductors;
 
 use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Database\Ability;
-use Silber\Bouncer\Conductors\Traits\ConductsAbilities;
-use Silber\Bouncer\Conductors\Traits\DisassociatesAbilities;
+use Silber\Bouncer\Conductors\Concerns\ConductsAbilities;
+use Silber\Bouncer\Conductors\Concerns\DisassociatesAbilities;
 
 use Illuminate\Database\Eloquent\Model;
 

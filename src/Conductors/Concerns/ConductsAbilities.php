@@ -1,6 +1,6 @@
 <?php
 
-namespace Silber\Bouncer\Conductors\Traits;
+namespace Silber\Bouncer\Conductors\Concerns;
 
 trait ConductsAbilities
 {

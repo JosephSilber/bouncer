@@ -1,6 +1,6 @@
 <?php
 
-namespace Silber\Bouncer\Conductors\Traits;
+namespace Silber\Bouncer\Conductors\Concerns;
 
 use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Database\Ability;
