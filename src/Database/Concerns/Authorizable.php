@@ -1,6 +1,6 @@
 <?php
 
-namespace Silber\Bouncer\Database;
+namespace Silber\Bouncer\Database\Concerns;
 
 use Silber\Bouncer\Clipboard;
 use Illuminate\Container\Container;

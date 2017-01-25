@@ -1,8 +1,9 @@
 <?php
 
-namespace Silber\Bouncer\Database;
+namespace Silber\Bouncer\Database\Concerns;
 
 use Silber\Bouncer\Helper;
+use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Database\Queries\Roles as RolesQuery;
 
 use App\User;

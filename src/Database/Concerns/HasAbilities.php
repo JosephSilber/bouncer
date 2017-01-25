@@ -1,10 +1,12 @@
 <?php
 
-namespace Silber\Bouncer\Database;
+namespace Silber\Bouncer\Database\Concerns;
 
 use Illuminate\Container\Container;
 
 use Silber\Bouncer\Clipboard;
+use Silber\Bouncer\Database\Models;
+use Silber\Bouncer\Database\Ability;
 use Silber\Bouncer\Conductors\GivesAbility;
 use Silber\Bouncer\Conductors\ForbidsAbility;
 use Silber\Bouncer\Conductors\RemovesAbility;

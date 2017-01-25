@@ -1,8 +1,10 @@
 <?php
 
-namespace Silber\Bouncer\Database;
+namespace Silber\Bouncer\Database\Concerns;
 
 use App\User;
+use Silber\Bouncer\Database\Role;
+use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Database\Queries\AbilitiesForModel;
 
 trait IsAbility

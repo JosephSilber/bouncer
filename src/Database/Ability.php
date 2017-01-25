@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Ability extends Model
 {
-    use IsAbility;
+    use Concerns\IsAbility;
 
     /**
      * The attributes that are mass assignable.

@@ -1,10 +1,12 @@
 <?php
 
-namespace Silber\Bouncer\Database;
+namespace Silber\Bouncer\Database\Concerns;
 
 use Illuminate\Container\Container;
 
 use Silber\Bouncer\Clipboard;
+use Silber\Bouncer\Database\Role;
+use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Conductors\AssignsRole;
 use Silber\Bouncer\Conductors\RemovesRole;
 use Silber\Bouncer\Database\Queries\Roles as RolesQuery;
