@@ -38,7 +38,7 @@
         "phpunit/phpunit": "^4.8"
     },
     "suggest": {
-        "illuminate/cache": "Allows caching the bouncer's database queries",
+        "illuminate/cache": "Allows caching bouncer's database queries",
         "illuminate/console": "Allows running registered bouncer seeders via artisan"
     }
 }
