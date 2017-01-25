@@ -26,14 +26,14 @@
         "classmap": ["tests"]
     },
     "require": {
-        "illuminate/auth": "~5.1.20|5.2.*|5.3.*",
-        "illuminate/container": "~5.1.20|5.2.*|5.3.*",
-        "illuminate/contracts": "~5.1.20|5.2.*|5.3.*",
-        "illuminate/database": "~5.1.20|5.2.*|5.3.*"
+        "illuminate/auth": "5.1.20 - 5.4",
+        "illuminate/container": "5.1.20 - 5.4",
+        "illuminate/contracts": "5.1.20 - 5.4",
+        "illuminate/database": "5.1.20 - 5.4"
     },
     "require-dev": {
-        "illuminate/cache": "~5.1.20|5.2.*|5.3.*",
-        "illuminate/console": "~5.1.20|5.2.*|5.3.*",
+        "illuminate/cache": "5.1.20 - 5.4",
+        "illuminate/console": "5.1.20 - 5.4",
         "mockery/mockery": "^0.9.5",
         "phpunit/phpunit": "^4.8"
     },

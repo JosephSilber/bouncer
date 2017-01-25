@@ -42,14 +42,32 @@ trait DisassociatesAbilities
      */
     protected function detachAbilitiesWithPivotConstraints(Model $model, $ids, $constraints)
     {
+        $this->getAbilitiesPivotQuery($model, $ids)->where($constraints)->delete();
+    }
+
+    /**
+     * Get the base abilities pivot query.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  array  $ids
+     * @return \Illuminate\Database\Query\Builder
+     */
+    protected function getAbilitiesPivotQuery(Model $model, $ids)
+    {
         $relation = $model->abilities();
 
         $query = $relation->newPivotStatement();
 
-        $query->where($relation->getForeignKey(), $model->getKey())
-              ->whereIn($relation->getOtherKey(), $ids)
-              ->where($constraints)
-              ->delete();
+        // We need to get the keys of both tables from the relation class.
+        // These method names have changed in Laravel 5.4, so we'll now
+        // first check which methods actually exist on the relation.
+        if (method_exists($relation, 'getForeignKey')) {
+            return $query->where($relation->getForeignKey(), $model->getKey())
+                         ->whereIn($relation->getOtherKey(), $ids);
+        }
+
+        return $query->where($relation->getQualifiedForeignKeyName(), $model->getKey())
+                     ->whereIn($relation->getQualifiedRelatedKeyName(), $ids);
     }
 
     /**
