@@ -53,10 +53,14 @@ trait HasAbilities
      *
      * @param  mixed  $ability
      * @param  mixed|null  $model
-     * @return $this
+     * @return \Silber\Bouncer\Conductors\GivesAbility|$this
      */
-    public function allow($ability, $model = null)
+    public function allow($ability = null, $model = null)
     {
+        if (is_null($ability)) {
+            return new GivesAbility($this);
+        }
+
         (new GivesAbility($this))->to($ability, $model);
 
         return $this;
@@ -67,10 +71,14 @@ trait HasAbilities
      *
      * @param  mixed  $ability
      * @param  mixed|null  $model
-     * @return $this
+     * @return \Silber\Bouncer\Conductors\RemovesAbility|$this
      */
-    public function disallow($ability, $model = null)
+    public function disallow($ability = null, $model = null)
     {
+        if (is_null($ability)) {
+            return new RemovesAbility($this);
+        }
+
         (new RemovesAbility($this))->to($ability, $model);
 
         return $this;
@@ -81,10 +89,14 @@ trait HasAbilities
      *
      * @param  mixed  $ability
      * @param  mixed|null  $model
-     * @return $this
+     * @return \Silber\Bouncer\Conductors\ForbidsAbility|$this
      */
-    public function forbid($ability, $model = null)
+    public function forbid($ability = null, $model = null)
     {
+        if (is_null($ability)) {
+            return new ForbidsAbility($this);
+        }
+
         (new ForbidsAbility($this))->to($ability, $model);
 
         return $this;
@@ -95,10 +107,14 @@ trait HasAbilities
      *
      * @param  mixed  $ability
      * @param  mixed|null  $model
-     * @return $this
+     * @return \Silber\Bouncer\Conductors\UnforbidsAbility|$this
      */
-    public function unforbid($ability, $model = null)
+    public function unforbid($ability = null, $model = null)
     {
+        if (is_null($ability)) {
+            return new UnforbidsAbility($this);
+        }
+
         (new UnforbidsAbility($this))->to($ability, $model);
 
         return $this;

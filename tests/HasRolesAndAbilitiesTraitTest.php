@@ -64,6 +64,23 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $this->assertTrue($bouncer->denies('delete', $user));
     }
 
+    public function test_can_give_and_remove_ability_for_everything()
+    {
+        $bouncer = $this->bouncer($user = User::create())->dontCache();
+
+        $user->allow()->everything();
+
+        $this->assertTrue($bouncer->allows('delete'));
+        $this->assertTrue($bouncer->allows('delete', '*'));
+        $this->assertTrue($bouncer->allows('*', '*'));
+
+        $user->disallow()->everything();
+
+        $this->assertTrue($bouncer->denies('delete'));
+        $this->assertTrue($bouncer->denies('delete', '*'));
+        $this->assertTrue($bouncer->denies('*', '*'));
+    }
+
     public function test_can_forbid_and_unforbid_abilities()
     {
         $bouncer = $this->bouncer($user = User::create())->dontCache();
@@ -88,6 +105,20 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $this->assertTrue($bouncer->denies('delete', $user));
 
         $user->unforbid('delete', $user);
+
+        $this->assertTrue($bouncer->allows('delete', $user));
+    }
+
+    public function test_can_forbid_and_unforbid_everything()
+    {
+        $bouncer = $this->bouncer($user = User::create())->dontCache();
+
+        $user->allow('delete', $user);
+        $user->forbid()->everything();
+
+        $this->assertTrue($bouncer->denies('delete', $user));
+
+        $user->unforbid()->everything();
 
         $this->assertTrue($bouncer->allows('delete', $user));
     }
