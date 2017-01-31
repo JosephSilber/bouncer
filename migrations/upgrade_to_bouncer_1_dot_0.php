@@ -55,7 +55,13 @@ class UpgradeToBouncer1Dot0 extends Migration
     protected function addNewColumns()
     {
         Schema::table('abilities', function (Blueprint $table) {
+            $table->string('title')->nullable()->after('name');
             $table->boolean('only_owned')->after('entity_type')->default(false);
+        });
+
+        Schema::table('roles', function (Blueprint $table) {
+            $table->string('title')->nullable()->after('name');
+            $table->integer('level')->unsigned()->nullable()->after('name');
         });
     }
 
