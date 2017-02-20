@@ -38,7 +38,7 @@ trait IsAbility
             $attributes = ['name' => $attributes];
         }
 
-        if ($model == '*') {
+        if (is_string($model) && $model == '*') {
             return (new static)->forceFill($attributes + [
                 'entity_type' => '*',
             ]);
