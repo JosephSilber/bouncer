@@ -26,6 +26,7 @@ class BouncerServiceProvider extends ServiceProvider
         $this->registerBouncer();
         $this->registerMorphs();
         $this->registerSeeder();
+        $this->registerConfig();
     }
 
     /**
@@ -162,6 +163,20 @@ class BouncerServiceProvider extends ServiceProvider
     }
 
     /**
+     * Register bouncer configuration.
+     *
+     * @return void
+     */
+    public function registerConfig()
+    {
+        $configPath = $this->app->make('path.config');
+
+        $this->publishes([
+            __DIR__.'/../config/bouncer.php' => $configPath . DIRECTORY_SEPARATOR . 'bouncer.php',
+        ], 'config');
+    }
+
+    /**
      * Set the classname of the user model to be used by Bouncer.
      *
      * @return void
@@ -178,6 +193,10 @@ class BouncerServiceProvider extends ServiceProvider
 
         Models::setTables([
             'users' => Models::user()->getTable(),
+            'abilities' => $config->get('bouncer.tables.abilities_table'),
+            'roles' => $config->get('bouncer.tables.roles_table'),
+            'assigned_roles' => $config->get('bouncer.tables.assigned_roles_table'),
+            'permissions' => $config->get('bouncer.tables.permissions_table'),
         ]);
     }
 }
