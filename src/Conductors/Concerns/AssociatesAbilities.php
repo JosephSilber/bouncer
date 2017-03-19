@@ -40,6 +40,13 @@ trait AssociatesAbilities
         }
 
         if ( ! is_null($model)) {
+            if (is_array($abilities)) {
+                $result = [];
+                foreach ($abilities as $ability) {
+                    $result[] = $this->getModelAbility($ability, $model, $attributes)->getKey();
+                }
+                return $result;
+            }
             return [$this->getModelAbility($abilities, $model, $attributes)->getKey()];
         }
 
