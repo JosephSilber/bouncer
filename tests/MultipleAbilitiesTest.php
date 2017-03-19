@@ -1,6 +1,6 @@
 <?php
 
-class AbilitiesForModelsTest extends BaseTestCase
+class MultipleAbilitiesTest extends BaseTestCase
 {
 
     public $report = false;
