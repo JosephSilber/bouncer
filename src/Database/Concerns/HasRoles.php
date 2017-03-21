@@ -119,7 +119,10 @@ trait HasRoles
      */
     public function isNot($role)
     {
-        return call_user_func_array([$this, 'isNotAn'], func_get_args());
+        return call_user_func_array(
+            [$this, 'isNotAn'],
+            func_get_args()
+        );
     }
 
     /**
@@ -146,13 +149,10 @@ trait HasRoles
      */
     public function scopeWhereIs($query, $role)
     {
-        $constraint = new RolesQuery;
-
-        $params = array_slice(func_get_args(), 1);
-
-        array_unshift($params, $query);
-
-        call_user_func_array([$constraint, 'constrainWhereIs'], $params);
+        call_user_func_array(
+            [new RolesQuery, 'constrainWhereIs'],
+            func_get_args()
+        );
     }
 
     /**
@@ -164,13 +164,10 @@ trait HasRoles
      */
     public function scopeWhereIsAll($query, $role)
     {
-        $constrainer = new RolesQuery;
-
-        $params = array_slice(func_get_args(), 1);
-
-        array_unshift($params, $query);
-
-        call_user_func_array([$constrainer, 'constrainWhereIsAll'], $params);
+        call_user_func_array(
+            [new RolesQuery, 'constrainWhereIsAll'],
+            func_get_args()
+        );
     }
 
     /**
