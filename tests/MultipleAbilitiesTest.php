@@ -117,4 +117,70 @@ class MultipleAbilitiesTest extends BaseTestCase
         $this->assertTrue($bouncer->allows('delete', User::class));
         $this->assertFalse($bouncer->allows('edit', User::class));
     }
+
+    public function test_multiple_abilities_for_roles()
+    {
+        $bouncer = $this->bouncer($user = User::create())->dontCache();
+
+        $bouncer->allow('admin')->to(['edit', 'delete']);
+        $user->assign('admin');
+
+        $this->assertTrue($bouncer->allows('edit'));
+        $this->assertTrue($bouncer->allows('delete'));
+
+        $user->retract('admin');
+
+        $this->assertTrue($bouncer->denies('edit'));
+        $this->assertTrue($bouncer->denies('delete'));
+    }
+
+    public function test_user_trait_multiple_abilities()
+    {
+        $bouncer = $this->bouncer($user = User::create())->dontCache();
+
+        $user->allow(['edit', 'delete']);
+
+        $this->assertTrue($bouncer->allows('edit'));
+        $this->assertTrue($bouncer->allows('delete'));
+
+        $user->disallow('delete');
+
+        $this->assertTrue($bouncer->allows('edit'));
+        $this->assertTrue($bouncer->denies('delete'));
+    }
+
+    public function test_user_with_multiple_roles()
+    {
+        $bouncer = $this->bouncer($user = User::create())->dontCache();
+
+        $bouncer->allow('supermod')->to('delete');
+        $bouncer->allow('moderator')->to('edit');
+        $user->assign(['supermod', 'moderator']);
+
+        $this->assertTrue($bouncer->allows('edit'));
+        $this->assertTrue($bouncer->allows('delete'));
+
+        $user->retract(['supermod', 'moderator']);
+
+        $this->assertTrue($bouncer->denies('edit'));
+        $this->assertTrue($bouncer->denies('delete'));
+    }
+
+    public function test_assign_retract_multiple_users()
+    {
+        $user1 = User::create();
+        $user2 = User::create();
+
+        $bouncer = $this->bouncer()->dontCache();
+
+        $bouncer->assign('admin')->to([$user1, $user2]);
+
+        $this->assertTrue($bouncer->is($user1)->an('admin'));
+        $this->assertTrue($bouncer->is($user2)->an('admin'));
+
+        $bouncer->retract('admin')->from([$user1, $user2]);
+
+        $this->assertTrue($bouncer->is($user1)->notAn('admin'));
+        $this->assertTrue($bouncer->is($user2)->notAn('admin'));
+    }
 }
