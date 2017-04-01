@@ -86,10 +86,10 @@ class Abilities
             $prefix = Models::prefix();
 
             $query->from($table)
-                  ->join($pivot, $table.'.'.$authority->getKeyName(), '=', $pivot.'.entity_id')
+                  ->join($pivot, "{$table}.{$authority->getKeyName()}", '=', $pivot.'.entity_id')
                   ->whereRaw("{$prefix}{$pivot}.role_id = {$prefix}{$roles}.id")
                   ->where($pivot.'.entity_type', $authority->getMorphClass())
-                  ->where($table.'.id', $authority->getKey());
+                  ->where("{$table}.{$authority->getKeyName()}", $authority->getKey());
         };
     }
 
@@ -109,7 +109,7 @@ class Abilities
             $prefix      = Models::prefix();
 
             $query->from($table)
-                  ->join($permissions, $table.'.id', '=', $permissions.'.entity_id')
+                  ->join($permissions, "{$table}.{$authority->getKeyName()}", '=', $permissions.'.entity_id')
                   ->whereRaw("{$prefix}{$permissions}.ability_id = {$prefix}{$abilities}.id")
                   ->where("{$permissions}.entity_type", $authority->getMorphClass())
                   ->where("{$permissions}.forbidden", ! $allowed)
