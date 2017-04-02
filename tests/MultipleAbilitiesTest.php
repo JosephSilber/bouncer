@@ -13,7 +13,7 @@ class MultipleAbilitiesTest extends BaseTestCase
     {
         parent::setUp();
 
-        if($this->report) {
+        if ($this->report) {
             $this->db()->connection()->enableQueryLog();
         }
     }
@@ -55,6 +55,20 @@ class MultipleAbilitiesTest extends BaseTestCase
 
         $this->assertTrue($bouncer->denies('edit', User::class));
         $this->assertTrue($bouncer->allows('delete', User::class));
+    }
+
+    public function test_combine_techniques()
+    {
+        $bouncer = $this->bouncer($user = User::create())->dontCache();
+        $user2 = User::create();
+
+        $bouncer->allow($user)->to([
+            'edit' => User::class,
+            'delete' => $user2,
+        ]);
+
+        $this->assertTrue($bouncer->allows('edit', User::class));
+        $this->assertTrue($bouncer->allows('delete', $user2));
     }
 
     public function test_allow_multiple_abilties()

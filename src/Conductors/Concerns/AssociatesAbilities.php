@@ -5,6 +5,7 @@ namespace Silber\Bouncer\Conductors\Concerns;
 use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Database\Ability;
 
+use Illuminate\Support\Arr;
 use InvalidArgumentException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
@@ -41,11 +42,7 @@ trait AssociatesAbilities
 
         if ( ! is_null($model)) {
             if (is_array($abilities)) {
-                $result = [];
-                foreach ($abilities as $ability) {
-                    $result[] = $this->getModelAbility($ability, $model, $attributes)->getKey();
-                }
-                return $result;
+                return $this->resolveMultipleAbilities($abilities, $model, $attributes);
             }
             return [$this->getModelAbility($abilities, $model, $attributes)->getKey()];
         }
@@ -186,5 +183,23 @@ trait AssociatesAbilities
                          ->wherePivot('forbidden', '=', $forbidden)
                          ->get(['id'])->pluck('id')
                          ->all();
+    }
+
+    protected function getMultipleAbilitiesIds($abilities, $attributes)
+    {
+        $result = [];
+        foreach ($abilities as $ability => $entity) {
+                $result[] = $this->getAbilityIds($ability, $entity, $attributes);
+        }
+        return Arr::flatten($result);
+    }
+
+    protected function resolveMultipleAbilities($abilities, $model, $attributes)
+    {
+        $result = [];
+        foreach ($abilities as $ability) {
+            $result[] = $this->getModelAbility($ability, $model, $attributes)->getKey();
+        }
+        return $result;
     }
 }
