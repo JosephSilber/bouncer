@@ -185,6 +185,13 @@ trait AssociatesAbilities
                          ->all();
     }
 
+    /**
+     * Get the IDs of the provided abilities if there are more than one.
+     *
+     * @param  \Silber\Bouncer\Database\Ability|array|int  $abilities
+     * @param  array  $attributes
+     * @return array
+     */
     protected function getMultipleAbilitiesIds($abilities, $attributes)
     {
         $result = [];
@@ -194,6 +201,13 @@ trait AssociatesAbilities
         return Arr::flatten($result);
     }
 
+    /**
+     * Get the abilities if there are more than one to be resolved.
+     * @param  array $abilities
+     * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
+     * @param  array $attributes
+     * @return array
+     */
     protected function resolveMultipleAbilities($abilities, $model, $attributes)
     {
         $result = [];
