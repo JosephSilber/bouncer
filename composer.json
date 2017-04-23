@@ -35,10 +35,13 @@
         "illuminate/cache": "5.1.20 - 5.4",
         "illuminate/console": "5.1.20 - 5.4",
         "mockery/mockery": "^0.9.5",
-        "phpunit/phpunit": "^5.7.19"
+        "phpunit/phpunit": "^4.8.35"
     },
     "suggest": {
         "illuminate/cache": "Allows caching bouncer's database queries",
         "illuminate/console": "Allows running registered bouncer seeders via artisan"
+    },
+    "scripts": {
+        "test": "phpunit"
     }
 }

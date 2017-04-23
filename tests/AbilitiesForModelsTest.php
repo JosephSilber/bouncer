@@ -79,7 +79,7 @@ class AbilitiesForModelsTest extends BaseTestCase
 
     public function test_allowing_on_non_existent_model_throws()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->setExpectedException('InvalidArgumentException');
 
         $user1 = User::create();
         $user2 = new User;
