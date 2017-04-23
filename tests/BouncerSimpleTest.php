@@ -46,11 +46,18 @@ class BouncerSimpleTest extends BaseTestCase
         $bouncer->allow($user1)->to('ban', $user2);
         $bouncer->allow($user1)->to('ban', $user2);
 
-        $bouncer->allow('admin')->to('ban-users');
-        $bouncer->allow('admin')->to('ban-users');
+        $this->assertCount(2, $user1->abilities);
 
-        $bouncer->allow('admin')->to('ban', $user1);
-        $bouncer->allow('admin')->to('ban', $user1);
+        $admin = $bouncer->role(['name' => 'admin']);
+        $admin->save();
+
+        $bouncer->allow($admin)->to('ban-users');
+        $bouncer->allow($admin)->to('ban-users');
+
+        $bouncer->allow($admin)->to('ban', $user1);
+        $bouncer->allow($admin)->to('ban', $user1);
+
+        $this->assertCount(2, $admin->abilities);
     }
 
     public function test_bouncer_can_give_and_remove_roles()
@@ -78,6 +85,8 @@ class BouncerSimpleTest extends BaseTestCase
 
         $bouncer->assign('admin')->to($user);
         $bouncer->assign('admin')->to($user);
+
+        $this->assertCount(1, $user->roles);
     }
 
     public function test_bouncer_can_disallow_abilities_on_roles()

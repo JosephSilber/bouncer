@@ -5,13 +5,14 @@ use Silber\Bouncer\Seed\SeedCommand;
 
 use Prophecy\Argument;
 use Illuminate\Console\Command;
+use PHPUnit\Framework\TestCase;
 use Illuminate\Container\Container;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Illuminate\Contracts\Foundation\Application;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 
-class SeedCommandTest extends PHPUnit_Framework_TestCase
+class SeedCommandTest extends TestCase
 {
     public function test_seed_command_outputs_proper_message_when_there_are_no_seeders()
     {

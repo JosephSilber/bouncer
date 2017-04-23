@@ -35,7 +35,7 @@
         "illuminate/cache": "5.1.20 - 5.4",
         "illuminate/console": "5.1.20 - 5.4",
         "mockery/mockery": "^0.9.5",
-        "phpunit/phpunit": "^4.8"
+        "phpunit/phpunit": "^6.0"
     },
     "suggest": {
         "illuminate/cache": "Allows caching bouncer's database queries",

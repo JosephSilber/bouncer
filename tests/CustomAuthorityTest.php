@@ -31,26 +31,6 @@ class CustomAuthorityTest extends BaseTestCase
         $this->assertTrue($bouncer->denies('edit-site'));
     }
 
-    public function test_bouncer_can_ignore_duplicate_ability_allowances()
-    {
-        $account1 = Account::create();
-        $account2 = Account::create();
-
-        $bouncer = $this->bouncer($account1);
-
-        $bouncer->allow($account1)->to('ban-users');
-        $bouncer->allow($account1)->to('ban-users');
-
-        $bouncer->allow($account1)->to('ban', $account2);
-        $bouncer->allow($account1)->to('ban', $account2);
-
-        $bouncer->allow('admin')->to('ban-users');
-        $bouncer->allow('admin')->to('ban-users');
-
-        $bouncer->allow('admin')->to('ban', $account1);
-        $bouncer->allow('admin')->to('ban', $account1);
-    }
-
     public function test_bouncer_can_give_and_remove_roles()
     {
         $bouncer = $this->bouncer($account = Account::create())->dontCache();
@@ -68,14 +48,6 @@ class CustomAuthorityTest extends BaseTestCase
         $bouncer->retract($editor)->from($account);
 
         $this->assertTrue($bouncer->denies('edit-site'));
-    }
-
-    public function test_bouncer_can_ignore_duplicate_role_assignments()
-    {
-        $bouncer = $this->bouncer($account = Account::create());
-
-        $bouncer->assign('admin')->to($account);
-        $bouncer->assign('admin')->to($account);
     }
 
     public function test_bouncer_can_disallow_abilities_on_roles()

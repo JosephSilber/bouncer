@@ -32,13 +32,12 @@ class CachedClipboardTest extends BaseTestCase
     public function test_it_caches_empty_abilities()
     {
         $user = User::create();
-        $cache = new ArrayStore;
 
-        $clipboard = m::mock(CachedClipboard::class.'[getFreshAbilities]', [$cache]);
+        $clipboard = m::mock(CachedClipboard::class.'[getFreshAbilities]', [new ArrayStore]);
         $clipboard->shouldReceive('getFreshAbilities')->once()->andReturn(new Collection);
 
-        $clipboard->getAbilities($user);
-        $clipboard->getAbilities($user);
+        $this->assertInstanceOf(Collection::class, $clipboard->getAbilities($user));
+        $this->assertInstanceOf(Collection::class, $clipboard->getAbilities($user));
     }
 
     public function test_it_caches_roles()

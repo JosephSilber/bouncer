@@ -1,9 +1,10 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
 use Silber\Bouncer\Seed\Seeder;
 use Illuminate\Container\Container;
 
-class SeederTest extends PHPUnit_Framework_TestCase
+class SeederTest extends TestCase
 {
     public function test_seeder_runs_registered_closure()
     {

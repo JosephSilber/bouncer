@@ -8,13 +8,14 @@ use Silber\Bouncer\CachedClipboard;
 use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 
+use PHPUnit\Framework\TestCase;
 use Illuminate\Auth\Access\Gate;
 use Illuminate\Cache\ArrayStore;
 use Illuminate\Container\Container;
 use Illuminate\Database\Capsule\Manager as DB;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
-abstract class BaseTestCase extends PHPUnit_Framework_TestCase
+abstract class BaseTestCase extends TestCase
 {
     /**
      * The database capsule instance.
