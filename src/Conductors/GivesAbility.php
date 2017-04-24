@@ -2,6 +2,7 @@
 
 namespace Silber\Bouncer\Conductors;
 
+use Silber\Bouncer\Helper;
 use Illuminate\Database\Eloquent\Model;
 use Silber\Bouncer\Conductors\Concerns\ConductsAbilities;
 use Silber\Bouncer\Conductors\Concerns\AssociatesAbilities;
@@ -37,7 +38,11 @@ class GivesAbility
      */
     public function to($abilities, $model = null, array $attributes = [])
     {
-        $ids = $this->getAbilityIds($abilities, $model, $attributes);
+        if (is_array($abilities) && Helper::isAssoc($abilities)) {
+            $ids = $this->getMultipleAbilitiesIds($abilities, $attributes);
+        } else {
+            $ids = $this->getAbilityIds($abilities, $model, $attributes);
+        }
 
         $this->giveAbilities($ids, $this->getAuthority());
 

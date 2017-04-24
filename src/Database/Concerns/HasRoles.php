@@ -30,12 +30,18 @@ trait HasRoles
     /**
      * Assign the given role to the model.
      *
-     * @param  \Silber\Bouncer\Database\Role|string  $role
+     * @param  \Silber\Bouncer\Database\Role|string|array  $role
      * @return $this
      */
-    public function assign($role)
+    public function assign($roles)
     {
-        (new AssignsRole($role))->to($this);
+        if (is_array($roles)) {
+            foreach ($roles as $role) {
+                (new AssignsRole($role))->to($this);
+            }
+        } else {
+            (new AssignsRole($roles))->to($this);
+        }
 
         return $this;
     }
@@ -43,12 +49,18 @@ trait HasRoles
     /**
      * Retract the given role from the model.
      *
-     * @param  \Silber\Bouncer\Database\Role|string  $role
+     * @param  \Silber\Bouncer\Database\Role|string|array  $role
      * @return $this
      */
-    public function retract($role)
+    public function retract($roles)
     {
-        (new RemovesRole($role))->from($this);
+        if (is_array($roles)) {
+            foreach ($roles as $role) {
+                (new RemovesRole($role))->from($this);
+            }
+        } else {
+            (new RemovesRole($roles))->from($this);
+        }
 
         return $this;
     }
