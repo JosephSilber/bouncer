@@ -3,12 +3,10 @@
 namespace Silber\Bouncer\Conductors;
 
 use Illuminate\Database\Eloquent\Model;
-use Silber\Bouncer\Conductors\Concerns\ConductsAbilities;
-use Silber\Bouncer\Conductors\Concerns\AssociatesAbilities;
 
-class ForbidsAbility
+class ForbidsAbilities
 {
-    use AssociatesAbilities, ConductsAbilities;
+    use Concerns\AssociatesAbilities;
 
     /**
      * The authority to be forbidden from the abilities.

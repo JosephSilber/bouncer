@@ -7,8 +7,8 @@ use Illuminate\Container\Container;
 use Silber\Bouncer\Clipboard;
 use Silber\Bouncer\Database\Role;
 use Silber\Bouncer\Database\Models;
-use Silber\Bouncer\Conductors\AssignsRole;
-use Silber\Bouncer\Conductors\RemovesRole;
+use Silber\Bouncer\Conductors\AssignsRoles;
+use Silber\Bouncer\Conductors\RemovesRoles;
 use Silber\Bouncer\Database\Queries\Roles as RolesQuery;
 
 trait HasRoles
@@ -28,39 +28,27 @@ trait HasRoles
     }
 
     /**
-     * Assign the given role to the model.
+     * Assign the given roles to the model.
      *
-     * @param  \Silber\Bouncer\Database\Role|string|array  $role
+     * @param  \Illuminate\Database\Eloquent\Model|string|array  $roles
      * @return $this
      */
     public function assign($roles)
     {
-        if (is_array($roles)) {
-            foreach ($roles as $role) {
-                (new AssignsRole($role))->to($this);
-            }
-        } else {
-            (new AssignsRole($roles))->to($this);
-        }
+        (new AssignsRoles($roles))->to($this);
 
         return $this;
     }
 
     /**
-     * Retract the given role from the model.
+     * Retract the given roles from the model.
      *
-     * @param  \Silber\Bouncer\Database\Role|string|array  $role
+     * @param  \Illuminate\Database\Eloquent\Model|string|array  $roles
      * @return $this
      */
     public function retract($roles)
     {
-        if (is_array($roles)) {
-            foreach ($roles as $role) {
-                (new RemovesRole($role))->from($this);
-            }
-        } else {
-            (new RemovesRole($roles))->from($this);
-        }
+        (new RemovesRoles($roles))->from($this);
 
         return $this;
     }

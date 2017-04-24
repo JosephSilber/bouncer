@@ -2,7 +2,7 @@
 
 namespace Silber\Bouncer\Database\Concerns;
 
-use Silber\Bouncer\Helper;
+use Silber\Bouncer\Helpers;
 use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Database\Queries\Roles as RolesQuery;
 
@@ -38,7 +38,7 @@ trait IsRole
      */
     public function assignTo($model, array $keys = null)
     {
-        list($model, $keys) = Helper::extractModelAndKeys($model, $keys);
+        list($model, $keys) = Helpers::extractModelAndKeys($model, $keys);
 
         $query = $this->newBaseQueryBuilder()->from(Models::table('assigned_roles'));
 
@@ -56,7 +56,7 @@ trait IsRole
      */
     public function retractFrom($model, array $keys = null)
     {
-        list($model, $keys) = Helper::extractModelAndKeys($model, $keys);
+        list($model, $keys) = Helpers::extractModelAndKeys($model, $keys);
 
         $this->newBaseQueryBuilder()
              ->from(Models::table('assigned_roles'))

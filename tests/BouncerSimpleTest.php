@@ -64,19 +64,51 @@ class BouncerSimpleTest extends BaseTestCase
     {
         $bouncer = $this->bouncer($user = User::create())->dontCache();
 
-        $bouncer->allow('admin')->to('edit-site');
+        $bouncer->allow('admin')->to('ban-users');
         $bouncer->assign('admin')->to($user);
 
         $editor = $bouncer->role()->create(['name' => 'editor']);
-        $bouncer->allow($editor)->to('edit-site');
+        $bouncer->allow($editor)->to('ban-users');
         $bouncer->assign($editor)->to($user);
 
-        $this->assertTrue($bouncer->allows('edit-site'));
+        $this->assertTrue($bouncer->allows('ban-users'));
 
         $bouncer->retract('admin')->from($user);
         $bouncer->retract($editor)->from($user);
 
-        $this->assertTrue($bouncer->denies('edit-site'));
+        $this->assertTrue($bouncer->denies('ban-users'));
+    }
+
+    public function test_bouncer_can_give_and_remove_multiple_roles_at_once()
+    {
+        $bouncer = $this->bouncer($user = User::create())->dontCache();
+
+        $bouncer->assign(['admin', 'editor'])->to($user);
+
+        $this->assertTrue($bouncer->is($user)->all('admin', 'editor'));
+
+        $bouncer->retract(['admin', 'editor'])->from($user);
+
+        $this->assertTrue($bouncer->is($user)->notAn('admin', 'editor'));
+    }
+
+    public function test_bouncer_can_give_and_remove_roles_for_multiple_users_at_once()
+    {
+        $user1 = User::create();
+        $user2 = User::create();
+        $bouncer = $this->bouncer($user1)->dontCache();
+
+        $bouncer->assign(['admin', 'editor'])->to([$user1, $user2]);
+
+        $this->assertTrue($bouncer->is($user1)->all('admin', 'editor'));
+        $this->assertTrue($bouncer->is($user2)->an('admin', 'editor'));
+
+        $bouncer->retract('admin')->from($user1);
+        $bouncer->retract(['admin', 'editor'])->from($user2);
+
+        $this->assertTrue($bouncer->is($user1)->notAn('admin'));
+        $this->assertTrue($bouncer->is($user1)->an('editor'));
+        $this->assertTrue($bouncer->is($user1)->an('admin', 'editor'));
     }
 
     public function test_bouncer_can_ignore_duplicate_role_assignments()

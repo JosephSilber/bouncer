@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Collection;
 
 trait DisassociatesAbilities
 {
+    use ConductsAbilities, FindsAndCreatesAbilities;
+
     /**
      * Remove the given ability from the model.
      *
@@ -21,28 +23,29 @@ trait DisassociatesAbilities
      */
     public function to($abilities, $entity = null, array $attributes = [])
     {
-        if ( ! $model = $this->getModel()) {
-            return false;
-        }
+        $authority = $this->getAuthority();
 
         if ($ids = $this->getAbilityIds($abilities, $entity, $attributes)) {
-            $this->detachAbilities($model, $ids);
+            $this->detachAbilities($authority, $ids);
         }
 
         return true;
     }
 
     /**
-     * Detach the given IDs from the model, with the given pivot constraints.
+     * Detach the given IDs from the model.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $model
      * @param  array  $ids
-     * @param  array  $constraints
      * @return void
      */
-    protected function detachAbilitiesWithPivotConstraints(Model $model, $ids, $constraints)
+    protected function detachAbilities(Model $model, $ids)
     {
-        $this->getAbilitiesPivotQuery($model, $ids)->where($constraints)->delete();
+        $constraints = property_exists($this, 'constraints') ? $this->constraints : [];
+
+        $this->getAbilitiesPivotQuery($model, $ids)
+             ->where($this->constraints)
+             ->delete();
     }
 
     /**
@@ -71,109 +74,16 @@ trait DisassociatesAbilities
     }
 
     /**
-     * Get the model from which to disassociate the abilities.
+     * Get the authority from which to disassociate the abilities.
      *
-     * @return \Illuminate\Database\Eloquent\Model|null
+     * @return \Illuminate\Database\Eloquent\Model
      */
-    protected function getModel()
+    protected function getAuthority()
     {
-        if ($this->model instanceof Model) {
-            return $this->model;
+        if ($this->authority instanceof Model) {
+            return $this->authority;
         }
 
-        return Models::role()->where('name', $this->model)->first();
-    }
-
-    /**
-     * Get the IDs of the provided abilities.
-     *
-     * @param  mixed  $abilities
-     * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
-     * @param  array  $attributes
-     * @return array
-     */
-    protected function getAbilityIds($abilities, $model, $attributes)
-    {
-        if ( ! is_null($model)) {
-            return (array) $this->getModelAbilityId($abilities, $model, $attributes);
-        }
-
-        $abilities = is_array($abilities) ? $abilities : [$abilities];
-
-        return array_merge(
-            $this->filterNumericAbilities($abilities),
-            $this->getAbilityIdsFromModels($abilities),
-            $this->getAbilityIdsFromStrings($abilities)
-        );
-    }
-
-    /**
-     * Get the ability ID for the given model.
-     *
-     * @param  string  $ability
-     * @param  \Illuminate\Database\Eloquent\Model|string  $model
-     * @param  array  $attributes
-     * @return int|null
-     */
-    protected function getModelAbilityId($ability, $model, $attributes)
-    {
-        $onlyOwned = isset($attributes['only_owned']) ? $attributes['only_owned'] : false;
-
-        return Models::ability()
-                     ->byName($ability, true)
-                     ->forModel($model, true)
-                     ->where('only_owned', $onlyOwned)
-                     ->value('id');
-    }
-
-    /**
-     * Filter the provided abilities to the ones that are numeric.
-     *
-     * @param  array  $abilities
-     * @return array
-     */
-    protected function filterNumericAbilities(array $abilities)
-    {
-        return array_filter($abilities, 'is_int');
-    }
-
-    /**
-     * Get the Ability IDs from the models present in the given array.
-     *
-     * @param  array  $abilities
-     * @return array
-     */
-    protected function getAbilityIdsFromModels(array $abilities)
-    {
-        $ids = [];
-
-        foreach ($abilities as $ability) {
-            if ($ability instanceof Ability) {
-                $ids[] = $ability->getKey();
-            }
-        }
-
-        return $ids;
-    }
-
-    /**
-     * Get the ability IDs from the names present in the given array.
-     *
-     * @param  array  $abilities
-     * @return array
-     */
-    protected function getAbilityIdsFromStrings(array $abilities)
-    {
-        $names = array_filter($abilities, 'is_string');
-
-        if ( ! count($names)) {
-            return [];
-        }
-
-        return Models::ability()
-                     ->whereIn('name', $names)
-                     ->get(['id'])
-                     ->pluck('id')
-                     ->all();
+        return Models::role()->where('name', $this->authority)->firstOrFail();
     }
 }

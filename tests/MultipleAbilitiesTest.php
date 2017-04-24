@@ -2,32 +2,7 @@
 
 class MultipleAbilitiesTest extends BaseTestCase
 {
-
-    /**
-     * When set to true, queries are counted and reported for tests in this file.
-     * @var boolean
-     */
-    public $report = false;
-
-    public function setUp()
-    {
-        parent::setUp();
-
-        if ($this->report) {
-            $this->db()->connection()->enableQueryLog();
-        }
-    }
-
-    public function tearDown()
-    {
-        if($this->report) {
-            var_dump($this->getName().': '.count($this->db()->connection()->getQueryLog()));
-        }
-
-        parent::tearDown();
-    }
-
-    public function test_multiple_abilities()
+    public function test_allowing_multiple_abilities_at_once()
     {
         $bouncer = $this->bouncer($user = User::create())->dontCache();
 
@@ -35,14 +10,22 @@ class MultipleAbilitiesTest extends BaseTestCase
 
         $this->assertTrue($bouncer->allows('edit'));
         $this->assertTrue($bouncer->allows('delete'));
-
-        $bouncer->disallow($user)->to('edit');
-
-        $this->assertTrue($bouncer->denies('edit'));
-        $this->assertTrue($bouncer->allows('delete'));
     }
 
-    public function test_multiple_abilties_with_model_reference()
+    public function test_allowing_multiple_model_abilities_at_once()
+    {
+        $bouncer = $this->bouncer($user1 = User::create())->dontCache();
+        $user2 = User::create();
+
+        $bouncer->allow($user1)->to(['edit', 'delete'], $user1);
+
+        $this->assertTrue($bouncer->allows('edit', $user1));
+        $this->assertTrue($bouncer->allows('delete', $user1));
+        $this->assertTrue($bouncer->denies('edit', $user2));
+        $this->assertTrue($bouncer->denies('delete', $user2));
+    }
+
+    public function test_allowing_multiple_blanket_model_abilities_at_once()
     {
         $bouncer = $this->bouncer($user = User::create())->dontCache();
 
@@ -50,151 +33,240 @@ class MultipleAbilitiesTest extends BaseTestCase
 
         $this->assertTrue($bouncer->allows('edit', User::class));
         $this->assertTrue($bouncer->allows('delete', User::class));
-
-        $bouncer->disallow($user)->to('edit', User::class);
-
-        $this->assertTrue($bouncer->denies('edit', User::class));
-        $this->assertTrue($bouncer->allows('delete', User::class));
     }
 
-    public function test_combine_techniques()
+    public function test_allowing_multiple_abilities_at_once_via_a_map()
     {
-        $bouncer = $this->bouncer($user = User::create())->dontCache();
+        $bouncer = $this->bouncer($user1 = User::create())->dontCache();
         $user2 = User::create();
 
-        $bouncer->allow($user)->to([
-            'edit' => User::class,
-            'delete' => $user2,
+        $account1 = Account::create();
+        $account2 = Account::create();
+
+        $bouncer->allow($user1)->to([
+            'edit'   => User::class,
+            'delete' => $user1,
+            'view'   => Account::class,
+            'update' => $account1,
         ]);
 
         $this->assertTrue($bouncer->allows('edit', User::class));
-        $this->assertTrue($bouncer->allows('delete', $user2));
+        $this->assertTrue($bouncer->denies('view', User::class));
+        $this->assertTrue($bouncer->allows('delete', $user1));
+        $this->assertTrue($bouncer->denies('delete', $user2));
+
+        $this->assertTrue($bouncer->allows('view', Account::class));
+        $this->assertTrue($bouncer->denies('update', Account::class));
+        $this->assertTrue($bouncer->allows('update', $account1));
+        $this->assertTrue($bouncer->denies('update', $account2));
     }
 
-    public function test_allow_multiple_abilties()
+    public function test_disallowing_multiple_abilties_at_once()
     {
         $bouncer = $this->bouncer($user = User::create())->dontCache();
 
         $bouncer->allow($user)->to(['edit', 'delete']);
-
-        $this->assertTrue($bouncer->allows('edit'));
-        $this->assertTrue($bouncer->allows('delete'));
-    }
-
-    public function test_disallow_multiple_abilties()
-    {
-        $bouncer = $this->bouncer($user = User::create())->dontCache();
-
         $bouncer->disallow($user)->to(['edit', 'delete']);
 
         $this->assertTrue($bouncer->denies('edit'));
         $this->assertTrue($bouncer->denies('delete'));
     }
 
-    public function test_forbid_multiple_abilities()
+    public function test_disallowing_multiple_model_abilities_at_once()
     {
         $bouncer = $this->bouncer($user = User::create())->dontCache();
 
-        $bouncer->allow($user)->to(['edit', 'delete']);
-        $bouncer->forbid($user)->to(['edit', 'delete']);
+        $bouncer->allow($user)->to(['view', 'edit', 'delete'], $user);
+        $bouncer->disallow($user)->to(['edit', 'delete'], $user);
 
-        $this->assertTrue($bouncer->denies('edit'));
-        $this->assertTrue($bouncer->denies('delete'));
+        $this->assertTrue($bouncer->allows('view', $user));
+        $this->assertTrue($bouncer->denies('edit', $user));
+        $this->assertTrue($bouncer->denies('delete', $user));
     }
 
-    public function test_unforbid_multiple_abilities()
-    {
-        $bouncer = $this->bouncer($user = User::create())->dontCache();
-
-        $bouncer->allow($user)->to(['edit', 'delete']);
-        $bouncer->forbid($user)->to(['edit', 'delete']);
-        
-        $this->assertTrue($bouncer->denies('edit'));
-
-        $bouncer->unforbid($user)->to(['edit', 'delete']);
-
-        $this->assertTrue($bouncer->allows('edit'));
-        $this->assertTrue($bouncer->allows('delete'));
-    }
-
-    public function test_forbid_multiple_abilities_with_model_reference()
+    public function test_disallowing_multiple_blanket_model_abilities_at_once()
     {
         $bouncer = $this->bouncer($user = User::create())->dontCache();
 
         $bouncer->allow($user)->to(['edit', 'delete'], User::class);
-        $bouncer->forbid($user)->to(['edit', 'delete'], User::class);
+        $bouncer->disallow($user)->to(['edit', 'delete'], User::class);
 
+        $this->assertTrue($bouncer->denies('edit', User::class));
         $this->assertTrue($bouncer->denies('delete', User::class));
-
-        $bouncer->unforbid($user)->to('delete', User::class);
-
-        $this->assertTrue($bouncer->allows('delete', User::class));
-        $this->assertFalse($bouncer->allows('edit', User::class));
     }
 
-    public function test_multiple_abilities_for_roles()
+    public function test_disallowing_multiple_abilities_at_once_via_a_map()
     {
-        $bouncer = $this->bouncer($user = User::create())->dontCache();
-
-        $bouncer->allow('admin')->to(['edit', 'delete']);
-        $user->assign('admin');
-
-        $this->assertTrue($bouncer->allows('edit'));
-        $this->assertTrue($bouncer->allows('delete'));
-
-        $user->retract('admin');
-
-        $this->assertTrue($bouncer->denies('edit'));
-        $this->assertTrue($bouncer->denies('delete'));
-    }
-
-    public function test_user_trait_multiple_abilities()
-    {
-        $bouncer = $this->bouncer($user = User::create())->dontCache();
-
-        $user->allow(['edit', 'delete']);
-
-        $this->assertTrue($bouncer->allows('edit'));
-        $this->assertTrue($bouncer->allows('delete'));
-
-        $user->disallow('delete');
-
-        $this->assertTrue($bouncer->allows('edit'));
-        $this->assertTrue($bouncer->denies('delete'));
-    }
-
-    public function test_user_with_multiple_roles()
-    {
-        $bouncer = $this->bouncer($user = User::create())->dontCache();
-
-        $bouncer->allow('supermod')->to('delete');
-        $bouncer->allow('moderator')->to('edit');
-        $user->assign(['supermod', 'moderator']);
-
-        $this->assertTrue($bouncer->allows('edit'));
-        $this->assertTrue($bouncer->allows('delete'));
-
-        $user->retract(['supermod', 'moderator']);
-
-        $this->assertTrue($bouncer->denies('edit'));
-        $this->assertTrue($bouncer->denies('delete'));
-    }
-
-    public function test_assign_retract_multiple_users()
-    {
-        $user1 = User::create();
+        $bouncer = $this->bouncer($user1 = User::create())->dontCache();
         $user2 = User::create();
 
-        $bouncer = $this->bouncer()->dontCache();
+        $account1 = Account::create();
+        $account2 = Account::create();
 
-        $bouncer->assign('admin')->to([$user1, $user2]);
+        $bouncer->allow($user1)->to([
+            'edit'   => User::class,
+            'delete' => $user1,
+            'view'   => Account::class,
+            'update' => $account1,
+        ]);
 
-        $this->assertTrue($bouncer->is($user1)->an('admin'));
-        $this->assertTrue($bouncer->is($user2)->an('admin'));
+        $bouncer->disallow($user1)->to([
+            'edit'   => User::class,
+            'update' => $account1,
+        ]);
 
-        $bouncer->retract('admin')->from([$user1, $user2]);
+        $this->assertTrue($bouncer->denies('edit', User::class));
+        $this->assertTrue($bouncer->allows('delete', $user1));
+        $this->assertTrue($bouncer->allows('view', $account1));
+        $this->assertTrue($bouncer->denies('update', $account1));
+    }
 
-        $this->assertTrue($bouncer->is($user1)->notAn('admin'));
-        $this->assertTrue($bouncer->is($user2)->notAn('admin'));
+    public function test_forbidding_multiple_abilities_at_once()
+    {
+        $bouncer = $this->bouncer($user = User::create())->dontCache();
+
+        $bouncer->allow($user)->to(['edit', 'delete']);
+        $bouncer->forbid($user)->to(['edit', 'delete']);
+
+        $this->assertTrue($bouncer->denies('edit'));
+        $this->assertTrue($bouncer->denies('delete'));
+    }
+
+    public function test_forbidding_multiple_model_abilities_at_once()
+    {
+        $bouncer = $this->bouncer($user1 = User::create())->dontCache();
+        $user2 = User::create();
+
+        $bouncer->allow($user1)->to(['view', 'edit', 'delete']);
+        $bouncer->allow($user1)->to(['view', 'edit', 'delete'], $user1);
+        $bouncer->allow($user1)->to(['view', 'edit', 'delete'], $user2);
+        $bouncer->forbid($user1)->to(['edit', 'delete'], $user1);
+
+        $this->assertTrue($bouncer->allows('view'));
+        $this->assertTrue($bouncer->allows('edit'));
+
+        $this->assertTrue($bouncer->allows('view', $user1));
+        $this->assertTrue($bouncer->denies('edit', $user1));
+        $this->assertTrue($bouncer->denies('delete', $user1));
+        $this->assertTrue($bouncer->allows('edit', $user2));
+        $this->assertTrue($bouncer->allows('delete', $user2));
+    }
+
+    public function test_forbidding_multiple_blanket_model_abilities_at_once()
+    {
+        $bouncer = $this->bouncer($user = User::create())->dontCache();
+
+        $bouncer->allow($user)->to(['edit', 'delete']);
+        $bouncer->allow($user)->to(['edit', 'delete'], Account::class);
+        $bouncer->allow($user)->to(['view', 'edit', 'delete'], User::class);
+        $bouncer->forbid($user)->to(['edit', 'delete'], User::class);
+
+        $this->assertTrue($bouncer->allows('edit'));
+        $this->assertTrue($bouncer->allows('delete'));
+
+        $this->assertTrue($bouncer->allows('edit', Account::class));
+        $this->assertTrue($bouncer->allows('delete', Account::class));
+
+        $this->assertTrue($bouncer->allows('view', User::class));
+        $this->assertTrue($bouncer->denies('edit', User::class));
+        $this->assertTrue($bouncer->denies('delete', User::class));
+    }
+
+    public function test_forbidding_multiple_abilities_at_once_via_a_map()
+    {
+        $bouncer = $this->bouncer($user1 = User::create())->dontCache();
+        $user2 = User::create();
+
+        $account1 = Account::create();
+        $account2 = Account::create();
+
+        $bouncer->allow($user1)->to([
+            'edit'   => User::class,
+            'delete' => $user1,
+            'view'   => Account::class,
+            'update' => $account1,
+        ]);
+
+        $bouncer->forbid($user1)->to([
+            'edit'   => User::class,
+            'update' => $account1,
+        ]);
+
+        $this->assertTrue($bouncer->denies('edit', User::class));
+        $this->assertTrue($bouncer->allows('delete', $user1));
+        $this->assertTrue($bouncer->allows('view', $account1));
+        $this->assertTrue($bouncer->denies('update', $account1));
+    }
+
+    public function test_unforbidding_multiple_abilities_at_once()
+    {
+        $bouncer = $this->bouncer($user = User::create())->dontCache();
+
+        $bouncer->allow($user)->to(['view', 'edit', 'delete']);
+        $bouncer->forbid($user)->to(['view', 'edit', 'delete']);
+        $bouncer->unforbid($user)->to(['edit', 'delete']);
+
+        $this->assertTrue($bouncer->denies('view'));
+        $this->assertTrue($bouncer->allows('edit'));
+        $this->assertTrue($bouncer->allows('delete'));
+    }
+
+    public function test_unforbidding_multiple_model_abilities_at_once()
+    {
+        $bouncer = $this->bouncer($user = User::create())->dontCache();
+
+        $bouncer->allow($user)->to(['view', 'edit', 'delete'], $user);
+        $bouncer->forbid($user)->to(['view', 'edit', 'delete'], $user);
+        $bouncer->unforbid($user)->to(['edit', 'delete'], $user);
+
+        $this->assertTrue($bouncer->denies('view', $user));
+        $this->assertTrue($bouncer->allows('edit', $user));
+        $this->assertTrue($bouncer->allows('delete', $user));
+    }
+
+    public function test_unforbidding_multiple_blanket_model_abilities_at_once()
+    {
+        $bouncer = $this->bouncer($user = User::create())->dontCache();
+
+        $bouncer->allow($user)->to(['view', 'edit', 'delete'], User::class);
+        $bouncer->forbid($user)->to(['view', 'edit', 'delete'], User::class);
+        $bouncer->unforbid($user)->to(['edit', 'delete'], User::class);
+
+        $this->assertTrue($bouncer->denies('view', User::class));
+        $this->assertTrue($bouncer->allows('edit', User::class));
+        $this->assertTrue($bouncer->allows('delete', User::class));
+    }
+
+    public function test_unforbidding_multiple_abilities_at_once_via_a_map()
+    {
+        $bouncer = $this->bouncer($user1 = User::create())->dontCache();
+        $user2 = User::create();
+
+        $account1 = Account::create();
+        $account2 = Account::create();
+
+        $bouncer->allow($user1)->to([
+            'edit'   => User::class,
+            'delete' => $user1,
+            'view'   => Account::class,
+            'update' => $account1,
+        ]);
+
+        $bouncer->forbid($user1)->to([
+            'edit'   => User::class,
+            'delete' => $user1,
+            'view'   => Account::class,
+            'update' => $account1,
+        ]);
+
+        $bouncer->unforbid($user1)->to([
+            'edit'   => User::class,
+            'update' => $account1,
+        ]);
+
+        $this->assertTrue($bouncer->allows('edit', User::class));
+        $this->assertTrue($bouncer->denies('delete', $user1));
+        $this->assertTrue($bouncer->denies('view', $account1));
+        $this->assertTrue($bouncer->allows('update', $account1));
     }
 }

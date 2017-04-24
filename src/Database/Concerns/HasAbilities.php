@@ -7,10 +7,10 @@ use Illuminate\Container\Container;
 use Silber\Bouncer\Clipboard;
 use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Database\Ability;
-use Silber\Bouncer\Conductors\GivesAbility;
-use Silber\Bouncer\Conductors\ForbidsAbility;
-use Silber\Bouncer\Conductors\RemovesAbility;
-use Silber\Bouncer\Conductors\UnforbidsAbility;
+use Silber\Bouncer\Conductors\GivesAbilities;
+use Silber\Bouncer\Conductors\ForbidsAbilities;
+use Silber\Bouncer\Conductors\RemovesAbilities;
+use Silber\Bouncer\Conductors\UnforbidsAbilities;
 
 trait HasAbilities
 {
@@ -53,15 +53,15 @@ trait HasAbilities
      *
      * @param  mixed  $ability
      * @param  mixed|null  $model
-     * @return \Silber\Bouncer\Conductors\GivesAbility|$this
+     * @return \Silber\Bouncer\Conductors\GivesAbilities|$this
      */
     public function allow($ability = null, $model = null)
     {
         if (is_null($ability)) {
-            return new GivesAbility($this);
+            return new GivesAbilities($this);
         }
 
-        (new GivesAbility($this))->to($ability, $model);
+        (new GivesAbilities($this))->to($ability, $model);
 
         return $this;
     }
@@ -71,15 +71,15 @@ trait HasAbilities
      *
      * @param  mixed  $ability
      * @param  mixed|null  $model
-     * @return \Silber\Bouncer\Conductors\RemovesAbility|$this
+     * @return \Silber\Bouncer\Conductors\RemovesAbilities|$this
      */
     public function disallow($ability = null, $model = null)
     {
         if (is_null($ability)) {
-            return new RemovesAbility($this);
+            return new RemovesAbilities($this);
         }
 
-        (new RemovesAbility($this))->to($ability, $model);
+        (new RemovesAbilities($this))->to($ability, $model);
 
         return $this;
     }
@@ -89,15 +89,15 @@ trait HasAbilities
      *
      * @param  mixed  $ability
      * @param  mixed|null  $model
-     * @return \Silber\Bouncer\Conductors\ForbidsAbility|$this
+     * @return \Silber\Bouncer\Conductors\ForbidsAbilities|$this
      */
     public function forbid($ability = null, $model = null)
     {
         if (is_null($ability)) {
-            return new ForbidsAbility($this);
+            return new ForbidsAbilities($this);
         }
 
-        (new ForbidsAbility($this))->to($ability, $model);
+        (new ForbidsAbilities($this))->to($ability, $model);
 
         return $this;
     }
@@ -107,15 +107,15 @@ trait HasAbilities
      *
      * @param  mixed  $ability
      * @param  mixed|null  $model
-     * @return \Silber\Bouncer\Conductors\UnforbidsAbility|$this
+     * @return \Silber\Bouncer\Conductors\UnforbidsAbilities|$this
      */
     public function unforbid($ability = null, $model = null)
     {
         if (is_null($ability)) {
-            return new UnforbidsAbility($this);
+            return new UnforbidsAbilities($this);
         }
 
-        (new UnforbidsAbility($this))->to($ability, $model);
+        (new UnforbidsAbilities($this))->to($ability, $model);
 
         return $this;
     }

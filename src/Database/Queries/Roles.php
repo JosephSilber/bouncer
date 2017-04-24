@@ -2,7 +2,7 @@
 
 namespace Silber\Bouncer\Database\Queries;
 
-use Silber\Bouncer\Helper;
+use Silber\Bouncer\Helpers;
 use Silber\Bouncer\Database\Models;
 
 class Roles
@@ -49,7 +49,7 @@ class Roles
      */
     public function constrainWhereAssignedTo($query, $model, array $keys = null)
     {
-        list($model, $keys) = Helper::extractModelAndKeys($model, $keys);
+        list($model, $keys) = Helpers::extractModelAndKeys($model, $keys);
 
         $query->whereExists(function ($query) use ($model, $keys) {
             $table  = $model->getTable();

@@ -2,14 +2,11 @@
 
 namespace Silber\Bouncer\Conductors;
 
-use Silber\Bouncer\Helper;
 use Illuminate\Database\Eloquent\Model;
-use Silber\Bouncer\Conductors\Concerns\ConductsAbilities;
-use Silber\Bouncer\Conductors\Concerns\AssociatesAbilities;
 
-class GivesAbility
+class GivesAbilities
 {
-    use AssociatesAbilities, ConductsAbilities;
+    use Concerns\AssociatesAbilities;
 
     /**
      * The authority to be given abilities.
@@ -31,26 +28,20 @@ class GivesAbility
     /**
      * Give the abilities to the authority.
      *
-     * @param  mixed  $abilities
+     * @param  \Illuminate\Database\Eloquent\model|array|int  $abilities
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
      * @param  array  $attributes
-     * @return bool
+     * @return void
      */
     public function to($abilities, $model = null, array $attributes = [])
     {
-        if (is_array($abilities) && Helper::isAssoc($abilities)) {
-            $ids = $this->getMultipleAbilitiesIds($abilities, $attributes);
-        } else {
-            $ids = $this->getAbilityIds($abilities, $model, $attributes);
-        }
+        $ids = $this->getAbilityIds($abilities, $model, $attributes);
 
         $this->giveAbilities($ids, $this->getAuthority());
-
-        return true;
     }
 
     /**
-     * Associate the given abilitiy IDs as allowed abilities.
+     * Associate the given ability IDs as allowed abilities.
      *
      * @param  array  $ids
      * @param  \Illuminate\Database\Eloquent\Model  $authority

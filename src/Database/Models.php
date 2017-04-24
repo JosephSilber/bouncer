@@ -4,6 +4,7 @@ namespace Silber\Bouncer\Database;
 
 use Closure;
 use App\User;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class Models
@@ -217,6 +218,20 @@ class Models
     public static function user(array $attributes = [])
     {
         return static::make(User::class, $attributes);
+    }
+
+    /**
+     * Get a new query builder instance.
+     *
+     * @return \Illuminate\Database\Query\Builder
+     */
+    public static function newQueryBuilder()
+    {
+        return new Builder(
+            $connection = static::user()->getConnection(),
+            $connection->getQueryGrammar(),
+            $connection->getPostProcessor()
+        );
     }
 
     /**

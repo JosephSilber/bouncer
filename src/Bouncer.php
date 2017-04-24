@@ -12,13 +12,13 @@ use Illuminate\Contracts\Cache\Repository as CacheRepository;
 
 use Silber\Bouncer\Seed\Seeder;
 use Silber\Bouncer\Database\Models;
-use Silber\Bouncer\Conductors\ChecksRole;
-use Silber\Bouncer\Conductors\AssignsRole;
-use Silber\Bouncer\Conductors\RemovesRole;
-use Silber\Bouncer\Conductors\GivesAbility;
-use Silber\Bouncer\Conductors\RemovesAbility;
-use Silber\Bouncer\Conductors\ForbidsAbility;
-use Silber\Bouncer\Conductors\UnforbidsAbility;
+use Silber\Bouncer\Conductors\ChecksRoles;
+use Silber\Bouncer\Conductors\AssignsRoles;
+use Silber\Bouncer\Conductors\RemovesRoles;
+use Silber\Bouncer\Conductors\GivesAbilities;
+use Silber\Bouncer\Conductors\RemovesAbilities;
+use Silber\Bouncer\Conductors\ForbidsAbilities;
+use Silber\Bouncer\Conductors\UnforbidsAbilities;
 use Silber\Bouncer\Contracts\Clipboard as ClipboardContract;
 use Silber\Bouncer\Contracts\CachedClipboard as CachedClipboardContract;
 
@@ -99,77 +99,77 @@ class Bouncer
      * Start a chain, to allow the given authority an ability.
      *
      * @param  \Illuminate\Database\Eloquent\Model|string  $authority
-     * @return \Silber\Bouncer\Conductors\GivesAbility
+     * @return \Silber\Bouncer\Conductors\GivesAbilities
      */
     public function allow($authority)
     {
-        return new GivesAbility($authority);
+        return new GivesAbilities($authority);
     }
 
     /**
      * Start a chain, to disallow the given authority an ability.
      *
      * @param  \Illuminate\Database\Eloquent\Model|string  $authority
-     * @return \Silber\Bouncer\Conductors\RemovesAbility
+     * @return \Silber\Bouncer\Conductors\RemovesAbilities
      */
     public function disallow($authority)
     {
-        return new RemovesAbility($authority);
+        return new RemovesAbilities($authority);
     }
 
     /**
      * Start a chain, to forbid the given authority an ability.
      *
      * @param  \Illuminate\Database\Eloquent\Model|string  $authority
-     * @return \Silber\Bouncer\Conductors\GivesAbility
+     * @return \Silber\Bouncer\Conductors\GivesAbilities
      */
     public function forbid($authority)
     {
-        return new ForbidsAbility($authority);
+        return new ForbidsAbilities($authority);
     }
 
     /**
      * Start a chain, to unforbid the given authority an ability.
      *
      * @param  \Illuminate\Database\Eloquent\Model|string  $authority
-     * @return \Silber\Bouncer\Conductors\RemovesAbility
+     * @return \Silber\Bouncer\Conductors\RemovesAbilities
      */
     public function unforbid($authority)
     {
-        return new UnforbidsAbility($authority);
+        return new UnforbidsAbilities($authority);
     }
 
     /**
      * Start a chain, to assign the given role to a model.
      *
      * @param  \Silber\Bouncer\Database\Role|string  $role
-     * @return \Silber\Bouncer\Conductors\AssignsRole
+     * @return \Silber\Bouncer\Conductors\AssignsRoles
      */
     public function assign($role)
     {
-        return new AssignsRole($role);
+        return new AssignsRoles($role);
     }
 
     /**
      * Start a chain, to retract the given role from a model.
      *
      * @param  \Silber\Bouncer\Database\Role|string  $role
-     * @return \Silber\Bouncer\Conductors\RemovesRole
+     * @return \Silber\Bouncer\Conductors\RemovesRoles
      */
     public function retract($role)
     {
-        return new RemovesRole($role);
+        return new RemovesRoles($role);
     }
 
     /**
      * Start a chain, to check if the given authority has a certain role.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $authority
-     * @return \Silber\Bouncer\Conductors\ChecksRole
+     * @return \Silber\Bouncer\Conductors\ChecksRoles
      */
     public function is(Model $authority)
     {
-        return new ChecksRole($authority, $this->clipboard);
+        return new ChecksRoles($authority, $this->clipboard);
     }
 
     /**

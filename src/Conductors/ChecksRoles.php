@@ -5,7 +5,7 @@ namespace Silber\Bouncer\Conductors;
 use Silber\Bouncer\Clipboard;
 use Illuminate\Database\Eloquent\Model;
 
-class ChecksRole
+class ChecksRoles
 {
     /**
      * The authority against which to check for roles.
