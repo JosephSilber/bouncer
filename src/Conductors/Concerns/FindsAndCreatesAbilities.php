@@ -67,11 +67,11 @@ trait FindsAndCreatesAbilities
 
         $models = Collection::make(is_array($model) ? $model : [$model]);
 
-        return $abilities->flatMap(function ($ability) use ($models, $attributes) {
+        return $abilities->map(function ($ability) use ($models, $attributes) {
             return $models->map(function ($model) use ($ability, $attributes) {
                 return $this->getModelAbility($ability, $model, $attributes)->getKey();
             });
-        })->all();
+        })->collapse()->all();
     }
 
     /**
