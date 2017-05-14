@@ -15,7 +15,7 @@ trait FindsAndCreatesAbilities
      * Get the IDs of the provided abilities.
      *
      * @param  \Illuminate\Database\Eloquent\model|array|int  $abilities
-     * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
+     * @param  \Illuminate\Database\Eloquent\Model|string|array|null  $model
      * @param  array  $attributes
      * @return array
      */
@@ -57,15 +57,21 @@ trait FindsAndCreatesAbilities
      * Get the abilities for the given model ability descriptors.
      *
      * @param  array|string  $abilities
-     * @param  \Illuminate\Database\Eloquent\Model|string  $model
+     * @param  \Illuminate\Database\Eloquent\Model|string|array  $model
      * @param  array  $attributes
      * @return array
      */
     protected function getModelAbilityKeys($abilities, $model, array $attributes)
     {
-        return array_map(function ($ability) use ($model, $attributes) {
-            return $this->getModelAbility($ability, $model, $attributes)->getKey();
-        }, is_array($abilities) ? $abilities : [$abilities]);
+        $abilities = Collection::make(is_array($abilities) ? $abilities : [$abilities]);
+
+        $models = Collection::make(is_array($model) ? $model : [$model]);
+
+        return $abilities->flatMap(function ($ability) use ($models, $attributes) {
+            return $models->map(function ($model) use ($ability, $attributes) {
+                return $this->getModelAbility($ability, $model, $attributes)->getKey();
+            });
+        })->all();
     }
 
     /**
