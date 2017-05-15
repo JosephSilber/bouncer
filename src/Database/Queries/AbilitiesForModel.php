@@ -33,7 +33,7 @@ class AbilitiesForModel
      */
     public function constrain($query, $model, $strict = false)
     {
-        if ($model == '*') {
+        if (is_string($model) && $model == '*') {
             return $this->constrainByWildcard($query, $strict);
         }
 
