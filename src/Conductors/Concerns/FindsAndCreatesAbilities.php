@@ -133,7 +133,7 @@ trait FindsAndCreatesAbilities
      */
     protected function getEntityInstance($model)
     {
-        if ($model == '*') {
+        if ($model === '*') {
             return '*';
         }
 

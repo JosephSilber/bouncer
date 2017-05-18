@@ -196,7 +196,7 @@ class Clipboard implements ClipboardContract
      */
     protected function compileModelAbilityIdentifiers($ability, $model)
     {
-        if ($model == '*') {
+        if ($model === '*') {
             return ["{$ability}-*", "*-*"];
         }
 
