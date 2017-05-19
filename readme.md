@@ -312,6 +312,18 @@ $user->isNotA('subscriber');
 $user->isAll('editor', 'moderator');
 ```
 
+### Query Users
+
+Based on roles
+```php
+$users = User::whereIs('admin', 'subscriber')->get();
+```
+Based on abilities
+```php
+$users = User::whereCan('view-dashboard')->get();
+```
+
+
 ### Getting all abilities for a user
 
 You can get all abilities for a user directly from the user model:
