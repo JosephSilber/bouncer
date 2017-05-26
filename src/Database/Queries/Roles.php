@@ -35,8 +35,8 @@ class Roles
         $roles = array_slice(func_get_args(), 1);
 
         return $query->whereHas('roles', function ($query) use ($roles) {
-            $query->whereNotIn('name', $roles);
-        });
+            $query->whereIn('name', $roles);
+        }, '<', 1);
     }
 
     /**
@@ -67,8 +67,8 @@ class Roles
         $roles = array_slice(func_get_args(), 1);
 
         return $query->whereHas('roles', function ($query) use ($roles) {
-            $query->whereInNot('name', $roles);
-        }, '=', count($roles));
+            $query->whereIn('name', $roles);
+        }, '<', count($roles));
     }
 
     /**
