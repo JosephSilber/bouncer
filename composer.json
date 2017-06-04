@@ -43,5 +43,15 @@
     },
     "scripts": {
         "test": "phpunit"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Silber\\Bouncer\\BouncerServiceProvider"
+            ],
+            "aliases": {
+                "Bouncer": "Silber\\Bouncer\\BouncerFacade"
+            }
+        }
     }
 }
