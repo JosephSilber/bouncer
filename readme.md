@@ -23,6 +23,7 @@ This package adds a bouncer at Laravel's access gate.
   - [Blade directives](#blade-directives)
   - [Refreshing the cache](#refreshing-the-cache)
 - [Cheat sheet](#cheat-sheet)
+- [Alternative](#alternative)
 - [License](#license)
 
 ## Introduction
@@ -443,6 +444,10 @@ $check = $user->isNot('subscriber', 'moderator');
 
 $abilities = $user->getAbilities();
 ```
+
+## Alternative
+
+Among the bajillion packages that [Spatie](https://spatie.be) has so graciously bestowed upon the community, you'll find the excellent [laravel-permission](https://github.com/spatie/laravel-permission) package. Like Bouncer, it nicely integrates with Laravel's built-in gate and permission checks, but has a different set of design choices when it comes to syntax, DB structure & features. [Povilas Korop](https://twitter.com/@povilaskorop) did an excellent job comparing the two [in an article on Laravel News](https://laravel-news.com/two-best-roles-permissions-packages).
 
 ## License
 
