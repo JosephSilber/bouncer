@@ -157,7 +157,7 @@ class Models
      */
     public static function ownedViaMorph($model, $attribute)
     {
-        static::$ownership[$model] = function($model, $authority) use($attribute){
+        static::$ownership[$model] = function ($model, $authority) use ($attribute) {
             if ($model->{"{$attribute}_id"} !== $authority->id) {
                 return false;
             }
