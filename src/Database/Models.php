@@ -162,7 +162,7 @@ class Models
                 return false;
             }
             
-            if ($model->{"{$attribute}_type"} !== get_class($model)) {
+            if ($model->{"{$attribute}_type"} !== get_class($authority)) {
                 return false;
             }
             
