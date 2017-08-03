@@ -110,22 +110,6 @@ trait HasRoles
     }
 
     /**
-     * Check if the model has none of the given roles.
-     *
-     * Alias for the "isNotAn" method.
-     *
-     * @param  string  $role
-     * @return bool
-     */
-    public function isNot($role)
-    {
-        return call_user_func_array(
-            [$this, 'isNotAn'],
-            func_get_args()
-        );
-    }
-
-    /**
      * Check if the model has all of the given roles.
      *
      * @param  string  $role
