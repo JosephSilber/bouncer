@@ -155,6 +155,21 @@ trait HasRoles
     }
 
     /**
+     * Constrain the given query by the provided role.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $role
+     * @return void
+     */
+    public function scopeWhereIsNot($query, $role)
+    {
+        call_user_func_array(
+            [new RolesQuery, 'constrainWhereIsNot'],
+            func_get_args()
+        );
+    }
+
+    /**
      * Get an instance of the bouncer's clipboard.
      *
      * @return \Silber\Bouncer\Clipboard
