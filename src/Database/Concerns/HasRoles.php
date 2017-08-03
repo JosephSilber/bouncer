@@ -140,6 +140,21 @@ trait HasRoles
     }
 
     /**
+     * Constrain the given query by the provided role.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $role
+     * @return void
+     */
+    public function scopeWhereIsNot($query, $role)
+    {
+        call_user_func_array(
+            [new RolesQuery, 'constrainWhereIsNot'],
+            func_get_args()
+        );
+    }
+
+    /**
      * Constrain the given query by all provided roles.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
@@ -150,6 +165,21 @@ trait HasRoles
     {
         call_user_func_array(
             [new RolesQuery, 'constrainWhereIsAll'],
+            func_get_args()
+        );
+    }
+
+    /**
+     * Constrain the given query by all provided roles.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $role
+     * @return void
+     */
+    public function scopeWhereIsNotAll($query, $role)
+    {
+        call_user_func_array(
+            [new RolesQuery, 'constrainWhereIsNotAll'],
             func_get_args()
         );
     }

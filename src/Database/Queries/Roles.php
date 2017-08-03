@@ -24,6 +24,22 @@ class Roles
     }
 
     /**
+     * Constrain the given query by the provided role.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $role
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function constrainWhereIsNot($query, $role)
+    {
+        $roles = array_slice(func_get_args(), 1);
+
+        return $query->whereHas('roles', function ($query) use ($roles) {
+            $query->whereIn('name', $roles);
+        }, '<', 1);
+    }
+
+    /**
      * Constrain the given query by all provided roles.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
@@ -37,6 +53,22 @@ class Roles
         return $query->whereHas('roles', function ($query) use ($roles) {
             $query->whereIn('name', $roles);
         }, '=', count($roles));
+    }
+
+    /**
+     * Constrain the given query by all provided roles.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $role
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function constrainWhereIsNotAll($query, $role)
+    {
+        $roles = array_slice(func_get_args(), 1);
+
+        return $query->whereHas('roles', function ($query) use ($roles) {
+            $query->whereIn('name', $roles);
+        }, '<', count($roles));
     }
 
     /**
