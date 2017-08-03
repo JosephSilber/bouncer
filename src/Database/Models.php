@@ -147,6 +147,28 @@ class Models
 
         static::$ownership[$model] = $attribute;
     }
+    
+    /**
+     * Register a callback to determine if a model is owned by a given authority as a morph.
+     *
+     * @param  string  $model
+     * @param  string  $attribute
+     * @return void
+     */
+    public static function ownedViaMorph($model, $attribute)
+    {
+        static::$ownership[$model] = function ($model, $authority) use ($attribute) {
+            if ($model->{"{$attribute}_id"} !== $authority->id) {
+                return false;
+            }
+            
+            if ($model->{"{$attribute}_type"} !== get_class($authority)) {
+                return false;
+            }
+            
+            return true;
+        };
+    }
 
     /**
      * Determines whether the given model is owned by the given authority.
