@@ -56,7 +56,7 @@ When you check abilities at the gate, the bouncer will be consulted first. If he
 Simply install the bouncer package with [composer](https://getcomposer.org/doc/00-intro.md):
 
 ```
-$ composer require silber/bouncer v1.0.0-beta.2
+$ composer require silber/bouncer v1.0.0-beta.3
 ```
 
 Once the composer installation completes, you can add the service provider and alias the facade. Open `config/app.php`, and make the following changes:
