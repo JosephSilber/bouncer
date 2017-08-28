@@ -28,7 +28,7 @@ This package adds a bouncer at Laravel's access gate.
 
 ## Introduction
 
-Bouncer provides a mechanism to handle roles and abilities in [Laravel's ACL](http://laravel.com/docs/5.1/authorization). With an expressive and fluent syntax, it stays out of your way as much as possible: use it when you want, ignore it when you don't.
+Bouncer provides a mechanism to handle roles and abilities in [Laravel's ACL](http://laravel.com/docs/5.5/authorization). With an expressive and fluent syntax, it stays out of your way as much as possible: use it when you want, ignore it when you don't.
 
 For a quick, glanceable list of Bouncer's features, check out [the cheat sheet](#cheat-sheet).
 
@@ -105,7 +105,7 @@ Whenever you use the `Bouncer` facade in your code, remember to add this line to
 use Bouncer;
 ```
 
-For more information about Laravel Facades, refer to [the Laravel documentation](https://laravel.com/docs/5.2/facades#using-facades).
+For more information about Laravel Facades, refer to [the Laravel documentation](https://laravel.com/docs/5.5/facades).
 
 ### Enabling cache
 
@@ -325,7 +325,7 @@ This will return a collection of the user's abilities, including any abilities g
 
 ### Authorizing users
 
-Authorizing users is handled directly at [Laravel's `Gate`](http://laravel.com/docs/5.1/authorization#checking-abilities), or on the user model (`$user->can($ability)`).
+Authorizing users is handled directly at [Laravel's `Gate`](https://laravel.com/docs/5.5/authorization#gates), or on the user model (`$user->can($ability)`).
 
 For convenience, the bouncer class provides two passthrough methods:
 
@@ -364,7 +364,7 @@ Whenever you need, you can fully refresh the bouncer's cache:
 Bouncer::refresh();
 ```
 
-> **Note:** fully refreshing the cache for all users uses [cache tags](http://laravel.com/docs/5.1/cache#cache-tags) if they're available. Not all cache drivers support this. Refer to [Laravel's documentation](http://laravel.com/docs/5.1/cache#cache-tags) to see if your driver supports cache tags. If your driver does not support cache tags, calling `refresh` might be a little slow, depending on the amount of users in your system.
+> **Note:** fully refreshing the cache for all users uses [cache tags](http://laravel.com/docs/5.5/cache#cache-tags) if they're available. Not all cache drivers support this. Refer to [Laravel's documentation](http://laravel.com/docs/5.5/cache#cache-tags) to see if your driver supports cache tags. If your driver does not support cache tags, calling `refresh` might be a little slow, depending on the amount of users in your system.
 
 Alternatively, you can refresh the cache only for a specific user:
 
