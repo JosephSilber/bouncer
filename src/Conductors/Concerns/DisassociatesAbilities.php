@@ -8,6 +8,7 @@ use Silber\Bouncer\Database\Ability;
 use InvalidArgumentException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 trait DisassociatesAbilities
 {
@@ -59,18 +60,42 @@ trait DisassociatesAbilities
     {
         $relation = $model->abilities();
 
-        $query = $relation->newPivotStatement();
+        list($foreignKeyName, $relatedKeyName) = $this->getRelationKeyNames($relation);
 
+        return $relation->newPivotStatement()
+                        ->where($foreignKeyName, $model->getKey())
+                        ->whereIn($relatedKeyName, $ids);
+    }
+
+    /**
+     * Get the two primary key names from the relation.
+     *
+     * @param  Illuminate\Database\Eloquent\Relations\MorphToMany  $relation
+     * @return array
+     */
+    protected function getRelationKeyNames(MorphToMany $relation)
+    {
         // We need to get the keys of both tables from the relation class.
-        // These method names have changed in Laravel 5.4, so we'll now
-        // first check which methods actually exist on the relation.
+        // The method names have changed in Laravel 5.4 & again in 5.5,
+        // so we will first check which methods are available to us.
         if (method_exists($relation, 'getForeignKey')) {
-            return $query->where($relation->getForeignKey(), $model->getKey())
-                         ->whereIn($relation->getOtherKey(), $ids);
+            return [
+                $relation->getForeignKey(),
+                $relation->getOtherKey(),
+            ];
         }
 
-        return $query->where($relation->getQualifiedForeignKeyName(), $model->getKey())
-                     ->whereIn($relation->getQualifiedRelatedKeyName(), $ids);
+        if (method_exists($relation, 'getQualifiedForeignKeyName')) {
+            return [
+                $relation->getQualifiedForeignKeyName(),
+                $relation->getQualifiedRelatedKeyName(),
+            ];
+        }
+
+        return [
+            $relation->getQualifiedForeignPivotKeyName(),
+            $relation->getQualifiedRelatedPivotKeyName(),
+        ];
     }
 
     /**
