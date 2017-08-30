@@ -41,6 +41,25 @@ class Helpers
     }
 
     /**
+     * Fill the given array with the given value for any missing keys.
+     *
+     * @param  iterable  $array
+     * @param  mixed  $value
+     * @param  iterable  $keys
+     * @return iterable
+     */
+    public static function fillMissingKeys($array, $value, $keys)
+    {
+        foreach ($keys as $key) {
+            if (! array_key_exists($key, $array)) {
+                $array[$key] = $value;
+            }
+        }
+
+        return $array;
+    }
+
+    /**
      * Determines if an array is associative.
      *
      * An array is "associative" if it doesn't have sequential numerical keys beginning with zero.
