@@ -141,6 +141,8 @@ trait IsRole
             }
 
             throw new InvalidArgumentException('Invalid role');
+        })->map(function ($items) {
+            return $items->all();
         })->all();
 
         return Helpers::fillMissingKeys($roles, [], ['integers', 'strings', 'models']);
@@ -158,7 +160,9 @@ trait IsRole
             return [];
         }
 
-        return $this->whereIn('name', $names)->pluck($this->getKeyName())->all();
+        return $this->whereIn('name', $names)
+                    ->select($this->getKeyName())->get()
+                    ->pluck($this->getKeyName())->all();
     }
 
     /**
@@ -173,7 +177,9 @@ trait IsRole
             return [];
         }
 
-        return $this->whereIn($this->getKeyName(), $keys)->pluck('name')->all();
+        return $this->whereIn($this->getKeyName(), $keys)
+                    ->select('name')->get()
+                    ->pluck('name')->all();
     }
 
     /**
