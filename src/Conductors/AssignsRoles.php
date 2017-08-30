@@ -36,63 +36,13 @@ class AssignsRoles
     {
         $authorities = is_array($authority) ? $authority : [$authority];
 
-        $roles = $this->roles();
+        $roles = Models::role()->findOrCreateRoles($this->roles);
 
         foreach (Helpers::mapAuthorityByClass($authorities) as $class => $ids) {
             $this->assignRoles($roles, $class, new Collection($ids));
         }
 
         return true;
-    }
-
-    /**
-     * Get the provided roles (creating the non-existent ones).
-     *
-     * @return \Illuminate\Database\Eloquent\Model[]
-     */
-    protected function roles()
-    {
-        list($models, $names) = Helpers::partition($this->roles, function ($role) {
-            return $role instanceof Model;
-        });
-
-        if ($names->count()) {
-            $models = $models->merge($this->findOrCreateRoles($names));
-        }
-
-        return $models;
-    }
-
-    /**
-     * Find or create roles by name.
-     *
-     * @param  \Illuminate\Support\Collection<string>  $names
-     * @return array
-     */
-    protected function findOrCreateRoles(Collection $names)
-    {
-        if ($names->count() == 0) {
-            return [];
-        }
-
-        $existing = Models::role()->whereIn('name', $names->all())->get();
-
-        $names = $names->diff($existing->pluck('name'));
-
-        return $existing->merge($this->createRoles($names))->all();
-    }
-
-    /**
-     * Create roles with the given names.
-     *
-     * @param  \Illuminate\Support\Collection  $names
-     * @return \Illuminate\Support\Collection<\Illuminate\Database\Eloquent\Model>
-     */
-    protected function createRoles(Collection $names)
-    {
-        return $names->map(function ($name) {
-            return Models::role()->create(compact('name'));
-        });
     }
 
     /**
