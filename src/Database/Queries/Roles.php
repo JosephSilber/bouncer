@@ -23,7 +23,6 @@ class Roles
         });
     }
 
-
     /**
      * Constrain the given query by all provided roles.
      *
@@ -51,9 +50,9 @@ class Roles
     {
         $roles = array_slice(func_get_args(), 1);
 
-        return $query->whereHas('roles', function ($query) use ($roles) {
+        return $query->whereDoesntHave('roles', function ($query) use ($roles) {
             $query->whereIn('name', $roles);
-        }, '<', 1);
+        });
     }
 
     /**
