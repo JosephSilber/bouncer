@@ -158,7 +158,8 @@ class Clipboard implements ClipboardContract
      */
     public function checkRole(Model $authority, $roles, $boolean = 'or')
     {
-        $available = $this->getRoles($authority)->intersect($roles);
+        $available = $this->getRoles($authority)
+                          ->intersect(Models::role()->getRoleNames($roles));
 
         if ($boolean == 'or') {
             return $available->count() > 0;

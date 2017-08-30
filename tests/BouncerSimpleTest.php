@@ -83,13 +83,17 @@ class BouncerSimpleTest extends BaseTestCase
     {
         $bouncer = $this->bouncer($user = User::create())->dontCache();
 
-        $bouncer->assign(['admin', 'editor'])->to($user);
+        $admin    = $this->role('admin');
+        $editor   = $this->role('editor');
+        $reviewer = $this->role('reviewer');
 
-        $this->assertTrue($bouncer->is($user)->all('admin', 'editor'));
+        $bouncer->assign([$admin, 'editor', $reviewer->id])->to($user);
 
-        $bouncer->retract(['admin', 'editor'])->from($user);
+        $this->assertTrue($bouncer->is($user)->all($admin->id, $editor, 'reviewer'));
 
-        $this->assertTrue($bouncer->is($user)->notAn('admin', 'editor'));
+        $bouncer->retract(['admin', $editor])->from($user);
+
+        $this->assertTrue($bouncer->is($user)->notAn($admin, 'editor'));
     }
 
     public function test_bouncer_can_give_and_remove_roles_for_multiple_users_at_once()
@@ -215,5 +219,16 @@ class BouncerSimpleTest extends BaseTestCase
 
         $this->assertTrue($bouncer->allows('edit', new Account(['user_id' => $user->id])));
         $this->assertFalse($bouncer->allows('edit', new Account(['user_id' => 99])));
+    }
+
+    /**
+     * Create a new role with the given name.
+     *
+     * @param  string  $name
+     * @return \Silber\Bouncer\Database\Role
+     */
+    protected function role($name)
+    {
+        return Role::create(compact('name'));
     }
 }
