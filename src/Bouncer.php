@@ -12,7 +12,6 @@ use Illuminate\Contracts\Cache\Repository as CacheRepository;
 
 use Silber\Bouncer\Seed\Seeder;
 use Silber\Bouncer\Database\Models;
-use Silber\Bouncer\Conductors\SyncsRoles;
 use Silber\Bouncer\Conductors\ChecksRoles;
 use Silber\Bouncer\Conductors\AssignsRoles;
 use Silber\Bouncer\Conductors\RemovesRoles;
@@ -20,6 +19,7 @@ use Silber\Bouncer\Conductors\GivesAbilities;
 use Silber\Bouncer\Conductors\RemovesAbilities;
 use Silber\Bouncer\Conductors\ForbidsAbilities;
 use Silber\Bouncer\Conductors\UnforbidsAbilities;
+use Silber\Bouncer\Conductors\SyncsRolesAndAbilities;
 use Silber\Bouncer\Contracts\Clipboard as ClipboardContract;
 use Silber\Bouncer\Contracts\CachedClipboard as CachedClipboardContract;
 
@@ -163,14 +163,14 @@ class Bouncer
     }
 
     /**
-     * Start a chain, to sync roles for the given authority.
+     * Start a chain, to sync roles/abilities for the given authority.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $authority
-     * @return \Silber\Bouncer\Conductors\SyncsRoles
+     * @return \Silber\Bouncer\Conductors\SyncsRolesAndAbilities
      */
     public function sync(Model $authority)
     {
-        return new SyncsRoles($authority);
+        return new SyncsRolesAndAbilities($authority);
     }
 
     /**
