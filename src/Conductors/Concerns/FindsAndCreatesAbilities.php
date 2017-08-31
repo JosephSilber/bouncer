@@ -5,6 +5,7 @@ namespace Silber\Bouncer\Conductors\Concerns;
 use Silber\Bouncer\Helpers;
 use Silber\Bouncer\Database\Models;
 
+use Illuminate\Support\Arr;
 use InvalidArgumentException;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -33,7 +34,11 @@ trait FindsAndCreatesAbilities
             return $this->getAbilityIdsFromMap($abilities, $attributes);
         }
 
-        return $this->abilitiesByName($abilities, $attributes)->pluck('id')->all();
+        if (! is_array($abilities) && ! $abilities instanceof Collection) {
+            $abilities = [$abilities];
+        }
+
+        return $this->getAbilityIdsFromArray($abilities, $attributes);
     }
 
     /**
@@ -51,6 +56,27 @@ trait FindsAndCreatesAbilities
             ->map(function ($entity, $ability) use ($attributes) {
                 return $this->getAbilityIds($ability, $entity, $attributes);
             })->flatten(1)->all();
+    }
+
+    /**
+     * Get the ability IDs from the provided array, creating the ones that don't exist.
+     *
+     * @param  iterable  $abilities
+     * @param  array  $attributes
+     * @return array
+     */
+    protected function getAbilityIdsFromArray($abilities, array $attributes)
+    {
+        $groups = Helpers::groupModelsAndIdentifiersByType($abilities);
+
+        $keyName = Models::ability()->getKeyName();
+
+        $groups['strings'] = $this->abilitiesByName($groups['strings'], $attributes)
+                                  ->pluck($keyName)->all();
+
+        $groups['models'] = Arr::pluck($groups['models'], $keyName);
+
+        return Arr::collapse($groups);
     }
 
     /**
@@ -156,13 +182,17 @@ trait FindsAndCreatesAbilities
     /**
      * Get or create abilities by their name.
      *
-     * @param  array|string  $ability
+     * @param  array|string  $abilities
      * @param  array  $attributes
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Support\Collection
      */
-    protected function abilitiesByName($ability, $attributes = [])
+    protected function abilitiesByName($abilities, $attributes = [])
     {
-        $abilities = array_unique(is_array($ability) ? $ability : [$ability]);
+        $abilities = array_unique(is_array($abilities) ? $abilities : [$abilities]);
+
+        if (empty($abilities)) {
+            return new Collection;
+        }
 
         $existing = Models::ability()->simpleAbility()->whereIn('name', $abilities)->get();
 

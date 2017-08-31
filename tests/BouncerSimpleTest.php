@@ -9,13 +9,24 @@ class BouncerSimpleTest extends BaseTestCase
     {
         $bouncer = $this->bouncer($user = User::create())->dontCache();
 
+        $editSite = Ability::create(['name' => 'edit-site']);
+        $banUsers = Ability::create(['name' => 'ban-users']);
+        $accessDashboard = Ability::create(['name' => 'access-dashboard']);
+
         $bouncer->allow($user)->to('edit-site');
+        $bouncer->allow($user)->to([$banUsers, $accessDashboard->id]);
 
         $this->assertTrue($bouncer->allows('edit-site'));
+        $this->assertTrue($bouncer->allows('ban-users'));
+        $this->assertTrue($bouncer->allows('access-dashboard'));
 
-        $bouncer->disallow($user)->to('edit-site');
+        $bouncer->disallow($user)->to($editSite);
+        $bouncer->disallow($user)->to('ban-users');
+        $bouncer->disallow($user)->to($accessDashboard->id);
 
         $this->assertTrue($bouncer->denies('edit-site'));
+        $this->assertTrue($bouncer->denies('ban-users'));
+        $this->assertTrue($bouncer->denies('access-dashboard'));
     }
 
     public function test_bouncer_can_give_and_remove_wildcard_abilities()

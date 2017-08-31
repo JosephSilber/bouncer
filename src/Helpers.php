@@ -5,6 +5,7 @@ namespace Silber\Bouncer;
 use Silber\Bouncer\Database\Models;
 
 use App\User;
+use InvalidArgumentException;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 
@@ -57,6 +58,31 @@ class Helpers
         }
 
         return $array;
+    }
+
+    /**
+     * Group models and their identifiers by type (models, strings & integers).
+     *
+     * @param  iterable  $models
+     * @return array
+     */
+    public static function groupModelsAndIdentifiersByType($models)
+    {
+        $groups = (new Collection($models))->groupBy(function ($model) {
+            if (is_int($model)) {
+                return 'integers';
+            } else if (is_string($model)) {
+                return 'strings';
+            } else if ($model instanceof Model) {
+                return 'models';
+            }
+
+            throw new InvalidArgumentException('Invalid model identifier');
+        })->map(function ($items) {
+            return $items->all();
+        })->all();
+
+        return static::fillMissingKeys($groups, [], ['integers', 'strings', 'models']);
     }
 
     /**

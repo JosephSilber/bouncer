@@ -58,7 +58,7 @@ trait IsRole
      */
     public function findOrCreateRoles($roles)
     {
-        $roles = $this->groupRolesByType($roles);
+        $roles = Helpers::groupModelsAndIdentifiersByType($roles);
 
         $roles['integers'] = $this->find($roles['integers']);
 
@@ -97,7 +97,7 @@ trait IsRole
      */
     public function getRoleKeys($roles)
     {
-        $roles = $this->groupRolesByType($roles);
+        $roles = Helpers::groupModelsAndIdentifiersByType($roles);
 
         $roles['strings'] = $this->getKeysByName($roles['strings']);
 
@@ -114,38 +114,13 @@ trait IsRole
      */
     public function getRoleNames($roles)
     {
-        $roles = $this->groupRolesByType($roles);
+        $roles = Helpers::groupModelsAndIdentifiersByType($roles);
 
         $roles['integers'] = $this->getNamesByKey($roles['integers']);
 
         $roles['models'] = Arr::pluck($roles['models'], 'name');
 
         return Arr::collapse($roles);
-    }
-
-    /**
-     * Group the given roles into their type (integer, string or model).
-     *
-     * @param  iterable  $roles
-     * @return array
-     */
-    protected function groupRolesByType($roles)
-    {
-        $roles = (new Collection($roles))->groupBy(function ($role) {
-            if (is_int($role)) {
-                return 'integers';
-            } else if (is_string($role)) {
-                return 'strings';
-            } else if ($role instanceof static) {
-                return 'models';
-            }
-
-            throw new InvalidArgumentException('Invalid role');
-        })->map(function ($items) {
-            return $items->all();
-        })->all();
-
-        return Helpers::fillMissingKeys($roles, [], ['integers', 'strings', 'models']);
     }
 
     /**
