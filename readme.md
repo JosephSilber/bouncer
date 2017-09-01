@@ -15,6 +15,7 @@ This package adds a bouncer at Laravel's access gate.
   - [Assigning roles to a user](#assigning-roles-to-a-user)
   - [Giving a user an ability directly](#giving-a-user-an-ability-directly)
   - [Restricting an ability to a model](#restricting-an-ability-to-a-model)
+  - [Allowing a user or role to "own" a model](allowing-a-user-or-role-to-"own"-a-model)
   - [Retracting a role from a user](#retracting-a-role-from-a-user)
   - [Removing an ability](#removing-an-ability)
   - [Checking a user's roles](#checking-a-users-roles)
@@ -210,6 +211,22 @@ If you want to restrict the ability to a specific model instance, pass in the ac
 
 ```php
 Bouncer::allow($user)->to('edit', $post);
+```
+
+### Allowing a user or role to "own" a model
+
+Use the `toOwn` method to allow users to manage _their own_ models:
+
+```php
+Bouncer::allow($user)->toOwn(Post::class);
+```
+
+Now, when checking at the gate whether the user may perform an action on a given post, the post's `user_id` will be compared to the logged-in user's `id`. If they match, the gate will allow the action.
+
+You can also allow users to manage all _types_ of models in your application:
+
+```php
+Bouncer::allow($user)->toOwnEverything();
 ```
 
 ### Retracting a role from a user
