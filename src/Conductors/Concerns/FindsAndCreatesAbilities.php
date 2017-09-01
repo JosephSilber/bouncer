@@ -52,10 +52,13 @@ trait FindsAndCreatesAbilities
      */
     protected function getAbilityIdsFromMap(array $map, array $attributes)
     {
-        return (new Collection($map))
-            ->map(function ($entity, $ability) use ($attributes) {
-                return $this->getAbilityIds($ability, $entity, $attributes);
-            })->flatten(1)->all();
+        list($map, $list) = Helpers::partition($map, function ($value, $key) {
+            return ! is_int($key);
+        });
+
+        return $map->map(function ($entity, $ability) use ($attributes) {
+            return $this->getAbilityIds($ability, $entity, $attributes);
+        })->collapse()->merge($this->getAbilityIdsFromArray($list, $attributes))->all();
     }
 
     /**

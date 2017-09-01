@@ -137,7 +137,7 @@ class Helpers
         $partitions = [new Collection, new Collection];
 
         foreach ($items as $key => $item) {
-            $partitions[(int) ! $callback($item)][$key] = $item;
+            $partitions[(int) ! $callback($item, $key)][$key] = $item;
         }
 
         return new Collection($partitions);

@@ -79,6 +79,7 @@ class MultipleAbilitiesTest extends BaseTestCase
             'delete' => $user1,
             'view'   => Account::class,
             'update' => $account1,
+            'access-dashboard',
         ]);
 
         $this->assertTrue($bouncer->allows('edit', User::class));
@@ -90,6 +91,8 @@ class MultipleAbilitiesTest extends BaseTestCase
         $this->assertTrue($bouncer->denies('update', Account::class));
         $this->assertTrue($bouncer->allows('update', $account1));
         $this->assertTrue($bouncer->denies('update', $account2));
+
+        $this->assertTrue($bouncer->allows('access-dashboard'));
     }
 
     public function test_disallowing_multiple_abilties()
