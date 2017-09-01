@@ -57,7 +57,7 @@ When you check abilities at the gate, the bouncer will be consulted first. If he
 Simply install the bouncer package with [composer](https://getcomposer.org/doc/00-intro.md):
 
 ```
-$ composer require silber/bouncer v1.0.0-beta.3
+$ composer require silber/bouncer v1.0.0-beta.4
 ```
 
 > In Laravel 5.5, [service providers and aliases are automatically registered](https://laravel.com/docs/5.5/packages#package-discovery). If you're using Laravel 5.5, skip ahead directly to step 3 (do not pass go, but do collect $200).
