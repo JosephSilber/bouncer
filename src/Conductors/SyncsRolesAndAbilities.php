@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class SyncsRolesAndAbilities
 {
+    use Concerns\FindsAndCreatesAbilities;
+
     /**
      * The authority for whom to sync roles/abilities.
      *
@@ -70,11 +72,10 @@ class SyncsRolesAndAbilities
      */
     protected function syncAbilities($abilities, $options = ['forbidden' => false])
     {
-        $keyName = Models::ability()->getKeyName();
-
-        $abilityKeys = $this->getAbilityIds($abilities, $keyName);
+        $abilityKeys = $this->getAbilityIds($abilities);
 
         $this->authority->abilities()
+             ->whereNotIn($this->getAbilitiesQualifiedKeyName(), $abilityKeys)
              ->wherePivot('forbidden', $options['forbidden'])
              ->detach();
 
@@ -86,51 +87,14 @@ class SyncsRolesAndAbilities
     }
 
     /**
-     * Get the IDs of the given abilities, creating new ones for the missing names.
+     * Get the fully qualified column name for the abilities table's primary key.
      *
-     * @param  iterable  $abilities
-     * @param  string  $keyName
-     * @return array
+     * @return string
      */
-    protected function getAbilityIds($abilities, $keyName)
+    protected function getAbilitiesQualifiedKeyName()
     {
-        $abilities = Helpers::groupModelsAndIdentifiersByType($abilities);
-
-        $abilities['strings'] = $this->findAbilityKeysOrCreate(
-            $abilities['strings'], $keyName
-        );
-
-        $abilities['models'] = Arr::pluck($abilities['models'], $keyName);
-
-        return Arr::collapse($abilities);
-    }
-
-    /**
-     * Find the IDs of the given ability names, creating the ones that are missing.
-     *
-     * @param  iterable  $names
-     * @param  string  $keyName
-     * @return array
-     */
-    protected function findAbilityKeysOrCreate($names, $keyName)
-    {
-        if (empty($names)) {
-            return [];
-        }
-
         $model = Models::ability();
 
-        $existing = $model->simpleAbility()
-                          ->whereIn('name', $names)
-                          ->get([$keyName, 'name'])
-                          ->pluck('name', $keyName);
-
-        $creating = (new Collection($names))->diff($existing);
-
-        $created = $creating->map(function ($name) use ($model) {
-            return $model->create(compact('name'))->getKey();
-        });
-
-        return $created->merge($existing->keys())->all();
+        return $model->getTable().'.'.$model->getKeyName();
     }
 }

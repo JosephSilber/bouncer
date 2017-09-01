@@ -20,7 +20,7 @@ trait FindsAndCreatesAbilities
      * @param  array  $attributes
      * @return array
      */
-    protected function getAbilityIds($abilities, $model, array $attributes)
+    protected function getAbilityIds($abilities, $model = null, array $attributes = [])
     {
         if ($abilities instanceof Model) {
             return [$abilities->getKey()];

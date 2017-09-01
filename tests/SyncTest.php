@@ -45,6 +45,31 @@ class SyncTest extends BaseTestCase
         $this->assertTrue($bouncer->allows('access-dashboard'));
     }
 
+    public function test_syncing_abilities_With_a_map()
+    {
+        $bouncer = $this->bouncer($user = User::create())->dontCache();
+
+        $deleteUser = Ability::createForModel($user, 'delete');
+        $createAccounts = Ability::createForModel(Account::class, 'create');
+
+        $bouncer->allow($user)->to([$deleteUser, $createAccounts]);
+
+        $this->assertTrue($bouncer->allows('delete', $user));
+        $this->assertTrue($bouncer->allows('create', Account::class));
+
+        $bouncer->sync($user)->abilities([
+            'access-dashboard',
+            'create' => Account::class,
+            'view' => $user,
+        ]);
+
+        $this->assertTrue($bouncer->denies('delete', $user));
+        $this->assertTrue($bouncer->denies('view', User::class));
+        $this->assertTrue($bouncer->allows('create', Account::class));
+        $this->assertTrue($bouncer->allows('view', $user));
+        $this->assertTrue($bouncer->allows('access-dashboard'));
+    }
+
     public function test_syncing_forbidden_abilities()
     {
         $bouncer = $this->bouncer($user = User::create())->dontCache();
