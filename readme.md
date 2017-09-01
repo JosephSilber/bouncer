@@ -65,40 +65,41 @@ Once the composer installation completes, you can add the service provider and a
 
 1) Add a new item to the `providers` array:
 
-```php
-Silber\Bouncer\BouncerServiceProvider::class,
-```
+    ```php
+    Silber\Bouncer\BouncerServiceProvider::class,
+    ```
 
 2) Add a new item to the `aliases` array:
 
-```php
-'Bouncer' => Silber\Bouncer\BouncerFacade::class,
-```
+    ```php
+    'Bouncer' => Silber\Bouncer\BouncerFacade::class,
+    ```
 
-This part is optional. If you don't want to use the facade, you can skip step 2.
+    This part is optional. If you don't want to use the facade, you can skip step 2.
 
 3) Add the bouncer's trait to your user model:
 
-```php
-use Silber\Bouncer\Database\HasRolesAndAbilities;
+    ```php
+    use Silber\Bouncer\Database\HasRolesAndAbilities;
 
-class User extends Model
-{
-    use HasRolesAndAbilities;
-}
-```
+    class User extends Model
+    {
+        use HasRolesAndAbilities;
+    }
+    ```
 
 4) Now, to run the bouncer's migrations, first publish the package's migrations into your app's `migrations` directory, by running the following command:
 
-```
-php artisan vendor:publish --tag="bouncer.migrations"
-```
+    ```
+    php artisan vendor:publish --tag="bouncer.migrations"
+    ```
 
 5) Finally, run the migrations:
 
-```
-php artisan migrate
-```
+    ```
+    php artisan migrate
+    ```
+
 ### Facade
 
 Whenever you use the `Bouncer` facade in your code, remember to add this line to your namespace imports at the top of the file:
