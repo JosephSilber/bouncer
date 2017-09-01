@@ -15,7 +15,7 @@ This package adds a bouncer at Laravel's access gate.
   - [Assigning roles to a user](#assigning-roles-to-a-user)
   - [Giving a user an ability directly](#giving-a-user-an-ability-directly)
   - [Restricting an ability to a model](#restricting-an-ability-to-a-model)
-  - [Allowing a user or role to "own" a model](#allowing-a-user-or-role-to-"own"-a-model)
+  - [Allowing a user or role to "own" a model](#allowing-a-user-or-role-to-own-a-model)
   - [Retracting a role from a user](#retracting-a-role-from-a-user)
   - [Removing an ability](#removing-an-ability)
   - [Checking a user's roles](#checking-a-users-roles)
