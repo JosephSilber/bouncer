@@ -80,7 +80,7 @@ trait ConductsAbilities
             return true;
         }
 
-        if (! is_array($abilities) || Helpers::isAssociativeArray($abilities)) {
+        if (! is_array($abilities) || ! Helpers::isIndexedArray($abilities)) {
             return false;
         }
 

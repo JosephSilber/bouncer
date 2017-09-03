@@ -105,6 +105,27 @@ class Helpers
     }
 
     /**
+     * Determines if an array is numerically indexed.
+     *
+     * @param  mixed  $array
+     * @return bool
+     */
+    public static function isIndexedArray($array)
+    {
+        if (! is_array($array)) {
+            return false;
+        }
+
+        foreach ($array as $key => $value) {
+            if (! is_numeric($key)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Map a list of authorities by their class name.
      *
      * @param  array  $authorities
