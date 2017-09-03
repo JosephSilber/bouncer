@@ -2,6 +2,8 @@
 
 namespace Silber\Bouncer\Conductors\Concerns;
 
+use Silber\Bouncer\Conductors\Lazy;
+
 trait ConductsAbilities
 {
     /**
@@ -60,7 +62,7 @@ trait ConductsAbilities
      */
     public function toOwn($model, array $attributes = [])
     {
-        return $this->to('*', $model, $attributes + ['only_owned' => true]);
+        return new Lazy\HandlesOwnership($this, $model, $attributes);
     }
 
     /**

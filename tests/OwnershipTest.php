@@ -58,6 +58,37 @@ class OwnershipTest extends BaseTestCase
         $this->assertTrue($bouncer->denies('update', $account1));
     }
 
+    public function test_can_own_a_model_for_a_given_ability()
+    {
+        $bouncer = $this->bouncer($user = User::create())->dontCache();
+
+        $account1 = Account::create(['user_id' => $user->id]);
+        $account2 = Account::create(['user_id' => $user->id]);
+
+        $bouncer->allow($user)->toOwn($account1)->to('update');
+        $bouncer->allow($user)->toOwn($account2)->to(['view', 'update']);
+
+        $this->assertTrue($bouncer->denies('update', Account::class));
+        $this->assertTrue($bouncer->allows('update', $account1));
+        $this->assertTrue($bouncer->denies('delete', $account1));
+        $this->assertTrue($bouncer->allows('view', $account2));
+        $this->assertTrue($bouncer->allows('update', $account2));
+        $this->assertTrue($bouncer->denies('delete', $account2));
+
+        $account1->user_id = 99;
+
+        $this->assertTrue($bouncer->denies('update', $account1));
+
+        $bouncer->allow($user)->to('update', $account1);
+        $bouncer->disallow($user)->toOwn($account1)->to('update');
+
+        $this->assertTrue($bouncer->allows('update', $account1));
+
+        $bouncer->disallow($user)->to('update', $account1);
+
+        $this->assertTrue($bouncer->denies('update', $account1));
+    }
+
     public function test_can_own_everything()
     {
         $bouncer = $this->bouncer($user = User::create())->dontCache();
@@ -78,6 +109,29 @@ class OwnershipTest extends BaseTestCase
         $bouncer->disallow($user)->toOwnEverything();
 
         $this->assertTrue($bouncer->denies('delete', $account));
+    }
+
+    public function test_can_own_everything_for_a_given_ability()
+    {
+        $bouncer = $this->bouncer($user = User::create())->dontCache();
+
+        $bouncer->allow($user)->toOwnEverything()->to('view');
+
+        $account = Account::create(['user_id' => $user->id]);
+
+        $this->assertTrue($bouncer->denies('delete', Account::class));
+        $this->assertTrue($bouncer->denies('delete', $account));
+        $this->assertTrue($bouncer->allows('view', $account));
+
+        $account->user_id = 99;
+
+        $this->assertTrue($bouncer->denies('view', $account));
+
+        $account->user_id = $user->id;
+
+        $bouncer->disallow($user)->toOwnEverything()->to('view');
+
+        $this->assertTrue($bouncer->denies('view', $account));
     }
 
     public function test_can_use_custom_ownership_attribute()
