@@ -223,10 +223,22 @@ Bouncer::allow($user)->toOwn(Post::class);
 
 Now, when checking at the gate whether the user may perform an action on a given post, the post's `user_id` will be compared to the logged-in user's `id`. If they match, the gate will allow the action.
 
-You can also allow users to manage all _types_ of models in your application:
+The above will grant all abilities on a user's "owned" models. You can restrict the abilities by following it up with a call to the `to` method:
+
+```php
+Bouncer::allow($user)->toOwn(Post::class)->to('view');
+
+// Or pass it an array of abilities:
+Bouncer::allow($user)->toOwn(Post::class)->to(['view', 'update']);
+```
+
+You can also allow users to own all _types_ of models in your application:
 
 ```php
 Bouncer::allow($user)->toOwnEverything();
+
+// And to restrict ownership to a given ability
+Bouncer::allow($user)->toOwnEverything()->to('view');
 ```
 
 ### Retracting a role from a user
