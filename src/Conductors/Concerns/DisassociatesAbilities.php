@@ -24,6 +24,10 @@ trait DisassociatesAbilities
      */
     public function to($abilities, $entity = null, array $attributes = [])
     {
+        if (call_user_func_array([$this, 'shouldConductLazy'], func_get_args())) {
+            return $this->conductLazy($abilities);
+        }
+
         $authority = $this->getAuthority();
 
         if ($ids = $this->getAbilityIds($abilities, $entity, $attributes)) {

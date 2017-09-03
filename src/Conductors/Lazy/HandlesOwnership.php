@@ -14,7 +14,7 @@ class HandlesOwnership
     /**
      * The model to be owned.
      *
-     * @var mixed
+     * @var string|object
      */
     protected $model;
 
@@ -36,7 +36,7 @@ class HandlesOwnership
      * Constructor.
      *
      * @param \Silber\Bouncer\Conductors\Concerns\ConductsAbilities  $conductor
-     * @param mixed  $model
+     * @param string|object  $model
      * @param array  $attributes
      */
     public function __construct($conductor, $model, array $attributes = [])

@@ -74,7 +74,7 @@ class TitledAbilitiesTest extends BaseTestCase
     {
         $bouncer = $this->bouncer($user = User::create());
 
-        $bouncer->allow($user)->toAlways('create', [
+        $bouncer->allow($user)->to('create')->everything([
             'title' => 'Create anything',
         ]);
 
@@ -184,7 +184,7 @@ class TitledAbilitiesTest extends BaseTestCase
     {
         $bouncer = $this->bouncer($user = User::create());
 
-        $bouncer->forbid($user)->toAlways('create', [
+        $bouncer->forbid($user)->to('create')->everything([
             'title' => 'Create anything',
         ]);
 

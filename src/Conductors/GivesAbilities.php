@@ -35,6 +35,10 @@ class GivesAbilities
      */
     public function to($abilities, $model = null, array $attributes = [])
     {
+        if (call_user_func_array([$this, 'shouldConductLazy'], func_get_args())) {
+            return $this->conductLazy($abilities);
+        }
+
         $ids = $this->getAbilityIds($abilities, $model, $attributes);
 
         $this->giveAbilities($ids, $this->getAuthority());

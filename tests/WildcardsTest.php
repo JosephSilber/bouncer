@@ -62,14 +62,14 @@ class WildcardsTest extends BaseTestCase
     {
         $bouncer = $this->bouncer($user = User::create())->dontCache();
 
-        $bouncer->allow($user)->toAlways('delete');
+        $bouncer->allow($user)->to('delete')->everything();
 
         $this->assertTrue($bouncer->allows('delete', $user));
         $this->assertTrue($bouncer->denies('update', $user));
         $this->assertTrue($bouncer->allows('delete', User::class));
         $this->assertTrue($bouncer->allows('delete', '*'));
 
-        $bouncer->disallow($user)->toAlways('delete');
+        $bouncer->disallow($user)->to('delete')->everything();
 
         $this->assertTrue($bouncer->denies('delete', $user));
         $this->assertTrue($bouncer->denies('delete', User::class));
@@ -139,7 +139,7 @@ class WildcardsTest extends BaseTestCase
     {
         $bouncer = $this->bouncer($user = User::create());
 
-        $bouncer->allow($user)->toAlways('delete');
+        $bouncer->allow($user)->to('delete')->everything();
 
         $this->assertTrue($bouncer->denies('delete'));
     }
