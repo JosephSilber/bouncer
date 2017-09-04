@@ -157,10 +157,10 @@ class Bouncer
     /**
      * Start a chain, to sync roles/abilities for the given authority.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $authority
+     * @param  \Illuminate\Database\Eloquent\Model|string  $authority
      * @return \Silber\Bouncer\Conductors\SyncsRolesAndAbilities
      */
-    public function sync(Model $authority)
+    public function sync($authority)
     {
         return new Conductors\SyncsRolesAndAbilities($authority);
     }

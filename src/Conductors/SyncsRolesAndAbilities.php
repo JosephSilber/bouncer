@@ -16,16 +16,16 @@ class SyncsRolesAndAbilities
     /**
      * The authority for whom to sync roles/abilities.
      *
-     * @var \Illuminate\Database\Eloquent\Model
+     * @var \Illuminate\Database\Eloquent\Model|string
      */
     protected $authority;
 
     /**
      * Constructor.
      *
-     * @param \Illuminate\Database\Eloquent\Model  $authority
+     * @param \Illuminate\Database\Eloquent\Model|string  $authority
      */
-    public function __construct(Model $authority)
+    public function __construct($authority)
     {
         $this->authority = $authority;
     }
@@ -74,7 +74,7 @@ class SyncsRolesAndAbilities
     {
         $abilityKeys = $this->getAbilityIds($abilities);
 
-        $this->authority->abilities()
+        $this->getAuthority()->abilities()
              ->whereNotIn($this->getAbilitiesQualifiedKeyName(), $abilityKeys)
              ->wherePivot('forbidden', $options['forbidden'])
              ->detach();
@@ -84,6 +84,20 @@ class SyncsRolesAndAbilities
         } else {
             (new GivesAbilities($this->authority))->to($abilityKeys);
         }
+    }
+
+    /**
+     * Get the authority for whom to sync roles/abilities.
+     *
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    protected function getAuthority()
+    {
+        if ($this->authority instanceof Model) {
+            return $this->authority;
+        }
+
+        return Models::role()->firstOrCreate(['name' => $this->authority]);
     }
 
     /**

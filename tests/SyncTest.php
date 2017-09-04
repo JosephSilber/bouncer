@@ -92,6 +92,28 @@ class SyncTest extends BaseTestCase
         $this->assertTrue($bouncer->denies('access-dashboard'));
     }
 
+    public function test_syncing_a_roles_abilities()
+    {
+        $bouncer = $this->bouncer($user = User::create())->dontCache();
+
+        $editSite = Ability::create(['name' => 'edit-site']);
+        $banUsers = Ability::create(['name' => 'ban-users']);
+        $accessDashboard = Ability::create(['name' => 'access-dashboard']);
+
+        $bouncer->assign('admin')->to($user);
+        $bouncer->allow('admin')->to([$editSite, $banUsers]);
+
+        $this->assertTrue($bouncer->allows('edit-site'));
+        $this->assertTrue($bouncer->allows('ban-users'));
+        $this->assertTrue($bouncer->denies('access-dashboard'));
+
+        $bouncer->sync('admin')->abilities([$banUsers->id, 'access-dashboard']);
+
+        $this->assertTrue($bouncer->denies('edit-site'));
+        $this->assertTrue($bouncer->allows('ban-users'));
+        $this->assertTrue($bouncer->allows('access-dashboard'));
+    }
+
     /**
      * Create a new role with the given name.
      *
