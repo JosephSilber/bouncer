@@ -24,7 +24,9 @@ This package adds a bouncer at Laravel's access gate.
   - [Blade directives](#blade-directives)
   - [Refreshing the cache](#refreshing-the-cache)
 - [Configuration](#configuration)
-  - [Caching](#caching)
+  - [Cache](#cache)
+  - [Tables](#tables)
+  - [Custom models](#custom-models)
 - [Cheat sheet](#cheat-sheet)
 - [Alternative](#alternative)
 - [License](#license)
@@ -115,7 +117,7 @@ For more information about Laravel Facades, refer to [the Laravel documentation]
 
 ### Enabling cache
 
-By default, Bouncer's queries are cached for the current request. For better performance, you may want to [enable cross-request caching](#caching).
+By default, Bouncer's queries are cached for the current request. For better performance, you may want to [enable cross-request caching](#cache).
 
 ## Upgrade
 
@@ -384,7 +386,7 @@ Since checking for roles directly is generally [not recommended](#checking-a-use
 
 ### Refreshing the cache
 
-All queries executed by Bouncer are cached for the current request. If you enable [cross-request caching](#caching), the cache will persist across different requests.
+All queries executed by Bouncer are cached for the current request. If you enable [cross-request caching](#cache), the cache will persist across different requests.
 
 Whenever you need, you can fully refresh the bouncer's cache:
 
@@ -406,7 +408,7 @@ Bouncer ships with sensible defaults, so most of the time there should be no nee
 
 If you only use one or two of these config options, you can stick them into your [main `AppServiceProvider`'s `boot` method](https://github.com/laravel/laravel/blob/bf3785d/app/Providers/AppServiceProvider.php#L14-L17). If they start growing, you may create a separate `BouncerServiceProvider` class in [your `app/Providers` directory](https://github.com/laravel/laravel/tree/bf3785d0bc3cd166119d8ed45c2f869bbc31021c/app/Providers) (remember to register it in [the `providers` config array](https://github.com/laravel/laravel/blob/bf3785d0bc3cd166119d8ed45c2f869bbc31021c/config/app.php#L140-L145)). 
 
-### Caching
+### Cache
 
 By default, all queries executed by Bouncer are cached for the current request. For better performance, you may want to use cross-request caching:
 
@@ -423,6 +425,78 @@ Bouncer::dontCache();
 ```
 
 This is particularly useful in unit tests, when you want to run assertions against roles/abilities that have just been granted.
+
+### Tables
+
+To change the database table names used by Bouncer, pass an associative array to the `tables` method. The keys should be Bouncer's default table names, and the values should be the table names you wish to use. You do not have to pass in all tables names; only the ones you wish to change.
+
+```php
+Bouncer::tables([
+    'abilities' => 'my_abilities',
+    'permissions' => 'granted_abilities',
+]);
+```
+
+Bouncer's published migration uses the table names from this configuration, so be sure to have these in place before actually running the migration file.
+
+### Custom models
+
+You can easily extend Bouncer's built-in `Role` and `Ability` models:
+
+```php
+use Silber\Bouncer\Database\Ability;
+
+class MyAbility extends Ability
+{
+    // custom code
+}
+```
+
+```php
+use Silber\Bouncer\Database\Role;
+
+class MyRole extends Role
+{
+    // custom code
+}
+```
+
+Alternatively, you can instead use Bouncer's `IsAbility` and `IsRole` traits, without actually extending any of Bouncer's models:
+
+```php
+use Illuminate\Database\Eloquent\Model;
+use Silber\Bouncer\Database\Concerns\IsAbility;
+
+class MyAbility extends Model
+{
+    use IsAbility;
+
+    // custom code
+}
+```
+
+```php
+use Illuminate\Database\Eloquent\Model;
+use Silber\Bouncer\Database\Concerns\IsRole;
+
+class MyRole extends Model
+{
+    use IsRole;
+
+    // custom code
+}
+```
+
+If you use the traits instead of extending Bouncer's models, be sure to set the proper `$table` name and `$fillable` fields yourself.
+
+Regardless of which method you use, the next step is to actually tell Bouncer to use your custom models:
+
+```php
+Bouncer::useAbilityModel(MyAbility::class);
+Bouncer::useRoleModel(MyRole::class);
+```
+
+In addition to the above, there's also the `useUserModel` method. You shouldn't really ever have to set this manually, as Bouncer [automatically pulls this from your `auth` config](https://github.com/JosephSilber/bouncer/blob/9f2727ba07a21177ea120b0083594355be2d98de/src/BouncerServiceProvider.php#L164-L182).
 
 ## Cheat Sheet
 
