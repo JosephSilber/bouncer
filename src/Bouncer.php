@@ -10,18 +10,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 
+use Silber\Bouncer\Contracts;
+use Silber\Bouncer\Conductors;
 use Silber\Bouncer\Seed\Seeder;
 use Silber\Bouncer\Database\Models;
-use Silber\Bouncer\Conductors\ChecksRoles;
-use Silber\Bouncer\Conductors\AssignsRoles;
-use Silber\Bouncer\Conductors\RemovesRoles;
-use Silber\Bouncer\Conductors\GivesAbilities;
-use Silber\Bouncer\Conductors\RemovesAbilities;
-use Silber\Bouncer\Conductors\ForbidsAbilities;
-use Silber\Bouncer\Conductors\UnforbidsAbilities;
-use Silber\Bouncer\Conductors\SyncsRolesAndAbilities;
-use Silber\Bouncer\Contracts\Clipboard as ClipboardContract;
-use Silber\Bouncer\Contracts\CachedClipboard as CachedClipboardContract;
 
 class Bouncer
 {
@@ -44,7 +36,7 @@ class Bouncer
      *
      * @param \Silber\Bouncer\Contracts\Clipboard  $clipboard
      */
-    public function __construct(ClipboardContract $clipboard)
+    public function __construct(Contracts\Clipboard $clipboard)
     {
         $this->clipboard = $clipboard;
     }
@@ -104,7 +96,7 @@ class Bouncer
      */
     public function allow($authority)
     {
-        return new GivesAbilities($authority);
+        return new Conductors\GivesAbilities($authority);
     }
 
     /**
@@ -115,7 +107,7 @@ class Bouncer
      */
     public function disallow($authority)
     {
-        return new RemovesAbilities($authority);
+        return new Conductors\RemovesAbilities($authority);
     }
 
     /**
@@ -126,7 +118,7 @@ class Bouncer
      */
     public function forbid($authority)
     {
-        return new ForbidsAbilities($authority);
+        return new Conductors\ForbidsAbilities($authority);
     }
 
     /**
@@ -137,7 +129,7 @@ class Bouncer
      */
     public function unforbid($authority)
     {
-        return new UnforbidsAbilities($authority);
+        return new Conductors\UnforbidsAbilities($authority);
     }
 
     /**
@@ -148,7 +140,7 @@ class Bouncer
      */
     public function assign($role)
     {
-        return new AssignsRoles($role);
+        return new Conductors\AssignsRoles($role);
     }
 
     /**
@@ -159,7 +151,7 @@ class Bouncer
      */
     public function retract($role)
     {
-        return new RemovesRoles($role);
+        return new Conductors\RemovesRoles($role);
     }
 
     /**
@@ -170,7 +162,7 @@ class Bouncer
      */
     public function sync(Model $authority)
     {
-        return new SyncsRolesAndAbilities($authority);
+        return new Conductors\SyncsRolesAndAbilities($authority);
     }
 
     /**
@@ -181,7 +173,7 @@ class Bouncer
      */
     public function is(Model $authority)
     {
-        return new ChecksRoles($authority, $this->clipboard);
+        return new Conductors\ChecksRoles($authority, $this->clipboard);
     }
 
     /**
@@ -287,7 +279,7 @@ class Bouncer
      */
     public function usesCachedClipboard()
     {
-        return $this->clipboard instanceof CachedClipboardContract;
+        return $this->clipboard instanceof Contracts\CachedClipboard;
     }
 
     /**
