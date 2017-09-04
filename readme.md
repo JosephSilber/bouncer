@@ -461,7 +461,7 @@ class MyRole extends Role
 }
 ```
 
-Alternatively, you can instead use Bouncer's `IsAbility` and `IsRole` traits, without actually extending any of Bouncer's models:
+Alternatively, you can use Bouncer's `IsAbility` and `IsRole` traits without actually extending any of Bouncer's models:
 
 ```php
 use Illuminate\Database\Eloquent\Model;
