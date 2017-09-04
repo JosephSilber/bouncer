@@ -524,8 +524,6 @@ Bouncer::ownedVia(Game::class, function ($game, $user) {
 });
 ```
 
-return $user->current_team_id == $model->team_id;
-
 ## Cheat Sheet
 
 ```php
