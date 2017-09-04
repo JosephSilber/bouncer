@@ -27,6 +27,7 @@ This package adds a bouncer at Laravel's access gate.
   - [Cache](#cache)
   - [Tables](#tables)
   - [Custom models](#custom-models)
+  - [Ownership](#ownership)
 - [Cheat sheet](#cheat-sheet)
 - [Alternative](#alternative)
 - [License](#license)
@@ -219,7 +220,7 @@ Use the `toOwn` method to allow users to manage _their own_ models:
 Bouncer::allow($user)->toOwn(Post::class);
 ```
 
-Now, when checking at the gate whether the user may perform an action on a given post, the post's `user_id` will be compared to the logged-in user's `id`. If they match, the gate will allow the action.
+Now, when checking at the gate whether the user may perform an action on a given post, the post's `user_id` will be compared to the logged-in user's `id` ([this can be customized](#ownership)). If they match, the gate will allow the action.
 
 The above will grant all abilities on a user's "owned" models. You can restrict the abilities by following it up with a call to the `to` method:
 
@@ -497,6 +498,33 @@ Bouncer::useRoleModel(MyRole::class);
 ```
 
 In addition to the above, there's also the `useUserModel` method. You shouldn't really ever have to set this manually, as Bouncer [automatically pulls this from your `auth` config](https://github.com/JosephSilber/bouncer/blob/9f2727ba07a21177ea120b0083594355be2d98de/src/BouncerServiceProvider.php#L164-L182).
+
+### Ownership
+
+In Bouncer, the concept of ownership is used to [allow users to perform actions on models they "own"](#allowing-a-user-or-role-to-own-a-model).
+
+By default, Bouncer will check the model's `user_id` against the current user's primary key. If needed, this can be set to a different attribute:
+
+```php
+Bouncer::ownedVia('userId');
+```
+
+If different models use different columns for ownership, you can register them separately:
+
+```php
+Bouncer::ownedVia(Post::class, 'created_by');
+Bouncer::ownedVia(Order::class, 'entered_by');
+```
+
+For greater control, you can pass a closure with your custom logic:
+
+```php
+Bouncer::ownedVia(Game::class, function ($game, $user) {
+    return $game->team_id == $user->team_id;
+});
+```
+
+return $user->current_team_id == $model->team_id;
 
 ## Cheat Sheet
 
