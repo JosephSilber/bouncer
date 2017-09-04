@@ -509,7 +509,7 @@ Bouncer::allow($user)->to('delete', $post);
 Bouncer::allow($user)->everything();
 Bouncer::allow($user)->toManage(Post::class);
 Bouncer::allow($user)->toManage($post);
-Bouncer::allow($user)->toAlways('view');
+Bouncer::allow($user)->to('view')->everything();
 
 Bouncer::allow($user)->toOwn(Post::class);
 Bouncer::allow($user)->toOwnEverything();
