@@ -23,6 +23,8 @@ This package adds a bouncer at Laravel's access gate.
   - [Authorizing users](#authorizing-users)
   - [Blade directives](#blade-directives)
   - [Refreshing the cache](#refreshing-the-cache)
+- [Configuration](#configuration)
+  - [Caching](#caching)
 - [Cheat sheet](#cheat-sheet)
 - [Alternative](#alternative)
 - [License](#license)
@@ -113,13 +115,7 @@ For more information about Laravel Facades, refer to [the Laravel documentation]
 
 ### Enabling cache
 
-All queries executed by the bouncer are cached for the current request. For better performance, you may want to use cross-request caching. To enable cross-request caching, add this to your `AppServiceProvider`'s `boot` method:
-
-```php
-Bouncer::cache();
-```
-
-> **Warning:** if you enable cross-request caching, you are responsible to refresh the cache whenever you make changes to user's abilities/roles. For how to refresh the cache, read [refreshing the cache](#refreshing-the-cache).
+Bouncer's queries are by default cached for the current request. For better performance, you may want to [enable cross-request caching](#caching).
 
 ## Upgrade
 
@@ -388,7 +384,7 @@ Since checking for roles directly is generally [not recommended](#checking-a-use
 
 ### Refreshing the cache
 
-All queries executed by the bouncer are cached for the current request. If you enable [cross-request caching](#enabling-cache), the cache will persist across different requests.
+All queries executed by Bouncer are cached for the current request. If you enable [cross-request caching](#caching), the cache will persist across different requests.
 
 Whenever you need, you can fully refresh the bouncer's cache:
 
@@ -403,6 +399,30 @@ Alternatively, you can refresh the cache only for a specific user:
 ```php
 Bouncer::refreshFor($user);
 ```
+
+## Configuration
+
+Bouncer ships with sensible defaults, so most of the time there should be no need for any configuration. For finer-grained control, Bouncer can be customized by calling various configuration methods on the `Bouncer` class.
+
+If you only use one or two of these config options, you can stick them into your [main `AppServiceProvider`'s `boot` method](https://github.com/laravel/laravel/blob/bf3785d/app/Providers/AppServiceProvider.php#L14-L17). If they start growing, you may create a separate `BouncerServiceProvider` class in [your `app/Providers` directory](https://github.com/laravel/laravel/tree/bf3785d0bc3cd166119d8ed45c2f869bbc31021c/app/Providers) (remember to register it in [the `providers` config array](https://github.com/laravel/laravel/blob/bf3785d0bc3cd166119d8ed45c2f869bbc31021c/config/app.php#L140-L145)). 
+
+### Caching
+
+By default, all queries executed by Bouncer are cached for the current request. For better performance, you may want to use cross-request caching:
+
+```php
+Bouncer::cache();
+```
+
+> **Warning:** if you enable cross-request caching, you are responsible to refresh the cache whenever you make changes to user's roles/abilities. For how to refresh the cache, read [refreshing the cache](#refreshing-the-cache).
+
+On the contrary, you may at times wish to _completely disable_ the cache, even within the same request:
+
+```php
+Bouncer::dontCache();
+```
+
+This is particularly useful in unit tests, when you want to run assertions against roles/abilities that have just been granted.
 
 ## Cheat Sheet
 
