@@ -115,7 +115,7 @@ For more information about Laravel Facades, refer to [the Laravel documentation]
 
 ### Enabling cache
 
-Bouncer's queries are by default cached for the current request. For better performance, you may want to [enable cross-request caching](#caching).
+By default, Bouncer's queries are cached for the current request. For better performance, you may want to [enable cross-request caching](#caching).
 
 ## Upgrade
 
@@ -449,9 +449,15 @@ Bouncer::disallow($user)->toOwn(Post::class);
 Bouncer::allow('admin')->to('ban-users');
 Bouncer::disallow('admin')->to('ban-users');
 
+// Re-sync a user's abilities
+Bouncer::sync($user)->abilities($abilities);
+
 // Assigning & retracting roles from users
 Bouncer::assign('admin')->to($user);
 Bouncer::retract('admin')->from($user);
+
+// Re-sync a user's roles
+Bouncer::sync($user)->roles($roles);
 
 $check = Bouncer::allows('ban-users');
 $check = Bouncer::allows('edit', Post::class);
