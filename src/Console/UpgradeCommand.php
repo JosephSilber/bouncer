@@ -1,6 +1,6 @@
 <?php
 
-namespace Silber\Bouncer;
+namespace Silber\Bouncer\Console;
 
 use Illuminate\Console\Command;
 
