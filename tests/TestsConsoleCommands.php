@@ -43,6 +43,12 @@ trait TestsConsoleCommands
         return $output;
     }
 
+    /**
+     * Predict the output of a command.
+     *
+     * @param  string  $message
+     * @return \Closure
+     */
     protected function predictOutputMessage($message)
     {
         return function (ObjectProphecy $output) use ($message) {
