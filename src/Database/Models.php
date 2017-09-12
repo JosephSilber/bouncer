@@ -303,7 +303,7 @@ class Models
      */
     public static function setUserClass($class)
     {
-        if ( ! is_string($class)) {
+        if (! is_string($class)) {
             $class = get_class($class);
         }
 
