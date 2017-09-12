@@ -3,7 +3,6 @@
 namespace Silber\Bouncer\Database;
 
 use Closure;
-use App\User;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -38,6 +37,13 @@ class Models
     protected static $tables = [];
 
     /**
+     * The class name for the user model.
+     *
+     * @var string
+     */
+    protected static $userClass = \App\User::class;
+
+    /**
      * Set the model to be used for abilities.
      *
      * @param  string  $model
@@ -67,7 +73,9 @@ class Models
      */
     public static function setUsersModel($model)
     {
-        static::$models[User::class] = $model;
+        $userclass = static::getUserClass();
+
+        static::$models[$userclass] = $model;
     }
 
     /**
@@ -217,7 +225,9 @@ class Models
      */
     public static function user(array $attributes = [])
     {
-        return static::make(User::class, $attributes);
+        $userclass = static::getUserClass();
+
+        return static::make($userclass, $attributes);
     }
 
     /**
@@ -273,5 +283,30 @@ class Models
         $segments = explode('\\', $class);
 
         return end($segments);
+    }
+
+    /**
+     * Get the class to use for the user model.
+     *
+     * @return string
+     */
+    public static function getUserClass()
+    {
+        return static::$userClass;
+    }
+
+    /**
+     * Set the class to use for the user model.
+     *
+     * @param  string|object  $class
+     * @return void
+     */
+    public static function setUserClass($class)
+    {
+        if (! is_string($class)) {
+            $class = get_class($class);
+        }
+
+        static::$userClass = $class;
     }
 }

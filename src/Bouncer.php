@@ -408,4 +408,15 @@ class Bouncer
     {
         return Container::getInstance()->make($abstract, $parameters);
     }
+
+    /**
+     * Set the class to use for the user relation model.
+     *
+     * @param  string|object  $class
+     * @return void
+     */
+    public static function setUserClass($class)
+    {
+        Models::setUserClass($class);
+    }
 }
