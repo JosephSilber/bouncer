@@ -48,6 +48,7 @@ class SeedCommandTest extends TestCase
      * Run the seed command with the given seeder.
      *
      * @param  \Silber\Bouncer\Seed\Seeder  $seeder
+     * @param  \Closure  $outputPredictions
      * @return \Prophecy\Prophecy\ObjectProphecy
      */
     protected function seed(Seeder $seeder, Closure $outputPredictions)

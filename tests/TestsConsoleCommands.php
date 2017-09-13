@@ -46,13 +46,17 @@ trait TestsConsoleCommands
     /**
      * Predict the output of a command.
      *
-     * @param  string  $message
+     * @param  string|array  $message
      * @return \Closure
      */
     protected function predictOutputMessage($message)
     {
-        return function (ObjectProphecy $output) use ($message) {
-            $output->writeln($message, Argument::any())->shouldBeCalled();
+        $messages = is_array($message) ? $message : [$message];
+
+        return function (ObjectProphecy $output) use ($messages) {
+            foreach ($messages as $message) {
+                $output->writeln($message, Argument::any())->shouldBeCalled();
+            }
         };
     }
 
@@ -60,17 +64,27 @@ trait TestsConsoleCommands
      * Run the given command.
      *
      * @param  \Illuminate\Console\Command  $command
+     * @param  \Closure|array|null  $parameters
+     * @param  \Closure|null  $outputPredictions
      * @return mixed
      */
-    protected function runCommand(Command $command, Closure $outputPredictions)
+    protected function runCommand(Command $command, $parameters = [], $outputPredictions = null)
     {
         $output = $this->output();
 
-        $outputPredictions($output);
+        if ($parameters instanceof Closure) {
+            $outputPredictions = $parameters;
+
+            $parameters = [];
+        }
+
+        if (! is_null($outputPredictions)) {
+            $outputPredictions($output);
+        }
 
         $command->setLaravel($this->laravel()->reveal());
 
-        $command->run(new ArrayInput([]), $output->reveal());
+        $command->run(new ArrayInput($parameters), $output->reveal());
 
         return $output;
     }

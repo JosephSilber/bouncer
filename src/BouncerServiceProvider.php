@@ -5,6 +5,7 @@ namespace Silber\Bouncer;
 use Silber\Bouncer\Seed\Seeder;
 use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Seed\SeedCommand;
+use Silber\Bouncer\Console\CleanCommand;
 use Silber\Bouncer\Console\UpgradeCommand;
 
 use Illuminate\Cache\ArrayStore;
@@ -75,6 +76,7 @@ class BouncerServiceProvider extends ServiceProvider
     protected function registerCommands()
     {
         $this->commands(SeedCommand::class);
+        $this->commands(CleanCommand::class);
         $this->commands(UpgradeCommand::class);
     }
 
