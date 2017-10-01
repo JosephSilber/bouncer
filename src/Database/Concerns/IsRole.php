@@ -4,6 +4,7 @@ namespace Silber\Bouncer\Database\Concerns;
 
 use Silber\Bouncer\Helpers;
 use Silber\Bouncer\Database\Models;
+use Silber\Bouncer\Database\Scope\BaseTenantScope;
 use Silber\Bouncer\Database\Queries\Roles as RolesQuery;
 
 use App\User;
@@ -16,6 +17,20 @@ trait IsRole
 {
     use HasAbilities, Authorizable {
         HasAbilities::getClipboardInstance insteadof Authorizable;
+    }
+
+    /**
+     * Boot the is role trait.
+     *
+     * @return void
+     */
+    public static function bootIsRole()
+    {
+        BaseTenantScope::register(static::class);
+
+        static::creating(function ($role) {
+            Models::scope()->applyToModel($role);
+        });
     }
 
     /**

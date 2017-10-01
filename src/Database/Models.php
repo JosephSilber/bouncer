@@ -6,6 +6,7 @@ use Closure;
 use App\User;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Silber\Bouncer\Database\Scope\Scope;
 
 class Models
 {
@@ -36,6 +37,13 @@ class Models
      * @var array
      */
     protected static $tables = [];
+
+    /**
+     * The model scoping instance.
+     *
+     * @var \Silber\Bouncer\Database\Scope\Scope
+     */
+    protected static $scope;
 
     /**
      * Set the model to be used for abilities.
@@ -117,6 +125,20 @@ class Models
     public static function prefix()
     {
         return static::$prefix;
+    }
+
+    /**
+     * Get the model scoping instance.
+     *
+     * @return \Silber\Bouncer\Database\Scope\Scope
+     */
+    public static function scope()
+    {
+        if (is_null(static::$scope)) {
+            static::$scope = new Scope;
+        }
+
+        return static::$scope;
     }
 
     /**

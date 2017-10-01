@@ -5,10 +5,25 @@ namespace Silber\Bouncer\Database\Concerns;
 use App\User;
 use Silber\Bouncer\Database\Role;
 use Silber\Bouncer\Database\Models;
+use Silber\Bouncer\Database\Scope\BaseTenantScope;
 use Silber\Bouncer\Database\Queries\AbilitiesForModel;
 
 trait IsAbility
 {
+    /**
+     * Boot the is ability trait.
+     *
+     * @return void
+     */
+    public static function bootIsAbility()
+    {
+        BaseTenantScope::register(static::class);
+
+        static::creating(function ($ability) {
+            Models::scope()->applyToModel($ability);
+        });
+    }
+
     /**
      * Create a new ability for a specific model.
      *
