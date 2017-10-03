@@ -3,6 +3,7 @@
 namespace Silber\Bouncer\Database\Scope;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Scope
 {
@@ -20,7 +21,7 @@ class Scope
      *
      * @var mixed
      */
-    protected $onlyScopeRelationships = false;
+    protected $onlyScopeRelations = false;
 
     /**
      * Scope all queries to the given tenant ID.
@@ -32,7 +33,7 @@ class Scope
     {
         $this->scope = $id;
 
-        $this->onlyScopeRelationships = false;
+        $this->onlyScopeRelations = false;
     }
 
     /**
@@ -41,11 +42,11 @@ class Scope
      * @param  mixed  $id
      * @return void
      */
-    public function scopeRelationshipsTo($id)
+    public function scopeRelationsTo($id)
     {
         $this->scope = $id;
 
-        $this->onlyScopeRelationships = true;
+        $this->onlyScopeRelations = true;
     }
 
     /**
@@ -57,7 +58,7 @@ class Scope
     {
         $this->scope = null;
 
-        $this->onlyScopeRelationships = false;
+        $this->onlyScopeRelations = false;
     }
 
     /**
@@ -68,7 +69,7 @@ class Scope
      */
     public function applyToModel(Model $model)
     {
-        if (! $this->onlyScopeRelationships && ! is_null($this->scope)) {
+        if (! $this->onlyScopeRelations && ! is_null($this->scope)) {
             $model->scope = $this->scope;
         }
 
@@ -79,11 +80,12 @@ class Scope
      * Scope the given model query to the current tenant.
      *
      * @param  \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $table
      * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
      */
     public function applyToModelQuery($query, $table)
     {
-        if (! is_null($this->scope) && ! $this->onlyScopeRelationships) {
+        if (! is_null($this->scope) && ! $this->onlyScopeRelations) {
             $query->where("{$table}.scope", $this->scope);
         }
 
@@ -94,14 +96,44 @@ class Scope
      * Scope the given relationship query to the current tenant.
      *
      * @param  \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $table
      * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
      */
-    public function applyToRelationshipQuery($query, $table)
+    public function applyToRelationQuery($query, $table)
     {
         if (! is_null($this->scope)) {
             $query->where("{$table}.scope", $this->scope);
         }
 
         return $query;
+    }
+
+    /**
+     * Scope the given relation to the current tenant.
+     *
+     * @param  \Illuminate\Database\Eloquent\Relations\BelongsToMany  $relation
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function applyToRelation(BelongsToMany $relation)
+    {
+        if (! is_null($this->scope)) {
+            $relation->wherePivot('scope', $this->scope);
+        }
+
+        return $relation;
+    }
+
+    /**
+     * Get the additional attributes for pivot table records.
+     *
+     * @return array
+     */
+    public function getAttachAttributes()
+    {
+        if (is_null($this->scope)) {
+            return [];
+        }
+
+        return ['scope' => $this->scope];
     }
 }

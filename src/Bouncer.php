@@ -465,9 +465,9 @@ class Bouncer
      * @param  mixed  $id
      * @return $this
      */
-    public function scopeRelationshipsTo($id)
+    public function scopeRelationsTo($id)
     {
-        Models::scope()->scopeRelationshipsTo($id);
+        Models::scope()->scopeRelationsTo($id);
 
         return $this;
     }

@@ -40,11 +40,13 @@ trait IsRole
      */
     public function users()
     {
-        return $this->morphedByMany(
+        $relation = $this->morphedByMany(
             Models::classname(User::class),
             'entity',
             Models::table('assigned_roles')
         );
+
+        return Models::scope()->applyToRelation($relation);
     }
 
     /**

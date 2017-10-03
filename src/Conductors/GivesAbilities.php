@@ -2,6 +2,7 @@
 
 namespace Silber\Bouncer\Conductors;
 
+use Silber\Bouncer\Database\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class GivesAbilities
@@ -55,6 +56,6 @@ class GivesAbilities
     {
         $ids = array_diff($ids, $this->getAssociatedAbilityIds($authority, $ids, false));
 
-        $authority->abilities()->attach($ids);
+        $authority->abilities()->attach($ids, Models::scope()->getAttachAttributes());
     }
 }

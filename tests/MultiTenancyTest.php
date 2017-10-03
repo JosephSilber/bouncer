@@ -30,4 +30,31 @@ class MultiTenancyTest extends BaseTestCase
         $this->assertEquals(1, $bouncer->ability()->query()->value('scope'));
         $this->assertEquals(1, $bouncer->role()->query()->value('scope'));
     }
+
+    public function test_relation_queries_are_properly_scoped()
+    {
+        $bouncer = $this->bouncer($user = User::create())->dontCache();
+
+        $bouncer->scopeRelationsTo(1);
+        $bouncer->allow($user)->to('create', User::class);
+
+        $bouncer->scopeRelationsTo(2);
+        $bouncer->allow($user)->to('delete', User::class);
+
+        $bouncer->scopeRelationsTo(1);
+        $abilities = $user->abilities()->get();
+
+        $this->assertCount(1, $abilities);
+        $this->assertEquals('create', $abilities->first()->name);
+        $this->assertTrue($bouncer->allows('create', User::class));
+        $this->assertTrue($bouncer->denies('delete', User::class));
+
+        $bouncer->scopeRelationsTo(2);
+        $abilities = $user->abilities()->get();
+
+        $this->assertCount(1, $abilities);
+        $this->assertEquals('delete', $abilities->first()->name);
+        $this->assertTrue($bouncer->allows('delete', User::class));
+        $this->assertTrue($bouncer->denies('create', User::class));
+    }
 }

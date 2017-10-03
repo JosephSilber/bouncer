@@ -76,11 +76,13 @@ trait IsAbility
      */
     public function roles()
     {
-        return $this->morphedByMany(
+        $relation = $this->morphedByMany(
             Models::classname(Role::class),
             'entity',
             Models::table('permissions')
         );
+
+        return Models::scope()->applyToRelation($relation);
     }
 
     /**
@@ -90,11 +92,13 @@ trait IsAbility
      */
     public function users()
     {
-        return $this->morphedByMany(
+        $relation = $this->morphedByMany(
             Models::classname(User::class),
             'entity',
             Models::table('permissions')
         );
+
+        return Models::scope()->applyToRelation($relation);
     }
 
     /**
