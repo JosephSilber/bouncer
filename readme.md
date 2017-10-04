@@ -27,6 +27,7 @@ This package adds a bouncer at Laravel's access gate.
   - [Cache](#cache)
   - [Tables](#tables)
   - [Custom models](#custom-models)
+  - [User Model](#user-model)
   - [Ownership](#ownership)
 - [Cheat sheet](#cheat-sheet)
 - [Alternative](#alternative)
