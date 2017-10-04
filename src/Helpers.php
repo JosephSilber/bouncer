@@ -126,6 +126,25 @@ class Helpers
     }
 
     /**
+     * Convert the given value to an array.
+     *
+     * @param  mixed  $value
+     * @return array
+     */
+    public static function toArray($value)
+    {
+        if (is_array($value)) {
+            return $value;
+        }
+
+        if ($value instanceof Collection) {
+            return $value->all();
+        }
+
+        return [$value];
+    }
+
+    /**
      * Map a list of authorities by their class name.
      *
      * @param  array  $authorities

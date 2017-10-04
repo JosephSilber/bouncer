@@ -98,7 +98,7 @@ class BouncerSimpleTest extends BaseTestCase
         $editor   = $this->role('editor');
         $reviewer = $this->role('reviewer');
 
-        $bouncer->assign([$admin, 'editor', $reviewer->id])->to($user);
+        $bouncer->assign(collect([$admin, 'editor', $reviewer->id]))->to($user);
 
         $this->assertTrue($bouncer->is($user)->all($admin->id, $editor, 'reviewer'));
 
@@ -119,7 +119,7 @@ class BouncerSimpleTest extends BaseTestCase
         $this->assertTrue($bouncer->is($user2)->an('admin', 'editor'));
 
         $bouncer->retract('admin')->from($user1);
-        $bouncer->retract(['admin', 'editor'])->from($user2);
+        $bouncer->retract(collect(['admin', 'editor']))->from($user2);
 
         $this->assertTrue($bouncer->is($user1)->notAn('admin'));
         $this->assertTrue($bouncer->is($user1)->an('editor'));

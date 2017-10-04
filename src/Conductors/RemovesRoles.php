@@ -19,11 +19,11 @@ class RemovesRoles
     /**
      * Constructor.
      *
-     * @param \Silber\Bouncer\Database\Role|string|array  $roles
+     * @param \Illuminate\Support\Collection|\Silber\Bouncer\Database\Role|string  $roles
      */
     public function __construct($roles)
     {
-        $this->roles = is_array($roles) ? $roles : [$roles];
+        $this->roles = Helpers::toArray($roles);
     }
 
     /**

@@ -135,23 +135,23 @@ class Bouncer
     /**
      * Start a chain, to assign the given role to a model.
      *
-     * @param  \Silber\Bouncer\Database\Role|string  $role
+     * @param  \Silber\Bouncer\Database\Role|\Illuminate\Support\Collection|string  $roles
      * @return \Silber\Bouncer\Conductors\AssignsRoles
      */
-    public function assign($role)
+    public function assign($roles)
     {
-        return new Conductors\AssignsRoles($role);
+        return new Conductors\AssignsRoles($roles);
     }
 
     /**
      * Start a chain, to retract the given role from a model.
      *
-     * @param  \Silber\Bouncer\Database\Role|string  $role
+     * @param  \Illuminate\Support\Collection|\Silber\Bouncer\Database\Role|string  $roles
      * @return \Silber\Bouncer\Conductors\RemovesRoles
      */
-    public function retract($role)
+    public function retract($roles)
     {
-        return new Conductors\RemovesRoles($role);
+        return new Conductors\RemovesRoles($roles);
     }
 
     /**

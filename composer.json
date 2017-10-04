@@ -23,7 +23,8 @@
         }
     },
     "autoload-dev": {
-        "classmap": ["tests"]
+        "classmap": ["tests"],
+        "files": ["tests/helpers.php"]
     },
     "require": {
         "illuminate/auth": "5.1.20 - 5.5",
