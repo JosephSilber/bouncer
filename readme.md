@@ -500,7 +500,7 @@ Bouncer::useRoleModel(MyRole::class);
 
 ### User Model
 
-By default, Bouncer automatically [uses the user model of the default auth guard](https://github.com/JosephSilber/bouncer/blob/462f312/src/BouncerServiceProvider.php#L171-L190). Most of the time, this is what you actually want.
+By default, Bouncer automatically [uses the user model of the default auth guard](https://github.com/JosephSilber/bouncer/blob/462f312/src/BouncerServiceProvider.php#L171-L190).
 
 If you're using Bouncer with a non-default guard, and it uses a different user model, you should let Bouncer know about the user model you want to use:
 
