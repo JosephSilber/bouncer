@@ -170,16 +170,45 @@ class BouncerServiceProvider extends ServiceProvider
      */
     protected function setUserModel()
     {
-        $config = $this->app->make('config');
-
-        $model = $config->get('auth.providers.users.model', function () use ($config) {
-            return $config->get('auth.model', \App\User::class);
-        });
-
-        Models::setUsersModel($model);
+        Models::setUsersModel($this->getUserModel());
 
         Models::setTables([
             'users' => Models::user()->getTable(),
         ]);
+    }
+
+    /**
+     * Get the user model from the application's auth config.
+     *
+     * @return string
+     */
+    protected function getUserModel()
+    {
+        $config = $this->app->make('config');
+
+        if (! is_null($model = $this->getUserModelFromDefaultGuard($config))) {
+            return $model;
+        }
+
+        return $config->get('auth.model', \App\User::class);
+    }
+
+    /**
+     * Get the user model from the application's auth config.
+     *
+     * @param  \Illuminate\Config\Repository  $config
+     * @return string|null
+     */
+    protected function getUserModelFromDefaultGuard($config)
+    {
+        if (is_null($guard = $config->get('auth.defaults.guard'))) {
+            return null;
+        }
+
+        if (is_null($provider = $config->get("auth.guards.{$guard}.provider"))) {
+            return null;
+        }
+
+        return $config->get("auth.providers.{$provider}.model");
     }
 }
