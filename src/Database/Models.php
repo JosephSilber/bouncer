@@ -68,6 +68,8 @@ class Models
     public static function setUsersModel($model)
     {
         static::$models[User::class] = $model;
+
+        static::$tables['users'] = static::user()->getTable();
     }
 
     /**

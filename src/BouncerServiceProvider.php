@@ -171,10 +171,6 @@ class BouncerServiceProvider extends ServiceProvider
     protected function setUserModel()
     {
         Models::setUsersModel($this->getUserModel());
-
-        Models::setTables([
-            'users' => Models::user()->getTable(),
-        ]);
     }
 
     /**
