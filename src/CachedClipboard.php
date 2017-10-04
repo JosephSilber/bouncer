@@ -45,7 +45,7 @@ class CachedClipboard extends Clipboard implements CachedClipboardContract
     public function setCache(Store $cache)
     {
         if (method_exists($cache, 'tags')) {
-            $cache = $cache->tags($this->tag);
+            $cache = $cache->tags($this->tag());
         }
 
         $this->cache = $cache;
@@ -191,12 +191,22 @@ class CachedClipboard extends Clipboard implements CachedClipboardContract
     protected function getCacheKey(Model $model, $type, $allowed = true)
     {
         return implode('-', [
-            $this->tag,
+            $this->tag(),
             $type,
             $model->getMorphClass(),
             $model->getKey(),
             $allowed ? 'a' : 'f',
         ]);
+    }
+
+    /**
+     * Get the cache tag.
+     *
+     * @return string
+     */
+    protected function tag()
+    {
+        return Models::scope()->appendToCacheKey($this->tag);
     }
 
     /**

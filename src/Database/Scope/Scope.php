@@ -62,6 +62,17 @@ class Scope
     }
 
     /**
+     * Append the tenant ID to the given cache key.
+     *
+     * @param  string  $key
+     * @return string
+     */
+    public function appendToCacheKey($key)
+    {
+        return is_null($this->scope) ? $key : $key.'-'.$this->scope;
+    }
+
+    /**
      * Scope the given model to the current tenant.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $model

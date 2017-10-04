@@ -33,7 +33,7 @@ class MultiTenancyTest extends BaseTestCase
 
     public function test_relation_queries_are_properly_scoped()
     {
-        $bouncer = $this->bouncer($user = User::create())->dontCache();
+        $bouncer = $this->bouncer($user = User::create());
 
         $bouncer->scopeRelationsTo(1);
         $bouncer->allow($user)->to('create', User::class);
