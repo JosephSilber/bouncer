@@ -45,6 +45,7 @@ class MultiTenancyTest extends BaseTestCase
         $abilities = $user->abilities()->get();
 
         $this->assertCount(1, $abilities);
+        $this->assertNull($abilities->first()->scope);
         $this->assertEquals('create', $abilities->first()->name);
         $this->assertTrue($bouncer->allows('create', User::class));
         $this->assertTrue($bouncer->denies('delete', User::class));
@@ -53,6 +54,7 @@ class MultiTenancyTest extends BaseTestCase
         $abilities = $user->abilities()->get();
 
         $this->assertCount(1, $abilities);
+        $this->assertNull($abilities->first()->scope);
         $this->assertEquals('delete', $abilities->first()->name);
         $this->assertTrue($bouncer->allows('delete', User::class));
         $this->assertTrue($bouncer->denies('create', User::class));
