@@ -497,7 +497,15 @@ Bouncer::useAbilityModel(MyAbility::class);
 Bouncer::useRoleModel(MyRole::class);
 ```
 
-In addition to the above, there's also the `useUserModel` method. You shouldn't really ever have to set this manually, as Bouncer [automatically pulls this from your `auth` config](https://github.com/JosephSilber/bouncer/blob/9f2727ba07a21177ea120b0083594355be2d98de/src/BouncerServiceProvider.php#L164-L182).
+### User Model
+
+By default, Bouncer automatically [uses the user model of the default auth guard](https://github.com/JosephSilber/bouncer/blob/462f312/src/BouncerServiceProvider.php#L171-L190). Most of the time, this is what you actually want.
+
+If you're using Bouncer with a non-default guard, and it uses a different user model, you should let Bouncer know about the user model you want to use:
+
+```php
+Bouncer::useUserModel(\App\Admin::class);
+```
 
 ### Ownership
 
