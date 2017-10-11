@@ -447,29 +447,13 @@ class Bouncer
     }
 
     /**
-     * Scope all queries to the givan tenant ID.
+     * Get the model scoping instance.
      *
-     * @param  mixed  $id
-     * @return $this
+     * @return \Silber\Bouncer\Database\Scope\Scope
      */
-    public function scopeTo($id)
+    public function scope()
     {
-        Models::scope()->scopeTo($id);
-
-        return $this;
-    }
-
-    /**
-     * Scope only the relationships to the given tenant ID.
-     *
-     * @param  mixed  $id
-     * @return $this
-     */
-    public function scopeRelationsTo($id)
-    {
-        Models::scope()->scopeRelationsTo($id);
-
-        return $this;
+        return Models::scope();
     }
 
     /**

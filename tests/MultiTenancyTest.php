@@ -23,7 +23,7 @@ class MultiTenancyTest extends BaseTestCase
     {
         $bouncer = $this->bouncer();
 
-        $bouncer->scopeTo(1);
+        $bouncer->scope()->to(1);
 
         $bouncer->allow('admin')->to('create', User::class);
 
@@ -35,13 +35,13 @@ class MultiTenancyTest extends BaseTestCase
     {
         $bouncer = $this->bouncer($user = User::create());
 
-        $bouncer->scopeTo(1);
+        $bouncer->scope()->to(1);
         $bouncer->allow($user)->to('create', User::class);
 
-        $bouncer->scopeTo(2);
+        $bouncer->scope()->to(2);
         $bouncer->allow($user)->to('delete', User::class);
 
-        $bouncer->scopeTo(1);
+        $bouncer->scope()->to(1);
         $abilities = $user->abilities()->get();
 
         $this->assertCount(1, $abilities);
@@ -50,7 +50,7 @@ class MultiTenancyTest extends BaseTestCase
         $this->assertTrue($bouncer->allows('create', User::class));
         $this->assertTrue($bouncer->denies('delete', User::class));
 
-        $bouncer->scopeTo(2);
+        $bouncer->scope()->to(2);
         $abilities = $user->abilities()->get();
 
         $this->assertCount(1, $abilities);
@@ -64,13 +64,13 @@ class MultiTenancyTest extends BaseTestCase
     {
         $bouncer = $this->bouncer($user = User::create());
 
-        $bouncer->scopeRelationsTo(1);
+        $bouncer->scope()->to(1)->onlyRelations();
         $bouncer->allow($user)->to('create', User::class);
 
-        $bouncer->scopeRelationsTo(2);
+        $bouncer->scope()->to(2)->onlyRelations();
         $bouncer->allow($user)->to('delete', User::class);
 
-        $bouncer->scopeRelationsTo(1);
+        $bouncer->scope()->to(1)->onlyRelations();
         $abilities = $user->abilities()->get();
 
         $this->assertCount(1, $abilities);
@@ -79,7 +79,7 @@ class MultiTenancyTest extends BaseTestCase
         $this->assertTrue($bouncer->allows('create', User::class));
         $this->assertTrue($bouncer->denies('delete', User::class));
 
-        $bouncer->scopeRelationsTo(2);
+        $bouncer->scope()->to(2)->onlyRelations();
         $abilities = $user->abilities()->get();
 
         $this->assertCount(1, $abilities);

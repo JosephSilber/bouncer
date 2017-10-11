@@ -24,41 +24,43 @@ class Scope
     protected $onlyScopeRelations = false;
 
     /**
-     * Scope all queries to the given tenant ID.
+     * Scope queries to the given tenant ID.
      *
      * @param  mixed  $id
-     * @return void
+     * @return $this
      */
-    public function scopeTo($id)
+    public function to($id)
     {
         $this->scope = $id;
 
-        $this->onlyScopeRelations = false;
+        return $this;
     }
 
     /**
-     * Scope only the relationships to the given tenant ID.
+     * Only scope relationships. Models should stay global.
      *
-     * @param  mixed  $id
-     * @return void
+     * @param  bool  $boolean
+     * @return $this
      */
-    public function scopeRelationsTo($id)
+    public function onlyRelations($boolean = true)
     {
-        $this->scope = $id;
+        $this->onlyScopeRelations = $boolean;
 
-        $this->onlyScopeRelations = true;
+        return $this;
     }
 
     /**
      * Do not scope any queries.
      *
-     * @return void
+     * @return $this
      */
     public function reset()
     {
         $this->scope = null;
 
         $this->onlyScopeRelations = false;
+
+        return $this;
     }
 
     /**
