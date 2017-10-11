@@ -25,7 +25,6 @@ class BouncerServiceProvider extends ServiceProvider
         $this->registerClipboard();
         $this->registerCommands();
         $this->registerBouncer();
-        $this->registerMorphs();
         $this->registerSeeder();
     }
 
@@ -37,6 +36,7 @@ class BouncerServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerAtGate();
+        $this->registerMorphs();
         $this->setTablePrefix();
         $this->setUserModel();
 
