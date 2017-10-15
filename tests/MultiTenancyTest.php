@@ -50,8 +50,8 @@ class MultiTenancyTest extends BaseTestCase
         $this->assertCount(1, $abilities);
         $this->assertEquals(1, $abilities->first()->scope);
         $this->assertEquals('create', $abilities->first()->name);
-        $this->assertTrue($bouncer->allows('create', User::class));
-        $this->assertTrue($bouncer->denies('delete', User::class));
+        $this->assertTrue($bouncer->can('create', User::class));
+        $this->assertTrue($bouncer->cannot('delete', User::class));
 
         $bouncer->scope()->to(2);
         $abilities = $user->abilities()->get();
@@ -59,8 +59,8 @@ class MultiTenancyTest extends BaseTestCase
         $this->assertCount(1, $abilities);
         $this->assertEquals(2, $abilities->first()->scope);
         $this->assertEquals('delete', $abilities->first()->name);
-        $this->assertTrue($bouncer->allows('delete', User::class));
-        $this->assertTrue($bouncer->denies('create', User::class));
+        $this->assertTrue($bouncer->can('delete', User::class));
+        $this->assertTrue($bouncer->cannot('create', User::class));
     }
 
     public function test_relation_queries_can_be_scoped_exclusively()
@@ -79,8 +79,8 @@ class MultiTenancyTest extends BaseTestCase
         $this->assertCount(1, $abilities);
         $this->assertNull($abilities->first()->scope);
         $this->assertEquals('create', $abilities->first()->name);
-        $this->assertTrue($bouncer->allows('create', User::class));
-        $this->assertTrue($bouncer->denies('delete', User::class));
+        $this->assertTrue($bouncer->can('create', User::class));
+        $this->assertTrue($bouncer->cannot('delete', User::class));
 
         $bouncer->scope()->to(2);
         $abilities = $user->abilities()->get();
@@ -88,8 +88,8 @@ class MultiTenancyTest extends BaseTestCase
         $this->assertCount(1, $abilities);
         $this->assertNull($abilities->first()->scope);
         $this->assertEquals('delete', $abilities->first()->name);
-        $this->assertTrue($bouncer->allows('delete', User::class));
-        $this->assertTrue($bouncer->denies('create', User::class));
+        $this->assertTrue($bouncer->can('delete', User::class));
+        $this->assertTrue($bouncer->cannot('create', User::class));
     }
 
     // TODO: test forbid
