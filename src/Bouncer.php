@@ -254,10 +254,20 @@ class Bouncer
      * Get the gate instance.
      *
      * @return \Illuminate\Contracts\Auth\Access\Gate|null
+     */
+    public function getGate()
+    {
+        return $this->gate;
+    }
+
+    /**
+     * Get the gate instance. Throw if not set.
+     *
+     * @return \Illuminate\Contracts\Auth\Access\Gate
      *
      * @throws \RuntimeException
      */
-    public function getGate($throw = false)
+    protected function getGateInstance()
     {
         if ($this->gate) {
             return $this->gate;
@@ -291,7 +301,7 @@ class Bouncer
      */
     public function define($ability, $callback)
     {
-        return $this->getGate(true)->define($ability, $callback);
+        return $this->getGateInstance()->define($ability, $callback);
     }
 
     /**
@@ -303,7 +313,7 @@ class Bouncer
      */
     public function allows($ability, $arguments = [])
     {
-        return $this->getGate(true)->allows($ability, $arguments);
+        return $this->getGateInstance()->allows($ability, $arguments);
     }
 
     /**
@@ -315,7 +325,7 @@ class Bouncer
      */
     public function denies($ability, $arguments = [])
     {
-        return $this->getGate(true)->denies($ability, $arguments);
+        return $this->getGateInstance()->denies($ability, $arguments);
     }
 
     /**
