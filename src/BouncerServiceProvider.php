@@ -96,16 +96,17 @@ class BouncerServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register the bouncer as a singleton.
+     * Register Bouncer as a singleton.
      *
      * @return void
      */
     protected function registerBouncer()
     {
         $this->app->singleton(Bouncer::class, function () {
-            $bouncer = new Bouncer($this->app->make(Clipboard::class));
-
-            return $bouncer->setGate($this->app->make(Gate::class));
+            return Bouncer::make()
+                ->withClipboard($this->app->make(Clipboard::class))
+                ->withGate($this->app->make(Gate::class))
+                ->create();
         });
     }
 

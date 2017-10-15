@@ -10,8 +10,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 
-use Silber\Bouncer\Contracts;
-use Silber\Bouncer\Conductors;
 use Silber\Bouncer\Seed\Seeder;
 use Silber\Bouncer\Database\Models;
 
@@ -44,21 +42,21 @@ class Bouncer
     /**
      * Create a new Bouncer instance.
      *
-     * @param  \Illuminate\Database\Eloquent\Model|null  $user
+     * @param  mixed  $user
      * @return static
      */
-    public static function create(Model $user = null)
+    public static function create($user = null)
     {
-        return static::make()->create($user);
+        return static::make($user)->create();
     }
 
     /**
      * Create a bouncer factory instance.
      *
-     * @param  \Illuminate\Database\Eloquent\Model|null  $user
-     * @return \Silber\Bouncer\Factory.
+     * @param  mixed  $user
+     * @return \Silber\Bouncer\Factory
      */
-    public static function make(Model $user = null)
+    public static function make($user = null)
     {
         return new Factory($user);
     }

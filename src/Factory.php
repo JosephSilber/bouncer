@@ -6,7 +6,6 @@ use Illuminate\Auth\Access\Gate;
 use Illuminate\Cache\ArrayStore;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Cache\Store;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Silber\Bouncer\Contracts\Clipboard as ClipboardContract;
 
@@ -36,22 +35,27 @@ class Factory
     /**
      * The user model to use for the gate.
      *
-     * @var \Illuminate\Datbase\Eloquent\Model
+     * @var mixed
      */
     protected $user;
 
     /**
+     * Create a new Factory instance.
+     *
+     * @param mixed  $user
+     */
+    public function __construct($user = null)
+    {
+        $this->user = $user;
+    }
+
+    /**
      * Create an instance of Bouncer.
      *
-     * @param  \Illuminate\Datbase\Eloquent\Model
      * @return \Silber\Bouncer\Bouncer
      */
-    public function create(Model $user = null)
+    public function create()
     {
-        if ($user) {
-            $this->user = $user;
-        }
-
         $clipboard = $this->getClipboard();
 
         $clipboard->registerAt($gate = $this->getGate());
@@ -101,10 +105,10 @@ class Factory
     /**
      * Set the user model to use for the gate.
      *
-     * @param  \Illuminate\Datbase\Eloquent\Model  $user
+     * @param  mixed  $user
      * @return $this
      */
-    public function withUser(Model $user)
+    public function withUser($user)
     {
         $this->user = $user;
 
