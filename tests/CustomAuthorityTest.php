@@ -24,11 +24,11 @@ class CustomAuthorityTest extends BaseTestCase
 
         $bouncer->allow($account)->to('edit-site');
 
-        $this->assertTrue($bouncer->allows('edit-site'));
+        $this->assertTrue($bouncer->can('edit-site'));
 
         $bouncer->disallow($account)->to('edit-site');
 
-        $this->assertTrue($bouncer->denies('edit-site'));
+        $this->assertTrue($bouncer->cannot('edit-site'));
     }
 
     public function test_bouncer_can_give_and_remove_roles()
@@ -42,12 +42,12 @@ class CustomAuthorityTest extends BaseTestCase
         $bouncer->allow($editor)->to('edit-site');
         $bouncer->assign($editor)->to($account);
 
-        $this->assertTrue($bouncer->allows('edit-site'));
+        $this->assertTrue($bouncer->can('edit-site'));
 
         $bouncer->retract('admin')->from($account);
         $bouncer->retract($editor)->from($account);
 
-        $this->assertTrue($bouncer->denies('edit-site'));
+        $this->assertTrue($bouncer->cannot('edit-site'));
     }
 
     public function test_bouncer_can_disallow_abilities_on_roles()
@@ -58,7 +58,7 @@ class CustomAuthorityTest extends BaseTestCase
         $bouncer->disallow('admin')->to('edit-site');
         $bouncer->assign('admin')->to($account);
 
-        $this->assertTrue($bouncer->denies('edit-site'));
+        $this->assertTrue($bouncer->cannot('edit-site'));
     }
 
     public function test_bouncer_can_check_user_roles()

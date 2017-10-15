@@ -19,7 +19,7 @@ class CleanCommandTest extends BaseTestCase
         $this->clean(['--orphaned' => true], '<info>Deleted 2 orphaned abilities.</info>');
 
         $this->assertEquals(1, Ability::query()->count());
-        $this->assertTrue($bouncer->allows('throw-dishes'));
+        $this->assertTrue($bouncer->can('throw-dishes'));
     }
 
     public function test_with_the_orphaned_flag_with_no_orphaned_abilities()
@@ -58,10 +58,10 @@ class CleanCommandTest extends BaseTestCase
         $this->clean(['--missing' => true], '<info>Deleted 2 abilities with missing models.</info>');
 
         $this->assertEquals(4, Ability::query()->count());
-        $this->assertTrue($bouncer->allows('create', Account::class));
-        $this->assertTrue($bouncer->allows('create', User::class));
-        $this->assertTrue($bouncer->allows('update', $user1));
-        $this->assertTrue($bouncer->allows('update', $account2));
+        $this->assertTrue($bouncer->can('create', Account::class));
+        $this->assertTrue($bouncer->can('create', User::class));
+        $this->assertTrue($bouncer->can('update', $user1));
+        $this->assertTrue($bouncer->can('update', $account2));
     }
 
     public function test_with_no_flags()

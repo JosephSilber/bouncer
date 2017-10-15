@@ -21,8 +21,8 @@ class FactoryTest extends BaseTestCase
 
         $bouncer->allow($user)->to('create-bouncers');
 
-        $this->assertTrue($bouncer->allows('create-bouncers'));
-        $this->assertTrue($bouncer->denies('delete-bouncers'));
+        $this->assertTrue($bouncer->can('create-bouncers'));
+        $this->assertTrue($bouncer->cannot('delete-bouncers'));
     }
 
     public function testCanBuildUpBouncerWithTheGivenUser()
@@ -31,8 +31,8 @@ class FactoryTest extends BaseTestCase
 
         $bouncer->allow($user)->to('create-bouncers');
 
-        $this->assertTrue($bouncer->allows('create-bouncers'));
-        $this->assertTrue($bouncer->denies('delete-bouncers'));
+        $this->assertTrue($bouncer->can('create-bouncers'));
+        $this->assertTrue($bouncer->cannot('delete-bouncers'));
     }
 
     public function testCanBuildUpBouncerWithTheGivenGate()
@@ -47,8 +47,8 @@ class FactoryTest extends BaseTestCase
 
         $bouncer->allow($user)->to('create-bouncers');
 
-        $this->assertTrue($bouncer->allows('create-bouncers'));
-        $this->assertTrue($bouncer->denies('delete-bouncers'));
+        $this->assertTrue($bouncer->can('create-bouncers'));
+        $this->assertTrue($bouncer->cannot('delete-bouncers'));
     }
 
 

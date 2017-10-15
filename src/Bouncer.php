@@ -305,27 +305,57 @@ class Bouncer
     }
 
     /**
-     * Determine if the given ability should be granted for the current authority.
+     * Determine if the given ability is allowed.
      *
+     * @param  string  $ability
+     * @param  array|mixed  $arguments
+     * @return bool
+     */
+    public function can($ability, $arguments = [])
+    {
+        return $this->getGateInstance()->allows($ability, $arguments);
+    }
+
+    /**
+     * Determine if the given ability is denied.
+     *
+     * @param  string  $ability
+     * @param  array|mixed  $arguments
+     * @return bool
+     */
+    public function cannot($ability, $arguments = [])
+    {
+        return $this->getGateInstance()->denies($ability, $arguments);
+    }
+
+    /**
+     * Determine if the given ability is allowed.
+     *
+     * Alias for the "can" method.
+     *
+     * @deprecated
      * @param  string  $ability
      * @param  array|mixed  $arguments
      * @return bool
      */
     public function allows($ability, $arguments = [])
     {
-        return $this->getGateInstance()->allows($ability, $arguments);
+        return $this->can($ability, $arguments);
     }
 
     /**
-     * Determine if the given ability should be denied for the current authority.
+     * Determine if the given ability is denied.
      *
+     * Alias for the "cannot" method.
+     *
+     * @deprecated
      * @param  string  $ability
      * @param  array|mixed  $arguments
      * @return bool
      */
     public function denies($ability, $arguments = [])
     {
-        return $this->getGateInstance()->denies($ability, $arguments);
+        return $this->cannot($ability, $arguments);
     }
 
     /**

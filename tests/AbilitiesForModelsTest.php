@@ -11,21 +11,21 @@ class AbilitiesForModelsTest extends BaseTestCase
 
         $bouncer->allow($user1)->to('edit', User::class);
 
-        $this->assertTrue($bouncer->denies('edit'));
-        $this->assertTrue($bouncer->allows('edit', User::class));
-        $this->assertTrue($bouncer->allows('edit', $user2));
+        $this->assertTrue($bouncer->cannot('edit'));
+        $this->assertTrue($bouncer->can('edit', User::class));
+        $this->assertTrue($bouncer->can('edit', $user2));
 
         $bouncer->disallow($user1)->to('edit', User::class);
 
-        $this->assertTrue($bouncer->denies('edit'));
-        $this->assertTrue($bouncer->denies('edit', User::class));
-        $this->assertTrue($bouncer->denies('edit', $user2));
+        $this->assertTrue($bouncer->cannot('edit'));
+        $this->assertTrue($bouncer->cannot('edit', User::class));
+        $this->assertTrue($bouncer->cannot('edit', $user2));
 
         $bouncer->disallow($user1)->to('edit');
 
-        $this->assertTrue($bouncer->denies('edit'));
-        $this->assertTrue($bouncer->denies('edit', User::class));
-        $this->assertTrue($bouncer->denies('edit', $user2));
+        $this->assertTrue($bouncer->cannot('edit'));
+        $this->assertTrue($bouncer->cannot('edit', User::class));
+        $this->assertTrue($bouncer->cannot('edit', $user2));
     }
 
     public function test_individual_model_ability()
@@ -37,25 +37,25 @@ class AbilitiesForModelsTest extends BaseTestCase
 
         $bouncer->allow($user1)->to('edit', $user2);
 
-        $this->assertTrue($bouncer->denies('edit'));
-        $this->assertTrue($bouncer->denies('edit', User::class));
-        $this->assertTrue($bouncer->denies('edit', $user1));
-        $this->assertTrue($bouncer->allows('edit', $user2));
+        $this->assertTrue($bouncer->cannot('edit'));
+        $this->assertTrue($bouncer->cannot('edit', User::class));
+        $this->assertTrue($bouncer->cannot('edit', $user1));
+        $this->assertTrue($bouncer->can('edit', $user2));
 
         $bouncer->disallow($user1)->to('edit', User::class);
 
-        $this->assertTrue($bouncer->allows('edit', $user2));
+        $this->assertTrue($bouncer->can('edit', $user2));
 
         $bouncer->disallow($user1)->to('edit', $user1);
 
-        $this->assertTrue($bouncer->allows('edit', $user2));
+        $this->assertTrue($bouncer->can('edit', $user2));
 
         $bouncer->disallow($user1)->to('edit', $user2);
 
-        $this->assertTrue($bouncer->denies('edit'));
-        $this->assertTrue($bouncer->denies('edit', User::class));
-        $this->assertTrue($bouncer->denies('edit', $user1));
-        $this->assertTrue($bouncer->denies('edit', $user2));
+        $this->assertTrue($bouncer->cannot('edit'));
+        $this->assertTrue($bouncer->cannot('edit', User::class));
+        $this->assertTrue($bouncer->cannot('edit', $user1));
+        $this->assertTrue($bouncer->cannot('edit', $user2));
     }
 
     public function test_blanket_ability_and_individual_model_ability_are_kept_separate()
@@ -68,13 +68,13 @@ class AbilitiesForModelsTest extends BaseTestCase
         $bouncer->allow($user1)->to('edit', User::class);
         $bouncer->allow($user1)->to('edit', $user2);
 
-        $this->assertTrue($bouncer->allows('edit', User::class));
-        $this->assertTrue($bouncer->allows('edit', $user2));
+        $this->assertTrue($bouncer->can('edit', User::class));
+        $this->assertTrue($bouncer->can('edit', $user2));
 
         $bouncer->disallow($user1)->to('edit', User::class);
 
-        $this->assertTrue($bouncer->denies('edit', User::class));
-        $this->assertTrue($bouncer->allows('edit', $user2));
+        $this->assertTrue($bouncer->cannot('edit', User::class));
+        $this->assertTrue($bouncer->can('edit', $user2));
     }
 
     public function test_allowing_on_non_existent_model_throws()

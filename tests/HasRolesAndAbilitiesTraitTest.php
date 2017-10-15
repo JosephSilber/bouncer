@@ -42,11 +42,11 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
 
         $user->allow('edit-site');
 
-        $this->assertTrue($bouncer->allows('edit-site'));
+        $this->assertTrue($bouncer->can('edit-site'));
 
         $user->disallow('edit-site');
 
-        $this->assertTrue($bouncer->denies('edit-site'));
+        $this->assertTrue($bouncer->cannot('edit-site'));
     }
 
     public function test_can_give_and_remove_model_abilities()
@@ -55,13 +55,13 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
 
         $user->allow('delete', $user);
 
-        $this->assertTrue($bouncer->denies('delete'));
-        $this->assertTrue($bouncer->denies('delete', User::class));
-        $this->assertTrue($bouncer->allows('delete', $user));
+        $this->assertTrue($bouncer->cannot('delete'));
+        $this->assertTrue($bouncer->cannot('delete', User::class));
+        $this->assertTrue($bouncer->can('delete', $user));
 
         $user->disallow('delete', $user);
 
-        $this->assertTrue($bouncer->denies('delete', $user));
+        $this->assertTrue($bouncer->cannot('delete', $user));
     }
 
     public function test_can_give_and_remove_ability_for_everything()
@@ -70,15 +70,15 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
 
         $user->allow()->everything();
 
-        $this->assertTrue($bouncer->allows('delete'));
-        $this->assertTrue($bouncer->allows('delete', '*'));
-        $this->assertTrue($bouncer->allows('*', '*'));
+        $this->assertTrue($bouncer->can('delete'));
+        $this->assertTrue($bouncer->can('delete', '*'));
+        $this->assertTrue($bouncer->can('*', '*'));
 
         $user->disallow()->everything();
 
-        $this->assertTrue($bouncer->denies('delete'));
-        $this->assertTrue($bouncer->denies('delete', '*'));
-        $this->assertTrue($bouncer->denies('*', '*'));
+        $this->assertTrue($bouncer->cannot('delete'));
+        $this->assertTrue($bouncer->cannot('delete', '*'));
+        $this->assertTrue($bouncer->cannot('*', '*'));
     }
 
     public function test_can_forbid_and_unforbid_abilities()
@@ -88,11 +88,11 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $user->allow('edit-site');
         $user->forbid('edit-site');
 
-        $this->assertTrue($bouncer->denies('edit-site'));
+        $this->assertTrue($bouncer->cannot('edit-site'));
 
         $user->unforbid('edit-site');
 
-        $this->assertTrue($bouncer->allows('edit-site'));
+        $this->assertTrue($bouncer->can('edit-site'));
     }
 
     public function test_can_forbid_and_unforbid_model_abilities()
@@ -102,11 +102,11 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $user->allow('delete', $user);
         $user->forbid('delete', $user);
 
-        $this->assertTrue($bouncer->denies('delete', $user));
+        $this->assertTrue($bouncer->cannot('delete', $user));
 
         $user->unforbid('delete', $user);
 
-        $this->assertTrue($bouncer->allows('delete', $user));
+        $this->assertTrue($bouncer->can('delete', $user));
     }
 
     public function test_can_forbid_and_unforbid_everything()
@@ -116,11 +116,11 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $user->allow('delete', $user);
         $user->forbid()->everything();
 
-        $this->assertTrue($bouncer->denies('delete', $user));
+        $this->assertTrue($bouncer->cannot('delete', $user));
 
         $user->unforbid()->everything();
 
-        $this->assertTrue($bouncer->allows('delete', $user));
+        $this->assertTrue($bouncer->can('delete', $user));
     }
 
     public function test_can_assign_and_retract_roles()
@@ -130,11 +130,11 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $bouncer->allow('admin')->to('edit-site');
         $user->assign('admin');
 
-        $this->assertTrue($bouncer->allows('edit-site'));
+        $this->assertTrue($bouncer->can('edit-site'));
 
         $user->retract('admin');
 
-        $this->assertTrue($bouncer->denies('edit-site'));
+        $this->assertTrue($bouncer->cannot('edit-site'));
     }
 
     public function test_can_check_roles()

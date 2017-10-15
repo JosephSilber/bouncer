@@ -34,15 +34,15 @@ class SyncTest extends BaseTestCase
 
         $bouncer->allow($user)->to([$editSite, $banUsers]);
 
-        $this->assertTrue($bouncer->allows('edit-site'));
-        $this->assertTrue($bouncer->allows('ban-users'));
-        $this->assertTrue($bouncer->denies('access-dashboard'));
+        $this->assertTrue($bouncer->can('edit-site'));
+        $this->assertTrue($bouncer->can('ban-users'));
+        $this->assertTrue($bouncer->cannot('access-dashboard'));
 
         $bouncer->sync($user)->abilities([$banUsers->id, 'access-dashboard']);
 
-        $this->assertTrue($bouncer->denies('edit-site'));
-        $this->assertTrue($bouncer->allows('ban-users'));
-        $this->assertTrue($bouncer->allows('access-dashboard'));
+        $this->assertTrue($bouncer->cannot('edit-site'));
+        $this->assertTrue($bouncer->can('ban-users'));
+        $this->assertTrue($bouncer->can('access-dashboard'));
     }
 
     public function test_syncing_abilities_With_a_map()
@@ -54,8 +54,8 @@ class SyncTest extends BaseTestCase
 
         $bouncer->allow($user)->to([$deleteUser, $createAccounts]);
 
-        $this->assertTrue($bouncer->allows('delete', $user));
-        $this->assertTrue($bouncer->allows('create', Account::class));
+        $this->assertTrue($bouncer->can('delete', $user));
+        $this->assertTrue($bouncer->can('create', Account::class));
 
         $bouncer->sync($user)->abilities([
             'access-dashboard',
@@ -63,11 +63,11 @@ class SyncTest extends BaseTestCase
             'view' => $user,
         ]);
 
-        $this->assertTrue($bouncer->denies('delete', $user));
-        $this->assertTrue($bouncer->denies('view', User::class));
-        $this->assertTrue($bouncer->allows('create', Account::class));
-        $this->assertTrue($bouncer->allows('view', $user));
-        $this->assertTrue($bouncer->allows('access-dashboard'));
+        $this->assertTrue($bouncer->cannot('delete', $user));
+        $this->assertTrue($bouncer->cannot('view', User::class));
+        $this->assertTrue($bouncer->can('create', Account::class));
+        $this->assertTrue($bouncer->can('view', $user));
+        $this->assertTrue($bouncer->can('access-dashboard'));
     }
 
     public function test_syncing_forbidden_abilities()
@@ -81,15 +81,15 @@ class SyncTest extends BaseTestCase
         $bouncer->allow($user)->everything();
         $bouncer->forbid($user)->to([$editSite, $banUsers->id]);
 
-        $this->assertTrue($bouncer->denies('edit-site'));
-        $this->assertTrue($bouncer->denies('ban-users'));
-        $this->assertTrue($bouncer->allows('access-dashboard'));
+        $this->assertTrue($bouncer->cannot('edit-site'));
+        $this->assertTrue($bouncer->cannot('ban-users'));
+        $this->assertTrue($bouncer->can('access-dashboard'));
 
         $bouncer->sync($user)->forbiddenAbilities([$banUsers->id, 'access-dashboard']);
 
-        $this->assertTrue($bouncer->allows('edit-site'));
-        $this->assertTrue($bouncer->denies('ban-users'));
-        $this->assertTrue($bouncer->denies('access-dashboard'));
+        $this->assertTrue($bouncer->can('edit-site'));
+        $this->assertTrue($bouncer->cannot('ban-users'));
+        $this->assertTrue($bouncer->cannot('access-dashboard'));
     }
 
     public function test_syncing_a_roles_abilities()
@@ -103,15 +103,15 @@ class SyncTest extends BaseTestCase
         $bouncer->assign('admin')->to($user);
         $bouncer->allow('admin')->to([$editSite, $banUsers]);
 
-        $this->assertTrue($bouncer->allows('edit-site'));
-        $this->assertTrue($bouncer->allows('ban-users'));
-        $this->assertTrue($bouncer->denies('access-dashboard'));
+        $this->assertTrue($bouncer->can('edit-site'));
+        $this->assertTrue($bouncer->can('ban-users'));
+        $this->assertTrue($bouncer->cannot('access-dashboard'));
 
         $bouncer->sync('admin')->abilities([$banUsers->id, 'access-dashboard']);
 
-        $this->assertTrue($bouncer->denies('edit-site'));
-        $this->assertTrue($bouncer->allows('ban-users'));
-        $this->assertTrue($bouncer->allows('access-dashboard'));
+        $this->assertTrue($bouncer->cannot('edit-site'));
+        $this->assertTrue($bouncer->can('ban-users'));
+        $this->assertTrue($bouncer->can('access-dashboard'));
     }
 
     /**

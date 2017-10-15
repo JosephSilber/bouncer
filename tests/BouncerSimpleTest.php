@@ -16,17 +16,17 @@ class BouncerSimpleTest extends BaseTestCase
         $bouncer->allow($user)->to('edit-site');
         $bouncer->allow($user)->to([$banUsers, $accessDashboard->id]);
 
-        $this->assertTrue($bouncer->allows('edit-site'));
-        $this->assertTrue($bouncer->allows('ban-users'));
-        $this->assertTrue($bouncer->allows('access-dashboard'));
+        $this->assertTrue($bouncer->can('edit-site'));
+        $this->assertTrue($bouncer->can('ban-users'));
+        $this->assertTrue($bouncer->can('access-dashboard'));
 
         $bouncer->disallow($user)->to($editSite);
         $bouncer->disallow($user)->to('ban-users');
         $bouncer->disallow($user)->to($accessDashboard->id);
 
-        $this->assertTrue($bouncer->denies('edit-site'));
-        $this->assertTrue($bouncer->denies('ban-users'));
-        $this->assertTrue($bouncer->denies('access-dashboard'));
+        $this->assertTrue($bouncer->cannot('edit-site'));
+        $this->assertTrue($bouncer->cannot('ban-users'));
+        $this->assertTrue($bouncer->cannot('access-dashboard'));
     }
 
     public function test_bouncer_can_give_and_remove_wildcard_abilities()
@@ -35,13 +35,13 @@ class BouncerSimpleTest extends BaseTestCase
 
         $bouncer->allow($user)->to('*');
 
-        $this->assertTrue($bouncer->allows('edit-site'));
-        $this->assertTrue($bouncer->allows('ban-users'));
-        $this->assertTrue($bouncer->allows('*'));
+        $this->assertTrue($bouncer->can('edit-site'));
+        $this->assertTrue($bouncer->can('ban-users'));
+        $this->assertTrue($bouncer->can('*'));
 
         $bouncer->disallow($user)->to('*');
 
-        $this->assertTrue($bouncer->denies('edit-site'));
+        $this->assertTrue($bouncer->cannot('edit-site'));
     }
 
     public function test_bouncer_can_ignore_duplicate_ability_allowances()
@@ -82,12 +82,12 @@ class BouncerSimpleTest extends BaseTestCase
         $bouncer->allow($editor)->to('ban-users');
         $bouncer->assign($editor)->to($user);
 
-        $this->assertTrue($bouncer->allows('ban-users'));
+        $this->assertTrue($bouncer->can('ban-users'));
 
         $bouncer->retract('admin')->from($user);
         $bouncer->retract($editor)->from($user);
 
-        $this->assertTrue($bouncer->denies('ban-users'));
+        $this->assertTrue($bouncer->cannot('ban-users'));
     }
 
     public function test_bouncer_can_give_and_remove_multiple_roles_at_once()
@@ -144,7 +144,7 @@ class BouncerSimpleTest extends BaseTestCase
         $bouncer->disallow('admin')->to('edit-site');
         $bouncer->assign('admin')->to($user);
 
-        $this->assertTrue($bouncer->denies('edit-site'));
+        $this->assertTrue($bouncer->cannot('edit-site'));
     }
 
     public function test_bouncer_can_check_user_roles()
@@ -228,8 +228,8 @@ class BouncerSimpleTest extends BaseTestCase
             return $user->id == $account->user_id;
         });
 
-        $this->assertTrue($bouncer->allows('edit', new Account(['user_id' => $user->id])));
-        $this->assertFalse($bouncer->allows('edit', new Account(['user_id' => 99])));
+        $this->assertTrue($bouncer->can('edit', new Account(['user_id' => $user->id])));
+        $this->assertFalse($bouncer->can('edit', new Account(['user_id' => 99])));
     }
 
     /**
