@@ -78,13 +78,14 @@ class AssignsRoles
      */
     protected function getExistingAttachRecords($roleIds, $morphType, $authorityIds)
     {
-        $records = $this->newPivotTableQuery()
-                        ->whereIn('role_id', $roleIds->all())
-                        ->whereIn('entity_id', $authorityIds->all())
-                        ->where('entity_type', $morphType)
-                        ->get();
+        $query = $this->newPivotTableQuery()
+            ->whereIn('role_id', $roleIds->all())
+            ->whereIn('entity_id', $authorityIds->all())
+            ->where('entity_type', $morphType);
 
-        return new Collection($records);
+        Models::scope()->applyToRelationQuery($query, $query->from);
+
+        return new Collection($query->get());
     }
 
     /**
@@ -99,7 +100,7 @@ class AssignsRoles
     {
         return $roleIds->map(function ($roleId) use ($morphType, $authorityIds) {
             return $authorityIds->map(function ($authorityId) use ($roleId, $morphType) {
-                return [
+                return Models::scope()->getAttachAttributes() + [
                     'role_id' => $roleId,
                     'entity_id' => $authorityId,
                     'entity_type' => $morphType,

@@ -21,14 +21,17 @@ class MultiTenancyTest extends BaseTestCase
 
     public function test_creating_roles_and_abilities_automatically_scopes_them()
     {
-        $bouncer = $this->bouncer();
+        $bouncer = $this->bouncer($user = User::create());
 
         $bouncer->scope()->to(1);
 
         $bouncer->allow('admin')->to('create', User::class);
+        $bouncer->assign('admin')->to($user);
 
         $this->assertEquals(1, $bouncer->ability()->query()->value('scope'));
         $this->assertEquals(1, $bouncer->role()->query()->value('scope'));
+        $this->assertEquals(1, $this->db()->table('permissions')->value('scope'));
+        $this->assertEquals(1, $this->db()->table('assigned_roles')->value('scope'));
     }
 
     public function test_relation_queries_are_properly_scoped()

@@ -185,12 +185,15 @@ trait IsRole
     {
         list($model, $keys) = Helpers::extractModelAndKeys($model, $keys);
 
-        $this->newBaseQueryBuilder()
-             ->from(Models::table('assigned_roles'))
-             ->where('role_id', $this->getKey())
-             ->where('entity_type', $model->getMorphClass())
-             ->whereIn('entity_id', $keys)
-             ->delete();
+        $query = $this->newBaseQueryBuilder()
+            ->from($table = Models::table('assigned_roles'))
+            ->where('role_id', $this->getKey())
+            ->where('entity_type', $model->getMorphClass())
+            ->whereIn('entity_id', $keys);
+
+        Models::scope()->applyToRelationQuery($query, $table);
+
+        $query->delete();
 
         return $this;
     }
@@ -207,7 +210,7 @@ trait IsRole
         $type = $model->getMorphClass();
 
         return array_map(function ($key) use ($type) {
-            return [
+            return Models::scope()->getAttachAttributes() + [
                 'role_id'     => $this->getKey(),
                 'entity_type' => $type,
                 'entity_id'   => $key,
