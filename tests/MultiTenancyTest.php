@@ -91,4 +91,22 @@ class MultiTenancyTest extends BaseTestCase
         $this->assertTrue($bouncer->allows('delete', User::class));
         $this->assertTrue($bouncer->denies('create', User::class));
     }
+
+    public function test_assigning_and_retracting_roles_scopes_them_properly()
+    {
+        $bouncer = $this->bouncer($user = User::create());
+
+        $bouncer->scope()->to(1)->onlyRelations();
+        $bouncer->assign('admin')->to($user);
+
+        $bouncer->scope()->to(2)->onlyRelations();
+        $bouncer->assign('admin')->to($user);
+        $bouncer->retract('admin')->from($user);
+
+        $bouncer->scope()->to(1)->onlyRelations();
+        $this->assertTrue($bouncer->is($user)->an('admin'));
+
+        $bouncer->scope()->to(2)->onlyRelations();
+        $this->assertFalse($bouncer->is($user)->an('admin'));
+    }
 }
