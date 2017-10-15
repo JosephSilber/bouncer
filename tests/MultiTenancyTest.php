@@ -70,10 +70,10 @@ class MultiTenancyTest extends BaseTestCase
         $bouncer->scope()->to(1)->onlyRelations();
         $bouncer->allow($user)->to('create', User::class);
 
-        $bouncer->scope()->to(2)->onlyRelations();
+        $bouncer->scope()->to(2);
         $bouncer->allow($user)->to('delete', User::class);
 
-        $bouncer->scope()->to(1)->onlyRelations();
+        $bouncer->scope()->to(1);
         $abilities = $user->abilities()->get();
 
         $this->assertCount(1, $abilities);
@@ -82,7 +82,7 @@ class MultiTenancyTest extends BaseTestCase
         $this->assertTrue($bouncer->allows('create', User::class));
         $this->assertTrue($bouncer->denies('delete', User::class));
 
-        $bouncer->scope()->to(2)->onlyRelations();
+        $bouncer->scope()->to(2);
         $abilities = $user->abilities()->get();
 
         $this->assertCount(1, $abilities);
@@ -92,6 +92,8 @@ class MultiTenancyTest extends BaseTestCase
         $this->assertTrue($bouncer->denies('create', User::class));
     }
 
+    // TODO: test forbid
+
     public function test_assigning_and_retracting_roles_scopes_them_properly()
     {
         $bouncer = $this->bouncer($user = User::create());
@@ -99,14 +101,14 @@ class MultiTenancyTest extends BaseTestCase
         $bouncer->scope()->to(1)->onlyRelations();
         $bouncer->assign('admin')->to($user);
 
-        $bouncer->scope()->to(2)->onlyRelations();
+        $bouncer->scope()->to(2);
         $bouncer->assign('admin')->to($user);
         $bouncer->retract('admin')->from($user);
 
-        $bouncer->scope()->to(1)->onlyRelations();
+        $bouncer->scope()->to(1);
         $this->assertTrue($bouncer->is($user)->an('admin'));
 
-        $bouncer->scope()->to(2)->onlyRelations();
+        $bouncer->scope()->to(2);
         $this->assertFalse($bouncer->is($user)->an('admin'));
     }
 }
