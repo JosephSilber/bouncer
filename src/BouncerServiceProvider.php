@@ -36,10 +36,13 @@ class BouncerServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->publishMigrations();
         $this->registerAtGate();
         $this->setTablePrefix();
         $this->setUserModel();
+
+        if ($this->runningInConsole()) {
+            $this->publishMigrations();
+        }
     }
 
     /**
@@ -206,5 +209,17 @@ class BouncerServiceProvider extends ServiceProvider
         }
 
         return $config->get("auth.providers.{$provider}.model");
+    }
+
+    /**
+     * Determine if we are running in the console.
+     *
+     * Copied from Laravel's Application class, since we need to support 5.1.
+     *
+     * @return bool
+     */
+    protected function runningInConsole()
+    {
+        return php_sapi_name() == 'cli' || php_sapi_name() == 'phpdbg';
     }
 }
