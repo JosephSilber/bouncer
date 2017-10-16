@@ -362,8 +362,8 @@ Authorizing users is handled directly at [Laravel's `Gate`](https://laravel.com/
 For convenience, the bouncer class provides two passthrough methods:
 
 ```php
-Bouncer::allows($ability);
-Bouncer::denies($ability);
+Bouncer::can($ability);
+Bouncer::cannot($ability);
 ```
 
 These call directly into the `Gate` class.
@@ -568,13 +568,13 @@ Bouncer::retract('admin')->from($user);
 // Re-sync a user's roles
 Bouncer::sync($user)->roles($roles);
 
-$check = Bouncer::allows('ban-users');
-$check = Bouncer::allows('edit', Post::class);
-$check = Bouncer::allows('delete', $post);
+$check = Bouncer::can('ban-users');
+$check = Bouncer::can('edit', Post::class);
+$check = Bouncer::can('delete', $post);
 
-$check = Bouncer::denies('ban-users');
-$check = Bouncer::denies('edit', Post::class);
-$check = Bouncer::denies('delete', $post);
+$check = Bouncer::cannot('ban-users');
+$check = Bouncer::cannot('edit', Post::class);
+$check = Bouncer::cannot('delete', $post);
 
 $check = Bouncer::is($user)->a('subscriber');
 $check = Bouncer::is($user)->an('admin');
