@@ -568,20 +568,20 @@ Bouncer::retract('admin')->from($user);
 // Re-sync a user's roles
 Bouncer::sync($user)->roles($roles);
 
-$check = Bouncer::can('ban-users');
-$check = Bouncer::can('edit', Post::class);
-$check = Bouncer::can('delete', $post);
+$boolean = Bouncer::can('ban-users');
+$boolean = Bouncer::can('edit', Post::class);
+$boolean = Bouncer::can('delete', $post);
 
-$check = Bouncer::cannot('ban-users');
-$check = Bouncer::cannot('edit', Post::class);
-$check = Bouncer::cannot('delete', $post);
+$boolean = Bouncer::cannot('ban-users');
+$boolean = Bouncer::cannot('edit', Post::class);
+$boolean = Bouncer::cannot('delete', $post);
 
-$check = Bouncer::is($user)->a('subscriber');
-$check = Bouncer::is($user)->an('admin');
-$check = Bouncer::is($user)->notA('subscriber');
-$check = Bouncer::is($user)->notAn('admin');
-$check = Bouncer::is($user)->a('moderator', 'editor');
-$check = Bouncer::is($user)->all('moderator', 'editor');
+$boolean = Bouncer::is($user)->a('subscriber');
+$boolean = Bouncer::is($user)->an('admin');
+$boolean = Bouncer::is($user)->notA('subscriber');
+$boolean = Bouncer::is($user)->notAn('admin');
+$boolean = Bouncer::is($user)->a('moderator', 'editor');
+$boolean = Bouncer::is($user)->all('moderator', 'editor');
 
 Bouncer::cache();
 Bouncer::dontCache();
@@ -604,10 +604,10 @@ $user->disallow('delete', $post);
 $user->assign('admin');
 $user->retract('admin');
 
-$check = $user->isAn('admin');
-$check = $user->isAn('editor', 'moderator');
-$check = $user->isAll('moderator', 'editor');
-$check = $user->isNot('subscriber', 'moderator');
+$boolean = $user->isAn('admin');
+$boolean = $user->isAn('editor', 'moderator');
+$boolean = $user->isAll('moderator', 'editor');
+$boolean = $user->isNot('subscriber', 'moderator');
 
 $abilities = $user->getAbilities();
 ```
