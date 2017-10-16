@@ -267,7 +267,7 @@ class Bouncer
      *
      * @throws \RuntimeException
      */
-    protected function getGateInstance()
+    public function gate()
     {
         if ($this->gate) {
             return $this->gate;
@@ -301,7 +301,7 @@ class Bouncer
      */
     public function define($ability, $callback)
     {
-        return $this->getGateInstance()->define($ability, $callback);
+        return $this->gate()->define($ability, $callback);
     }
 
     /**
@@ -313,7 +313,7 @@ class Bouncer
      */
     public function can($ability, $arguments = [])
     {
-        return $this->getGateInstance()->allows($ability, $arguments);
+        return $this->gate()->allows($ability, $arguments);
     }
 
     /**
@@ -325,7 +325,7 @@ class Bouncer
      */
     public function cannot($ability, $arguments = [])
     {
-        return $this->getGateInstance()->denies($ability, $arguments);
+        return $this->gate()->denies($ability, $arguments);
     }
 
     /**
