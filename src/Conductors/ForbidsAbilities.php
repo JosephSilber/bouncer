@@ -2,6 +2,7 @@
 
 namespace Silber\Bouncer\Conductors;
 
+use Silber\Bouncer\Database\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class ForbidsAbilities
@@ -57,6 +58,8 @@ class ForbidsAbilities
     {
         $ids = array_diff($ids, $this->getAssociatedAbilityIds($authority, $ids, true));
 
-        $authority->abilities()->attach($ids, ['forbidden' => true]);
+        $attributes = Models::scope()->getAttachAttributes() + ['forbidden' => true];
+
+        $authority->abilities()->attach($ids, $attributes);
     }
 }

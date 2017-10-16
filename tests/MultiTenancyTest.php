@@ -92,7 +92,27 @@ class MultiTenancyTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('create', User::class));
     }
 
-    // TODO: test forbid
+    public function test_forbidding_abilities_only_affects_the_current_scope()
+    {
+        $bouncer = $this->bouncer($user = User::create());
+
+        $bouncer->scope()->to(1);
+        $bouncer->allow($user)->to('create', User::class);
+
+        $bouncer->scope()->to(2);
+        $bouncer->allow($user)->to('create', User::class);
+        $bouncer->forbid($user)->to('create', User::class);
+
+        $bouncer->scope()->to(1);
+
+        $this->assertTrue($bouncer->can('create', User::class));
+
+        $bouncer->unforbid($user)->to('create', User::class);
+
+        $bouncer->scope()->to(2);
+
+        $this->assertTrue($bouncer->cannot('create', User::class));
+    }
 
     public function test_assigning_and_retracting_roles_scopes_them_properly()
     {
