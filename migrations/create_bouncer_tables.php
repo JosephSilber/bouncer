@@ -37,7 +37,7 @@ class CreateBouncerTables extends Migration
             $table->unsignedInteger('entity_id');
             $table->string('entity_type', 150);
 
-            $table->index(['entity_id', 'entity_type'], 'entity_index');
+            $table->index(['entity_id', 'entity_type'], 'assigned_roles_entity_index');
 
             $table->foreign('role_id')
                   ->references('id')->on(Models::table('roles'))
@@ -50,7 +50,7 @@ class CreateBouncerTables extends Migration
             $table->string('entity_type', 150);
             $table->boolean('forbidden')->default(false);
 
-            $table->index(['entity_id', 'entity_type'], 'entity_index');
+            $table->index(['entity_id', 'entity_type'], 'permissions_entity_index');
 
             $table->foreign('ability_id')
                   ->references('id')->on(Models::table('abilities'))
