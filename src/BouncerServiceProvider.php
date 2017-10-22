@@ -6,7 +6,6 @@ use Silber\Bouncer\Seed\Seeder;
 use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Seed\SeedCommand;
 use Silber\Bouncer\Console\CleanCommand;
-use Silber\Bouncer\Console\UpgradeCommand;
 
 use Illuminate\Cache\ArrayStore;
 use Illuminate\Support\ServiceProvider;
@@ -80,7 +79,6 @@ class BouncerServiceProvider extends ServiceProvider
     {
         $this->commands(SeedCommand::class);
         $this->commands(CleanCommand::class);
-        $this->commands(UpgradeCommand::class);
     }
 
     /**

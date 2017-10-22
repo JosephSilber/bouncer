@@ -8,14 +8,10 @@
 
 This package adds a bouncer at Laravel's access gate.
 
-> **Note:** If you are upgrading from an earlier version of Bouncer, be sure to checkout [the upgrade guide](#upgrade).
-
 - [Introduction](#introduction)
 - [Installation](#installation)
   - [Facade](#facade)
   - [Enabling cache](#enabling-cache)
-- [Upgrade](#upgrade)
-  - [Upgrading to 1.0](#upgrading-to-10)
 - [Usage](#usage)
   - [Creating roles and abilities](#creating-roles-and-abilities)
   - [Assigning roles to a user](#assigning-roles-to-a-user)
@@ -126,40 +122,6 @@ For more information about Laravel Facades, refer to [the Laravel documentation]
 ### Enabling cache
 
 By default, Bouncer's queries are cached for the current request. For better performance, you may want to [enable cross-request caching](#cache).
-
-## Upgrade
-
-### Upgrading to 1.0
-
-The table structure in Bouncer 1.0 has changed significantly. To upgrade, you'll have to update your database schema to the new structure.
-
-If your app has not made it to production yet and you can still rollback your migrations, do that. Once you've rolled back all migrations, you can delete the Bouncer migration file and republish it to get the newer version:
-
-```
-php artisan vendor:publish --provider="Silber\Bouncer\BouncerServiceProvider" --tag="migrations"
-```
-
-For apps that are in production and already have real data in the database, Bouncer ships with an upgrade migration file which will migrate your schema *and your data* to the new structure.
-
-> **Remember:** Before migrating, be sure to run a full backup of your database! If anything goes wrong, you'll want to be able to restore from your backup.
-
-After updating to Bouncer 1.0 through composer, run the following command:
-
-```
-php artisan bouncer:upgrade
-```
-
-This will create a new migration file under `database/migrations`, and will automatically call artisan's `migrate` command to migrate the database.
-
-Congratulations, you're done with your upgrade!
-
-If you have previously changed Bouncer's default table names, you will have to change them in this migration file. To prevent the `bouncer:upgrade` command from actually migrating your database, call it with the `no-migrate` flag:
-
-```
-php artisan bouncer:upgrade --no-migrate
-```
-
-This will create the migration file, but will not actually migrate the database. You can now manually edit the migration file to make any changes you need. After you've made the necessary changes, remember to run the `php artisan migrate` command yourself.
 
 ## Usage
 
