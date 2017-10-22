@@ -167,11 +167,6 @@ class UpgradeToBouncer1Dot0 extends Migration
 
             $table->string('name', 150)->change();
             $table->string('entity_type', 150)->nullable()->change();
-
-            $table->unique(
-                ['name', 'entity_id', 'entity_type', 'only_owned'],
-                'abilities_unique_index'
-            );
         });
     }
 
