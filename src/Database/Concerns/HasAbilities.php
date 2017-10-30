@@ -24,7 +24,9 @@ trait HasAbilities
         return $this->morphToMany(
             Models::classname(Ability::class),
             'entity',
-            Models::table('permissions')
+            Models::table('permissions'),
+            null,
+            'ability_id'
         );
     }
 
