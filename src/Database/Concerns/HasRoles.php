@@ -23,7 +23,9 @@ trait HasRoles
         return $this->morphToMany(
             Models::classname(Role::class),
             'entity',
-            Models::table('assigned_roles')
+            Models::table('assigned_roles'),
+            null,
+            'role_id'
         );
     }
 
