@@ -26,6 +26,16 @@ trait HasRoles
             Models::table('assigned_roles')
         );
     }
+    
+    /**
+     * Get all of the model's assigned roles.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getRoles()
+    {
+        return $this->getClipboardInstance()->getRoles($this);
+    }
 
     /**
      * Assign the given roles to the model.
