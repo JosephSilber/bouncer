@@ -323,6 +323,16 @@ $abilities = $user->getAbilities();
 
 This will return a collection of the user's abilities, including any abilities granted to the user through their roles.
 
+### Getting all roles for a user
+
+You can get all roles for a user directly from the user model:
+
+```php
+$roles = $user->getRoles();
+```
+
+This will return a collection of the user's roles.
+
 ### Authorizing users
 
 Authorizing users is handled directly at [Laravel's `Gate`](https://laravel.com/docs/5.5/authorization#gates), or on the user model (`$user->can($ability)`).
