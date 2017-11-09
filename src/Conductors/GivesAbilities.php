@@ -56,6 +56,8 @@ class GivesAbilities
     {
         $ids = array_diff($ids, $this->getAssociatedAbilityIds($authority, $ids, false));
 
-        $authority->abilities()->attach($ids, Models::scope()->getAttachAttributes());
+        $attributes = Models::scope()->getAttachAttributes(get_class($authority));
+
+        $authority->abilities()->attach($ids, $attributes);
     }
 }

@@ -149,4 +149,21 @@ class MultiTenancyTest extends BaseTestCase
         $bouncer->scope()->to(2);
         $this->assertFalse($bouncer->is($user)->an('admin'));
     }
+
+    public function test_role_abilities_can_be_excluded_from_scopes()
+    {
+        $bouncer = $this->bouncer($user = User::create());
+
+        $bouncer->scope()->to(1)
+                ->onlyRelations()
+                ->dontScopeRoleAbilities();
+
+        $bouncer->allow('admin')->to('delete', User::class);
+
+        $bouncer->scope()->to(2);
+
+        $bouncer->assign('admin')->to($user);
+
+        $this->assertTrue($bouncer->can('delete', User::class));
+    }
 }

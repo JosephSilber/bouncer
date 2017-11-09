@@ -58,8 +58,8 @@ class ForbidsAbilities
     {
         $ids = array_diff($ids, $this->getAssociatedAbilityIds($authority, $ids, true));
 
-        $attributes = Models::scope()->getAttachAttributes() + ['forbidden' => true];
+        $attributes = Models::scope()->getAttachAttributes(get_class($authority));
 
-        $authority->abilities()->attach($ids, $attributes);
+        $authority->abilities()->attach($ids, $attributes + ['forbidden' => true]);
     }
 }

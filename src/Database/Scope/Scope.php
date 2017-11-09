@@ -2,6 +2,8 @@
 
 namespace Silber\Bouncer\Database\Scope;
 
+use Silber\Bouncer\Database\Role;
+use Silber\Bouncer\Database\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -22,6 +24,13 @@ class Scope
      * @var mixed
      */
     protected $onlyScopeRelations = false;
+
+    /**
+     * Determines whether roles' abilities should be scoped.
+     *
+     * @var mixed
+     */
+    protected $scopeRoleAbilities = true;
 
     /**
      * Scope queries to the given tenant ID.
@@ -50,6 +59,20 @@ class Scope
     }
 
     /**
+     * Don't scope abilities granted to roles.
+     *
+     * The role <=> ability associations will be global.
+     *
+     * @return $this
+     */
+    public function dontScopeRoleAbilities()
+    {
+        $this->scopeRoleAbilities = false;
+
+        return $this;
+    }
+
+    /**
      * Do not scope any queries.
      *
      * @return $this
@@ -57,7 +80,7 @@ class Scope
     public function reset()
     {
         $this->scope = null;
-
+        $this->scopeRoleAbilities = true;
         $this->onlyScopeRelations = false;
 
         return $this;
@@ -159,14 +182,31 @@ class Scope
     /**
      * Get the additional attributes for pivot table records.
      *
+     * @param  string|null  $authority
      * @return array
      */
-    public function getAttachAttributes()
+    public function getAttachAttributes($authority = null)
     {
         if (is_null($this->scope)) {
             return [];
         }
 
+        if (! $this->scopeRoleAbilities && $this->isRoleClass($authority))
+        {
+            return [];
+        }
+
         return ['scope' => $this->scope];
+    }
+
+    /**
+     * Determine whether the given class name is the role model.
+     *
+     * @param  string|null $className
+     * @return bool
+     */
+    protected function isRoleClass($className)
+    {
+        return Models::classname(Role::class) === $className;
     }
 }
