@@ -2,10 +2,29 @@
 
 namespace App\Http\Middleware;
 
-use Bouncer, Closure;
+use Silber\Bouncer\Bouncer;
+
+use Closure;
 
 class ScopeBouncer
 {
+    /**
+     * The Bouncer instance.
+     *
+     * @var \Silber\Bouncer\Bouncer
+     */
+    protected $bouncer;
+
+    /**
+     * Constructor.
+     *
+     * @param \Silber\Bouncer\Bouncer  $bouncer
+     */
+    public function __construct(Bouncer $bouncer)
+    {
+        $this->bouncer = $bouncer;
+    }
+
     /**
      * Set the proper Bouncer scope for the incoming request.
      *
@@ -20,7 +39,7 @@ class ScopeBouncer
         // $tenantId is set here from the user's account_id.
         $tenantId = $request->user()->account_id;
 
-        Bouncer::scope()->to($tenantId);
+        $this->bouncer->scope()->to($tenantId);
 
         return $next($request);
     }
