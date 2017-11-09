@@ -92,6 +92,24 @@ class MultiTenancyTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('create', User::class));
     }
 
+    public function test_scoping_also_returns_global_abilities()
+    {
+        $bouncer = $this->bouncer($user = User::create());
+
+        $bouncer->allow($user)->to('create', User::class);
+
+        $bouncer->scope()->to(1)->onlyRelations();
+        $bouncer->allow($user)->to('delete', User::class);
+
+        $abilities = $user->abilities()->get();
+
+        $this->assertCount(2, $abilities);
+        $this->assertNull($abilities->first()->scope);
+        $this->assertEquals('create', $abilities->first()->name);
+        $this->assertTrue($bouncer->can('create', User::class));
+        $this->assertTrue($bouncer->can('delete', User::class));
+    }
+
     public function test_forbidding_abilities_only_affects_the_current_scope()
     {
         $bouncer = $this->bouncer($user = User::create());

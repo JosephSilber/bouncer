@@ -98,11 +98,11 @@ class Scope
      */
     public function applyToModelQuery($query, $table)
     {
-        if (! is_null($this->scope) && ! $this->onlyScopeRelations) {
-            $query->where("{$table}.scope", $this->scope);
+        if (is_null($this->scope) || $this->onlyScopeRelations) {
+            return $query;
         }
 
-        return $query;
+        return $this->applyToQuery($query, $table);
     }
 
     /**
@@ -114,11 +114,11 @@ class Scope
      */
     public function applyToRelationQuery($query, $table)
     {
-        if (! is_null($this->scope)) {
-            $query->where("{$table}.scope", $this->scope);
+        if (is_null($this->scope)) {
+            return $query;
         }
 
-        return $query;
+        return $this->applyToQuery($query, $table);
     }
 
     /**
@@ -129,11 +129,31 @@ class Scope
      */
     public function applyToRelation(BelongsToMany $relation)
     {
-        if (! is_null($this->scope)) {
-            $relation->wherePivot('scope', $this->scope);
-        }
+        $this->applyToRelationQuery(
+            $relation->getQuery(),
+            $relation->getTable()
+        );
 
         return $relation;
+    }
+
+    /**
+     * Apply the current scope to the given query.
+     *
+     * This internal method does not check whether
+     * the given query needs to be scoped. That
+     * is fully the caller's responsibility.
+     *
+     * @param  \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $table
+     * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
+     */
+    protected function applyToQuery($query, $table)
+    {
+        return $query->where(function ($query) use ($table) {
+            $query->where("{$table}.scope", $this->scope)
+                  ->orWhereNull("{$table}.scope");
+        });
     }
 
     /**
