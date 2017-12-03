@@ -11,12 +11,20 @@ use Silber\Bouncer\Database\HasRolesAndAbilities;
 use PHPUnit\Framework\TestCase;
 use Illuminate\Auth\Access\Gate;
 use Illuminate\Cache\ArrayStore;
+use Illuminate\Events\Dispatcher;
 use Illuminate\Container\Container;
 use Illuminate\Database\Capsule\Manager as DB;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
 abstract class BaseTestCase extends TestCase
 {
+    /**
+     * The clipboard instance.
+     *
+     * @var \Silber\Bouncer\CachedClipboard
+     */
+    protected $clipboard;
+
     /**
      * The database capsule instance.
      *
@@ -25,11 +33,11 @@ abstract class BaseTestCase extends TestCase
     protected $db;
 
     /**
-     * The clipboard instance.
+     * The event dispatcher instance.
      *
-     * @var \Silber\Bouncer\CachedClipboard
+     * @var \Illuminate\Events\Dispatcher
      */
-    protected $clipboard;
+    protected static $dispatcher;
 
     /**
      * Setup the database schema.
@@ -142,7 +150,23 @@ abstract class BaseTestCase extends TestCase
 
         $this->db->setAsGlobal();
 
+        Eloquent::setEventDispatcher($this->dispatcher());
+
         return $this->db;
+    }
+
+    /**
+     * Get the event dispatcher instance.
+     *
+     * @return \Illuminate\Events\Dispatcher
+     */
+    protected function dispatcher()
+    {
+        if (is_null(static::$dispatcher)) {
+            static::$dispatcher = new Dispatcher;
+        }
+
+        return static::$dispatcher;
     }
 }
 

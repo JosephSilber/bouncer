@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Database\Eloquent\Model;
+
 class AbilitiesForModelsTest extends BaseTestCase
 {
     public function test_model_blanket_ability()

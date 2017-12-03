@@ -20,11 +20,13 @@ trait HasRoles
      */
     public function roles()
     {
-        return $this->morphToMany(
+        $relation = $this->morphToMany(
             Models::classname(Role::class),
             'entity',
             Models::table('assigned_roles')
         );
+
+        return Models::scope()->applyToRelation($relation);
     }
 
     /**

@@ -21,11 +21,13 @@ trait HasAbilities
      */
     public function abilities()
     {
-        return $this->morphToMany(
+        $relation = $this->morphToMany(
             Models::classname(Ability::class),
             'entity',
             Models::table('permissions')
         );
+
+        return Models::scope()->applyToRelation($relation);
     }
 
     /**

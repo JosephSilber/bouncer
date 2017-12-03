@@ -385,7 +385,7 @@ class Bouncer
      *
      * @param  string|\Closure  $model
      * @param  string|\Closure|null  $attribute
-     * @return void
+     * @return $this
      */
     public function ownedVia($model, $attribute = null)
     {
@@ -397,42 +397,63 @@ class Bouncer
     /**
      * Set the model to be used for abilities.
      *
-     * @param string  $model
+     * @param  string  $model
+     * @return $this
      */
     public static function useAbilityModel($model)
     {
         Models::setAbilitiesModel($model);
+
+        return $this;
     }
 
     /**
      * Set the model to be used for roles.
      *
-     * @param string  $model
+     * @param  string  $model
+     * @return $this
      */
     public static function useRoleModel($model)
     {
         Models::setRolesModel($model);
+
+        return $this;
     }
 
     /**
      * Set the model to be used for users.
      *
-     * @param string  $model
+     * @param  string  $model
+     * @return $this
      */
     public static function useUserModel($model)
     {
         Models::setUsersModel($model);
+
+        return $this;
     }
 
     /**
      * Set custom table names.
      *
      * @param  array  $map
-     * @return void
+     * @return $this
      */
     public static function tables(array $map)
     {
         Models::setTables($map);
+
+        return $this;
+    }
+
+    /**
+     * Get the model scoping instance.
+     *
+     * @return \Silber\Bouncer\Database\Scope\Scope
+     */
+    public function scope()
+    {
+        return Models::scope();
     }
 
     /**

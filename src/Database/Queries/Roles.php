@@ -79,6 +79,9 @@ class Roles
                   ->whereRaw("{$prefix}{$pivot}.role_id = {$prefix}{$roles}.id")
                   ->where("{$pivot}.entity_type", $model->getMorphClass())
                   ->whereIn($key, $keys);
+
+            Models::scope()->applyToModelQuery($query, $roles);
+            Models::scope()->applyToRelationQuery($query, $pivot);
         });
     }
 }

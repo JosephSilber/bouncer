@@ -45,6 +45,9 @@ class Abilities
                   ->where($permissions.".forbidden", ! $allowed)
                   ->where($permissions.".entity_type", Models::role()->getMorphClass());
 
+            Models::scope()->applyToModelQuery($query, $roles);
+            Models::scope()->applyToRelationQuery($query, $permissions);
+
             $query->where(function ($query) use ($roles, $authority, $allowed) {
                 $query->whereExists($this->getAuthorityRoleConstraint($authority));
 
@@ -68,6 +71,8 @@ class Abilities
             $query->selectRaw('max(level)')
                   ->from($roles)
                   ->whereExists($this->getAuthorityRoleConstraint($authority));
+
+            Models::scope()->applyToModelQuery($query, $roles);
         });
     }
 
@@ -90,6 +95,9 @@ class Abilities
                   ->whereRaw("{$prefix}{$pivot}.role_id = {$prefix}{$roles}.id")
                   ->where($pivot.'.entity_type', $authority->getMorphClass())
                   ->where("{$table}.{$authority->getKeyName()}", $authority->getKey());
+
+            Models::scope()->applyToModelQuery($query, $roles);
+            Models::scope()->applyToRelationQuery($query, $pivot);
         };
     }
 
@@ -114,6 +122,9 @@ class Abilities
                   ->where("{$permissions}.entity_type", $authority->getMorphClass())
                   ->where("{$permissions}.forbidden", ! $allowed)
                   ->where("{$table}.{$authority->getKeyName()}", $authority->getKey());
+
+            Models::scope()->applyToModelQuery($query, $abilities);
+            Models::scope()->applyToRelationQuery($query, $permissions);
         };
     }
 }

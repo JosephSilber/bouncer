@@ -4,6 +4,7 @@ namespace Silber\Bouncer\Database\Concerns;
 
 use Silber\Bouncer\Helpers;
 use Silber\Bouncer\Database\Models;
+use Silber\Bouncer\Database\Scope\BaseTenantScope;
 use Silber\Bouncer\Database\Queries\Roles as RolesQuery;
 
 use App\User;
@@ -19,17 +20,33 @@ trait IsRole
     }
 
     /**
+     * Boot the is role trait.
+     *
+     * @return void
+     */
+    public static function bootIsRole()
+    {
+        BaseTenantScope::register(static::class);
+
+        static::creating(function ($role) {
+            Models::scope()->applyToModel($role);
+        });
+    }
+
+    /**
      * The users relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphedByMany
      */
     public function users()
     {
-        return $this->morphedByMany(
+        $relation = $this->morphedByMany(
             Models::classname(User::class),
             'entity',
             Models::table('assigned_roles')
         );
+
+        return Models::scope()->applyToRelation($relation);
     }
 
     /**
@@ -168,12 +185,15 @@ trait IsRole
     {
         list($model, $keys) = Helpers::extractModelAndKeys($model, $keys);
 
-        $this->newBaseQueryBuilder()
-             ->from(Models::table('assigned_roles'))
-             ->where('role_id', $this->getKey())
-             ->where('entity_type', $model->getMorphClass())
-             ->whereIn('entity_id', $keys)
-             ->delete();
+        $query = $this->newBaseQueryBuilder()
+            ->from($table = Models::table('assigned_roles'))
+            ->where('role_id', $this->getKey())
+            ->where('entity_type', $model->getMorphClass())
+            ->whereIn('entity_id', $keys);
+
+        Models::scope()->applyToRelationQuery($query, $table);
+
+        $query->delete();
 
         return $this;
     }
@@ -190,7 +210,7 @@ trait IsRole
         $type = $model->getMorphClass();
 
         return array_map(function ($key) use ($type) {
-            return [
+            return Models::scope()->getAttachAttributes() + [
                 'role_id'     => $this->getKey(),
                 'entity_type' => $type,
                 'entity_id'   => $key,
