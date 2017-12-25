@@ -41,7 +41,7 @@ class CreateBouncerTables extends Migration
 
         Schema::create(Models::table('assigned_roles'), function (Blueprint $table) {
             $table->integer('role_id')->unsigned()->index();
-            $table->unsignedInteger('entity_id');
+            $table->integer('entity_id')->unsigned();
             $table->string('entity_type', 150);
             $table->integer('scope')->nullable()->index();
 
@@ -57,7 +57,7 @@ class CreateBouncerTables extends Migration
 
         Schema::create(Models::table('permissions'), function (Blueprint $table) {
             $table->integer('ability_id')->unsigned()->index();
-            $table->unsignedInteger('entity_id');
+            $table->integer('entity_id')->unsigned();
             $table->string('entity_type', 150);
             $table->boolean('forbidden')->default(false);
             $table->integer('scope')->nullable()->index();
