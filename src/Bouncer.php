@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 
-use Silber\Bouncer\Seed\Seeder;
 use Silber\Bouncer\Database\Models;
 
 class Bouncer
@@ -59,31 +58,6 @@ class Bouncer
     public static function make($user = null)
     {
         return new Factory($user);
-    }
-
-    /**
-     * Register a seeder callback.
-     *
-     * @param  \Closure|string  $seeder
-     * @return $this
-     */
-    public function seeder($seeder)
-    {
-        $this->resolve(Seeder::class)->register($seeder);
-
-        return $this;
-    }
-
-    /**
-     * Run the registered seeders.
-     *
-     * @return $this
-     */
-    public function seed()
-    {
-        $this->resolve(Seeder::class)->run();
-
-        return $this;
     }
 
     /**
