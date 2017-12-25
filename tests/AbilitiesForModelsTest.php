@@ -79,10 +79,11 @@ class AbilitiesForModelsTest extends BaseTestCase
         $this->assertTrue($bouncer->can('edit', $user2));
     }
 
+    /**
+     * @expectedException InvalidArgumentException
+     */
     public function test_allowing_on_non_existent_model_throws()
     {
-        $this->setExpectedException('InvalidArgumentException');
-
         $user1 = User::create();
         $user2 = new User;
 
