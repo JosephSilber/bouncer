@@ -1,6 +1,6 @@
 {
     "name": "silber/bouncer",
-    "description": "Bouncer handles roles and abilities for Eloquent models.",
+    "description": "Eloquent roles and abilities.",
     "keywords": [
         "abilities",
         "acl",

@@ -6,7 +6,7 @@
 <a href="https://github.com/JosephSilber/bouncer/blob/master/LICENSE.txt"><img src="https://poser.pugx.org/silber/bouncer/license.svg" alt="License"></a>
 </p>
 
-This package adds a bouncer at Laravel's access gate.
+Bouncer is an elegant, framework-agnostic approach to managing roles and abilities for any app using Eloquent models.
 
 - [Introduction](#introduction)
 - [Installation](#installation)
@@ -37,12 +37,11 @@ This package adds a bouncer at Laravel's access gate.
 
 ## Introduction
 
-Bouncer provides a mechanism to handle roles and abilities in [Laravel's ACL](http://laravel.com/docs/5.5/authorization). With an expressive and fluent syntax, it stays out of your way as much as possible: use it when you want, ignore it when you don't.
+Bouncer is an elegant, framework-agnostic approach to managing roles and abilities for any app using Eloquent models. With an expressive and fluent syntax, it stays out of your way as much as possible: use it when you want, ignore it when you don't.
 
 For a quick, glanceable list of Bouncer's features, check out [the cheat sheet](#cheat-sheet).
 
-Bouncer works well with other abilities you have hard-coded in your own app. Your code always takes precedence: if your code allows an action, the bouncer will not interfere.
-
+Bouncer works well with other abilities you have hard-coded in your own app. Your code always takes precedence: if your code allows an action, Bouncer will not interfere.
 
 Once installed, you can simply tell the bouncer what you want to allow at the gate:
 
@@ -62,7 +61,7 @@ When you check abilities at the gate, the bouncer will be consulted first. If he
 
 ## Installation
 
-Simply install the bouncer package with [composer](https://getcomposer.org/doc/00-intro.md):
+Install Bouncer with [composer](https://getcomposer.org/doc/00-intro.md):
 
 ```
 $ composer require silber/bouncer v1.0.0-beta.4
@@ -97,7 +96,7 @@ Once the composer installation completes, you can add the service provider and a
     }
     ```
 
-4) Now, to run the bouncer's migrations, first publish the package's migrations into your app's `migrations` directory, by running the following command:
+4) Now, to run Bouncer's migrations, first publish the migrations into your app's `migrations` directory, by running the following command:
 
     ```
     php artisan vendor:publish --tag="bouncer.migrations"
