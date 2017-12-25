@@ -170,6 +170,19 @@ For more information about Laravel Facades, refer to [the Laravel documentation]
     $bouncer = Bouncer::create($user);
     ```
 
+    If you're using dependency injection in your app, you may register the `Bouncer` instance as a singleton in the container:
+
+    ```php
+    use Silber\Bouncer\Bouncer;
+    use Illuminate\Container\Container;
+
+    Container::getInstance()->singleton(Bouncer::class, function () {
+        return Bouncer::create();
+    });
+    ```
+
+    You can now inject `Bouncer` into any class that needs it.
+
     The `create` method creates a `Bouncer` instance with sensinsle defaults. To fully customize it, use the `make` method to get a factory instance:
 
     ```php
@@ -182,26 +195,13 @@ For more information about Laravel Facades, refer to [the Laravel documentation]
 
     Check out [the `Factory` class](https://github.com/JosephSilber/bouncer/blob/c974953a0b1d8d187023002cdfae1800f3ccdb02/src/Factory.php) to see all the customizations available.
 
-6) Register Bouncer with the container (optional):
-
-    If you're using dependency injection in your app, you may register the Bouncer instance as a singleton in the container:
-
-    ```php
-    use Silber\Bouncer\Bouncer;
-    use Illuminate\Container\Container;
-
-    Container::getInstance()->singleton(Bouncer::class, function () {
-        return Bouncer::create();
-    });
-    ```
-
-    You can now inject Bouncer into any class that needs it.
-
-7) Set the user model. When used within a Laravel app, Bouncer knows a lot about your setup from Laravel's config. When used in a non-Laravel app, you may need to tell Bouncer [which model you use as your user model](#user-model):
+6) Set which model is used as the user model throughout your app:
 
     ```php
     Bouncer::useUserModel(User::class);
     ```
+
+    For additional configuration, check out [the Congifuration section](#configuration) below.
 
 ### Enabling cache
 
