@@ -205,7 +205,7 @@ By default, Bouncer's queries are cached for the current request. For better per
 
 Adding roles and abilities to users is made extremely easy. You do not have to create a role or an ability in advance. Simply pass the name of the role/ability, and Bouncer will create it if it doesn't exist.
 
-> **Note:** the examples below all use the `Bouncer` facade. If you don't like facades, you can instead inject an instance of `Silber\Bouncer\Bouncer` into your class.
+> **Note:** the examples below all use the `Bouncer` facade. If you don't use facades, you can instead inject an instance of `Silber\Bouncer\Bouncer` into your class.
 
 ### Creating roles and abilities
 
