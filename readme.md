@@ -87,7 +87,7 @@ Once the composer installation completes, you can add the service provider and a
 
     This part is optional. If you don't want to use the facade, you can skip step 2.
 
-3) Add the bouncer's trait to your user model:
+3) Add Bouncer's trait to your user model:
 
     ```php
     use Silber\Bouncer\Database\HasRolesAndAbilities;
@@ -142,9 +142,21 @@ For more information about Laravel Facades, refer to [the Laravel documentation]
 
     Refer to [the Eloquent Capsule documentation](https://github.com/illuminate/database/blob/master/README.md) for more details.
 
-3) Run the migrations. You'll find the necessary migrations in [the migrations stub file](https://github.com/JosephSilber/bouncer/blob/master/migrations/create_bouncer_tables.php#L17-L73) in Bouncer's source code. 
+3) Run the migrations. You'll find the necessary migrations in [the migrations stub file](https://github.com/JosephSilber/bouncer/blob/master/migrations/create_bouncer_tables.php#L17-L73) in Bouncer's source code.
 
-4) Create an instance of Bouncer:
+4) Add Bouncer's trait to your user model:
+
+    ```php
+    use Illuminate\Database\Eloquent\Model;
+    use Silber\Bouncer\Database\HasRolesAndAbilities;
+
+    class User extends Model
+    {
+        use HasRolesAndAbilities;
+    }
+    ```
+
+5) Create an instance of Bouncer:
 
     ```php
     use Silber\Bouncer\Bouncer;
@@ -169,7 +181,7 @@ For more information about Laravel Facades, refer to [the Laravel documentation]
 
     Check out [the `Factory` class](https://github.com/JosephSilber/bouncer/blob/c974953a0b1d8d187023002cdfae1800f3ccdb02/src/Factory.php) to see all the customizations available.
 
-5) Register Bouncer with the container (optional):
+6) Register Bouncer with the container (optional):
 
     If you're using dependency injection in your app, you may register the Bouncer instance as a singleton in the container:
 
