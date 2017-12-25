@@ -197,7 +197,11 @@ For more information about Laravel Facades, refer to [the Laravel documentation]
 
     You can now inject Bouncer into any class that needs it.
 
-7) [Configuration](#configuration). When used within a Laravel app, Bouncer knows a lot about your setup from Laravel's config. When used in a non-Laravel app, you may need to tell Bouncer more about your setup, such as [which model you use as your user model](#user-model).
+7) Set the user model. When used within a Laravel app, Bouncer knows a lot about your setup from Laravel's config. When used in a non-Laravel app, you may need to tell Bouncer [which model you use as your user model](#user-model):
+
+    ```php
+    Bouncer::useUserModel(User::class);
+    ```
 
 ### Enabling cache
 
