@@ -11,7 +11,6 @@ Bouncer is an elegant, framework-agnostic approach to managing roles and abiliti
 - [Introduction](#introduction)
 - [Installation](#installation)
   - [Installing Bouncer in a Laravel app](#installing-bouncer-in-a-laravel-app)
-    - [Facade](#facade)
   - [Installing Bouncer in a non-Laravel app](#installing-bouncer-in-a-non-laravel-app)
   - [Enabling cache](#enabling-cache)
 - [Usage](#usage)
