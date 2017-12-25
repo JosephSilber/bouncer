@@ -183,7 +183,7 @@ For more information about Laravel Facades, refer to [the Laravel documentation]
 
     You can now inject `Bouncer` into any class that needs it.
 
-    The `create` method creates a `Bouncer` instance with sensinsle defaults. To fully customize it, use the `make` method to get a factory instance:
+    The `create` method creates a `Bouncer` instance with sensinsle defaults. To fully customize it, use the `make` method to get a factory instance. Call `create()` on the factory to create the `Bouncer` instance:
 
     ```php
     use Silber\Bouncer\Bouncer;
