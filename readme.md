@@ -61,6 +61,8 @@ When you check abilities at the gate, the bouncer will be consulted first. If he
 
 ## Installation
 
+### Installing Bouncer in a Laravel app
+
 Install Bouncer with [composer](https://getcomposer.org/doc/00-intro.md):
 
 ```
@@ -108,7 +110,7 @@ Once the composer installation completes, you can add the service provider and a
     php artisan migrate
     ```
 
-### Facade
+#### Facade
 
 Whenever you use the `Bouncer` facade in your code, remember to add this line to your namespace imports at the top of the file:
 
@@ -117,6 +119,68 @@ use Bouncer;
 ```
 
 For more information about Laravel Facades, refer to [the Laravel documentation](https://laravel.com/docs/5.5/facades).
+
+### Installing Bouncer in a non-Laravel app
+
+1) Install Bouncer with [composer](https://getcomposer.org/doc/00-intro.md):
+
+    ```
+    $ composer require silber/bouncer v1.0.0-beta.4
+    ```
+
+2) Set up the database with [the Eloquent Capsule component](https://github.com/illuminate/database/blob/master/README.md):
+
+    ```php
+    use Illuminate\Database\Capsule\Manager as Capsule;
+
+    $capsule = new Capsule;
+
+    $capsule->addConnection([/* connection config */]);
+
+    $capsule->setAsGlobal();
+    ```
+
+    Refer to [the Eloquent Capsule documentation](https://github.com/illuminate/database/blob/master/README.md) for more details.
+
+3) Create an instance of Bouncer:
+
+    ```php
+    use Silber\Bouncer\Bouncer;
+
+    $bouncer = Bouncer::create();
+
+    // If you are in a request with a current user
+    // that you'd wish to check permissions for,
+    // pass that user to the "create" method:
+    $bouncer = Bouncer::create($user);
+    ```
+
+    The `create` method creates a `Bouncer` instance with sensinsle defaults. To fully customize it, use the `make` method to get a factory instance:
+
+    ```php
+    use Silber\Bouncer\Bouncer;
+
+    $bouncer = Bouncer::make()
+             ->withCache($customCacheInstance)
+             ->create();
+    ```
+
+    Check out [the `Factory` class](https://github.com/JosephSilber/bouncer/blob/c974953a0b1d8d187023002cdfae1800f3ccdb02/src/Factory.php) to see all the customizations available.
+
+3) Register Bouncer with the container (optional):
+
+    If you're using dependency injection in your app, you may register the Bouncer instance as a singleton in the container:
+
+    ```php
+    use Silber\Bouncer\Bouncer;
+    use Illuminate\Container\Container;
+
+    Container::getInstance()->singleton(Bouncer::class, function () {
+        return Bouncer::create();
+    });
+    ```
+
+    You can now inject Bouncer into any class that needs it.
 
 ### Enabling cache
 
