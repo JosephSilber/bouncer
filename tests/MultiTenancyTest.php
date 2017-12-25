@@ -1,9 +1,14 @@
 <?php
 
-use Illuminate\Events\Dispatcher;
 use Silber\Bouncer\Database\Role;
 use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Database\Ability;
+use Silber\Bouncer\Database\Scope\Scope;
+use Silber\Bouncer\Contracts\Scope as ScopeContract;
+
+use Illuminate\Events\Dispatcher;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class MultiTenancyTest extends BaseTestCase
 {
@@ -14,7 +19,7 @@ class MultiTenancyTest extends BaseTestCase
      */
     public function tearDown()
     {
-        Models::scope()->reset();
+        Models::scope(new Scope);
 
         parent::tearDown();
     }
@@ -165,5 +170,58 @@ class MultiTenancyTest extends BaseTestCase
         $bouncer->assign('admin')->to($user);
 
         $this->assertTrue($bouncer->can('delete', User::class));
+    }
+
+    public function test_can_set_custom_scope()
+    {
+        $bouncer = $this->bouncer($user = User::create());
+
+        $bouncer->scope(new MultiTenancyNullScopeStub)->to(1);
+
+        $bouncer->allow($user)->to('delete', User::class);
+
+        $bouncer->scope()->to(2);
+
+        $this->assertTrue($bouncer->can('delete', User::class));
+    }
+}
+
+
+
+class MultiTenancyNullScopeStub implements ScopeContract
+{
+    public function to()
+    {
+        //
+    }
+
+    public function appendToCacheKey($key)
+    {
+        return $key;
+    }
+
+    public function applyToModel(Model $model)
+    {
+        return $model;
+    }
+
+    public function applyToModelQuery($query, $table)
+    {
+        return $query;
+    }
+
+    public function applyToRelationQuery($query, $table)
+    {
+        return $query;
+    }
+
+    public function applyToRelation(BelongsToMany $relation)
+    {
+        return $relation;
+    }
+
+    public function getAttachAttributes($authority = null)
+    {
+        return [];
     }
 }

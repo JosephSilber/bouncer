@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 
+use Silber\Bouncer\Contracts\Scope;
 use Silber\Bouncer\Database\Models;
 
 class Bouncer
@@ -423,11 +424,12 @@ class Bouncer
     /**
      * Get the model scoping instance.
      *
-     * @return \Silber\Bouncer\Database\Scope\Scope
+     * @param  \Silber\Bouncer\Contracts\Scope|null  $scope
+     * @return mixed
      */
-    public function scope()
+    public function scope(Scope $scope = null)
     {
-        return Models::scope();
+        return Models::scope($scope);
     }
 
     /**

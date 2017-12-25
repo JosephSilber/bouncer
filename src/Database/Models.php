@@ -7,6 +7,7 @@ use App\User;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Silber\Bouncer\Database\Scope\Scope;
+use Silber\Bouncer\Contracts\Scope as ScopeContract;
 
 class Models
 {
@@ -130,10 +131,15 @@ class Models
     /**
      * Get the model scoping instance.
      *
-     * @return \Silber\Bouncer\Database\Scope\Scope
+     * @param  \Silber\Bouncer\Contracts\Scope|null  $scope
+     * @return mixed
      */
-    public static function scope()
+    public static function scope(ScopeContract $scope = null)
     {
+        if (! is_null($scope)) {
+            return static::$scope = $scope;
+        }
+
         if (is_null(static::$scope)) {
             static::$scope = new Scope;
         }

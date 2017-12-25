@@ -4,10 +4,12 @@ namespace Silber\Bouncer\Database\Scope;
 
 use Silber\Bouncer\Database\Role;
 use Silber\Bouncer\Database\Models;
+use Silber\Bouncer\Contracts\Scope as ScopeContract;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Scope
+class Scope implements ScopeContract
 {
     /**
      * The tenant ID by which to scope all queries.
@@ -68,20 +70,6 @@ class Scope
     public function dontScopeRoleAbilities()
     {
         $this->scopeRoleAbilities = false;
-
-        return $this;
-    }
-
-    /**
-     * Do not scope any queries.
-     *
-     * @return $this
-     */
-    public function reset()
-    {
-        $this->scope = null;
-        $this->scopeRoleAbilities = true;
-        $this->onlyScopeRelations = false;
 
         return $this;
     }
