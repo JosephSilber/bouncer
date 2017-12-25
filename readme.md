@@ -142,7 +142,9 @@ For more information about Laravel Facades, refer to [the Laravel documentation]
 
     Refer to [the Eloquent Capsule documentation](https://github.com/illuminate/database/blob/master/README.md) for more details.
 
-3) Create an instance of Bouncer:
+3) Run the migrations. You'll find the necessary migrations in [the migrations stub file](https://github.com/JosephSilber/bouncer/blob/master/migrations/create_bouncer_tables.php#L17-L73) in Bouncer's source code. 
+
+4) Create an instance of Bouncer:
 
     ```php
     use Silber\Bouncer\Bouncer;
@@ -167,7 +169,7 @@ For more information about Laravel Facades, refer to [the Laravel documentation]
 
     Check out [the `Factory` class](https://github.com/JosephSilber/bouncer/blob/c974953a0b1d8d187023002cdfae1800f3ccdb02/src/Factory.php) to see all the customizations available.
 
-3) Register Bouncer with the container (optional):
+5) Register Bouncer with the container (optional):
 
     If you're using dependency injection in your app, you may register the Bouncer instance as a singleton in the container:
 
