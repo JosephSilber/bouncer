@@ -2,9 +2,7 @@
 
 namespace Silber\Bouncer;
 
-use Silber\Bouncer\Seed\Seeder;
 use Silber\Bouncer\Database\Models;
-use Silber\Bouncer\Seed\SeedCommand;
 use Silber\Bouncer\Console\CleanCommand;
 
 use Illuminate\Cache\ArrayStore;
@@ -24,7 +22,6 @@ class BouncerServiceProvider extends ServiceProvider
         $this->registerClipboard();
         $this->registerCommands();
         $this->registerBouncer();
-        $this->registerSeeder();
     }
 
     /**
@@ -78,7 +75,6 @@ class BouncerServiceProvider extends ServiceProvider
      */
     protected function registerCommands()
     {
-        $this->commands(SeedCommand::class);
         $this->commands(CleanCommand::class);
     }
 
@@ -120,16 +116,6 @@ class BouncerServiceProvider extends ServiceProvider
             \Silber\Bouncer\Database\Role::class,
             \Silber\Bouncer\Database\Ability::class,
         ]);
-    }
-
-    /**
-     * Register the seeder as a singleton.
-     *
-     * @return void
-     */
-    protected function registerSeeder()
-    {
-        $this->app->singleton(Seeder::class);
     }
 
     /**
