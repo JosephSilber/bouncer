@@ -99,7 +99,7 @@ class CleanCommand extends Command
      */
     protected function deleteOrphanedAbilities()
     {
-        $query = $this->getBaseMissingQuery()->where(function ($query) {
+        $query = $this->getBaseOrphanedQuery()->where(function ($query) {
             foreach ($this->getEntityModels() as $modelName) {
                 $query->orWhere(function ($query) use ($modelName) {
                     $this->scopeQueryToWhereModelIsMissing($query, $modelName);
@@ -145,7 +145,7 @@ class CleanCommand extends Command
      */
     protected function getEntityModels()
     {
-        return $this->getBaseMissingQuery()->distinct()
+        return $this->getBaseOrphanedQuery()->distinct()
                      ->get(['entity_type'])->pluck('entity_type');
     }
 
@@ -154,7 +154,7 @@ class CleanCommand extends Command
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    protected function getBaseMissingQuery()
+    protected function getBaseOrphanedQuery()
     {
         $table = $this->abilitiesTable();
 
