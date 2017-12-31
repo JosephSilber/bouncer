@@ -198,7 +198,7 @@ For more information about Laravel Facades, refer to [the Laravel documentation]
 6) Set which model is used as the user model throughout your app:
 
     ```php
-    Bouncer::useUserModel(User::class);
+    $bouncer->useUserModel(User::class);
     ```
 
     For additional configuration, check out [the Congifuration section](#configuration) below.
