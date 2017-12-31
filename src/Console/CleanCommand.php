@@ -15,8 +15,8 @@ class CleanCommand extends Command
      * @var string
      */
     protected $signature = 'bouncer:clean
-                            {--o|orphaned : Whether to delete orphaned abilities}
-                            {--m|missing : Whether to delete abilities for missing models}';
+                            {--u|unassigned : Whether to delete abilities not assigned to anyone}
+                            {--o|orphaned : Whether to delete abilities for missing models}';
 
     /**
      * The console command description.
@@ -32,14 +32,14 @@ class CleanCommand extends Command
      */
     public function handle()
     {
-        list($orphaned, $missing) = $this->getComputedOptions();
+        list($unassigned, $orphaned) = $this->getComputedOptions();
+
+        if ($unassigned) {
+            $this->deleteUnassignedAbilities();
+        }
 
         if ($orphaned) {
             $this->deleteOrphanedAbilities();
-        }
-
-        if ($missing) {
-            $this->deleteAbilitiesForMissingModels();
         }
     }
 
@@ -50,14 +50,14 @@ class CleanCommand extends Command
      */
     protected function getComputedOptions()
     {
+        $unassigned = $this->option('unassigned');
         $orphaned = $this->option('orphaned');
-        $missing = $this->option('missing');
 
-        if (! $orphaned && ! $missing) {
-            $orphaned = $missing = true;
+        if (! $unassigned && ! $orphaned) {
+            $unassigned = $orphaned = true;
         }
 
-        return [$orphaned, $missing];
+        return [$unassigned, $orphaned];
     }
 
     /**
@@ -65,16 +65,16 @@ class CleanCommand extends Command
      *
      * @return void
      */
-    protected function deleteOrphanedAbilities()
+    protected function deleteUnassignedAbilities()
     {
-        $query = $this->getOrphanedAbilitiesQuery();
+        $query = $this->getUnassignedAbilitiesQuery();
 
         if (($count = $query->count()) > 0) {
             $query->delete();
 
-            $this->info("Deleted {$count} orphaned ".Str::plural('ability', $count).'.');
+            $this->info("Deleted {$count} unassigned ".Str::plural('ability', $count).'.');
         } else {
-            $this->info('No orphaned abilities.');
+            $this->info('No unassigned abilities.');
         }
     }
 
@@ -83,7 +83,7 @@ class CleanCommand extends Command
      *
      * @return \Illuminate\Database\Eloquent\Query
      */
-    protected function getOrphanedAbilitiesQuery()
+    protected function getUnassignedAbilitiesQuery()
     {
         $model = Models::ability();
 
@@ -97,7 +97,7 @@ class CleanCommand extends Command
      *
      * @return void
      */
-    protected function deleteAbilitiesForMissingModels()
+    protected function deleteOrphanedAbilities()
     {
         $query = $this->getBaseMissingQuery()->where(function ($query) {
             foreach ($this->getEntityModels() as $modelName) {
@@ -110,13 +110,9 @@ class CleanCommand extends Command
         if (($count = $query->count()) > 0) {
             $query->delete();
 
-            if ($count == 1) {
-                $this->info('Deleted 1 ability with a missing model.');
-            } else {
-                $this->info("Deleted {$count} abilities with missing models.");
-            }
+            $this->info("Deleted {$count} orphaned ".Str::plural('ability', $count).'.');
         } else {
-            $this->info('No abilities with missing models.');
+            $this->info('No orphaned abilities.');
         }
     }
 
@@ -154,7 +150,7 @@ class CleanCommand extends Command
     }
 
     /**
-     * Get the base query for abilities woth missing models.
+     * Get the base query for abilities with missing models.
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
