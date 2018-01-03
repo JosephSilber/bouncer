@@ -371,7 +371,7 @@ class Bouncer
      * @param  string  $model
      * @return $this
      */
-    public static function useAbilityModel($model)
+    public function useAbilityModel($model)
     {
         Models::setAbilitiesModel($model);
 
@@ -384,7 +384,7 @@ class Bouncer
      * @param  string  $model
      * @return $this
      */
-    public static function useRoleModel($model)
+    public function useRoleModel($model)
     {
         Models::setRolesModel($model);
 
@@ -397,7 +397,7 @@ class Bouncer
      * @param  string  $model
      * @return $this
      */
-    public static function useUserModel($model)
+    public function useUserModel($model)
     {
         Models::setUsersModel($model);
 
@@ -410,7 +410,7 @@ class Bouncer
      * @param  array  $map
      * @return $this
      */
-    public static function tables(array $map)
+    public function tables(array $map)
     {
         Models::setTables($map);
 
