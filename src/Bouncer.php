@@ -244,15 +244,11 @@ class Bouncer
      */
     public function gate()
     {
-        if ($this->gate) {
-            return $this->gate;
-        }
-
-        if ($throw) {
+        if (is_null($this->gate)) {
             throw new RuntimeException('The gate instance has not been set.');
         }
 
-        return null;
+        return $this->gate;
     }
 
     /**
