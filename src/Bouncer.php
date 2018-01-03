@@ -248,10 +248,6 @@ class Bouncer
             return $this->gate;
         }
 
-        if ($throw) {
-            throw new RuntimeException('The gate instance has not been set.');
-        }
-
         return null;
     }
 
@@ -373,52 +369,44 @@ class Bouncer
      * Set the model to be used for abilities.
      *
      * @param  string  $model
-     * @return $this
+     * @return void
      */
     public static function useAbilityModel($model)
     {
         Models::setAbilitiesModel($model);
-
-        return $this;
     }
 
     /**
      * Set the model to be used for roles.
      *
      * @param  string  $model
-     * @return $this
+     * @return void
      */
     public static function useRoleModel($model)
     {
         Models::setRolesModel($model);
-
-        return $this;
     }
 
     /**
      * Set the model to be used for users.
      *
      * @param  string  $model
-     * @return $this
+     * @return void
      */
     public static function useUserModel($model)
     {
         Models::setUsersModel($model);
-
-        return $this;
     }
 
     /**
      * Set custom table names.
      *
      * @param  array  $map
-     * @return $this
+     * @return void
      */
     public static function tables(array $map)
     {
         Models::setTables($map);
-
-        return $this;
     }
 
     /**
