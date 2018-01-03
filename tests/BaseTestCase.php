@@ -46,7 +46,7 @@ abstract class BaseTestCase extends TestCase
      */
     public function setUp()
     {
-        Models::setUsersModel(User::class);
+        Bouncer::useUserModel(User::class);
 
         $this->clipboard = new CachedClipboard(new ArrayStore);
 
