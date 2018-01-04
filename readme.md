@@ -610,6 +610,12 @@ Bouncer::disallow($user)->toOwn(Post::class);
 Bouncer::allow('admin')->to('ban-users');
 Bouncer::disallow('admin')->to('ban-users');
 
+// You can also forbid specific abilities with the same syntax...
+Bouncer::forbid($user)->to('delete', $post);
+
+// And also remove a forbidden ability with the same syntax...
+Bouncer::unforbid($user)->to('delete', $post);
+
 // Re-sync a user's abilities
 Bouncer::sync($user)->abilities($abilities);
 
