@@ -665,7 +665,7 @@ $user->retract('admin');
 $boolean = $user->isAn('admin');
 $boolean = $user->isAn('editor', 'moderator');
 $boolean = $user->isAll('moderator', 'editor');
-$boolean = $user->isNot('subscriber', 'moderator');
+$boolean = $user->isNotAn('admin', 'moderator');
 
 $abilities = $user->getAbilities();
 ```
