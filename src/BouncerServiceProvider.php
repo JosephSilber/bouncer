@@ -113,8 +113,8 @@ class BouncerServiceProvider extends ServiceProvider
     protected function registerMorphs()
     {
         Relation::morphMap([
-            \Silber\Bouncer\Database\Role::class,
-            \Silber\Bouncer\Database\Ability::class,
+            Models::classname(\Silber\Bouncer\Database\Role::class),
+            Models::classname(\Silber\Bouncer\Database\Ability::class),
         ]);
     }
 
