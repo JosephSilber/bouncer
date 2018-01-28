@@ -21,6 +21,11 @@ abstract class Title
      */
     protected function humanize($value)
     {
+        // Older versions of Laravel's inflector strip out spaces
+        // in the original string, so we'll first swap out all
+        // spaces with underscores, then convert them back.
+        $value = str_replace(' ', '_', $value);
+
         // First we'll convert the string to snake case. Then we'll
         // convert all dashes and underscores to spaces. Finally,
         // we'll add a space before a pound (Laravel doesn't).
