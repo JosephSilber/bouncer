@@ -2,7 +2,9 @@
 
 namespace Silber\Bouncer;
 
+use Silber\Bouncer\Database\Role;
 use Silber\Bouncer\Database\Models;
+use Silber\Bouncer\Database\Ability;
 use Silber\Bouncer\Console\CleanCommand;
 
 use Illuminate\Cache\ArrayStore;
@@ -113,8 +115,8 @@ class BouncerServiceProvider extends ServiceProvider
     protected function registerMorphs()
     {
         Relation::morphMap([
-            Models::classname(\Silber\Bouncer\Database\Role::class),
-            Models::classname(\Silber\Bouncer\Database\Ability::class),
+            Models::classname(Role::class),
+            Models::classname(Ability::class),
         ]);
     }
 
