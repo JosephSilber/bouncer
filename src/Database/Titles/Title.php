@@ -3,6 +3,7 @@
 namespace Silber\Bouncer\Database\Titles;
 
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Model;
 
 abstract class Title
 {
@@ -12,6 +13,17 @@ abstract class Title
      * @var string
      */
     protected $title = '';
+
+    /**
+     * Create a new title instance for the given model.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @return static
+     */
+    public static function for(Model $model)
+    {
+        return new static($model);
+    }
 
     /**
      * Convert the given string into a human-readable format.
@@ -43,7 +55,7 @@ abstract class Title
      *
      * @return string
      */
-    public function __toString()
+    public function toString()
     {
         return $this->title;
     }

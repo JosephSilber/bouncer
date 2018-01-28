@@ -33,7 +33,7 @@ trait IsRole
             Models::scope()->applyToModel($role);
 
             if (is_null($role->title)) {
-                $role->title = new RoleTitle($role);
+                $role->title = RoleTitle::for($role)->toString();
             }
         });
     }

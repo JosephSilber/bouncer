@@ -24,7 +24,7 @@ trait IsAbility
             Models::scope()->applyToModel($ability);
 
             if (is_null($ability->title)) {
-                $ability->title = new AbilityTitle($ability);
+                $ability->title = AbilityTitle::for($ability)->toString();
             }
         });
     }
