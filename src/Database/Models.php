@@ -129,7 +129,7 @@ class Models
     }
 
     /**
-     * Get the model scoping instance.
+     * Get or set the model scoping instance.
      *
      * @param  \Silber\Bouncer\Contracts\Scope|null  $scope
      * @return mixed
