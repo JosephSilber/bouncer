@@ -2,7 +2,6 @@
 
 use Silber\Bouncer\Database\Role;
 use Silber\Bouncer\Database\Ability;
-use Illuminate\Auth\Access\AuthorizationException;
 
 class BouncerSimpleTest extends BaseTestCase
 {
@@ -253,11 +252,20 @@ class BouncerSimpleTest extends BaseTestCase
 
     public function test_bouncer_authorize_throws_for_unauthorized_abilities()
     {
-        $this->setExpectedException(AuthorizationException::class);
-
         $bouncer = $this->bouncer();
 
-        $bouncer->authorize('be-miserable');
+        // The exception class thrown from the "authorize" method
+        // has changed between different versions of Laravel,
+        // so we cannot check for a specific error class.
+        $threw = false;
+
+        try {
+            $bouncer->authorize('be-miserable');
+        } catch (Exception $e) {
+            $threw = true;
+        }
+
+        $this->assertTrue($threw);
     }
 
     /**
