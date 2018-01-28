@@ -27,7 +27,7 @@ Bouncer is an elegant, framework-agnostic approach to managing roles and abiliti
   - [Blade directives](#blade-directives)
   - [Refreshing the cache](#refreshing-the-cache)
 - [Multi-tenancy](#multi-tenancy)
-  - [Mutli-tenancy middleware](#multi-tenancy-middleware)
+  - [The scope middleware](#the-scope-middleware)
   - [Customizing Bouncer's scope](#customizing-bouncers-scope)
 - [Configuration](#configuration)
   - [Cache](#cache)
@@ -479,7 +479,7 @@ Bouncer::refreshFor($user);
 
 Bouncer fully supports multi-tenant apps, allowing you to seamlessly integrate Bouncer's roles and abilities for all tenants within the same app.
 
-### Mutli-tenancy middleware
+### The scope middleware
 
 To get started, first publish [the scope middleware](https://github.com/JosephSilber/bouncer/blob/master/middleware/ScopeBouncer.php) into your app:
 
