@@ -20,7 +20,7 @@ abstract class Title
      * @param  \Illuminate\Database\Eloquent\Model  $model
      * @return static
      */
-    public static function for(Model $model)
+    public static function from(Model $model)
     {
         return new static($model);
     }
