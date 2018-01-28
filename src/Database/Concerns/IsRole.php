@@ -4,6 +4,7 @@ namespace Silber\Bouncer\Database\Concerns;
 
 use Silber\Bouncer\Helpers;
 use Silber\Bouncer\Database\Models;
+use Silber\Bouncer\Database\Titles\RoleTitle;
 use Silber\Bouncer\Database\Scope\BaseTenantScope;
 use Silber\Bouncer\Database\Queries\Roles as RolesQuery;
 
@@ -30,6 +31,10 @@ trait IsRole
 
         static::creating(function ($role) {
             Models::scope()->applyToModel($role);
+
+            if (is_null($role->title)) {
+                $role->title = new RoleTitle($role);
+            }
         });
     }
 
