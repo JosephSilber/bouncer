@@ -26,6 +26,9 @@ Bouncer is an elegant, framework-agnostic approach to managing roles and abiliti
   - [Authorizing users](#authorizing-users)
   - [Blade directives](#blade-directives)
   - [Refreshing the cache](#refreshing-the-cache)
+- [Multi-tenancy](#multi-tenancy)
+  - [Mutli-tenancy middleware](#multi-tenancy-middleware)
+  - [Customizing Bouncer's scope](#customizing-bouncers-scope)
 - [Configuration](#configuration)
   - [Cache](#cache)
   - [Tables](#tables)
@@ -471,6 +474,75 @@ Alternatively, you can refresh the cache only for a specific user:
 ```php
 Bouncer::refreshFor($user);
 ```
+
+## Multi-tenancy
+
+Bouncer fully supports multi-tenant apps, allowing you to seamlessly integrate Bouncer's roles and abilities for all tenants within the same app.
+
+### Mutli-tenancy middleware
+
+To get started, first publish [the scope middleware](https://github.com/JosephSilber/bouncer/blob/master/middleware/ScopeBouncer.php) into your app:
+
+```
+php artisan vendor:publish --tag="bouncer.middleware"
+```
+
+The middleware will now be published to `app/Http/Middleware/ScopeBouncer.php`. This middleware is where you tell Bouncer which tenant to use for the current request. For example, assuming your users all have an `account_id` attribute, this is what your middleware would look like:
+
+```php
+public function handle($request, Closure $next)
+{
+    $tenantId = $request->user()->account_id;
+
+    Bouncer::scope()->to($tenantId);
+
+    return $next($request);
+}
+```
+
+You are of course free to modify this middleware to fit your app's needs, such as pulling the tenant information from a subdomain et al.
+
+Now with the middleware in place, be sure to register it in your [HTTP Kernel](https://github.com/laravel/laravel/blob/73cff166c79cdeaef1c6b7ec6e71a33a7ea3012d/app/Http/Kernel.php#L30-L38):
+
+```php
+protected $middlewareGroups = [
+    'web' => [
+        // Keep the existing middleware here, and add this:
+        \App\Http\Middleware\ScopeBouncer::class,
+    ]
+];
+```
+
+All of Bouncer's queries will now be scoped to the given tenant.
+
+### Customizing Bouncer's scope
+
+Depending on your app's setup, you may not actually want _all_ of the queries to be scoped to the current tenant. For example, you may have a fixed set of roles/abilities that are the same for all tenants, and only allow your users to control which users are assigned which roles, and which roles have which abilities. To achieve this, you can tell Bouncer's scope to only scope the relationships between Bouncer's models, but not the models themselves:
+
+ ```php
+ Bouncer::scope()->to($tenantId)->onlyRelations();
+ ```
+
+Furthermore, your app might not even allow its users to control which abilities a given role has. In that case, tell Bouncer's scope to exclude role abilities from the scope, so that those relationships stay global across all tenants:
+
+ ```php
+ Bouncer::scope()->to($tenantId)->onlyRelations()->dontScopeRoleAbilities();
+ ```
+
+If your needs are even more specialized than what's outlined above, you can create your own [`Scope`](https://github.com/JosephSilber/bouncer/blob/ab2b92d4d2379be3220daaf0d4185ea10237ff2b/src/Contracts/Scope.php) with whatever custom logic you need:
+
+ ```php
+ use Silber\Bouncer\Contracts\Scope;
+
+ class MyScope implements Scope
+ {
+     // Whatever custom logic your app needs
+ }
+
+ Bouncer::scope(new MyScope);
+ ```
+
+Bouncer will call the methods on the `Scope` interface at various points in its execution. You are free to handle that according to your specific needs.
 
 ## Configuration
 
