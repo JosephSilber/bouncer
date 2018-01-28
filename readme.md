@@ -519,30 +519,34 @@ All of Bouncer's queries will now be scoped to the given tenant.
 
 Depending on your app's setup, you may not actually want _all_ of the queries to be scoped to the current tenant. For example, you may have a fixed set of roles/abilities that are the same for all tenants, and only allow your users to control which users are assigned which roles, and which roles have which abilities. To achieve this, you can tell Bouncer's scope to only scope the relationships between Bouncer's models, but not the models themselves:
 
- ```php
- Bouncer::scope()->to($tenantId)->onlyRelations();
- ```
+```php
+Bouncer::scope()->to($tenantId)->onlyRelations();
+```
 
 Furthermore, your app might not even allow its users to control which abilities a given role has. In that case, tell Bouncer's scope to exclude role abilities from the scope, so that those relationships stay global across all tenants:
 
- ```php
- Bouncer::scope()->to($tenantId)->onlyRelations()->dontScopeRoleAbilities();
- ```
+```php
+Bouncer::scope()->to($tenantId)->onlyRelations()->dontScopeRoleAbilities();
+```
 
 If your needs are even more specialized than what's outlined above, you can create your own [`Scope`](https://github.com/JosephSilber/bouncer/blob/ab2b92d4d2379be3220daaf0d4185ea10237ff2b/src/Contracts/Scope.php) with whatever custom logic you need:
 
- ```php
- use Silber\Bouncer\Contracts\Scope;
+```php
+use Silber\Bouncer\Contracts\Scope;
 
- class MyScope implements Scope
- {
-     // Whatever custom logic your app needs
- }
+class MyScope implements Scope
+{
+    // Whatever custom logic your app needs
+}
+```
 
- Bouncer::scope(new MyScope);
- ```
+Then, in a service provider, register your custom scope:
 
-Bouncer will call the methods on the `Scope` interface at various points in its execution. You are free to handle that according to your specific needs.
+```php
+Bouncer::scope(new MyScope);
+```
+
+Bouncer will call the methods on the `Scope` interface at various points in its execution. You are free to handle them according to your specific needs.
 
 ## Configuration
 
