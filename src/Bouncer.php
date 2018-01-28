@@ -276,6 +276,20 @@ class Bouncer
     }
 
     /**
+     * Determine if the given ability should be granted for the current user.
+     *
+     * @param  string  $ability
+     * @param  array|mixed  $arguments
+     * @return \Illuminate\Auth\Access\Response
+     *
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function authorize($ability, $arguments = [])
+    {
+        return $this->gate()->authorize($ability, $arguments);
+    }
+
+    /**
      * Determine if the given ability is allowed.
      *
      * @param  string  $ability

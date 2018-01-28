@@ -2,6 +2,7 @@
 
 use Silber\Bouncer\Database\Role;
 use Silber\Bouncer\Database\Ability;
+use Illuminate\Auth\Access\AuthorizationException;
 
 class BouncerSimpleTest extends BaseTestCase
 {
@@ -230,6 +231,33 @@ class BouncerSimpleTest extends BaseTestCase
 
         $this->assertTrue($bouncer->can('edit', new Account(['user_id' => $user->id])));
         $this->assertFalse($bouncer->can('edit', new Account(['user_id' => 99])));
+    }
+
+    public function test_bouncer_authorize_returns_response_with_correct_message()
+    {
+        $bouncer = $this->bouncer($user = User::create());
+
+        $bouncer->allow($user)->to('have-fun');
+        $bouncer->allow($user)->to('enjoy-life');
+
+        $this->assertEquals(
+            'Bouncer granted permission via ability #2',
+            $bouncer->authorize('enjoy-life')->message()
+        );
+
+        $this->assertEquals(
+            'Bouncer granted permission via ability #1',
+            $bouncer->authorize('have-fun')->message()
+        );
+    }
+
+    public function test_bouncer_authorize_throws_for_unauthorized_abilities()
+    {
+        $this->setExpectedException(AuthorizationException::class);
+
+        $bouncer = $this->bouncer();
+
+        $bouncer->authorize('be-miserable');
     }
 
     /**
