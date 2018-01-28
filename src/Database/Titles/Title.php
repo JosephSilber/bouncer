@@ -11,26 +11,24 @@ abstract class Title
      *
      * @var string
      */
-    protected $title;
+    protected $title = '';
 
     /**
      * Convert the given string into a human-readable format.
      *
-     * @param  string|null  $value
+     * @param  string  $value
      * @return string
      */
     protected function humanize($value)
     {
-        if (is_null($value)) {
-            return '';
-        }
-
         // First we'll convert the string to snake case. Then we'll
         // convert all dashes and underscores to spaces. Finally,
-        // we'll uppercase the 1st letter of the whole string.
+        // we'll add a space before a pound (Laravel doesn't).
         $value = Str::snake($value);
 
         $value = preg_replace('~(?:-|_)+~', ' ', $value);
+
+        $value = preg_replace('~([^ ])(?:#)+~', '$1 #', $value);
 
         return ucfirst($value);
     }
