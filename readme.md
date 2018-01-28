@@ -223,6 +223,22 @@ Bouncer::allow('admin')->to('ban-users');
 
 That's it. Behind the scenes, Bouncer will create both a `Role` model and an `Ability` model for you.
 
+If you want to add additional attributes to the role/ability, such as a human-readable title, you can manually create them using the `role` and `ability` methods on the `Bouncer` class:
+
+```php
+$admin = Bouncer::role()->create([
+    'name' => 'admin',
+    'title' => 'Administrator',
+]);
+
+$ban = Bouncer::ability()->create([
+    'name' => 'ban-users',
+    'title' => 'Ban users',
+]);
+
+Bouncer::allow($admin)->to($ban);
+```
+
 ### Assigning roles to a user
 
 To now give the `admin` role to a user, simply tell the bouncer that the given user should be assigned the admin role:
