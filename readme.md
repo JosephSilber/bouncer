@@ -389,7 +389,7 @@ Here are some examples:
     Bouncer::forbid('admin')->toManage(User::class);
     ```
 
-- You may wish to occasionally ban users, removing their permission to all abilities. However, actually removing all of their abilities would mean that when the ban is removed we'll have to figure out what their roles and permissions were.
+- You may wish to occasionally ban users, removing their permission to all abilities. However, actually removing all of their roles & abilities would mean that when the ban is removed we'll have to figure out what their original roles and abilities were.
     
     Using a forbidden ability means that they can keep all their existing roles and abilities, but still not be authorized for anything. We can accomplish this by creating a special `banned` role, for which we'll forbid everything:
 
@@ -403,7 +403,7 @@ Here are some examples:
     Bouncer::assign('banned')->to($user);
     ```
 
-    To remove the ban, we'll simply remove the role from the user:
+    To remove the ban, we'll simply retract the role from the user:
 
     ```php
     Bouncer::retract('banned')->from($user);
@@ -413,7 +413,7 @@ As you can see, Bouncer's forbidden abilities gives you a lot of granular contro
 
 ### Unforbidding an ability
 
-To remove a forbidden ability, simply call the `unforbid` method:
+To remove a forbidden ability, use the `unforbid` method:
 
 ```php
 Bouncer::unforbid($user)->to('view', $classifiedDocument);
