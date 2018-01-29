@@ -213,8 +213,9 @@ class Clipboard implements ClipboardContract
         ];
 
         if ($model->exists) {
-            $abilities[] = "{$ability}-{$type}-{$model->getKey()}";
-            $abilities[] = "*-{$type}-{$model->getKey()}";
+            $key = strtolower($model->getKey());
+            $abilities[] = "{$ability}-{$type}-{$key}";
+            $abilities[] = "*-{$type}-{$key}";
         }
 
         return $abilities;
