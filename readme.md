@@ -21,6 +21,8 @@ Bouncer is an elegant, framework-agnostic approach to managing roles and abiliti
   - [Allowing a user or role to "own" a model](#allowing-a-user-or-role-to-own-a-model)
   - [Retracting a role from a user](#retracting-a-role-from-a-user)
   - [Removing an ability](#removing-an-ability)
+  - [Forbidding an ability](#forbidding-an-ability)
+  - [Unforbidding an ability](#unforbidding-an-ability)
   - [Checking a user's roles](#checking-a-users-roles)
   - [Getting all abilities for a user](#getting-all-abilities-for-a-user)
   - [Authorizing users](#authorizing-users)
@@ -361,6 +363,63 @@ To remove an ability for a specific model instance, pass in the actual model ins
 ```php
 Bouncer::disallow($user)->to('delete', $post);
 ```
+
+> **Note**: the `disallow` method only removes abilities that were previously given to this user/role. If you want to disallow a subset of what a more-general ability has allowed, use [the `forbid` method](#forbidding-an-ability).
+
+### Forbidding an ability
+
+Bouncer also allows you to `forbid` a given ability, for more fine-grained control. At times you may wish to grant a user/role an ability that covers a wide range of actions, but then restrict a small subset of those actions.
+
+Here are some examples:
+
+- You might allow a user to generally view all documents, but have a specific highly-classified document that they should not be allowed to view:
+
+    ```php
+    Bouncer::allow($user)->to('view', Document::class);
+
+    Bouncer::forbid($user)->to('view', $classifiedDocument);
+    ```
+
+- You may wish to allow your `superadmin`s to do everything in your app, including adding/removing users. Then you may have an `admin` role that can do everything _besides_ managing users:
+
+    ```php
+    Bouncer::allow('superadmin')->everything();
+
+    Bouncer::allow('admin')->everything();
+    Bouncer::forbid('admin')->toManage(User::class);
+    ```
+
+- You may wish to occasionally ban users, removing their permission to all abilities. However, actually removing all of their abilities would mean that when the ban is removed we'll have to figure out what their roles and permissions were.
+    
+    Using a forbidden ability means that they can keep all their existing roles and abilities, but still not be authorized for anything. We can accomplish this by creating a special `banned` role, for which we'll forbid everything:
+
+    ```php
+    Bouncer::forbid('banned')->everything();
+    ```
+
+    Then, whenever we want to ban a user, we'll assign them the `banned` role:
+
+    ```php
+    Bouncer::assign('banned')->to($user);
+    ```
+
+    To remove the ban, we'll simply remove the role from the user:
+
+    ```php
+    Bouncer::retract('banned')->from($user);
+    ```
+
+As you can see, Bouncer's forbidden abilities gives you a lot of granular control over the permissions in your app.
+
+### Unforbidding an ability
+
+To remove a forbidden ability, simply call the `unforbid` method:
+
+```php
+Bouncer::unforbid($user)->to('view', $classifiedDocument);
+```
+
+> **Note**: this will remove any previously-forbidden ability. It will _not_ authomatically allow the ability if it's not already allowed by a different regular ability granted to this user/role.
 
 ### Checking a user's roles
 
