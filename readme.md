@@ -38,6 +38,8 @@ Bouncer is an elegant, framework-agnostic approach to managing roles and abiliti
   - [User Model](#user-model)
   - [Ownership](#ownership)
 - [FAQ](#faq)
+  - [Where do I set up my app's roles and abilities?](#where-do-i-set-up-my-apps-roles-and-abilities)
+  - [How can I use a different set of roles & abilities for the public section of my site and the dashboard section, respectively?](#how-can-i-use-a-different-set-of-roles--abilities-for-the-public-section-of-my-site-and-the-dashboard-section-respectively)
 - [Cheat sheet](#cheat-sheet)
 - [Alternative](#alternative)
 - [License](#license)
