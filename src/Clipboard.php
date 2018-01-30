@@ -179,13 +179,15 @@ class Clipboard implements ClipboardContract
      */
     protected function compileAbilityIdentifiers($ability, $model)
     {
-        $ability = strtolower($ability);
+        $identifiers = new Collection(
+            is_null($model)
+                ? [$ability, '*-*', '*']
+                : $this->compileModelAbilityIdentifiers($ability, $model)
+        );
 
-        if (is_null($model)) {
-            return new Collection([$ability, '*-*', '*']);
-        }
-
-        return new Collection($this->compileModelAbilityIdentifiers($ability, $model));
+        return $identifiers->map(function ($identifier) {
+            return strtolower($identifier);
+        });
     }
 
     /**
@@ -203,7 +205,7 @@ class Clipboard implements ClipboardContract
 
         $model = $model instanceof Model ? $model : new $model;
 
-        $type = strtolower($model->getMorphClass());
+        $type = $model->getMorphClass();
 
         $abilities = [
             "{$ability}-{$type}",
