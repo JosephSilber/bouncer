@@ -37,6 +37,7 @@ Bouncer is an elegant, framework-agnostic approach to managing roles and abiliti
   - [Custom models](#custom-models)
   - [User Model](#user-model)
   - [Ownership](#ownership)
+- [FAQ](#faq)
 - [Cheat sheet](#cheat-sheet)
 - [Alternative](#alternative)
 - [License](#license)
@@ -735,6 +736,91 @@ Bouncer::ownedVia(Game::class, function ($game, $user) {
     return $game->team_id == $user->team_id;
 });
 ```
+
+## FAQ
+
+There are some concepts in Bouncer that people keep on asking about, so here's a short list of some of those topics:
+
+### Where do I set up my app's roles and abilities?
+
+Seeding the initial roles and abilities can be done in a regular [Laravel seeder](https://laravel.com/docs/5.5/seeding) class. Start by creating a specific seeder file for Bouncer:
+
+```
+php artisan make:seeder BouncerSeeder
+```
+
+Place all of your seeding roles & abilities code in [the seeder's `run` method](https://github.com/laravel/framework/blob/f50e2004dfa40de895cd841a0a94acef5b417900/src/Illuminate/Database/Console/Seeds/stubs/seeder.stub#L12-L15). Here's an example of what that might look like:
+
+```php
+use Bouncer;
+use Illuminate\Database\Seeder;
+
+class BouncerSeeder extends Seeder
+{
+    public function run()
+    {
+        Bouncer::allow('superadmin')->everything();
+
+        Bouncer::allow('admin')->everything();
+        Bouncer::forbid('admin')->toManage(User::class);
+
+        Bouncer::allow('editor')->to('create', Post::class);
+        Bouncer::allow('editor')->toOwn(Post::class);
+
+        // etc.
+    }
+}
+```
+
+
+To actually run it, pass the seeder's class name to the `class` option of the `db:seed` command:
+
+```
+php artisan db:seed --class=BouncerSeeder
+```
+
+### How can I use a different set of roles & abilities for the public section of my site and the dashboard section, respectively?
+
+Bouncer's [`scope`](#the-scope-middleware) can be used to section off different parts of the site, creating a silo for each one of them with its own set of roles & abilities:
+
+1. Create a `ScopeBouncer` [middleware](https://laravel.com/docs/5.5/middleware#defining-middleware) that takes an identifier and sets it as the current scope:
+
+    ```php
+    use Bouncer, Closure;
+
+    class ScopeBouncer
+    {
+        public function handle($request, Closure $next, $identifier)
+        {
+            Bouncer::scope()->to($identifier);
+
+            return $next($request);
+        }
+    }
+    ```
+
+2. Register this new middleware as a route middleware in your [HTTP Kernel class](https://github.com/laravel/laravel/blob/73cff166c79cdeaef1c6b7ec6e71a33a7ea3012d/app/Http/Kernel.php#L53-L60):
+
+    ```php
+    protected $routeMiddleware = [
+        // Keep the other route middleware, and add this:
+        'scope-bouncer' => \App\Http\Middleware\ScopeBouncer::class,
+    ];
+    ```
+
+3. In your [route service provider](https://github.com/laravel/laravel/blob/73cff166c79cdeaef1c6b7ec6e71a33a7ea3012d/app/Providers/RouteServiceProvider.php), apply this middleware with a different identifier for the public routes and the dashboard routes, respectively:
+
+    ```php
+    Route::middleware(['web', 'scope-bouncer:1'])
+         ->namespace($this->namespace)
+         ->group(base_path('routes/public.php'));
+
+    Route::middleware(['web', 'scope-bouncer:2'])
+         ->namespace($this->namespace)
+         ->group(base_path('routes/dashboard.php'));
+    ```
+
+That's it. All roles and abilities will now be separately scoped for each section of your site. To fine-tune the extent of the scope, see [Customizing Bouncer's scope](#customizing-bouncers-scope).
 
 ## Cheat Sheet
 
