@@ -41,7 +41,7 @@ Bouncer is an elegant, framework-agnostic approach to managing roles and abiliti
   - [Where do I set up my app's roles and abilities?](#where-do-i-set-up-my-apps-roles-and-abilities)
   - [Can I use a different set of roles & abilities for the public & dashboard sections of my site, respectively?](#can-i-use-a-different-set-of-roles--abilities-for-the-public--dashboard-sections-of-my-site-respectively)
 - [Console commands](#console-commands)
-  - [`bouncer:clean`](#bouncer-clean)
+  - [`bouncer:clean`](#bouncerclean)
 - [Cheat sheet](#cheat-sheet)
 - [Alternative](#alternative)
 - [License](#license)
