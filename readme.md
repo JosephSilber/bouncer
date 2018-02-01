@@ -863,7 +863,7 @@ php artisan bouncer:clean --orphaned
 
 If you don't pass it any flags, it will delete both types of unused abilities.
 
-To run this command automatically, add it to [your console kernel's schedule](https://laravel.com/docs/5.5/scheduling#defining-schedules):
+To automatically run this command periodically, add it to [your console kernel's schedule](https://laravel.com/docs/5.5/scheduling#defining-schedules):
 
 ```php
 $schedule->command('bouncer:clean')->weekly();
