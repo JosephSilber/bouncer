@@ -40,6 +40,8 @@ Bouncer is an elegant, framework-agnostic approach to managing roles and abiliti
 - [FAQ](#faq)
   - [Where do I set up my app's roles and abilities?](#where-do-i-set-up-my-apps-roles-and-abilities)
   - [Can I use a different set of roles & abilities for the public & dashboard sections of my site, respectively?](#can-i-use-a-different-set-of-roles--abilities-for-the-public--dashboard-sections-of-my-site-respectively)
+- [Console commands](#console-commands)
+  - [`bouncer:clean`](#bouncer-clean)
 - [Cheat sheet](#cheat-sheet)
 - [Alternative](#alternative)
 - [License](#license)
@@ -823,6 +825,49 @@ Bouncer's [`scope`](#the-scope-middleware) can be used to section off different 
     ```
 
 That's it. All roles and abilities will now be separately scoped for each section of your site. To fine-tune the extent of the scope, see [Customizing Bouncer's scope](#customizing-bouncers-scope).
+
+## Console commands
+
+### `bouncer:clean`
+
+The `bouncer:clean` command deletes unused abilities. Running this command will delete 2 types of unused abilities:
+
+- **Unassigned abilities** - abilities that are not assigned to anyone. For example:
+
+    ```php
+    Bouncer::allow($user)->to('view', Plan::class);
+
+    Bouncer::disallow($user)->to('view', Plan::class);
+    ```
+    
+    At this point, the "view plans" ability is not assigned to anyone, so it'll get deleted.
+
+    > **Note**: depending on the context of your app, you may not want to delete these. If you let your users manage abilities in your app's UI, you probably _don't_ want to delete unassigned abilities. See below.
+
+- **Orphaned abilities** - model abilities whose models have been deleted:
+
+    ```php
+    Bouncer::allow($user)->to('delete', $plan);
+
+    $plan->delete();
+    ```
+
+    Since the plan no longer exists, the ability is no longer of any use, so it'll get deleted.
+
+If you only want to delete one type of unused ability, run it with one of the following flags:
+
+```
+php artisan bouncer:clean --unassigned
+php artisan bouncer:clean --orphaned
+```
+
+If you don't pass it any flags, it will delete both types of unused abilities.
+
+To run this command automatically, add it to [your console kernel's schedule](https://laravel.com/docs/5.5/scheduling#defining-schedules):
+
+```php
+$schedule->command('bouncer:clean')->weekly();
+```
 
 ## Cheat Sheet
 
