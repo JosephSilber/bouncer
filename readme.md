@@ -781,7 +781,7 @@ To actually run it, pass the seeder's class name to the `class` option of the `d
 php artisan db:seed --class=BouncerSeeder
 ```
 
-### Can I use a different set of roles & abilities for the public & dashboard sections of my site, respectively??
+### Can I use a different set of roles & abilities for the public & dashboard sections of my site, respectively?
 
 Bouncer's [`scope`](#the-scope-middleware) can be used to section off different parts of the site, creating a silo for each one of them with its own set of roles & abilities:
 
