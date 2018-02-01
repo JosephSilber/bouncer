@@ -39,7 +39,7 @@ Bouncer is an elegant, framework-agnostic approach to managing roles and abiliti
   - [Ownership](#ownership)
 - [FAQ](#faq)
   - [Where do I set up my app's roles and abilities?](#where-do-i-set-up-my-apps-roles-and-abilities)
-  - [How can I use a different set of roles & abilities for the public section of my site and the dashboard section, respectively?](#how-can-i-use-a-different-set-of-roles--abilities-for-the-public-section-of-my-site-and-the-dashboard-section-respectively)
+  - [Can I use a different set of roles & abilities for the public & dashboard sections of my site, respectively?](#can-i-use-a-different-set-of-roles--abilities-for-the-public--dashboard-sections-of-my-site-respectively)
 - [Cheat sheet](#cheat-sheet)
 - [Alternative](#alternative)
 - [License](#license)
@@ -781,11 +781,11 @@ To actually run it, pass the seeder's class name to the `class` option of the `d
 php artisan db:seed --class=BouncerSeeder
 ```
 
-### How can I use a different set of roles & abilities for the public section of my site and the dashboard section, respectively?
+### Can I use a different set of roles & abilities for the public & dashboard sections of my site, respectively??
 
 Bouncer's [`scope`](#the-scope-middleware) can be used to section off different parts of the site, creating a silo for each one of them with its own set of roles & abilities:
 
-1. Create a `ScopeBouncer` [middleware](https://laravel.com/docs/5.5/middleware#defining-middleware) that takes an identifier and sets it as the current scope:
+1. Create a `ScopeBouncer` [middleware](https://laravel.com/docs/5.5/middleware#defining-middleware) that takes an `$identifier` and sets it as the current scope:
 
     ```php
     use Bouncer, Closure;
