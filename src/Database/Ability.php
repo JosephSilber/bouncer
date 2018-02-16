@@ -16,6 +16,15 @@ class Ability extends Model
     protected $fillable = ['name', 'title'];
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'only_owned' => 'boolean',
+    ];
+
+    /**
      * Constructor.
      *
      * @param array  $attributes
