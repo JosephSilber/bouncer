@@ -20,7 +20,11 @@ class Role extends Model
      *
      * @var array
      */
-    protected $casts = ['level' => 'int'];
+    protected $casts = [
+        'id' => 'int',
+        'entity_id' => 'int',
+        'level' => 'int',
+    ];
 
     /**
      * Constructor.
