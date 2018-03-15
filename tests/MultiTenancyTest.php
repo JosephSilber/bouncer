@@ -39,6 +39,32 @@ class MultiTenancyTest extends BaseTestCase
         $this->assertEquals(1, $this->db()->table('assigned_roles')->value('scope'));
     }
 
+    public function test_syncing_roles_is_properly_scoped()
+    {
+        $bouncer = $this->bouncer($user = User::create())->dontCache();
+
+        $bouncer->scope()->to(1);
+        $bouncer->assign(['writer', 'reader'])->to($user);
+
+        $bouncer->scope()->to(2);
+        $bouncer->assign(['eraser', 'thinker'])->to($user);
+
+        $bouncer->scope()->to(1);
+        $bouncer->sync($user)->roles(['writer']);
+
+        $this->assertTrue($bouncer->is($user)->a('writer'));
+        $this->assertEquals(1, $user->roles()->count());
+
+        $bouncer->scope()->to(2);
+        $this->assertTrue($bouncer->is($user)->all('eraser', 'thinker'));
+        $this->assertFalse($bouncer->is($user)->a('writer', 'reader'));
+
+        $bouncer->sync($user)->roles(['thinker']);
+
+        $this->assertTrue($bouncer->is($user)->a('thinker'));
+        $this->assertEquals(1, $user->roles()->count());
+    }
+
     public function test_relation_queries_are_properly_scoped()
     {
         $bouncer = $this->bouncer($user = User::create());
