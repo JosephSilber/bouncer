@@ -77,11 +77,12 @@ class SyncsRolesAndAbilities
     protected function syncAbilities($abilities, $options = ['forbidden' => false])
     {
         $abilityKeys = $this->getAbilityIds($abilities);
+        $relation = $this->getAuthority()->abilities();
 
-        $this->getAuthority()->abilities()
-             ->whereNotIn($this->getAbilitiesQualifiedKeyName(), $abilityKeys)
-             ->wherePivot('forbidden', $options['forbidden'])
-             ->detach();
+        $this->newPivotQuery($relation)
+             ->whereNotIn($this->getRelatedPivotKeyName($relation), $abilityKeys)
+             ->where('forbidden', $options['forbidden'])
+             ->delete();
 
         if ($options['forbidden']) {
             (new ForbidsAbilities($this->authority))->to($abilityKeys);
