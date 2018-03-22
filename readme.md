@@ -153,7 +153,11 @@ For more information about Laravel Facades, refer to [the Laravel documentation]
 
     Refer to [the Eloquent Capsule documentation](https://github.com/illuminate/database/blob/master/README.md) for more details.
 
-3) Run the migrations. You'll find the necessary migrations in [the migrations stub file](https://github.com/JosephSilber/bouncer/blob/master/migrations/create_bouncer_tables.php#L17-L73) in Bouncer's source code.
+3) Run the migrations by either:
+
+    - Use a tool such as [vagabond](https://github.com/michaeldyrynda/vagabond) to run Laravel migrations outside of a Laravel app. You'll find the necessary migrations in [the migrations stub file](https://github.com/JosephSilber/bouncer/blob/master/migrations/create_bouncer_tables.php#L17-L73).
+
+    - Alternatively, you can run [the raw SQL](https://github.com/JosephSilber/bouncer/blob/master/migrations/sql/MySQL.sql) directly in your database.
 
 4) Add Bouncer's trait to your user model:
 
