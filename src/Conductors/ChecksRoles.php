@@ -2,8 +2,8 @@
 
 namespace Silber\Bouncer\Conductors;
 
-use Silber\Bouncer\Clipboard;
 use Illuminate\Database\Eloquent\Model;
+use Silber\Bouncer\Contracts\Clipboard;
 
 class ChecksRoles
 {
@@ -17,7 +17,7 @@ class ChecksRoles
     /**
      * The bouncer clipboard instance.
      *
-     * @var \Silber\Bouncer\Clipboard
+     * @var \Silber\Bouncer\Contracts\Clipboard
      */
     protected $clipboard;
 
@@ -25,7 +25,7 @@ class ChecksRoles
      * Constructor.
      *
      * @param \Illuminate\Database\Eloquent\Model  $authority
-     * @param \Silber\Bouncer\Clipboard  $clipboard
+     * @param \Silber\Bouncer\Contracts\Clipboard  $clipboard
      */
     public function __construct(Model $authority, Clipboard $clipboard)
     {
