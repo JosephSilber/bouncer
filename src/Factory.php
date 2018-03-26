@@ -7,7 +7,6 @@ use Illuminate\Cache\ArrayStore;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Cache\Store;
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
-use Silber\Bouncer\Contracts\Clipboard as ClipboardContract;
 
 class Factory
 {
@@ -82,7 +81,7 @@ class Factory
      * @param  \Silber\Bouncer\Contracts\Clipboard  $clipboard
      * @return $this
      */
-    public function withClipboard(ClipboardContract $clipboard)
+    public function withClipboard(Contracts\Clipboard $clipboard)
     {
         $this->clipboard = $clipboard;
 
