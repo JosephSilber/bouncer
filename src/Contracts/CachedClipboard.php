@@ -23,15 +23,6 @@ interface CachedClipboard extends Clipboard
     public function getCache();
 
     /**
-     * Get the given authority's abilities.
-     *
-     * @param  \Illuminate\Database\Eloquent\Model  $authority
-     * @param  bool  $allowed
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public function getAbilities(Model $authority, $allowed = true);
-
-    /**
      * Get a fresh copy of the given authority's abilities.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $authority
@@ -39,14 +30,6 @@ interface CachedClipboard extends Clipboard
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getFreshAbilities(Model $authority, $allowed);
-
-    /**
-     * Get the given authority's roles.
-     *
-     * @param  \Illuminate\Database\Eloquent\Model  $authority
-     * @return \Illuminate\Support\Collection
-     */
-    public function getRoles(Model $authority);
 
     /**
      * Clear the cache.
