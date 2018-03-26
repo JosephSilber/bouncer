@@ -24,6 +24,7 @@ Bouncer is an elegant, framework-agnostic approach to managing roles and abiliti
   - [Forbidding an ability](#forbidding-an-ability)
   - [Unforbidding an ability](#unforbidding-an-ability)
   - [Checking a user's roles](#checking-a-users-roles)
+  - [Getting all roles for a user](#getting-all-roles-for-a-user)
   - [Getting all abilities for a user](#getting-all-abilities-for-a-user)
   - [Authorizing users](#authorizing-users)
   - [Blade directives](#blade-directives)
@@ -484,6 +485,14 @@ $user->isNotA('subscriber');
 $user->isAll('editor', 'moderator');
 ```
 
+### Getting all roles for a user
+
+You can get all roles for a user directly from the user model:
+
+```php
+$roles = $user->getRoles();
+```
+
 ### Getting all abilities for a user
 
 You can get all abilities for a user directly from the user model:
@@ -493,16 +502,6 @@ $abilities = $user->getAbilities();
 ```
 
 This will return a collection of the user's abilities, including any abilities granted to the user through their roles.
-
-### Getting all roles for a user
-
-You can get all roles for a user directly from the user model:
-
-```php
-$roles = $user->getRoles();
-```
-
-This will return a collection of the user's roles.
 
 ### Authorizing users
 
