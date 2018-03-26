@@ -130,10 +130,12 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $bouncer->allow('admin')->to('edit-site');
         $user->assign('admin');
 
+        $this->assertEquals(['admin'], $user->getRoles()->all());
         $this->assertTrue($bouncer->can('edit-site'));
 
         $user->retract('admin');
 
+        $this->assertEquals([], $user->getRoles()->all());
         $this->assertTrue($bouncer->cannot('edit-site'));
     }
 
