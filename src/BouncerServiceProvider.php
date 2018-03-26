@@ -87,7 +87,7 @@ class BouncerServiceProvider extends ServiceProvider
      */
     protected function registerClipboard()
     {
-        $this->app->singleton(Clipboard::class, function () {
+        $this->app->singleton(Contracts\Clipboard::class, function () {
             return new CachedClipboard(new ArrayStore);
         });
     }

@@ -4,9 +4,9 @@ namespace Silber\Bouncer\Database\Concerns;
 
 use Illuminate\Container\Container;
 
-use Silber\Bouncer\Clipboard;
 use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Database\Ability;
+use Silber\Bouncer\Contracts\Clipboard;
 use Silber\Bouncer\Conductors\GivesAbilities;
 use Silber\Bouncer\Conductors\ForbidsAbilities;
 use Silber\Bouncer\Conductors\RemovesAbilities;
@@ -125,7 +125,7 @@ trait HasAbilities
     /**
      * Get an instance of the bouncer's clipboard.
      *
-     * @return \Silber\Bouncer\Clipboard
+     * @return \Silber\Bouncer\Contracts\Clipboard
      */
     protected function getClipboardInstance()
     {
