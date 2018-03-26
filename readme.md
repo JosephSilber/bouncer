@@ -498,11 +498,12 @@ This will return a collection of the user's abilities, including any abilities g
 
 Authorizing users is handled directly at [Laravel's `Gate`](https://laravel.com/docs/5.5/authorization#gates), or on the user model (`$user->can($ability)`).
 
-For convenience, the bouncer class provides two passthrough methods:
+For convenience, the bouncer class provides these passthrough methods:
 
 ```php
 Bouncer::can($ability);
 Bouncer::cannot($ability);
+Bouncer::authorize($ability);
 ```
 
 These call directly into the `Gate` class.
