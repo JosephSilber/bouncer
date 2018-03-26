@@ -3,7 +3,6 @@
 require __DIR__.'/../migrations/create_bouncer_tables.php';
 
 use Silber\Bouncer\Bouncer;
-use Silber\Bouncer\Seed\Seeder;
 use Silber\Bouncer\CachedClipboard;
 use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Contracts\Clipboard;
