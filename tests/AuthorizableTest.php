@@ -4,8 +4,16 @@ use Silber\Bouncer\Database\Role;
 
 class AuthorizableTest extends BaseTestCase
 {
-    public function testCheckingSimpleAbilitiesOnRoles()
+    use TestsClipboards;
+
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function checking_simple_abilities_on_roles($provider)
     {
+        $provider();
+
         $role = Role::create(['name' => 'admin']);
 
         $role->allow('scream');
@@ -15,8 +23,14 @@ class AuthorizableTest extends BaseTestCase
         $this->assertTrue($role->cannot('cry'));
     }
 
-    public function testCheckingModelAbilitiesOnRoles()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function checking_model_abilities_on_roles($provider)
     {
+        $provider();
+
         $role = Role::create(['name' => 'admin']);
 
         $role->allow('create', User::class);

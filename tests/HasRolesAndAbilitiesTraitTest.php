@@ -2,9 +2,15 @@
 
 class HasRolesAndAbilitiesTraitTest extends BaseTestCase
 {
-    public function test_get_abilities_gets_all_allowed_abilities()
+    use TestsClipboards;
+
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function get_abilities_gets_all_allowed_abilities($provider)
     {
-        $bouncer = $this->bouncer($user = User::create());
+        list($bouncer, $user) = $provider();
 
         $bouncer->allow('admin')->to('edit-site');
         $bouncer->allow($user)->to('create-posts');
@@ -19,9 +25,13 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         );
     }
 
-    public function test_get_forbidden_abilities_gets_all_forbidden_abilities()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function get_forbidden_abilities_gets_all_forbidden_abilities($provider)
     {
-        $bouncer = $this->bouncer($user = User::create());
+        list($bouncer, $user) = $provider();
 
         $bouncer->forbid('admin')->to('edit-site');
         $bouncer->forbid($user)->to('create-posts');
@@ -36,9 +46,13 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         );
     }
 
-    public function test_can_give_and_remove_abilities()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function can_give_and_remove_abilities($provider)
     {
-        $bouncer = $this->bouncer($user = User::create())->dontCache();
+        list($bouncer, $user) = $provider();
 
         $user->allow('edit-site');
 
@@ -49,9 +63,13 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('edit-site'));
     }
 
-    public function test_can_give_and_remove_model_abilities()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function can_give_and_remove_model_abilities($provider)
     {
-        $bouncer = $this->bouncer($user = User::create())->dontCache();
+        list($bouncer, $user) = $provider();
 
         $user->allow('delete', $user);
 
@@ -64,9 +82,13 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('delete', $user));
     }
 
-    public function test_can_give_and_remove_ability_for_everything()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function can_give_and_remove_ability_for_everything($provider)
     {
-        $bouncer = $this->bouncer($user = User::create())->dontCache();
+        list($bouncer, $user) = $provider();
 
         $user->allow()->everything();
 
@@ -81,9 +103,13 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('*', '*'));
     }
 
-    public function test_can_forbid_and_unforbid_abilities()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function can_forbid_and_unforbid_abilities($provider)
     {
-        $bouncer = $this->bouncer($user = User::create())->dontCache();
+        list($bouncer, $user) = $provider();
 
         $user->allow('edit-site');
         $user->forbid('edit-site');
@@ -95,9 +121,13 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $this->assertTrue($bouncer->can('edit-site'));
     }
 
-    public function test_can_forbid_and_unforbid_model_abilities()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function can_forbid_and_unforbid_model_abilities($provider)
     {
-        $bouncer = $this->bouncer($user = User::create())->dontCache();
+        list($bouncer, $user) = $provider();
 
         $user->allow('delete', $user);
         $user->forbid('delete', $user);
@@ -109,9 +139,13 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $this->assertTrue($bouncer->can('delete', $user));
     }
 
-    public function test_can_forbid_and_unforbid_everything()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function can_forbid_and_unforbid_everything($provider)
     {
-        $bouncer = $this->bouncer($user = User::create())->dontCache();
+        list($bouncer, $user) = $provider();
 
         $user->allow('delete', $user);
         $user->forbid()->everything();
@@ -123,9 +157,13 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $this->assertTrue($bouncer->can('delete', $user));
     }
 
-    public function test_can_assign_and_retract_roles()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function can_assign_and_retract_roles($provider)
     {
-        $bouncer = $this->bouncer($user = User::create())->dontCache();
+        list($bouncer, $user) = $provider();
 
         $bouncer->allow('admin')->to('edit-site');
         $user->assign('admin');
@@ -139,9 +177,13 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('edit-site'));
     }
 
-    public function test_can_check_roles()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function can_check_roles($provider)
     {
-        $this->bouncer($user = User::create())->dontCache();
+        list($bouncer, $user) = $provider();
 
         $this->assertTrue($user->isNotAn('admin'));
         $this->assertFalse($user->isAn('admin'));
@@ -157,9 +199,13 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $this->assertTrue($user->isNotAn('editor'));
     }
 
-    public function test_can_check_multiple_roles()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function can_check_multiple_roles($provider)
     {
-        $this->bouncer($user = User::create())->dontCache();
+        list($bouncer, $user) = $provider();
 
         $this->assertFalse($user->isAn('admin', 'editor'));
 

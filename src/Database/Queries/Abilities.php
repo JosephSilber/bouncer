@@ -10,18 +10,29 @@ use Illuminate\Database\Eloquent\Model;
 class Abilities
 {
     /**
-     * Get a list of the authority's abilities.
+     * Get a query for the authority's abilities.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @param  bool  $allowed
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function getForAuthority(Model $authority, $allowed = true)
+    public static function forAuthority(Model $authority, $allowed = true)
     {
-        return Models::ability()
-                     ->whereExists($this->getRoleConstraint($authority, $allowed))
-                     ->orWhereExists($this->getAuthorityConstraint($authority, $allowed))
-                     ->get();
+        return Models::ability()->where(function ($query) use ($authority, $allowed) {
+            $query->whereExists(static::getRoleConstraint($authority, $allowed));
+            $query->orWhereExists(static::getAuthorityConstraint($authority, $allowed));
+        });
+    }
+
+    /**
+     * Get a query for the authority's forbidden abilities.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $authority
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public static function forbiddenForAuthority(Model $authority)
+    {
+        return static::forAuthority($authority, false);
     }
 
     /**
@@ -31,7 +42,7 @@ class Abilities
      * @param  bool  $allowed
      * @return \Closure
      */
-    protected function getRoleConstraint(Model $authority, $allowed)
+    protected static function getRoleConstraint(Model $authority, $allowed)
     {
         return function ($query) use ($authority, $allowed) {
             $permissions = Models::table('permissions');
@@ -49,10 +60,10 @@ class Abilities
             Models::scope()->applyToRelationQuery($query, $permissions);
 
             $query->where(function ($query) use ($roles, $authority, $allowed) {
-                $query->whereExists($this->getAuthorityRoleConstraint($authority));
+                $query->whereExists(static::getAuthorityRoleConstraint($authority));
 
                 if ($allowed) {
-                    $this->addRoleInheritCondition($query, $authority, $roles);
+                    static::addRoleInheritCondition($query, $authority, $roles);
                 }
             });
         };
@@ -66,11 +77,12 @@ class Abilities
      * @param  string  $roles
      * @return \Closure
      */
-    protected function addRoleInheritCondition(Builder $query, Model $authority, $roles) {
+    protected static function addRoleInheritCondition(Builder $query, Model $authority, $roles)
+    {
         $query->orWhere('level', '<', function ($query) use ($authority, $roles) {
             $query->selectRaw('max(level)')
                   ->from($roles)
-                  ->whereExists($this->getAuthorityRoleConstraint($authority));
+                  ->whereExists(static::getAuthorityRoleConstraint($authority));
 
             Models::scope()->applyToModelQuery($query, $roles);
         });
@@ -82,7 +94,7 @@ class Abilities
      * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @return \Closure
      */
-    protected function getAuthorityRoleConstraint(Model $authority)
+    protected static function getAuthorityRoleConstraint(Model $authority)
     {
         return function ($query) use ($authority) {
             $pivot  = Models::table('assigned_roles');
@@ -108,7 +120,7 @@ class Abilities
      * @param  bool  $allowed
      * @return \Closure
      */
-    protected function getAuthorityConstraint(Model $authority, $allowed)
+    protected static function getAuthorityConstraint(Model $authority, $allowed)
     {
         return function ($query) use ($authority, $allowed) {
             $permissions = Models::table('permissions');

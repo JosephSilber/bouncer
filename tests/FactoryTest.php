@@ -6,7 +6,10 @@ use Illuminate\Container\Container;
 
 class FactoryTest extends BaseTestCase
 {
-    public function testCanCreateDefaultBouncerInstance()
+    /**
+     * @test
+     */
+    function can_create_default_bouncer_instance()
     {
         $bouncer = Bouncer::create();
 
@@ -15,7 +18,10 @@ class FactoryTest extends BaseTestCase
         $this->assertTrue($bouncer->usesCachedClipboard());
     }
 
-    public function testCanCreateBouncerInstanceForGivenTheUser()
+    /**
+     * @test
+     */
+    function can_create_bouncer_instance_for_given_the_user()
     {
         $bouncer = Bouncer::create($user = User::create());
 
@@ -25,7 +31,10 @@ class FactoryTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('delete-bouncers'));
     }
 
-    public function testCanBuildUpBouncerWithTheGivenUser()
+    /**
+     * @test
+     */
+    function can_build_up_bouncer_with_the_given_user()
     {
         $bouncer = Bouncer::make()->withUser($user = User::create())->create();
 
@@ -35,7 +44,10 @@ class FactoryTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('delete-bouncers'));
     }
 
-    public function testCanBuildUpBouncerWithTheGivenGate()
+    /**
+     * @test
+     */
+    function can_build_up_bouncer_with_the_given_gate()
     {
         $user = User::create();
 
@@ -50,7 +62,4 @@ class FactoryTest extends BaseTestCase
         $this->assertTrue($bouncer->can('create-bouncers'));
         $this->assertTrue($bouncer->cannot('delete-bouncers'));
     }
-
-
-
 }

@@ -1,15 +1,19 @@
 <?php
 
+use Silber\Bouncer\Database\Ability;
 use Illuminate\Database\Eloquent\Model;
 
 class AbilitiesForModelsTest extends BaseTestCase
 {
-    public function test_model_blanket_ability()
-    {
-        $user1 = User::create();
-        $user2 = User::create();
+    use TestsClipboards;
 
-        $bouncer = $this->bouncer($user1)->dontCache();
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function model_blanket_ability($provider)
+    {
+        list($bouncer, $user1, $user2) = $provider(2);
 
         $bouncer->allow($user1)->to('edit', User::class);
 
@@ -30,12 +34,13 @@ class AbilitiesForModelsTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('edit', $user2));
     }
 
-    public function test_individual_model_ability()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function individual_model_ability($provider)
     {
-        $user1 = User::create();
-        $user2 = User::create();
-
-        $bouncer = $this->bouncer($user1)->dontCache();
+        list($bouncer, $user1, $user2) = $provider(2);
 
         $bouncer->allow($user1)->to('edit', $user2);
 
@@ -60,12 +65,13 @@ class AbilitiesForModelsTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('edit', $user2));
     }
 
-    public function test_blanket_ability_and_individual_model_ability_are_kept_separate()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function blanket_ability_and_individual_model_ability_are_kept_separate($provider)
     {
-        $user1 = User::create();
-        $user2 = User::create();
-
-        $bouncer = $this->bouncer($user1)->dontCache();
+        list($bouncer, $user1, $user2) = $provider(2);
 
         $bouncer->allow($user1)->to('edit', User::class);
         $bouncer->allow($user1)->to('edit', $user2);
@@ -79,30 +85,37 @@ class AbilitiesForModelsTest extends BaseTestCase
         $this->assertTrue($bouncer->can('edit', $user2));
     }
 
-    public function test_allowing_on_non_existent_model_throws()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function allowing_on_non_existent_model_throws($provider)
     {
         $this->setExpectedException('InvalidArgumentException');
 
-        $user1 = User::create();
-        $user2 = new User;
+        list($bouncer, $user) = $provider();
 
-        $bouncer = $this->bouncer($user1);
-
-        $bouncer->allow($user1)->to('delete', $user2);
+        $bouncer->allow($user)->to('delete', new User);
     }
 
-    public function test_can_create_an_ability_for_a_model()
+    /**
+     * @test
+     */
+    function can_create_an_ability_for_a_model()
     {
-        $ability = $this->bouncer()->ability()->createForModel(Account::class, 'delete');
+        $ability = Ability::createForModel(Account::class, 'delete');
 
         $this->assertEquals('Account', $ability->entity_type);
         $this->assertEquals('delete', $ability->name);
         $this->assertNull($ability->entity_id);
     }
 
-    public function test_can_create_an_ability_for_a_model_plus_extra_attributes()
+    /**
+     * @test
+     */
+    function can_create_an_ability_for_a_model_plus_extra_attributes()
     {
-        $ability = $this->bouncer()->ability()->createForModel(Account::class, [
+        $ability = Ability::createForModel(Account::class, [
             'name' => 'delete',
             'title' => 'Delete Accounts',
         ]);
@@ -113,22 +126,28 @@ class AbilitiesForModelsTest extends BaseTestCase
         $this->assertNull($ability->entity_id);
     }
 
-    public function test_can_create_an_ability_for_a_model_instance()
+    /**
+     * @test
+     */
+    function can_create_an_ability_for_a_model_instance()
     {
         $user = User::create();
 
-        $ability = $this->bouncer()->ability()->createForModel($user, 'delete');
+        $ability = Ability::createForModel($user, 'delete');
 
         $this->assertEquals($user->id, $ability->entity_id);
         $this->assertEquals('User', $ability->entity_type);
         $this->assertEquals('delete', $ability->name);
     }
 
-    public function test_can_create_an_ability_for_a_model_instance_plus_extra_attributes()
+    /**
+     * @test
+     */
+    function can_create_an_ability_for_a_model_instance_plus_extra_attributes()
     {
         $user = User::create();
 
-        $ability = $this->bouncer()->ability()->createForModel($user, [
+        $ability = Ability::createForModel($user, [
             'name' => 'delete',
             'title' => 'Delete this user',
         ]);
@@ -139,18 +158,24 @@ class AbilitiesForModelsTest extends BaseTestCase
         $this->assertEquals('delete', $ability->name);
     }
 
-    public function test_can_create_an_ability_for_all_models()
+    /**
+     * @test
+     */
+    function can_create_an_ability_for_all_models()
     {
-        $ability = $this->bouncer()->ability()->createForModel('*', 'delete');
+        $ability = Ability::createForModel('*', 'delete');
 
         $this->assertEquals('*', $ability->entity_type);
         $this->assertEquals('delete', $ability->name);
         $this->assertNull($ability->entity_id);
     }
 
-    public function test_can_create_an_ability_for_all_models_plus_extra_attributes()
+    /**
+     * @test
+     */
+    function can_create_an_ability_for_all_models_plus_extra_attributes()
     {
-        $ability = $this->bouncer()->ability()->createForModel('*', [
+        $ability = Ability::createForModel('*', [
             'name' => 'delete',
             'title' => 'Delete everything',
         ]);
