@@ -16,10 +16,10 @@ class CleanCommandTest extends BaseTestCase
 
         $this->assertEquals(3, Ability::query()->count());
 
-        $this->clean(['--orphaned' => true], '<info>Deleted 2 orphaned abilities.</info>');
+        $this->clean(['--unassigned' => true], '<info>Deleted 2 unassigned abilities.</info>');
 
         $this->assertEquals(1, Ability::query()->count());
-        $this->assertTrue($bouncer->allows('throw-dishes'));
+        $this->assertTrue($bouncer->can('throw-dishes'));
     }
 
     public function test_with_the_orphaned_flag_with_no_orphaned_abilities()
@@ -30,7 +30,7 @@ class CleanCommandTest extends BaseTestCase
 
         $this->assertEquals(3, Ability::query()->count());
 
-        $this->clean(['--orphaned' => true], '<info>No orphaned abilities.</info>');
+        $this->clean(['--unassigned' => true], '<info>No unassigned abilities.</info>');
 
         $this->assertEquals(3, Ability::query()->count());
     }
@@ -55,13 +55,13 @@ class CleanCommandTest extends BaseTestCase
 
         $this->assertEquals(6, Ability::query()->count());
 
-        $this->clean(['--missing' => true], '<info>Deleted 2 abilities with missing models.</info>');
+        $this->clean(['--orphaned' => true], '<info>Deleted 2 orphaned abilities.</info>');
 
         $this->assertEquals(4, Ability::query()->count());
-        $this->assertTrue($bouncer->allows('create', Account::class));
-        $this->assertTrue($bouncer->allows('create', User::class));
-        $this->assertTrue($bouncer->allows('update', $user1));
-        $this->assertTrue($bouncer->allows('update', $account2));
+        $this->assertTrue($bouncer->can('create', Account::class));
+        $this->assertTrue($bouncer->can('create', User::class));
+        $this->assertTrue($bouncer->can('update', $user1));
+        $this->assertTrue($bouncer->can('update', $account2));
     }
 
     public function test_with_no_flags()
@@ -83,8 +83,8 @@ class CleanCommandTest extends BaseTestCase
         $this->assertEquals(4, Ability::query()->count());
 
         $this->clean([], [
-            '<info>Deleted 1 orphaned ability.</info>',
-            '<info>Deleted 1 ability with a missing model.</info>'
+            '<info>Deleted 1 unassigned ability.</info>',
+            '<info>Deleted 1 orphaned ability.</info>'
         ]);
 
         $this->assertEquals(2, Ability::query()->count());

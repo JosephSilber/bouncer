@@ -4,9 +4,9 @@ namespace Silber\Bouncer\Database\Concerns;
 
 use Illuminate\Container\Container;
 
-use Silber\Bouncer\Clipboard;
 use Silber\Bouncer\Database\Role;
 use Silber\Bouncer\Database\Models;
+use Silber\Bouncer\Contracts\Clipboard;
 use Silber\Bouncer\Conductors\AssignsRoles;
 use Silber\Bouncer\Conductors\RemovesRoles;
 use Silber\Bouncer\Database\Queries\Roles as RolesQuery;
@@ -20,11 +20,23 @@ trait HasRoles
      */
     public function roles()
     {
-        return $this->morphToMany(
+        $relation = $this->morphToMany(
             Models::classname(Role::class),
             'entity',
             Models::table('assigned_roles')
         );
+
+        return Models::scope()->applyToRelation($relation);
+    }
+    
+    /**
+     * Get all of the model's assigned roles.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getRoles()
+    {
+        return $this->getClipboardInstance()->getRoles($this);
     }
 
     /**
@@ -172,7 +184,7 @@ trait HasRoles
     /**
      * Get an instance of the bouncer's clipboard.
      *
-     * @return \Silber\Bouncer\Clipboard
+     * @return \Silber\Bouncer\Contracts\Clipboard
      */
     protected function getClipboardInstance()
     {

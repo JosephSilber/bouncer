@@ -2,8 +2,8 @@
 
 namespace Silber\Bouncer\Database\Concerns;
 
-use Silber\Bouncer\Clipboard;
 use Illuminate\Container\Container;
+use Silber\Bouncer\Contracts\Clipboard;
 
 trait Authorizable
 {
@@ -46,7 +46,7 @@ trait Authorizable
     /**
      * Get an instance of the bouncer's clipboard.
      *
-     * @return \Silber\Bouncer\Clipboard
+     * @return \Silber\Bouncer\Contracts\Clipboard
      */
     protected function getClipboardInstance()
     {

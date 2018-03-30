@@ -6,6 +6,8 @@ use Closure;
 use App\User;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Silber\Bouncer\Database\Scope\Scope;
+use Silber\Bouncer\Contracts\Scope as ScopeContract;
 
 class Models
 {
@@ -38,6 +40,13 @@ class Models
     protected static $tables = [];
 
     /**
+     * The model scoping instance.
+     *
+     * @var \Silber\Bouncer\Database\Scope\Scope
+     */
+    protected static $scope;
+
+    /**
      * Set the model to be used for abilities.
      *
      * @param  string  $model
@@ -68,6 +77,8 @@ class Models
     public static function setUsersModel($model)
     {
         static::$models[User::class] = $model;
+
+        static::$tables['users'] = static::user()->getTable();
     }
 
     /**
@@ -115,6 +126,25 @@ class Models
     public static function prefix()
     {
         return static::$prefix;
+    }
+
+    /**
+     * Get or set the model scoping instance.
+     *
+     * @param  \Silber\Bouncer\Contracts\Scope|null  $scope
+     * @return mixed
+     */
+    public static function scope(ScopeContract $scope = null)
+    {
+        if (! is_null($scope)) {
+            return static::$scope = $scope;
+        }
+
+        if (is_null(static::$scope)) {
+            static::$scope = new Scope;
+        }
+
+        return static::$scope;
     }
 
     /**

@@ -10,9 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 
-use Silber\Bouncer\Contracts;
-use Silber\Bouncer\Conductors;
-use Silber\Bouncer\Seed\Seeder;
+use Silber\Bouncer\Contracts\Scope;
 use Silber\Bouncer\Database\Models;
 
 class Bouncer
@@ -44,48 +42,23 @@ class Bouncer
     /**
      * Create a new Bouncer instance.
      *
-     * @param  \Illuminate\Database\Eloquent\Model|null  $user
+     * @param  mixed  $user
      * @return static
      */
-    public static function create(Model $user = null)
+    public static function create($user = null)
     {
-        return static::make()->create($user);
+        return static::make($user)->create();
     }
 
     /**
      * Create a bouncer factory instance.
      *
-     * @param  \Illuminate\Database\Eloquent\Model|null  $user
-     * @return \Silber\Bouncer\Factory.
+     * @param  mixed  $user
+     * @return \Silber\Bouncer\Factory
      */
-    public static function make(Model $user = null)
+    public static function make($user = null)
     {
         return new Factory($user);
-    }
-
-    /**
-     * Register a seeder callback.
-     *
-     * @param  \Closure|string  $seeder
-     * @return $this
-     */
-    public function seeder($seeder)
-    {
-        $this->resolve(Seeder::class)->register($seeder);
-
-        return $this;
-    }
-
-    /**
-     * Run the registered seeders.
-     *
-     * @return $this
-     */
-    public function seed()
-    {
-        $this->resolve(Seeder::class)->run();
-
-        return $this;
     }
 
     /**
@@ -135,23 +108,23 @@ class Bouncer
     /**
      * Start a chain, to assign the given role to a model.
      *
-     * @param  \Silber\Bouncer\Database\Role|string  $role
+     * @param  \Silber\Bouncer\Database\Role|\Illuminate\Support\Collection|string  $roles
      * @return \Silber\Bouncer\Conductors\AssignsRoles
      */
-    public function assign($role)
+    public function assign($roles)
     {
-        return new Conductors\AssignsRoles($role);
+        return new Conductors\AssignsRoles($roles);
     }
 
     /**
      * Start a chain, to retract the given role from a model.
      *
-     * @param  \Silber\Bouncer\Database\Role|string  $role
+     * @param  \Illuminate\Support\Collection|\Silber\Bouncer\Database\Role|string  $roles
      * @return \Silber\Bouncer\Conductors\RemovesRoles
      */
-    public function retract($role)
+    public function retract($roles)
     {
-        return new Conductors\RemovesRoles($role);
+        return new Conductors\RemovesRoles($roles);
     }
 
     /**
@@ -256,20 +229,26 @@ class Bouncer
      * Get the gate instance.
      *
      * @return \Illuminate\Contracts\Auth\Access\Gate|null
+     */
+    public function getGate()
+    {
+        return $this->gate;
+    }
+
+    /**
+     * Get the gate instance. Throw if not set.
+     *
+     * @return \Illuminate\Contracts\Auth\Access\Gate
      *
      * @throws \RuntimeException
      */
-    public function getGate($throw = false)
+    public function gate()
     {
-        if ($this->gate) {
-            return $this->gate;
-        }
-
-        if ($throw) {
+        if (is_null($this->gate)) {
             throw new RuntimeException('The gate instance has not been set.');
         }
 
-        return null;
+        return $this->gate;
     }
 
     /**
@@ -293,31 +272,75 @@ class Bouncer
      */
     public function define($ability, $callback)
     {
-        return $this->getGate(true)->define($ability, $callback);
+        return $this->gate()->define($ability, $callback);
     }
 
     /**
-     * Determine if the given ability should be granted for the current authority.
+     * Determine if the given ability should be granted for the current user.
      *
+     * @param  string  $ability
+     * @param  array|mixed  $arguments
+     * @return \Illuminate\Auth\Access\Response
+     *
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function authorize($ability, $arguments = [])
+    {
+        return $this->gate()->authorize($ability, $arguments);
+    }
+
+    /**
+     * Determine if the given ability is allowed.
+     *
+     * @param  string  $ability
+     * @param  array|mixed  $arguments
+     * @return bool
+     */
+    public function can($ability, $arguments = [])
+    {
+        return $this->gate()->allows($ability, $arguments);
+    }
+
+    /**
+     * Determine if the given ability is denied.
+     *
+     * @param  string  $ability
+     * @param  array|mixed  $arguments
+     * @return bool
+     */
+    public function cannot($ability, $arguments = [])
+    {
+        return $this->gate()->denies($ability, $arguments);
+    }
+
+    /**
+     * Determine if the given ability is allowed.
+     *
+     * Alias for the "can" method.
+     *
+     * @deprecated
      * @param  string  $ability
      * @param  array|mixed  $arguments
      * @return bool
      */
     public function allows($ability, $arguments = [])
     {
-        return $this->getGate(true)->allows($ability, $arguments);
+        return $this->can($ability, $arguments);
     }
 
     /**
-     * Determine if the given ability should be denied for the current authority.
+     * Determine if the given ability is denied.
      *
+     * Alias for the "cannot" method.
+     *
+     * @deprecated
      * @param  string  $ability
      * @param  array|mixed  $arguments
      * @return bool
      */
     public function denies($ability, $arguments = [])
     {
-        return $this->getGate(true)->denies($ability, $arguments);
+        return $this->cannot($ability, $arguments);
     }
 
     /**
@@ -347,7 +370,7 @@ class Bouncer
      *
      * @param  string|\Closure  $model
      * @param  string|\Closure|null  $attribute
-     * @return void
+     * @return $this
      */
     public function ownedVia($model, $attribute = null)
     {
@@ -359,42 +382,64 @@ class Bouncer
     /**
      * Set the model to be used for abilities.
      *
-     * @param string  $model
+     * @param  string  $model
+     * @return $this
      */
-    public static function useAbilityModel($model)
+    public function useAbilityModel($model)
     {
         Models::setAbilitiesModel($model);
+
+        return $this;
     }
 
     /**
      * Set the model to be used for roles.
      *
-     * @param string  $model
+     * @param  string  $model
+     * @return $this
      */
-    public static function useRoleModel($model)
+    public function useRoleModel($model)
     {
         Models::setRolesModel($model);
+
+        return $this;
     }
 
     /**
      * Set the model to be used for users.
      *
-     * @param string  $model
+     * @param  string  $model
+     * @return $this
      */
-    public static function useUserModel($model)
+    public function useUserModel($model)
     {
         Models::setUsersModel($model);
+
+        return $this;
     }
 
     /**
      * Set custom table names.
      *
      * @param  array  $map
-     * @return void
+     * @return $this
      */
-    public static function tables(array $map)
+    public function tables(array $map)
     {
         Models::setTables($map);
+
+        return $this;
+    }
+
+    /**
+     * Get the model scoping instance.
+     *
+     * @param  \Silber\Bouncer\Contracts\Scope|null  $scope
+     * @return mixed
+     */
+    public function scope(Scope $scope = null)
+    {
+        return Models::scope($scope);
     }
 
     /**

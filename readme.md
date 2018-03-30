@@ -1,15 +1,18 @@
 # Bouncer
 
-This package adds a bouncer at Laravel's access gate.
+<p>
+<a href="https://travis-ci.org/JosephSilber/bouncer"><img src="https://travis-ci.org/JosephSilber/bouncer.svg" alt="Build Status"></a>
+<a href="https://packagist.org/packages/silber/bouncer"><img src="https://poser.pugx.org/silber/bouncer/d/total.svg" alt="Total Downloads"></a>
+<a href="https://github.com/JosephSilber/bouncer/blob/master/LICENSE.txt"><img src="https://poser.pugx.org/silber/bouncer/license.svg" alt="License"></a>
+</p>
 
-> **Note:** If you are upgrading from an earlier version of Bouncer, be sure to checkout [the upgrade guide](#upgrade).
+Bouncer is an elegant, framework-agnostic approach to managing roles and abilities for any app using Eloquent models.
 
 - [Introduction](#introduction)
 - [Installation](#installation)
-  - [Facade](#facade)
+  - [Installing Bouncer in a Laravel app](#installing-bouncer-in-a-laravel-app)
+  - [Installing Bouncer in a non-Laravel app](#installing-bouncer-in-a-non-laravel-app)
   - [Enabling cache](#enabling-cache)
-- [Upgrade](#upgrade)
-  - [Upgrading to 1.0](#upgrading-to-10)
 - [Usage](#usage)
   - [Creating roles and abilities](#creating-roles-and-abilities)
   - [Assigning roles to a user](#assigning-roles-to-a-user)
@@ -18,28 +21,39 @@ This package adds a bouncer at Laravel's access gate.
   - [Allowing a user or role to "own" a model](#allowing-a-user-or-role-to-own-a-model)
   - [Retracting a role from a user](#retracting-a-role-from-a-user)
   - [Removing an ability](#removing-an-ability)
+  - [Forbidding an ability](#forbidding-an-ability)
+  - [Unforbidding an ability](#unforbidding-an-ability)
   - [Checking a user's roles](#checking-a-users-roles)
+  - [Getting all roles for a user](#getting-all-roles-for-a-user)
   - [Getting all abilities for a user](#getting-all-abilities-for-a-user)
   - [Authorizing users](#authorizing-users)
   - [Blade directives](#blade-directives)
   - [Refreshing the cache](#refreshing-the-cache)
+- [Multi-tenancy](#multi-tenancy)
+  - [The scope middleware](#the-scope-middleware)
+  - [Customizing Bouncer's scope](#customizing-bouncers-scope)
 - [Configuration](#configuration)
   - [Cache](#cache)
   - [Tables](#tables)
   - [Custom models](#custom-models)
+  - [User Model](#user-model)
   - [Ownership](#ownership)
+- [FAQ](#faq)
+  - [Where do I set up my app's roles and abilities?](#where-do-i-set-up-my-apps-roles-and-abilities)
+  - [Can I use a different set of roles & abilities for the public & dashboard sections of my site, respectively?](#can-i-use-a-different-set-of-roles--abilities-for-the-public--dashboard-sections-of-my-site-respectively)
+- [Console commands](#console-commands)
+  - [`bouncer:clean`](#bouncerclean)
 - [Cheat sheet](#cheat-sheet)
 - [Alternative](#alternative)
 - [License](#license)
 
 ## Introduction
 
-Bouncer provides a mechanism to handle roles and abilities in [Laravel's ACL](http://laravel.com/docs/5.5/authorization). With an expressive and fluent syntax, it stays out of your way as much as possible: use it when you want, ignore it when you don't.
+Bouncer is an elegant, framework-agnostic approach to managing roles and abilities for any app using Eloquent models. With an expressive and fluent syntax, it stays out of your way as much as possible: use it when you want, ignore it when you don't.
 
 For a quick, glanceable list of Bouncer's features, check out [the cheat sheet](#cheat-sheet).
 
-Bouncer works well with other abilities you have hard-coded in your own app. Your code always takes precedence: if your code allows an action, the bouncer will not interfere.
-
+Bouncer works well with other abilities you have hard-coded in your own app. Your code always takes precedence: if your code allows an action, Bouncer will not interfere.
 
 Once installed, you can simply tell the bouncer what you want to allow at the gate:
 
@@ -59,10 +73,12 @@ When you check abilities at the gate, the bouncer will be consulted first. If he
 
 ## Installation
 
-Simply install the bouncer package with [composer](https://getcomposer.org/doc/00-intro.md):
+### Installing Bouncer in a Laravel app
+
+Install Bouncer with [composer](https://getcomposer.org/doc/00-intro.md):
 
 ```
-$ composer require silber/bouncer v1.0.0-beta.4
+$ composer require silber/bouncer v1.0.0-rc.1
 ```
 
 > In Laravel 5.5, [service providers and aliases are automatically registered](https://laravel.com/docs/5.5/packages#package-discovery). If you're using Laravel 5.5, skip ahead directly to step 3 (do not pass go, but do collect $200).
@@ -83,7 +99,7 @@ Once the composer installation completes, you can add the service provider and a
 
     This part is optional. If you don't want to use the facade, you can skip step 2.
 
-3) Add the bouncer's trait to your user model:
+3) Add Bouncer's trait to your user model:
 
     ```php
     use Silber\Bouncer\Database\HasRolesAndAbilities;
@@ -94,7 +110,7 @@ Once the composer installation completes, you can add the service provider and a
     }
     ```
 
-4) Now, to run the bouncer's migrations, first publish the package's migrations into your app's `migrations` directory, by running the following command:
+4) Now, to run Bouncer's migrations, first publish the migrations into your app's `migrations` directory, by running the following command:
 
     ```
     php artisan vendor:publish --tag="bouncer.migrations"
@@ -106,7 +122,7 @@ Once the composer installation completes, you can add the service provider and a
     php artisan migrate
     ```
 
-### Facade
+#### Facade
 
 Whenever you use the `Bouncer` facade in your code, remember to add this line to your namespace imports at the top of the file:
 
@@ -116,49 +132,101 @@ use Bouncer;
 
 For more information about Laravel Facades, refer to [the Laravel documentation](https://laravel.com/docs/5.5/facades).
 
+### Installing Bouncer in a non-Laravel app
+
+1) Install Bouncer with [composer](https://getcomposer.org/doc/00-intro.md):
+
+    ```
+    $ composer require silber/bouncer v1.0.0-rc.1
+    ```
+
+2) Set up the database with [the Eloquent Capsule component](https://github.com/illuminate/database/blob/master/README.md):
+
+    ```php
+    use Illuminate\Database\Capsule\Manager as Capsule;
+
+    $capsule = new Capsule;
+
+    $capsule->addConnection([/* connection config */]);
+
+    $capsule->setAsGlobal();
+    ```
+
+    Refer to [the Eloquent Capsule documentation](https://github.com/illuminate/database/blob/master/README.md) for more details.
+
+3) Run the migrations by either of the following methods:
+
+    - Use a tool such as [vagabond](https://github.com/michaeldyrynda/vagabond) to run Laravel migrations outside of a Laravel app. You'll find the necessary migrations in [the migrations stub file](https://github.com/JosephSilber/bouncer/blob/master/migrations/create_bouncer_tables.php#L17-L73).
+
+    - Alternatively, you can run [the raw SQL](https://github.com/JosephSilber/bouncer/blob/master/migrations/sql/MySQL.sql) directly in your database.
+
+4) Add Bouncer's trait to your user model:
+
+    ```php
+    use Illuminate\Database\Eloquent\Model;
+    use Silber\Bouncer\Database\HasRolesAndAbilities;
+
+    class User extends Model
+    {
+        use HasRolesAndAbilities;
+    }
+    ```
+
+5) Create an instance of Bouncer:
+
+    ```php
+    use Silber\Bouncer\Bouncer;
+
+    $bouncer = Bouncer::create();
+
+    // If you are in a request with a current user
+    // that you'd wish to check permissions for,
+    // pass that user to the "create" method:
+    $bouncer = Bouncer::create($user);
+    ```
+
+    If you're using dependency injection in your app, you may register the `Bouncer` instance as a singleton in the container:
+
+    ```php
+    use Silber\Bouncer\Bouncer;
+    use Illuminate\Container\Container;
+
+    Container::getInstance()->singleton(Bouncer::class, function () {
+        return Bouncer::create();
+    });
+    ```
+
+    You can now inject `Bouncer` into any class that needs it.
+
+    The `create` method creates a `Bouncer` instance with sensible defaults. To fully customize it, use the `make` method to get a factory instance. Call `create()` on the factory to create the `Bouncer` instance:
+
+    ```php
+    use Silber\Bouncer\Bouncer;
+
+    $bouncer = Bouncer::make()
+             ->withCache($customCacheInstance)
+             ->create();
+    ```
+
+    Check out [the `Factory` class](https://github.com/JosephSilber/bouncer/blob/c974953a0b1d8d187023002cdfae1800f3ccdb02/src/Factory.php) to see all the customizations available.
+
+6) Set which model is used as the user model throughout your app:
+
+    ```php
+    $bouncer->useUserModel(User::class);
+    ```
+
+    For additional configuration, check out [the Congifuration section](#configuration) below.
+
 ### Enabling cache
 
 By default, Bouncer's queries are cached for the current request. For better performance, you may want to [enable cross-request caching](#cache).
-
-## Upgrade
-
-### Upgrading to 1.0
-
-The table structure in Bouncer 1.0 has changed significantly. To upgrade, you'll have to update your database schema to the new structure.
-
-If your app has not made it to production yet and you can still rollback your migrations, do that. Once you've rolled back all migrations, you can delete the Bouncer migration file and republish it to get the newer version:
-
-```
-php artisan vendor:publish --provider="Silber\Bouncer\BouncerServiceProvider" --tag="migrations"
-```
-
-For apps that are in production and already have real data in the database, Bouncer ships with an upgrade migration file which will migrate your schema *and your data* to the new structure.
-
-> **Remember:** Before migrating, be sure to run a full backup of your database! If anything goes wrong, you'll want to be able to restore from your backup.
-
-After updating to Bouncer 1.0 through composer, run the following command:
-
-```
-php artisan bouncer:upgrade
-```
-
-This will create a new migration file under `database/migrations`, and will automatically call artisan's `migrate` command to migrate the database.
-
-Congratulations, you're done with your upgrade!
-
-If you have previously changed Bouncer's default table names, you will have to change them in this migration file. To prevent the `bouncer:upgrade` command from actually migrating your database, call it with the `no-migrate` flag:
-
-```
-php artisan bouncer:upgrade --no-migrate
-```
-
-This will create the migration file, but will not actually migrate the database. You can now manually edit the migration file to make any changes you need. After you've made the necessary changes, remember to run the `php artisan migrate` command yourself.
 
 ## Usage
 
 Adding roles and abilities to users is made extremely easy. You do not have to create a role or an ability in advance. Simply pass the name of the role/ability, and Bouncer will create it if it doesn't exist.
 
-> **Note:** the examples below all use the `Bouncer` facade. If you don't like facades, you can instead inject an instance of `Silber\Bouncer\Bouncer` into your class.
+> **Note:** the examples below all use the `Bouncer` facade. If you don't use facades, you can instead inject an instance of `Silber\Bouncer\Bouncer` into your class.
 
 ### Creating roles and abilities
 
@@ -169,6 +237,22 @@ Bouncer::allow('admin')->to('ban-users');
 ```
 
 That's it. Behind the scenes, Bouncer will create both a `Role` model and an `Ability` model for you.
+
+If you want to add additional attributes to the role/ability, such as a human-readable title, you can manually create them using the `role` and `ability` methods on the `Bouncer` class:
+
+```php
+$admin = Bouncer::role()->create([
+    'name' => 'admin',
+    'title' => 'Administrator',
+]);
+
+$ban = Bouncer::ability()->create([
+    'name' => 'ban-users',
+    'title' => 'Ban users',
+]);
+
+Bouncer::allow($admin)->to($ban);
+```
 
 ### Assigning roles to a user
 
@@ -290,6 +374,63 @@ To remove an ability for a specific model instance, pass in the actual model ins
 Bouncer::disallow($user)->to('delete', $post);
 ```
 
+> **Note**: the `disallow` method only removes abilities that were previously given to this user/role. If you want to disallow a subset of what a more-general ability has allowed, use [the `forbid` method](#forbidding-an-ability).
+
+### Forbidding an ability
+
+Bouncer also allows you to `forbid` a given ability, for more fine-grained control. At times you may wish to grant a user/role an ability that covers a wide range of actions, but then restrict a small subset of those actions.
+
+Here are some examples:
+
+- You might allow a user to generally view all documents, but have a specific highly-classified document that they should not be allowed to view:
+
+    ```php
+    Bouncer::allow($user)->to('view', Document::class);
+
+    Bouncer::forbid($user)->to('view', $classifiedDocument);
+    ```
+
+- You may wish to allow your `superadmin`s to do everything in your app, including adding/removing users. Then you may have an `admin` role that can do everything _besides_ managing users:
+
+    ```php
+    Bouncer::allow('superadmin')->everything();
+
+    Bouncer::allow('admin')->everything();
+    Bouncer::forbid('admin')->toManage(User::class);
+    ```
+
+- You may wish to occasionally ban users, removing their permission to all abilities. However, actually removing all of their roles & abilities would mean that when the ban is removed we'll have to figure out what their original roles and abilities were.
+    
+    Using a forbidden ability means that they can keep all their existing roles and abilities, but still not be authorized for anything. We can accomplish this by creating a special `banned` role, for which we'll forbid everything:
+
+    ```php
+    Bouncer::forbid('banned')->everything();
+    ```
+
+    Then, whenever we want to ban a user, we'll assign them the `banned` role:
+
+    ```php
+    Bouncer::assign('banned')->to($user);
+    ```
+
+    To remove the ban, we'll simply retract the role from the user:
+
+    ```php
+    Bouncer::retract('banned')->from($user);
+    ```
+
+As you can see, Bouncer's forbidden abilities gives you a lot of granular control over the permissions in your app.
+
+### Unforbidding an ability
+
+To remove a forbidden ability, use the `unforbid` method:
+
+```php
+Bouncer::unforbid($user)->to('view', $classifiedDocument);
+```
+
+> **Note**: this will remove any previously-forbidden ability. It will _not_ authomatically allow the ability if it's not already allowed by a different regular ability granted to this user/role.
+
 ### Checking a user's roles
 
 > **Note**: Generally speaking, you should not have a need to check roles directly. It is better to allow a role certain abilities, then check for those abilities instead. If what you need is very general, you can create very broad abilities. For example, an `access-dashboard` ability is always better than checking for `admin` or `editor` roles directly. For the rare occasion that you do want to check a role, that functionality is available here.
@@ -344,6 +485,14 @@ $user->isNotA('subscriber');
 $user->isAll('editor', 'moderator');
 ```
 
+### Getting all roles for a user
+
+You can get all roles for a user directly from the user model:
+
+```php
+$roles = $user->getRoles();
+```
+
 ### Getting all abilities for a user
 
 You can get all abilities for a user directly from the user model:
@@ -358,11 +507,12 @@ This will return a collection of the user's abilities, including any abilities g
 
 Authorizing users is handled directly at [Laravel's `Gate`](https://laravel.com/docs/5.5/authorization#gates), or on the user model (`$user->can($ability)`).
 
-For convenience, the bouncer class provides two passthrough methods:
+For convenience, the bouncer class provides these passthrough methods:
 
 ```php
-Bouncer::allows($ability);
-Bouncer::denies($ability);
+Bouncer::can($ability);
+Bouncer::cannot($ability);
+Bouncer::authorize($ability);
 ```
 
 These call directly into the `Gate` class.
@@ -402,6 +552,79 @@ Alternatively, you can refresh the cache only for a specific user:
 ```php
 Bouncer::refreshFor($user);
 ```
+
+## Multi-tenancy
+
+Bouncer fully supports multi-tenant apps, allowing you to seamlessly integrate Bouncer's roles and abilities for all tenants within the same app.
+
+### The scope middleware
+
+To get started, first publish [the scope middleware](https://github.com/JosephSilber/bouncer/blob/master/middleware/ScopeBouncer.php) into your app:
+
+```
+php artisan vendor:publish --tag="bouncer.middleware"
+```
+
+The middleware will now be published to `app/Http/Middleware/ScopeBouncer.php`. This middleware is where you tell Bouncer which tenant to use for the current request. For example, assuming your users all have an `account_id` attribute, this is what your middleware would look like:
+
+```php
+public function handle($request, Closure $next)
+{
+    $tenantId = $request->user()->account_id;
+
+    Bouncer::scope()->to($tenantId);
+
+    return $next($request);
+}
+```
+
+You are of course free to modify this middleware to fit your app's needs, such as pulling the tenant information from a subdomain et al.
+
+Now with the middleware in place, be sure to register it in your [HTTP Kernel](https://github.com/laravel/laravel/blob/73cff166c79cdeaef1c6b7ec6e71a33a7ea3012d/app/Http/Kernel.php#L30-L38):
+
+```php
+protected $middlewareGroups = [
+    'web' => [
+        // Keep the existing middleware here, and add this:
+        \App\Http\Middleware\ScopeBouncer::class,
+    ]
+];
+```
+
+All of Bouncer's queries will now be scoped to the given tenant.
+
+### Customizing Bouncer's scope
+
+Depending on your app's setup, you may not actually want _all_ of the queries to be scoped to the current tenant. For example, you may have a fixed set of roles/abilities that are the same for all tenants, and only allow your users to control which users are assigned which roles, and which roles have which abilities. To achieve this, you can tell Bouncer's scope to only scope the relationships between Bouncer's models, but not the models themselves:
+
+```php
+Bouncer::scope()->to($tenantId)->onlyRelations();
+```
+
+Furthermore, your app might not even allow its users to control which abilities a given role has. In that case, tell Bouncer's scope to exclude role abilities from the scope, so that those relationships stay global across all tenants:
+
+```php
+Bouncer::scope()->to($tenantId)->onlyRelations()->dontScopeRoleAbilities();
+```
+
+If your needs are even more specialized than what's outlined above, you can create your own [`Scope`](https://github.com/JosephSilber/bouncer/blob/ab2b92d4d2379be3220daaf0d4185ea10237ff2b/src/Contracts/Scope.php) with whatever custom logic you need:
+
+```php
+use Silber\Bouncer\Contracts\Scope;
+
+class MyScope implements Scope
+{
+    // Whatever custom logic your app needs
+}
+```
+
+Then, in a service provider, register your custom scope:
+
+```php
+Bouncer::scope(new MyScope);
+```
+
+Bouncer will call the methods on the `Scope` interface at various points in its execution. You are free to handle them according to your specific needs.
 
 ## Configuration
 
@@ -497,7 +720,15 @@ Bouncer::useAbilityModel(MyAbility::class);
 Bouncer::useRoleModel(MyRole::class);
 ```
 
-In addition to the above, there's also the `useUserModel` method. You shouldn't really ever have to set this manually, as Bouncer [automatically pulls this from your `auth` config](https://github.com/JosephSilber/bouncer/blob/9f2727ba07a21177ea120b0083594355be2d98de/src/BouncerServiceProvider.php#L164-L182).
+### User Model
+
+By default, Bouncer automatically [uses the user model of the default auth guard](https://github.com/JosephSilber/bouncer/blob/462f312/src/BouncerServiceProvider.php#L171-L190).
+
+If you're using Bouncer with a non-default guard, and it uses a different user model, you should let Bouncer know about the user model you want to use:
+
+```php
+Bouncer::useUserModel(\App\Admin::class);
+```
 
 ### Ownership
 
@@ -522,6 +753,134 @@ For greater control, you can pass a closure with your custom logic:
 Bouncer::ownedVia(Game::class, function ($game, $user) {
     return $game->team_id == $user->team_id;
 });
+```
+
+## FAQ
+
+There are some concepts in Bouncer that people keep on asking about, so here's a short list of some of those topics:
+
+### Where do I set up my app's roles and abilities?
+
+Seeding the initial roles and abilities can be done in a regular [Laravel seeder](https://laravel.com/docs/5.5/seeding) class. Start by creating a specific seeder file for Bouncer:
+
+```
+php artisan make:seeder BouncerSeeder
+```
+
+Place all of your seeding roles & abilities code in [the seeder's `run` method](https://github.com/laravel/framework/blob/f50e2004dfa40de895cd841a0a94acef5b417900/src/Illuminate/Database/Console/Seeds/stubs/seeder.stub#L12-L15). Here's an example of what that might look like:
+
+```php
+use Bouncer;
+use Illuminate\Database\Seeder;
+
+class BouncerSeeder extends Seeder
+{
+    public function run()
+    {
+        Bouncer::allow('superadmin')->everything();
+
+        Bouncer::allow('admin')->everything();
+        Bouncer::forbid('admin')->toManage(User::class);
+
+        Bouncer::allow('editor')->to('create', Post::class);
+        Bouncer::allow('editor')->toOwn(Post::class);
+
+        // etc.
+    }
+}
+```
+
+
+To actually run it, pass the seeder's class name to the `class` option of the `db:seed` command:
+
+```
+php artisan db:seed --class=BouncerSeeder
+```
+
+### Can I use a different set of roles & abilities for the public & dashboard sections of my site, respectively?
+
+Bouncer's [`scope`](#the-scope-middleware) can be used to section off different parts of the site, creating a silo for each one of them with its own set of roles & abilities:
+
+1. Create a `ScopeBouncer` [middleware](https://laravel.com/docs/5.5/middleware#defining-middleware) that takes an `$identifier` and sets it as the current scope:
+
+    ```php
+    use Bouncer, Closure;
+
+    class ScopeBouncer
+    {
+        public function handle($request, Closure $next, $identifier)
+        {
+            Bouncer::scope()->to($identifier);
+
+            return $next($request);
+        }
+    }
+    ```
+
+2. Register this new middleware as a route middleware in your [HTTP Kernel class](https://github.com/laravel/laravel/blob/73cff166c79cdeaef1c6b7ec6e71a33a7ea3012d/app/Http/Kernel.php#L53-L60):
+
+    ```php
+    protected $routeMiddleware = [
+        // Keep the other route middleware, and add this:
+        'scope-bouncer' => \App\Http\Middleware\ScopeBouncer::class,
+    ];
+    ```
+
+3. In your [route service provider](https://github.com/laravel/laravel/blob/73cff166c79cdeaef1c6b7ec6e71a33a7ea3012d/app/Providers/RouteServiceProvider.php), apply this middleware with a different identifier for the public routes and the dashboard routes, respectively:
+
+    ```php
+    Route::middleware(['web', 'scope-bouncer:1'])
+         ->namespace($this->namespace)
+         ->group(base_path('routes/public.php'));
+
+    Route::middleware(['web', 'scope-bouncer:2'])
+         ->namespace($this->namespace)
+         ->group(base_path('routes/dashboard.php'));
+    ```
+
+That's it. All roles and abilities will now be separately scoped for each section of your site. To fine-tune the extent of the scope, see [Customizing Bouncer's scope](#customizing-bouncers-scope).
+
+## Console commands
+
+### `bouncer:clean`
+
+The `bouncer:clean` command deletes unused abilities. Running this command will delete 2 types of unused abilities:
+
+- **Unassigned abilities** - abilities that are not assigned to anyone. For example:
+
+    ```php
+    Bouncer::allow($user)->to('view', Plan::class);
+
+    Bouncer::disallow($user)->to('view', Plan::class);
+    ```
+    
+    At this point, the "view plans" ability is not assigned to anyone, so it'll get deleted.
+
+    > **Note**: depending on the context of your app, you may not want to delete these. If you let your users manage abilities in your app's UI, you probably _don't_ want to delete unassigned abilities. See below.
+
+- **Orphaned abilities** - model abilities whose models have been deleted:
+
+    ```php
+    Bouncer::allow($user)->to('delete', $plan);
+
+    $plan->delete();
+    ```
+
+    Since the plan no longer exists, the ability is no longer of any use, so it'll get deleted.
+
+If you only want to delete one type of unused ability, run it with one of the following flags:
+
+```
+php artisan bouncer:clean --unassigned
+php artisan bouncer:clean --orphaned
+```
+
+If you don't pass it any flags, it will delete both types of unused abilities.
+
+To automatically run this command periodically, add it to [your console kernel's schedule](https://laravel.com/docs/5.5/scheduling#defining-schedules):
+
+```php
+$schedule->command('bouncer:clean')->weekly();
 ```
 
 ## Cheat Sheet
@@ -549,6 +908,12 @@ Bouncer::disallow($user)->toOwn(Post::class);
 Bouncer::allow('admin')->to('ban-users');
 Bouncer::disallow('admin')->to('ban-users');
 
+// You can also forbid specific abilities with the same syntax...
+Bouncer::forbid($user)->to('delete', $post);
+
+// And also remove a forbidden ability with the same syntax...
+Bouncer::unforbid($user)->to('delete', $post);
+
 // Re-sync a user's abilities
 Bouncer::sync($user)->abilities($abilities);
 
@@ -559,20 +924,20 @@ Bouncer::retract('admin')->from($user);
 // Re-sync a user's roles
 Bouncer::sync($user)->roles($roles);
 
-$check = Bouncer::allows('ban-users');
-$check = Bouncer::allows('edit', Post::class);
-$check = Bouncer::allows('delete', $post);
+$boolean = Bouncer::can('ban-users');
+$boolean = Bouncer::can('edit', Post::class);
+$boolean = Bouncer::can('delete', $post);
 
-$check = Bouncer::denies('ban-users');
-$check = Bouncer::denies('edit', Post::class);
-$check = Bouncer::denies('delete', $post);
+$boolean = Bouncer::cannot('ban-users');
+$boolean = Bouncer::cannot('edit', Post::class);
+$boolean = Bouncer::cannot('delete', $post);
 
-$check = Bouncer::is($user)->a('subscriber');
-$check = Bouncer::is($user)->an('admin');
-$check = Bouncer::is($user)->notA('subscriber');
-$check = Bouncer::is($user)->notAn('admin');
-$check = Bouncer::is($user)->a('moderator', 'editor');
-$check = Bouncer::is($user)->all('moderator', 'editor');
+$boolean = Bouncer::is($user)->a('subscriber');
+$boolean = Bouncer::is($user)->an('admin');
+$boolean = Bouncer::is($user)->notA('subscriber');
+$boolean = Bouncer::is($user)->notAn('admin');
+$boolean = Bouncer::is($user)->a('moderator', 'editor');
+$boolean = Bouncer::is($user)->all('moderator', 'editor');
 
 Bouncer::cache();
 Bouncer::dontCache();
@@ -595,10 +960,10 @@ $user->disallow('delete', $post);
 $user->assign('admin');
 $user->retract('admin');
 
-$check = $user->isAn('admin');
-$check = $user->isAn('editor', 'moderator');
-$check = $user->isAll('moderator', 'editor');
-$check = $user->isNot('subscriber', 'moderator');
+$boolean = $user->isAn('admin');
+$boolean = $user->isAn('editor', 'moderator');
+$boolean = $user->isAll('moderator', 'editor');
+$boolean = $user->isNotAn('admin', 'moderator');
 
 $abilities = $user->getAbilities();
 ```

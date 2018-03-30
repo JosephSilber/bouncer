@@ -12,11 +12,11 @@ class ForbidTest extends BaseTestCase
         $bouncer->allow($user)->to('edit-site');
         $bouncer->forbid($user)->to('edit-site');
 
-        $this->assertTrue($bouncer->denies('edit-site'));
+        $this->assertTrue($bouncer->cannot('edit-site'));
 
         $bouncer->unforbid($user)->to('edit-site');
 
-        $this->assertTrue($bouncer->allows('edit-site'));
+        $this->assertTrue($bouncer->can('edit-site'));
     }
 
     public function test_an_allowed_model_ability_is_not_granted_when_forbidden()
@@ -26,11 +26,11 @@ class ForbidTest extends BaseTestCase
         $bouncer->allow($user)->to('delete', $user);
         $bouncer->forbid($user)->to('delete', $user);
 
-        $this->assertTrue($bouncer->denies('delete', $user));
+        $this->assertTrue($bouncer->cannot('delete', $user));
 
         $bouncer->unforbid($user)->to('delete', $user);
 
-        $this->assertTrue($bouncer->allows('delete', $user));
+        $this->assertTrue($bouncer->can('delete', $user));
     }
 
     public function test_an_allowed_model_class_ability_is_not_granted_when_forbidden()
@@ -40,11 +40,11 @@ class ForbidTest extends BaseTestCase
         $bouncer->allow($user)->to('delete', User::class);
         $bouncer->forbid($user)->to('delete', User::class);
 
-        $this->assertTrue($bouncer->denies('delete', User::class));
+        $this->assertTrue($bouncer->cannot('delete', User::class));
 
         $bouncer->unforbid($user)->to('delete', User::class);
 
-        $this->assertTrue($bouncer->allows('delete', User::class));
+        $this->assertTrue($bouncer->can('delete', User::class));
     }
 
     public function test_forbidding_a_single_model_forbids_even_with_allowed_model_class_ability()
@@ -54,11 +54,11 @@ class ForbidTest extends BaseTestCase
         $bouncer->allow($user)->to('delete', User::class);
         $bouncer->forbid($user)->to('delete', $user);
 
-        $this->assertTrue($bouncer->denies('delete', $user));
+        $this->assertTrue($bouncer->cannot('delete', $user));
 
         $bouncer->unforbid($user)->to('delete', $user);
 
-        $this->assertTrue($bouncer->allows('delete', $user));
+        $this->assertTrue($bouncer->can('delete', $user));
     }
 
     public function test_forbidding_a_single_model_does_not_forbid_other_models()
@@ -71,7 +71,7 @@ class ForbidTest extends BaseTestCase
         $bouncer->allow($user1)->to('delete', User::class);
         $bouncer->forbid($user1)->to('delete', $user2);
 
-        $this->assertTrue($bouncer->allows('delete', $user1));
+        $this->assertTrue($bouncer->can('delete', $user1));
     }
 
     public function test_forbidding_a_model_class_forbids_individual_models()
@@ -81,11 +81,11 @@ class ForbidTest extends BaseTestCase
         $bouncer->allow($user)->to('delete', $user);
         $bouncer->forbid($user)->to('delete', User::class);
 
-        $this->assertTrue($bouncer->denies('delete', $user));
+        $this->assertTrue($bouncer->cannot('delete', $user));
 
         $bouncer->unforbid($user)->to('delete', $user);
 
-        $this->assertTrue($bouncer->denies('delete', $user));
+        $this->assertTrue($bouncer->cannot('delete', $user));
     }
 
     public function test_forbidding_an_through_a_role()
@@ -96,18 +96,18 @@ class ForbidTest extends BaseTestCase
         $bouncer->allow($user)->to('delete', User::class);
         $bouncer->assign('admin')->to($user);
 
-        $this->assertTrue($bouncer->denies('delete', User::class));
-        $this->assertTrue($bouncer->denies('delete', $user));
+        $this->assertTrue($bouncer->cannot('delete', User::class));
+        $this->assertTrue($bouncer->cannot('delete', $user));
 
         $bouncer->unforbid('admin')->to('delete', User::class);
 
-        $this->assertTrue($bouncer->allows('delete', User::class));
-        $this->assertTrue($bouncer->allows('delete', $user));
+        $this->assertTrue($bouncer->can('delete', User::class));
+        $this->assertTrue($bouncer->can('delete', $user));
 
         $bouncer->forbid('admin')->to('delete', $user);
 
-        $this->assertTrue($bouncer->allows('delete', User::class));
-        $this->assertTrue($bouncer->denies('delete', $user));
+        $this->assertTrue($bouncer->can('delete', User::class));
+        $this->assertTrue($bouncer->cannot('delete', $user));
     }
 
     public function test_forbidding_an_ability_allowed_through_a_role()
@@ -118,8 +118,8 @@ class ForbidTest extends BaseTestCase
         $bouncer->forbid($user)->to('delete', User::class);
         $bouncer->assign('admin')->to($user);
 
-        $this->assertTrue($bouncer->denies('delete', User::class));
-        $this->assertTrue($bouncer->denies('delete', $user));
+        $this->assertTrue($bouncer->cannot('delete', User::class));
+        $this->assertTrue($bouncer->cannot('delete', $user));
     }
 
     public function test_forbidding_an_ability_when_everything_is_allowed()
@@ -129,8 +129,8 @@ class ForbidTest extends BaseTestCase
         $bouncer->allow($user)->everything();
         $bouncer->forbid($user)->toManage(User::class);
 
-        $this->assertTrue($bouncer->allows('create', Account::class));
-        $this->assertTrue($bouncer->denies('create', User::class));
+        $this->assertTrue($bouncer->can('create', Account::class));
+        $this->assertTrue($bouncer->cannot('create', User::class));
     }
 
     public function test_forbid_an_ability_on_everything()
@@ -140,9 +140,9 @@ class ForbidTest extends BaseTestCase
         $bouncer->allow($user)->everything();
         $bouncer->forbid($user)->to('delete')->everything();
 
-        $this->assertTrue($bouncer->allows('create', Account::class));
-        $this->assertTrue($bouncer->denies('delete', User::class));
-        $this->assertTrue($bouncer->denies('delete', $user));
+        $this->assertTrue($bouncer->can('create', Account::class));
+        $this->assertTrue($bouncer->cannot('delete', User::class));
+        $this->assertTrue($bouncer->cannot('delete', $user));
     }
 
     public function test_forbidding_an_ability_stops_all_further_checks()
@@ -153,10 +153,10 @@ class ForbidTest extends BaseTestCase
             return true;
         });
 
-        $this->assertTrue($bouncer->allows('sleep'));
+        $this->assertTrue($bouncer->can('sleep'));
 
         $bouncer->forbid($user)->to('sleep');
 
-        $this->assertTrue($bouncer->denies('sleep'));
+        $this->assertTrue($bouncer->cannot('sleep'));
     }
 }

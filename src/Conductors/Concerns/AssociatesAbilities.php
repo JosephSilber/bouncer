@@ -33,10 +33,12 @@ trait AssociatesAbilities
      */
     protected function getAssociatedAbilityIds(Model $authority, array $abilityIds, $forbidden)
     {
-        return $authority->abilities()
-                         ->whereIn('id', $abilityIds)
-                         ->wherePivot('forbidden', '=', $forbidden)
-                         ->get(['id'])->pluck('id')
-                         ->all();
+        $relation = $authority->abilities();
+
+        $relation->whereIn('id', $abilityIds)->wherePivot('forbidden', '=', $forbidden);
+
+        Models::scope()->applyToRelation($relation);
+
+        return $relation->get(['id'])->pluck('id')->all();
     }
 }

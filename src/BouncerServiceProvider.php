@@ -2,11 +2,10 @@
 
 namespace Silber\Bouncer;
 
-use Silber\Bouncer\Seed\Seeder;
+use Silber\Bouncer\Database\Role;
 use Silber\Bouncer\Database\Models;
-use Silber\Bouncer\Seed\SeedCommand;
+use Silber\Bouncer\Database\Ability;
 use Silber\Bouncer\Console\CleanCommand;
-use Silber\Bouncer\Console\UpgradeCommand;
 
 use Illuminate\Cache\ArrayStore;
 use Illuminate\Support\ServiceProvider;
@@ -25,8 +24,6 @@ class BouncerServiceProvider extends ServiceProvider
         $this->registerClipboard();
         $this->registerCommands();
         $this->registerBouncer();
-        $this->registerMorphs();
-        $this->registerSeeder();
     }
 
     /**
@@ -36,10 +33,15 @@ class BouncerServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->publishMigrations();
         $this->registerAtGate();
+        $this->registerMorphs();
         $this->setTablePrefix();
         $this->setUserModel();
+
+        if ($this->runningInConsole()) {
+            $this->publishMiddleware();
+            $this->publishMigrations();
+        }
     }
 
     /**
@@ -75,9 +77,7 @@ class BouncerServiceProvider extends ServiceProvider
      */
     protected function registerCommands()
     {
-        $this->commands(SeedCommand::class);
         $this->commands(CleanCommand::class);
-        $this->commands(UpgradeCommand::class);
     }
 
     /**
@@ -87,22 +87,23 @@ class BouncerServiceProvider extends ServiceProvider
      */
     protected function registerClipboard()
     {
-        $this->app->singleton(Clipboard::class, function () {
+        $this->app->singleton(Contracts\Clipboard::class, function () {
             return new CachedClipboard(new ArrayStore);
         });
     }
 
     /**
-     * Register the bouncer as a singleton.
+     * Register Bouncer as a singleton.
      *
      * @return void
      */
     protected function registerBouncer()
     {
         $this->app->singleton(Bouncer::class, function () {
-            $bouncer = new Bouncer($this->app->make(Clipboard::class));
-
-            return $bouncer->setGate($this->app->make(Gate::class));
+            return Bouncer::make()
+                ->withClipboard($this->app->make(Clipboard::class))
+                ->withGate($this->app->make(Gate::class))
+                ->create();
         });
     }
 
@@ -114,19 +115,23 @@ class BouncerServiceProvider extends ServiceProvider
     protected function registerMorphs()
     {
         Relation::morphMap([
-            \Silber\Bouncer\Database\Role::class,
-            \Silber\Bouncer\Database\Ability::class,
+            Models::classname(Role::class),
+            Models::classname(Ability::class),
         ]);
     }
 
     /**
-     * Register the seeder as a singleton.
+     * Publish the package's middleware.
      *
      * @return void
      */
-    protected function registerSeeder()
+    protected function publishMiddleware()
     {
-        $this->app->singleton(Seeder::class);
+        $stub = __DIR__.'/../middleware/ScopeBouncer.php';
+
+        $target = app_path('Http/Middleware/ScopeBouncer.php');
+
+        $this->publishes([$stub => $target], 'bouncer.middleware');
     }
 
     /**
@@ -170,16 +175,53 @@ class BouncerServiceProvider extends ServiceProvider
      */
     protected function setUserModel()
     {
+        Models::setUsersModel($this->getUserModel());
+    }
+
+    /**
+     * Get the user model from the application's auth config.
+     *
+     * @return string
+     */
+    protected function getUserModel()
+    {
         $config = $this->app->make('config');
 
-        $model = $config->get('auth.providers.users.model', function () use ($config) {
-            return $config->get('auth.model', \App\User::class);
-        });
+        if (! is_null($model = $this->getUserModelFromDefaultGuard($config))) {
+            return $model;
+        }
 
-        Models::setUsersModel($model);
+        return $config->get('auth.model', \App\User::class);
+    }
 
-        Models::setTables([
-            'users' => Models::user()->getTable(),
-        ]);
+    /**
+     * Get the user model from the application's auth config.
+     *
+     * @param  \Illuminate\Config\Repository  $config
+     * @return string|null
+     */
+    protected function getUserModelFromDefaultGuard($config)
+    {
+        if (is_null($guard = $config->get('auth.defaults.guard'))) {
+            return null;
+        }
+
+        if (is_null($provider = $config->get("auth.guards.{$guard}.provider"))) {
+            return null;
+        }
+
+        return $config->get("auth.providers.{$provider}.model");
+    }
+
+    /**
+     * Determine if we are running in the console.
+     *
+     * Copied from Laravel's Application class, since we need to support 5.1.
+     *
+     * @return bool
+     */
+    protected function runningInConsole()
+    {
+        return php_sapi_name() == 'cli' || php_sapi_name() == 'phpdbg';
     }
 }

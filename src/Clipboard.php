@@ -3,7 +3,6 @@
 namespace Silber\Bouncer;
 
 use Silber\Bouncer\Database\Models;
-use Silber\Bouncer\Contracts\Clipboard as ClipboardContract;
 use Silber\Bouncer\Database\Queries\Abilities as AbilitiesQuery;
 
 use Illuminate\Support\Collection;
@@ -11,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class Clipboard implements ClipboardContract
+class Clipboard implements Contracts\Clipboard
 {
     use HandlesAuthorization;
 
@@ -179,13 +178,15 @@ class Clipboard implements ClipboardContract
      */
     protected function compileAbilityIdentifiers($ability, $model)
     {
-        $ability = strtolower($ability);
+        $identifiers = new Collection(
+            is_null($model)
+                ? [$ability, '*-*', '*']
+                : $this->compileModelAbilityIdentifiers($ability, $model)
+        );
 
-        if (is_null($model)) {
-            return new Collection([$ability, '*-*', '*']);
-        }
-
-        return new Collection($this->compileModelAbilityIdentifiers($ability, $model));
+        return $identifiers->map(function ($identifier) {
+            return strtolower($identifier);
+        });
     }
 
     /**
@@ -203,7 +204,7 @@ class Clipboard implements ClipboardContract
 
         $model = $model instanceof Model ? $model : new $model;
 
-        $type = strtolower($model->getMorphClass());
+        $type = $model->getMorphClass();
 
         $abilities = [
             "{$ability}-{$type}",
