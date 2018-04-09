@@ -4,7 +4,10 @@ use Silber\Bouncer\Database\Role;
 
 class RoleConstraintTest extends BaseTestCase
 {
-    public function test_roles_can_be_constrained_by_a_user()
+    /**
+     * @test
+     */
+    function roles_can_be_constrained_by_a_user()
     {
         $bouncer = $this->bouncer($user = User::create());
 
@@ -25,7 +28,10 @@ class RoleConstraintTest extends BaseTestCase
         $this->assertFalse($roles->contains('name', 'subscriber'));
     }
 
-    public function test_roles_can_be_constrained_by_a_collection_of_users()
+    /**
+     * @test
+     */
+    function roles_can_be_constrained_by_a_collection_of_users()
     {
         $user1 = User::create();
         $user2 = User::create();
@@ -50,7 +56,10 @@ class RoleConstraintTest extends BaseTestCase
         $this->assertFalse($roles->contains('name', 'admin'));
     }
 
-    public function test_roles_can_be_constrained_by_a_model_name_and_keys()
+    /**
+     * @test
+     */
+    function roles_can_be_constrained_by_a_model_name_and_keys()
     {
         $user1 = User::create();
         $user2 = User::create();

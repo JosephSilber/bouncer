@@ -152,7 +152,7 @@ trait IsAbility
     {
         $names = (array) $name;
 
-        if ( ! $strict) {
+        if (! $strict && $name !== '*') {
             $names[] = '*';
         }
 

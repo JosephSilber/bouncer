@@ -3,10 +3,10 @@
 require __DIR__.'/../migrations/create_bouncer_tables.php';
 
 use Silber\Bouncer\Bouncer;
-use Silber\Bouncer\CachedClipboard;
+use Silber\Bouncer\Clipboard;
 use Silber\Bouncer\Database\Models;
-use Silber\Bouncer\Contracts\Clipboard;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
+use Silber\Bouncer\Contracts\Clipboard as ClipboardContract;
 
 use PHPUnit\Framework\TestCase;
 use Illuminate\Auth\Access\Gate;
@@ -21,7 +21,7 @@ abstract class BaseTestCase extends TestCase
     /**
      * The clipboard instance.
      *
-     * @var \Silber\Bouncer\CachedClipboard
+     * @var \Silber\Bouncer\Contracts\Clipboard
      */
     protected $clipboard;
 
@@ -40,27 +40,28 @@ abstract class BaseTestCase extends TestCase
     protected static $dispatcher;
 
     /**
-     * Setup the database schema.
+     * Setup the world for the tests.
      *
      * @return void
      */
     public function setUp()
     {
+        Container::setInstance(new Container);
+
         Models::setUsersModel(User::class);
 
-        $this->setContainerInstance();
-
-        Container::getInstance()->instance(
-            Clipboard::class,
-            $this->clipboard = new CachedClipboard(new ArrayStore)
-        );
+        $this->registerClipboard();
 
         $this->migrate();
     }
 
-    protected function setContainerInstance()
+    protected function registerClipboard()
     {
-        Container::setInstance(new Container);
+        $this->clipboard = new Clipboard;
+
+        Container::getInstance()->bind(ClipboardContract::class, function () {
+            return $this->clipboard;
+        });
     }
 
     protected function migrate()

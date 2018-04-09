@@ -3,14 +3,14 @@
 namespace Silber\Bouncer;
 
 use Silber\Bouncer\Database\Models;
-use Silber\Bouncer\Contracts\CachedClipboard as CachedClipboardContract;
 
 use Illuminate\Cache\TaggedCache;
 use Illuminate\Contracts\Cache\Store;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection as BaseCollection;
 
-class CachedClipboard extends Clipboard implements CachedClipboardContract
+class CachedClipboard extends BaseClipboard implements Contracts\CachedClipboard
 {
     /**
      * The tag used for caching.
@@ -61,6 +61,129 @@ class CachedClipboard extends Clipboard implements CachedClipboardContract
     public function getCache()
     {
         return $this->cache;
+    }
+
+    /**
+     * Determine if the given authority has the given ability, and return the ability ID.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $authority
+     * @param  string  $ability
+     * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
+     * @return int|bool|null
+     */
+    protected function checkGetId(Model $authority, $ability, $model = null)
+    {
+        $applicable = $this->compileAbilityIdentifiers($ability, $model);
+
+        // We will first check if any of the applicable abilities have been forbidden.
+        // If so, we'll return false right away, so as to not pass the check. Then,
+        // we'll check if any of them have been allowed & return the matched ID.
+        $forbiddenId = $this->findMatchingAbility(
+            $this->getForbiddenAbilities($authority), $applicable, $model, $authority
+        );
+
+        if ($forbiddenId) {
+            return false;
+        }
+
+        return $this->findMatchingAbility(
+            $this->getAbilities($authority), $applicable, $model, $authority
+        );
+    }
+
+    /**
+     * Determine if any of the abilities can be matched against the provided applicable ones.
+     *
+     * @param  \Illuminate\Support\Collection  $abilities
+     * @param  \Illuminate\Support\Collection  $applicable
+     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  \Illuminate\Database\Eloquent\Model  $authority
+     * @return int|null
+     */
+    protected function findMatchingAbility($abilities, $applicable, $model, $authority)
+    {
+        $abilities = $abilities->toBase()->pluck('identifier', 'id');
+
+        if ($id = $this->getMatchedAbilityId($abilities, $applicable)) {
+            return $id;
+        }
+
+        if ($this->isOwnedBy($authority, $model)) {
+            return $this->getMatchedAbilityId(
+                $abilities,
+                $applicable->map(function ($identifier) {
+                    return $identifier.'-owned';
+                })
+            );
+        }
+    }
+
+    /**
+     * Get the ID of the ability that matches one of the applicable abilities.
+     *
+     * @param  \Illuminate\Support\Collection  $abilityMap
+     * @param  \Illuminate\Support\Collection  $applicable
+     * @return int|null
+     */
+    protected function getMatchedAbilityId($abilityMap, $applicable)
+    {
+        foreach ($abilityMap as $id => $identifier) {
+            if ($applicable->contains($identifier)) {
+                return $id;
+            }
+        }
+    }
+
+    /**
+     * Compile a list of ability identifiers that match the provided parameters.
+     *
+     * @param  string  $ability
+     * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
+     * @return \Illuminate\Support\Collection
+     */
+    protected function compileAbilityIdentifiers($ability, $model)
+    {
+        $identifiers = new BaseCollection(
+            is_null($model)
+                ? [$ability, '*-*', '*']
+                : $this->compileModelAbilityIdentifiers($ability, $model)
+        );
+
+        return $identifiers->map(function ($identifier) {
+            return strtolower($identifier);
+        });
+    }
+
+    /**
+     * Compile a list of ability identifiers that match the given model.
+     *
+     * @param  string  $ability
+     * @param  \Illuminate\Database\Eloquent\Model|string  $model
+     * @return array
+     */
+    protected function compileModelAbilityIdentifiers($ability, $model)
+    {
+        if ($model === '*') {
+            return ["{$ability}-*", "*-*"];
+        }
+
+        $model = $model instanceof Model ? $model : new $model;
+
+        $type = $model->getMorphClass();
+
+        $abilities = [
+            "{$ability}-{$type}",
+            "{$ability}-*",
+            "*-{$type}",
+            "*-*",
+        ];
+
+        if ($model->exists) {
+            $abilities[] = "{$ability}-{$type}-{$model->getKey()}";
+            $abilities[] = "*-{$type}-{$model->getKey()}";
+        }
+
+        return $abilities;
     }
 
     /**

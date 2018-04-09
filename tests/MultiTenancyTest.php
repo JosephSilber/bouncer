@@ -12,21 +12,27 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class MultiTenancyTest extends BaseTestCase
 {
+    use TestsClipboards;
+
     /**
      * Reset any scopes that have been applied in a test.
      *
      * @return void
      */
-    public function tearDown()
+    function tearDown()
     {
         Models::scope(new Scope);
 
         parent::tearDown();
     }
 
-    public function test_creating_roles_and_abilities_automatically_scopes_them()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function creating_roles_and_abilities_automatically_scopes_them($provider)
     {
-        $bouncer = $this->bouncer($user = User::create());
+        list($bouncer, $user) = $provider();
 
         $bouncer->scope()->to(1);
 
@@ -39,9 +45,13 @@ class MultiTenancyTest extends BaseTestCase
         $this->assertEquals(1, $this->db()->table('assigned_roles')->value('scope'));
     }
 
-    public function test_syncing_roles_is_properly_scoped()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function syncing_roles_is_properly_scoped($provider)
     {
-        $bouncer = $this->bouncer($user = User::create())->dontCache();
+        list($bouncer, $user) = $provider();
 
         $bouncer->scope()->to(1);
         $bouncer->assign(['writer', 'reader'])->to($user);
@@ -65,9 +75,13 @@ class MultiTenancyTest extends BaseTestCase
         $this->assertEquals(1, $user->roles()->count());
     }
 
-    public function test_syncing_abilities_is_properly_scoped()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function syncing_abilities_is_properly_scoped($provider)
     {
-        $bouncer = $this->bouncer($user = User::create())->dontCache();
+        list($bouncer, $user) = $provider();
 
         $bouncer->scope()->to(1);
         $bouncer->allow($user)->to(['write', 'read']);
@@ -93,9 +107,13 @@ class MultiTenancyTest extends BaseTestCase
         $this->assertEquals(1, $user->abilities()->count());
     }
 
-    public function test_relation_queries_are_properly_scoped()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function relation_queries_are_properly_scoped($provider)
     {
-        $bouncer = $this->bouncer($user = User::create());
+        list($bouncer, $user) = $provider();
 
         $bouncer->scope()->to(1);
         $bouncer->allow($user)->to('create', User::class);
@@ -122,9 +140,13 @@ class MultiTenancyTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('create', User::class));
     }
 
-    public function test_relation_queries_can_be_scoped_exclusively()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function relation_queries_can_be_scoped_exclusively($provider)
     {
-        $bouncer = $this->bouncer($user = User::create());
+        list($bouncer, $user) = $provider();
 
         $bouncer->scope()->to(1)->onlyRelations();
         $bouncer->allow($user)->to('create', User::class);
@@ -151,9 +173,13 @@ class MultiTenancyTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('create', User::class));
     }
 
-    public function test_scoping_also_returns_global_abilities()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function scoping_also_returns_global_abilities($provider)
     {
-        $bouncer = $this->bouncer($user = User::create());
+        list($bouncer, $user) = $provider();
 
         $bouncer->allow($user)->to('create', User::class);
 
@@ -169,9 +195,13 @@ class MultiTenancyTest extends BaseTestCase
         $this->assertTrue($bouncer->can('delete', User::class));
     }
 
-    public function test_forbidding_abilities_only_affects_the_current_scope()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function forbidding_abilities_only_affects_the_current_scope($provider)
     {
-        $bouncer = $this->bouncer($user = User::create());
+        list($bouncer, $user) = $provider();
 
         $bouncer->scope()->to(1);
         $bouncer->allow($user)->to('create', User::class);
@@ -191,9 +221,13 @@ class MultiTenancyTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('create', User::class));
     }
 
-    public function test_assigning_and_retracting_roles_scopes_them_properly()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function assigning_and_retracting_roles_scopes_them_properly($provider)
     {
-        $bouncer = $this->bouncer($user = User::create());
+        list($bouncer, $user) = $provider();
 
         $bouncer->scope()->to(1)->onlyRelations();
         $bouncer->assign('admin')->to($user);
@@ -209,9 +243,13 @@ class MultiTenancyTest extends BaseTestCase
         $this->assertFalse($bouncer->is($user)->an('admin'));
     }
 
-    public function test_role_abilities_can_be_excluded_from_scopes()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function role_abilities_can_be_excluded_from_scopes($provider)
     {
-        $bouncer = $this->bouncer($user = User::create());
+        list($bouncer, $user) = $provider();
 
         $bouncer->scope()->to(1)
                 ->onlyRelations()
@@ -226,9 +264,13 @@ class MultiTenancyTest extends BaseTestCase
         $this->assertTrue($bouncer->can('delete', User::class));
     }
 
-    public function test_can_set_custom_scope()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function can_set_custom_scope($provider)
     {
-        $bouncer = $this->bouncer($user = User::create());
+        list($bouncer, $user) = $provider();
 
         $bouncer->scope(new MultiTenancyNullScopeStub)->to(1);
 
