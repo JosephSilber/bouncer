@@ -68,6 +68,7 @@ trait DisassociatesAbilities
 
         return $relation->newPivotStatement()
                         ->where($foreignKeyName, $model->getKey())
+                        ->where('entity_type', $model->getMorphClass())
                         ->whereIn($relatedKeyName, $ids);
     }
 

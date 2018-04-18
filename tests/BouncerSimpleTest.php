@@ -179,6 +179,24 @@ class BouncerSimpleTest extends BaseTestCase
      * @test
      * @dataProvider bouncerProvider
      */
+    function disallow_on_roles_does_not_disallow_for_users_with_matching_id($provider)
+    {
+        list($bouncer, $user) = $provider();
+
+        $bouncer->allow($user)->to('edit-site');
+        // Since the user is the first user created, its ID is 1.
+        // Creating admin as the first role, it'll have its ID
+        // set to 1. Let's test that they're kept separate.
+        $bouncer->allow('admin')->to('edit-site');
+        $bouncer->disallow('admin')->to('edit-site');
+
+        $this->assertTrue($bouncer->can('edit-site'));
+    }
+
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
     function can_check_user_roles($provider)
     {
         list($bouncer, $user) = $provider();
