@@ -183,10 +183,10 @@ class BouncerSimpleTest extends BaseTestCase
     {
         list($bouncer, $user) = $provider();
 
-        $bouncer->allow($user)->to('edit-site');
         // Since the user is the first user created, its ID is 1.
         // Creating admin as the first role, it'll have its ID
         // set to 1. Let's test that they're kept separate.
+        $bouncer->allow($user)->to('edit-site');
         $bouncer->allow('admin')->to('edit-site');
         $bouncer->disallow('admin')->to('edit-site');
 
