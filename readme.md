@@ -1,10 +1,12 @@
-# Bouncer
-
 <p>
 <a href="https://travis-ci.org/JosephSilber/bouncer"><img src="https://travis-ci.org/JosephSilber/bouncer.svg" alt="Build Status"></a>
 <a href="https://packagist.org/packages/silber/bouncer"><img src="https://poser.pugx.org/silber/bouncer/d/total.svg" alt="Total Downloads"></a>
 <a href="https://github.com/JosephSilber/bouncer/blob/master/LICENSE.txt"><img src="https://poser.pugx.org/silber/bouncer/license.svg" alt="License"></a>
 </p>
+
+<img src="https://user-images.githubusercontent.com/1403741/39606419-587dbb1e-4f03-11e8-8e54-1bb2f39fb0f5.jpg">
+
+# Bouncer
 
 Bouncer is an elegant, framework-agnostic approach to managing roles and abilities for any app using Eloquent models.
 
