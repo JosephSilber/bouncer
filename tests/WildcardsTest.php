@@ -5,9 +5,15 @@ use Silber\Bouncer\Database\Ability;
 
 class WildcardsTest extends BaseTestCase
 {
-    public function test_a_wildard_ability_allows_everything()
+    use TestsClipboards;
+
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function a_wildard_ability_allows_everything($provider)
     {
-        $bouncer = $this->bouncer($user = User::create())->dontCache();
+        list($bouncer, $user) = $provider();
 
         $bouncer->allow($user)->to('*');
 
@@ -20,9 +26,13 @@ class WildcardsTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('*'));
     }
 
-    public function test_manage_allows_all_actions_on_a_model()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function manage_allows_all_actions_on_a_model($provider)
     {
-        $bouncer = $this->bouncer($user = User::create())->dontCache();
+        list($bouncer, $user) = $provider();
 
         $bouncer->allow($user)->toManage($user);
 
@@ -37,9 +47,13 @@ class WildcardsTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('edit', $user));
     }
 
-    public function test_manage_on_a_model_class_allows_all_actions_on_all_its_models()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function manage_on_a_model_class_allows_all_actions_on_all_its_models($provider)
     {
-        $bouncer = $this->bouncer($user = User::create())->dontCache();
+        list($bouncer, $user) = $provider();
 
         $bouncer->allow($user)->toManage(User::class);
 
@@ -58,9 +72,13 @@ class WildcardsTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('edit', User::class));
     }
 
-    public function test_always_allows_the_action_on_all_models()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function always_allows_the_action_on_all_models($provider)
     {
-        $bouncer = $this->bouncer($user = User::create())->dontCache();
+        list($bouncer, $user) = $provider();
 
         $bouncer->allow($user)->to('delete')->everything();
 
@@ -76,9 +94,13 @@ class WildcardsTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('delete', '*'));
     }
 
-    public function test_everything_allows_everything()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function everything_allows_everything($provider)
     {
-        $bouncer = $this->bouncer($user = User::create())->dontCache();
+        list($bouncer, $user) = $provider();
 
         $bouncer->allow($user)->everything();
 
@@ -103,9 +125,13 @@ class WildcardsTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('ban', User::class));
     }
 
-    public function test_a_simple_wildard_ability_denies_model_abilities()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function a_simple_wildard_ability_denies_model_abilities($provider)
     {
-        $bouncer = $this->bouncer($user = User::create());
+        list($bouncer, $user) = $provider();
 
         $bouncer->allow($user)->to('*');
 
@@ -115,9 +141,13 @@ class WildcardsTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('*', User::class));
     }
 
-    public function test_manage_denies_simple_abilities()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function manage_denies_simple_abilities($provider)
     {
-        $bouncer = $this->bouncer($user = User::create());
+        list($bouncer, $user) = $provider();
 
         $bouncer->allow($user)->toManage($user);
 
@@ -125,9 +155,13 @@ class WildcardsTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('*'));
     }
 
-    public function test_manage_on_a_model_class_denies_simple_abilities()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function manage_on_a_model_class_denies_simple_abilities($provider)
     {
-        $bouncer = $this->bouncer($user = User::create());
+        list($bouncer, $user) = $provider();
 
         $bouncer->allow($user)->toManage(User::class);
 
@@ -135,9 +169,13 @@ class WildcardsTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('edit'));
     }
 
-    public function test_always_denies_simple_abilities()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function always_denies_simple_abilities($provider)
     {
-        $bouncer = $this->bouncer($user = User::create());
+        list($bouncer, $user) = $provider();
 
         $bouncer->allow($user)->to('delete')->everything();
 

@@ -6,9 +6,15 @@ use Silber\Bouncer\Database\Ability;
 
 class OwnershipTest extends BaseTestCase
 {
-    public function test_can_own_a_model_class()
+    use TestsClipboards;
+
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function can_own_a_model_class($provider)
     {
-        $bouncer = $this->bouncer($user = User::create())->dontCache();
+        list($bouncer, $user) = $provider();
 
         $bouncer->allow($user)->toOwn(Account::class);
 
@@ -31,9 +37,13 @@ class OwnershipTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('update', $account));
     }
 
-    public function test_can_own_a_model()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function can_own_a_model($provider)
     {
-        $bouncer = $this->bouncer($user = User::create())->dontCache();
+        list($bouncer, $user) = $provider();
 
         $account1 = Account::create(['user_id' => $user->id]);
         $account2 = Account::create(['user_id' => $user->id]);
@@ -58,9 +68,13 @@ class OwnershipTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('update', $account1));
     }
 
-    public function test_can_own_a_model_for_a_given_ability()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function can_own_a_model_for_a_given_ability($provider)
     {
-        $bouncer = $this->bouncer($user = User::create())->dontCache();
+        list($bouncer, $user) = $provider();
 
         $account1 = Account::create(['user_id' => $user->id]);
         $account2 = Account::create(['user_id' => $user->id]);
@@ -89,9 +103,13 @@ class OwnershipTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('update', $account1));
     }
 
-    public function test_can_own_everything()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function can_own_everything($provider)
     {
-        $bouncer = $this->bouncer($user = User::create())->dontCache();
+        list($bouncer, $user) = $provider();
 
         $bouncer->allow($user)->toOwnEverything();
 
@@ -111,9 +129,13 @@ class OwnershipTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('delete', $account));
     }
 
-    public function test_can_own_everything_for_a_given_ability()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function can_own_everything_for_a_given_ability($provider)
     {
-        $bouncer = $this->bouncer($user = User::create())->dontCache();
+        list($bouncer, $user) = $provider();
 
         $bouncer->allow($user)->toOwnEverything()->to('view');
 
@@ -134,9 +156,13 @@ class OwnershipTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('view', $account));
     }
 
-    public function test_can_use_custom_ownership_attribute()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function can_use_custom_ownership_attribute($provider)
     {
-        $bouncer = $this->bouncer($user = User::create())->dontCache();
+        list($bouncer, $user) = $provider();
 
         $bouncer->ownedVia('userId');
 
@@ -149,9 +175,13 @@ class OwnershipTest extends BaseTestCase
         Models::reset();
     }
 
-    public function test_can_use_custom_ownership_attribute_for_model_type()
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function can_use_custom_ownership_attribute_for_model_type($provider)
     {
-        $bouncer = $this->bouncer($user = User::create())->dontCache();
+        list($bouncer, $user) = $provider();
 
         $bouncer->ownedVia(Account::class, 'userId');
 

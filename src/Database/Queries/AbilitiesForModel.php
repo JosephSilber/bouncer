@@ -34,7 +34,7 @@ class AbilitiesForModel
     public function constrain($query, $model, $strict = false)
     {
         if ($model === '*') {
-            return $this->constrainByWildcard($query, $strict);
+            return $this->constrainByWildcard($query);
         }
 
         $model = is_string($model) ? new $model : $model;
@@ -46,15 +46,10 @@ class AbilitiesForModel
      * Constrain a query to a model wiildcard.
      *
      * @param  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder  $query
-     * @param  bool  $strict
      * @return void
      */
-    protected function constrainByWildcard($query, $strict = false)
+    protected function constrainByWildcard($query)
     {
-        if ( ! $strict) {
-            return;
-        }
-
         $query->where("{$this->table}.entity_type", '*');
     }
 
@@ -64,15 +59,36 @@ class AbilitiesForModel
      * @param  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder  $query
      * @param  \Illuminate\Database\Eloquent\Model  $model
      * @param  bool  $strict
-     * @return void
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
-    protected function constrainByModel($query, Model $model, $strict = false)
+    protected function constrainByModel($query, Model $model, $strict)
     {
-        $query->where(function ($query) use ($model, $strict) {
-            $query->where($this->table.'.entity_type', $model->getMorphClass());
+        if ($strict) {
+            return $query->where(
+                $this->modelAbilityConstraint($model, $strict)
+            );
+        }
+
+        return $query->where(function ($query) use ($model, $strict) {
+            $query->where("{$this->table}.entity_type", '*')
+                  ->orWhere($this->modelAbilityConstraint($model, $strict));
+        });
+    }
+
+    /**
+     * Get the constraint for regular model abilities.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  bool  $strict
+     * @return \Closure
+     */
+    protected function modelAbilityConstraint(Model $model, $strict)
+    {
+        return function ($query) use ($model, $strict) {
+            $query->where("{$this->table}.entity_type", $model->getMorphClass());
 
             $query->where($this->abilitySubqueryConstraint($model, $strict));
-        });
+        };
     }
 
     /**
@@ -89,11 +105,11 @@ class AbilitiesForModel
             // that cover all instances of this model. If it does exist, we only
             // want to find blanket abilities if we're not using strict mode.
             if ( ! $model->exists || ! $strict) {
-                $query->whereNull($this->table.'.entity_id');
+                $query->whereNull("{$this->table}.entity_id");
             }
 
             if ($model->exists) {
-                $query->orWhere($this->table.'.entity_id', $model->getKey());
+                $query->orWhere("{$this->table}.entity_id", $model->getKey());
             }
         };
     }
