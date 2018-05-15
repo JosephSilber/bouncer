@@ -34,7 +34,7 @@ class Clipboard extends BaseClipboard
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
      * @return bool
      */
-    protected function isForbidden(Model $authority, $ability, $model = null)
+    public function isForbidden(Model $authority, $ability, $model = null)
     {
         return $this->getHasAbilityQuery(
             $authority, $ability, $model, $allowed = false

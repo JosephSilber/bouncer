@@ -43,6 +43,11 @@ trait Authorizable
         return $this->cant($ability, $model);
     }
 
+    public function forbidden($ability, $model = null)
+    {
+        return $this->getClipboardInstance()->isForbidden($this, $ability, $model);
+    }
+
     /**
      * Get an instance of the bouncer's clipboard.
      *
