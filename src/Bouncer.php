@@ -366,6 +366,11 @@ class Bouncer
         return $this->cannot($ability, $arguments);
     }
 
+    public function forbids()
+    {
+
+    }
+
     /**
      * Get an instance of the role model.
      *
