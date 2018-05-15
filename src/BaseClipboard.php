@@ -80,6 +80,16 @@ abstract class BaseClipboard implements Contracts\Clipboard
     }
 
     /**
+     * Determine whether the given ability request is explicitely forbidden.
+     *
+     * @param  Model  $authority
+     * @param  string  $ability
+     * @param  null  $model
+     * @return bool
+     */
+    abstract public function isForbidden(Model $authority, $ability, $model = null);
+
+    /**
      * Determine if the given authority has the given ability, and return the ability ID.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $authority
