@@ -170,7 +170,7 @@ class Helpers
      *
      * @param  iterable  $items
      * @param  callable  $callback
-     * @return static
+     * @return \Illuminate\Support\Collection
      */
     public static function partition($items, callable $callback)
     {
