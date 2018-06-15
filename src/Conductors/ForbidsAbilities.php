@@ -32,7 +32,7 @@ class ForbidsAbilities
      * @param  mixed  $abilities
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
      * @param  array  $attributes
-     * @return bool
+     * @return bool|\Silber\Bouncer\Conductors\Lazy\ConductsAbilities
      */
     public function to($abilities, $model = null, array $attributes = [])
     {

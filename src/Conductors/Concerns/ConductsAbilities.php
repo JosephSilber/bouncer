@@ -42,7 +42,7 @@ trait ConductsAbilities
      *
      * @param  string|object  $model
      * @param  array  $attributes
-     * @return void
+     * @return \Silber\Bouncer\Conductors\Lazy\HandlesOwnership
      */
     public function toOwn($model, array $attributes = [])
     {
@@ -53,7 +53,7 @@ trait ConductsAbilities
      * Allow/disallow owning all models.
      *
      * @param  array  $attributes
-     * @return mixed
+     * @return \Silber\Bouncer\Conductors\Lazy\HandlesOwnership
      */
     public function toOwnEverything(array $attributes = [])
     {

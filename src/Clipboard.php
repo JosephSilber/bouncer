@@ -87,7 +87,7 @@ class Clipboard extends BaseClipboard
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @param  string  $ability
-     * @return void
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     protected function constrainToSimpleAbility($query, $ability)
     {

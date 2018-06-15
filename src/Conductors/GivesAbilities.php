@@ -32,7 +32,7 @@ class GivesAbilities
      * @param  \Illuminate\Database\Eloquent\model|array|int  $abilities
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
      * @param  array  $attributes
-     * @return void
+     * @return \Silber\Bouncer\Conductors\Lazy\ConductsAbilities|null
      */
     public function to($abilities, $model = null, array $attributes = [])
     {

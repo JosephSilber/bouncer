@@ -20,7 +20,7 @@ trait DisassociatesAbilities
      * @param  mixed  $abilities
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $entity
      * @param  array  $attributes
-     * @return bool
+     * @return bool|\Silber\Bouncer\Conductors\Lazy\ConductsAbilities
      */
     public function to($abilities, $entity = null, array $attributes = [])
     {
