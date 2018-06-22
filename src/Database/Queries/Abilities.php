@@ -54,7 +54,7 @@ class Abilities
                   ->join($permissions, $roles.'.id', '=', $permissions.'.entity_id')
                   ->whereRaw("{$prefix}{$permissions}.ability_id = {$prefix}{$abilities}.id")
                   ->where($permissions.".forbidden", ! $allowed)
-                  ->where($permissions.".entity_type", Models::role()->getMorphClass());
+                  ->where($permissions.".entity_type", Models::classname(\Silber\Bouncer\Database\Role::class));
 
             Models::scope()->applyToModelQuery($query, $roles);
             Models::scope()->applyToRelationQuery($query, $permissions);
