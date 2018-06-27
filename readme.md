@@ -243,12 +243,12 @@ That's it. Behind the scenes, Bouncer will create both a `Role` model and an `Ab
 If you want to add additional attributes to the role/ability, such as a human-readable title, you can manually create them using the `role` and `ability` methods on the `Bouncer` class:
 
 ```php
-$admin = Bouncer::role()->create([
+$admin = Bouncer::role()->firstOrCreate([
     'name' => 'admin',
     'title' => 'Administrator',
 ]);
 
-$ban = Bouncer::ability()->create([
+$ban = Bouncer::ability()->firstOrCreate([
     'name' => 'ban-users',
     'title' => 'Ban users',
 ]);
