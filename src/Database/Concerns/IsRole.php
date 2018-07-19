@@ -36,6 +36,10 @@ trait IsRole
                 $role->title = RoleTitle::from($role)->toString();
             }
         });
+
+        static::deleted(function ($role) {
+            $role->abilities()->detach();
+        });
     }
 
     /**

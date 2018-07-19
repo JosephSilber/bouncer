@@ -107,6 +107,26 @@ class BouncerSimpleTest extends BaseTestCase
 
     /**
      * @test
+     */
+    function deleting_a_role_deletes_the_pivot_table_records()
+    {
+        $bouncer = $this->bouncer();
+
+        $admin = $bouncer->role()->create(['name' => 'admin']);
+        $editor = $bouncer->role()->create(['name' => 'editor']);
+
+        $bouncer->allow($admin)->everything();
+        $bouncer->allow($editor)->to('edit', User::class);
+
+        $this->assertEquals(2, $this->db()->table('permissions')->count());
+
+        $admin->delete();
+
+        $this->assertEquals(1, $this->db()->table('permissions')->count());
+    }
+
+    /**
+     * @test
      * @dataProvider bouncerProvider
      */
     function can_give_and_remove_multiple_roles_at_once($provider)
