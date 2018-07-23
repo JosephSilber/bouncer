@@ -236,4 +236,24 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
 
         $this->assertEquals(1, $this->db()->table('permissions')->count());
     }
+
+    /**
+     * @test
+     */
+    function deleting_a_model_deletes_the_assigned_roles_pivot_table_records()
+    {
+        $bouncer = $this->bouncer();
+
+        $user1 = User::create();
+        $user2 = User::create();
+
+        $bouncer->assign('admin')->to($user1);
+        $bouncer->assign('admin')->to($user2);
+
+        $this->assertEquals(2, $this->db()->table('assigned_roles')->count());
+
+        $user1->delete();
+
+        $this->assertEquals(1, $this->db()->table('assigned_roles')->count());
+    }
 }

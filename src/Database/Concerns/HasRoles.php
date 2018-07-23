@@ -14,6 +14,18 @@ use Silber\Bouncer\Database\Queries\Roles as RolesQuery;
 trait HasRoles
 {
     /**
+     * Boot the HasRoles trait.
+     *
+     * @return void
+     */
+    public static function bootHasRoles()
+    {
+        static::deleted(function ($model) {
+            $model->roles()->detach();
+        });
+    }
+
+    /**
      * The roles relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
@@ -28,7 +40,7 @@ trait HasRoles
 
         return Models::scope()->applyToRelation($relation);
     }
-    
+
     /**
      * Get all of the model's assigned roles.
      *
