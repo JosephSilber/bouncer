@@ -15,6 +15,18 @@ use Silber\Bouncer\Conductors\UnforbidsAbilities;
 trait HasAbilities
 {
     /**
+     * Boot the HasAbilities trait.
+     *
+     * @return void
+     */
+    public static function bootHasAbilities()
+    {
+        static::deleted(function ($model) {
+            $model->abilities()->detach();
+        });
+    }
+
+    /**
      * The abilities relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany

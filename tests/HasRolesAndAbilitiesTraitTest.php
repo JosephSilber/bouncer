@@ -216,4 +216,24 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $this->assertTrue($user->isAll('editor', 'moderator'));
         $this->assertFalse($user->isAll('moderator', 'admin'));
     }
+
+    /**
+     * @test
+     */
+    function deleting_a_model_deletes_the_permissions_pivot_table_records()
+    {
+        $bouncer = $this->bouncer();
+
+        $user1 = User::create();
+        $user2 = User::create();
+
+        $bouncer->allow($user1)->everything();
+        $bouncer->allow($user2)->everything();
+
+        $this->assertEquals(2, $this->db()->table('permissions')->count());
+
+        $user1->delete();
+
+        $this->assertEquals(1, $this->db()->table('permissions')->count());
+    }
 }
