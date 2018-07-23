@@ -48,11 +48,11 @@ abstract class BaseTestCase extends TestCase
     {
         Container::setInstance(new Container);
 
+        $this->migrate();
+
         Models::setUsersModel(User::class);
 
         $this->registerClipboard();
-
-        $this->migrate();
     }
 
     protected function registerClipboard()
