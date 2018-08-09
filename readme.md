@@ -10,7 +10,9 @@
 
 Bouncer is an elegant, framework-agnostic approach to managing roles and abilities for any app using Eloquent models.
 
-<details><summary>Table of Contents</summary><p>
+## Table of Contents
+
+<details><summary>Click to expand</summary><p>
 
 - [Introduction](#introduction)
 - [Installation](#installation)
