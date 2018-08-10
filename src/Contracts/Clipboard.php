@@ -26,6 +26,16 @@ interface Clipboard
     public function check(Model $authority, $ability, $model = null);
 
     /**
+     * Determine whether the given ability request is explicitely forbidden.
+     *
+     * @param  Model  $authority
+     * @param  string  $ability
+     * @param  null  $model
+     * @return bool
+     */
+    public function isForbidden(Model $authority, $ability, $model = null);
+
+    /**
      * Check if an authority has the given roles.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $authority

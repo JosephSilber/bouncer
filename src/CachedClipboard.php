@@ -92,6 +92,19 @@ class CachedClipboard extends BaseClipboard implements Contracts\CachedClipboard
     }
 
     /**
+     * Determine whether the given ability request is explicitely forbidden.
+     *
+     * @param  Model  $authority
+     * @param  string  $ability
+     * @param  null  $model
+     * @return bool
+     */
+    public function isForbidden(Model $authority, $ability, $model = null)
+    {
+        return $this->checkGetId($authority, $ability, $model) === false;
+    }
+
+    /**
      * Determine if any of the abilities can be matched against the provided applicable ones.
      *
      * @param  \Illuminate\Support\Collection  $abilities
