@@ -2,7 +2,7 @@
 
 use Silber\Bouncer\Database\Role;
 
-class UserIsConstraintTest extends BaseTestCase
+class UserIsScopesTest extends BaseTestCase
 {
     /**
      * @test
