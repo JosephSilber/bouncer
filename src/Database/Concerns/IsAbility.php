@@ -30,6 +30,31 @@ trait IsAbility
     }
 
     /**
+     * Get the options attribute.
+     *
+     * @return array
+     */
+    public function getOptionsAttribute()
+    {
+        if (empty($this->attributes['options'])) {
+            return [];
+        }
+
+        return json_decode($this->attributes['options']);
+    }
+
+    /**
+     * Set the "options" attribute.
+     *
+     * @param  array  $options
+     * @return void
+     */
+    public function setOptionsAttribute(array $options)
+    {
+        $this->attributes['options'] = json_encode($options);
+    }
+
+    /**
      * Create a new ability for a specific model.
      *
      * @param  \Illuminate\Database\Eloquent\Model|string  $model

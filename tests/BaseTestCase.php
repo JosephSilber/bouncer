@@ -78,6 +78,7 @@ abstract class BaseTestCase extends TestCase
         Schema::create('users', function ($table) {
             $table->increments('id');
             $table->string('name')->nullable();
+            $table->integer('age')->nullable();
             $table->timestamps();
         });
 
@@ -85,6 +86,7 @@ abstract class BaseTestCase extends TestCase
             $table->increments('id');
             $table->integer('user_id')->unsigned()->nullable();
             $table->string('name')->nullable();
+            $table->boolean('active')->default(true);
             $table->timestamps();
         });
     }
