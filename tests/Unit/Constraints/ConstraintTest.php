@@ -19,7 +19,7 @@ class ConstraintTest extends TestCase
         $activeAccount = new Account(['active' => true]);
         $inactiveAccount = new Account(['active' => false]);
 
-        $constraint = Constraint::forWhere('active', true);
+        $constraint = Constraint::where('active', true);
 
         $this->assertTrue($constraint->check($activeAccount, $authority));
         $this->assertFalse($constraint->check($inactiveAccount, $authority));
@@ -34,7 +34,7 @@ class ConstraintTest extends TestCase
         $activeAccount = new Account(['active' => true]);
         $inactiveAccount = new Account(['active' => false]);
 
-        $constraint = Constraint::forWhere('active', '=', true);
+        $constraint = Constraint::where('active', '=', true);
 
         $this->assertTrue($constraint->check($activeAccount, $authority));
         $this->assertFalse($constraint->check($inactiveAccount, $authority));
@@ -49,7 +49,7 @@ class ConstraintTest extends TestCase
         $activeAccount = new Account(['active' => true]);
         $inactiveAccount = new Account(['active' => false]);
 
-        $constraint = Constraint::forWhere('active', '==', true);
+        $constraint = Constraint::where('active', '==', true);
 
         $this->assertTrue($constraint->check($activeAccount, $authority));
         $this->assertFalse($constraint->check($inactiveAccount, $authority));
@@ -64,7 +64,7 @@ class ConstraintTest extends TestCase
         $activeAccount = new Account(['active' => true]);
         $inactiveAccount = new Account(['active' => false]);
 
-        $constraint = Constraint::forWhere('active', '!=', false);
+        $constraint = Constraint::where('active', '!=', false);
 
         $this->assertTrue($constraint->check($activeAccount, $authority));
         $this->assertFalse($constraint->check($inactiveAccount, $authority));
@@ -79,7 +79,7 @@ class ConstraintTest extends TestCase
         $forty = new User(['age' => 40]);
         $fortyOne = new User(['age' => 41]);
 
-        $constraint = Constraint::forWhere('age', '>', 40);
+        $constraint = Constraint::where('age', '>', 40);
 
         $this->assertTrue($constraint->check($fortyOne, $authority));
         $this->assertFalse($constraint->check($forty, $authority));
@@ -94,7 +94,7 @@ class ConstraintTest extends TestCase
         $thirtyNine = new User(['age' => 39]);
         $forty = new User(['age' => 40]);
 
-        $constraint = Constraint::forWhere('age', '<', 40);
+        $constraint = Constraint::where('age', '<', 40);
 
         $this->assertTrue($constraint->check($thirtyNine, $authority));
         $this->assertFalse($constraint->check($forty, $authority));
@@ -110,7 +110,7 @@ class ConstraintTest extends TestCase
         $adult = new User(['age' => 18]);
         $senior = new User(['age' => 80]);
 
-        $constraint = Constraint::forWhere('age', '>=', 18);
+        $constraint = Constraint::where('age', '>=', 18);
 
         $this->assertTrue($constraint->check($adult, $authority));
         $this->assertTrue($constraint->check($senior, $authority));
@@ -127,7 +127,7 @@ class ConstraintTest extends TestCase
         $olderTeen = new User(['age' => 19]);
         $adult = new User(['age' => 20]);
 
-        $constraint = Constraint::forWhere('age', '<=', 19);
+        $constraint = Constraint::where('age', '<=', 19);
 
         $this->assertTrue($constraint->check($youngerTeen, $authority));
         $this->assertTrue($constraint->check($olderTeen, $authority));
@@ -143,7 +143,7 @@ class ConstraintTest extends TestCase
         $one = new User(['age' => 1]);
         $two = new User(['age' => 2]);
 
-        $constraint = Constraint::forWhereColumn('age', 'age');
+        $constraint = Constraint::whereColumn('age', 'age');
 
         $this->assertTrue($constraint->check($one, $authority));
         $this->assertFalse($constraint->check($two, $authority));
@@ -158,7 +158,7 @@ class ConstraintTest extends TestCase
         $one = new User(['age' => 1]);
         $two = new User(['age' => 2]);
 
-        $constraint = Constraint::forWhereColumn('age', '=', 'age');
+        $constraint = Constraint::whereColumn('age', '=', 'age');
 
         $this->assertTrue($constraint->check($one, $authority));
         $this->assertFalse($constraint->check($two, $authority));
@@ -173,7 +173,7 @@ class ConstraintTest extends TestCase
         $one = new User(['age' => 1]);
         $two = new User(['age' => 2]);
 
-        $constraint = Constraint::forWhereColumn('age', '=', 'age');
+        $constraint = Constraint::whereColumn('age', '=', 'age');
 
         $this->assertTrue($constraint->check($one, $authority));
         $this->assertFalse($constraint->check($two, $authority));
@@ -188,7 +188,7 @@ class ConstraintTest extends TestCase
         $one = new User(['age' => 1]);
         $two = new User(['age' => 2]);
 
-        $constraint = Constraint::forWhereColumn('age', '!=', 'age');
+        $constraint = Constraint::whereColumn('age', '!=', 'age');
 
         $this->assertTrue($constraint->check($two, $authority));
         $this->assertFalse($constraint->check($one, $authority));
@@ -205,7 +205,7 @@ class ConstraintTest extends TestCase
         $same = new User(['age' => 18]);
         $older = new User(['age' => 19]);
 
-        $constraint = Constraint::forWhereColumn('age', '>', 'age');
+        $constraint = Constraint::whereColumn('age', '>', 'age');
 
         $this->assertTrue($constraint->check($older, $authority));
         $this->assertFalse($constraint->check($younger, $authority));
@@ -223,7 +223,7 @@ class ConstraintTest extends TestCase
         $same = new User(['age' => 18]);
         $older = new User(['age' => 19]);
 
-        $constraint = Constraint::forWhereColumn('age', '<', 'age');
+        $constraint = Constraint::whereColumn('age', '<', 'age');
 
         $this->assertTrue($constraint->check($younger, $authority));
         $this->assertFalse($constraint->check($older, $authority));
@@ -241,7 +241,7 @@ class ConstraintTest extends TestCase
         $same = new User(['age' => 18]);
         $older = new User(['age' => 19]);
 
-        $constraint = Constraint::forWhereColumn('age', '>=', 'age');
+        $constraint = Constraint::whereColumn('age', '>=', 'age');
 
         $this->assertTrue($constraint->check($same, $authority));
         $this->assertTrue($constraint->check($older, $authority));
@@ -259,7 +259,7 @@ class ConstraintTest extends TestCase
         $same = new User(['age' => 18]);
         $older = new User(['age' => 19]);
 
-        $constraint = Constraint::forWhereColumn('age', '<=', 'age');
+        $constraint = Constraint::whereColumn('age', '<=', 'age');
 
         $this->assertTrue($constraint->check($younger, $authority));
         $this->assertTrue($constraint->check($same, $authority));
@@ -276,7 +276,7 @@ class ConstraintTest extends TestCase
         $inactiveAccount = new Account(['active' => false]);
 
         $constraint = $this->serializeAndDeserializeConstraint(
-            Constraint::forWhere('active', true)
+            Constraint::where('active', true)
         );
 
         $this->assertInstanceOf(ValueConstraint::class, $constraint);
@@ -294,7 +294,7 @@ class ConstraintTest extends TestCase
         $two = new User(['age' => 2]);
 
         $constraint = $this->serializeAndDeserializeConstraint(
-            Constraint::forWhereColumn('age', 'age')
+            Constraint::whereColumn('age', 'age')
         );
 
         $this->assertInstanceOf(ColumnConstraint::class, $constraint);

@@ -22,13 +22,13 @@ class GroupsTest extends TestCase
         ]);
 
         $groupA = new AndGroup([
-            Constraint::forWhere('name', 'the-account'),
-            Constraint::forWhere('active', false),
+            Constraint::where('name', 'the-account'),
+            Constraint::where('active', false),
         ]);
 
         $groupB = new AndGroup([
-            Constraint::forWhere('name', 'the-account'),
-            Constraint::forWhere('active', true),
+            Constraint::where('name', 'the-account'),
+            Constraint::where('active', true),
         ]);
 
         $this->assertTrue($groupA->check($account, new User));
@@ -46,13 +46,13 @@ class GroupsTest extends TestCase
         ]);
 
         $groupA = new OrGroup([
-            Constraint::forWhere('name', 'the-account'),
-            Constraint::forWhere('active', true),
+            Constraint::where('name', 'the-account'),
+            Constraint::where('active', true),
         ]);
 
         $groupB = new OrGroup([
-            Constraint::forWhere('name', 'a-different-account'),
-            Constraint::forWhere('active', true),
+            Constraint::where('name', 'a-different-account'),
+            Constraint::where('active', true),
         ]);
 
         $this->assertTrue($groupA->check($account, new User));
@@ -75,8 +75,8 @@ class GroupsTest extends TestCase
         ]);
 
         $group = $this->serializeAndDeserializeGroup(new AndGroup([
-            Constraint::forWhere('name', 'the-account'),
-            Constraint::forWhere('active', true),
+            Constraint::where('name', 'the-account'),
+            Constraint::where('active', true),
         ]));
 
         $this->assertInstanceOf(AndGroup::class, $group);
@@ -100,8 +100,8 @@ class GroupsTest extends TestCase
         ]);
 
         $group = $this->serializeAndDeserializeGroup(new OrGroup([
-            Constraint::forWhere('name', 'the-account'),
-            Constraint::forWhere('active', true),
+            Constraint::where('name', 'the-account'),
+            Constraint::where('active', true),
         ]));
 
         $this->assertInstanceOf(OrGroup::class, $group);

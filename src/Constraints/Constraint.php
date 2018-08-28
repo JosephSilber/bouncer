@@ -31,7 +31,7 @@ abstract class Constraint implements Constrainer
      * @param  mixed  $value
      * @return \Silber\Bouncer\Constraints\ValueConstraint
      */
-    public static function forWhere($column, $operator, $value = null)
+    public static function where($column, $operator, $value = null)
     {
         list($operator, $value) = static::prepareOperatorAndValue(
             $operator, $value, func_num_args() === 2
@@ -48,7 +48,7 @@ abstract class Constraint implements Constrainer
      * @param  mixed  $b
      * @return \Silber\Bouncer\Constraints\ColumnConstraint
      */
-    public static function forWhereColumn($a, $operator, $b = null)
+    public static function whereColumn($a, $operator, $b = null)
     {
         list($operator, $b) = static::prepareOperatorAndValue(
             $operator, $b, func_num_args() === 2
