@@ -5,19 +5,51 @@ namespace Tests\Unit;
 use Account, User;
 use PHPUnit\Framework\TestCase;
 use Silber\Bouncer\Constraints\Constraint;
+use Silber\Bouncer\Constraints\ValueConstraint;
+use Silber\Bouncer\Constraints\ColumnConstraint;
 
 class ConstraintTest extends TestCase
 {
     /**
      * @test
      */
-    function value_constraint_equals()
+    function value_constraint_implicit_equals()
     {
         $authority = new User();
         $activeAccount = new Account(['active' => true]);
         $inactiveAccount = new Account(['active' => false]);
 
         $constraint = Constraint::forWhere('active', true);
+
+        $this->assertTrue($constraint->check($activeAccount, $authority));
+        $this->assertFalse($constraint->check($inactiveAccount, $authority));
+    }
+
+    /**
+     * @test
+     */
+    function value_constraint_explicit_equals()
+    {
+        $authority = new User();
+        $activeAccount = new Account(['active' => true]);
+        $inactiveAccount = new Account(['active' => false]);
+
+        $constraint = Constraint::forWhere('active', '=', true);
+
+        $this->assertTrue($constraint->check($activeAccount, $authority));
+        $this->assertFalse($constraint->check($inactiveAccount, $authority));
+    }
+
+    /**
+     * @test
+     */
+    function value_constraint_explicit_double_equals()
+    {
+        $authority = new User();
+        $activeAccount = new Account(['active' => true]);
+        $inactiveAccount = new Account(['active' => false]);
+
+        $constraint = Constraint::forWhere('active', '==', true);
 
         $this->assertTrue($constraint->check($activeAccount, $authority));
         $this->assertFalse($constraint->check($inactiveAccount, $authority));
@@ -105,13 +137,43 @@ class ConstraintTest extends TestCase
     /**
      * @test
      */
-    function column_constraint_equals()
+    function column_constraint_implicit_equals()
     {
         $authority = new User(['age' => 1]);
         $one = new User(['age' => 1]);
         $two = new User(['age' => 2]);
 
         $constraint = Constraint::forWhereColumn('age', 'age');
+
+        $this->assertTrue($constraint->check($one, $authority));
+        $this->assertFalse($constraint->check($two, $authority));
+    }
+
+    /**
+     * @test
+     */
+    function column_constraint_explicit_equals()
+    {
+        $authority = new User(['age' => 1]);
+        $one = new User(['age' => 1]);
+        $two = new User(['age' => 2]);
+
+        $constraint = Constraint::forWhereColumn('age', '=', 'age');
+
+        $this->assertTrue($constraint->check($one, $authority));
+        $this->assertFalse($constraint->check($two, $authority));
+    }
+
+    /**
+     * @test
+     */
+    function column_constraint_explicit_double_equals()
+    {
+        $authority = new User(['age' => 1]);
+        $one = new User(['age' => 1]);
+        $two = new User(['age' => 2]);
+
+        $constraint = Constraint::forWhereColumn('age', '=', 'age');
 
         $this->assertTrue($constraint->check($one, $authority));
         $this->assertFalse($constraint->check($two, $authority));
@@ -202,5 +264,54 @@ class ConstraintTest extends TestCase
         $this->assertTrue($constraint->check($younger, $authority));
         $this->assertTrue($constraint->check($same, $authority));
         $this->assertFalse($constraint->check($older, $authority));
+    }
+
+    /**
+     * @test
+     */
+    function value_constraint_can_be_properly_serialized_and_deserialized()
+    {
+        $authority = new User();
+        $activeAccount = new Account(['active' => true]);
+        $inactiveAccount = new Account(['active' => false]);
+
+        $constraint = $this->serializeAndDeserializeConstraint(
+            Constraint::forWhere('active', true)
+        );
+
+        $this->assertInstanceOf(ValueConstraint::class, $constraint);
+        $this->assertTrue($constraint->check($activeAccount, $authority));
+        $this->assertFalse($constraint->check($inactiveAccount, $authority));
+    }
+
+    /**
+     * @test
+     */
+    function column_constraint_can_be_properly_serialized_and_deserialized()
+    {
+        $authority = new User(['age' => 1]);
+        $one = new User(['age' => 1]);
+        $two = new User(['age' => 2]);
+
+        $constraint = $this->serializeAndDeserializeConstraint(
+            Constraint::forWhereColumn('age', 'age')
+        );
+
+        $this->assertInstanceOf(ColumnConstraint::class, $constraint);
+        $this->assertTrue($constraint->check($one, $authority));
+        $this->assertFalse($constraint->check($two, $authority));
+    }
+
+    /**
+     * Convert the given object to JSON, then back.
+     *
+     * @param  \Silber\Bouncer\Constraints\Constraint  $group
+     * @return \Silber\Bouncer\Constraints\Constraint
+     */
+    protected function serializeAndDeserializeConstraint(Constraint $constraint)
+    {
+        $data = json_decode(json_encode($constraint->data()), true);
+
+        return $data['class']::fromData($data['params']);
     }
 }

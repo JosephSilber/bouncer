@@ -50,4 +50,36 @@ class ColumnConstraint extends Constraint
 
         return $this->compare($entity->{$this->a}, $authority->{$this->b});
     }
+
+    /**
+     * Create a new instance from the raw data.
+     *
+     * @param  array  $data
+     * @return static
+     */
+    public static function fromData(array $data)
+    {
+        return new static(
+            $data['a'],
+            $data['operator'],
+            $data['b']
+        );
+    }
+
+    /**
+     * Get the JSON-able data of this object.
+     *
+     * @return array
+     */
+    public function data()
+    {
+        return [
+            'class' => static::class,
+            'params' => [
+                'a' => $this->a,
+                'operator' => $this->operator,
+                'b' => $this->b,
+            ],
+        ];
+    }
 }

@@ -45,4 +45,36 @@ class ValueConstraint extends Constraint
     {
         return $this->compare($entity->{$this->column}, $this->value);
     }
+
+    /**
+     * Create a new instance from the raw data.
+     *
+     * @param  array  $data
+     * @return static
+     */
+    public static function fromData(array $data)
+    {
+        return new static(
+            $data['column'],
+            $data['operator'],
+            $data['value']
+        );
+    }
+
+    /**
+     * Get the JSON-able data of this object.
+     *
+     * @return array
+     */
+    public function data()
+    {
+        return [
+            'class' => static::class,
+            'params' => [
+                'column' => $this->column,
+                'operator' => $this->operator,
+                'value' => $this->value,
+            ],
+        ];
+    }
 }

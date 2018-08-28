@@ -5,7 +5,7 @@ namespace Silber\Bouncer\Constraints;
 use InvalidArgumentException;
 use Illuminate\Database\Eloquent\Model;
 
-abstract class Constraint
+abstract class Constraint implements Constrainer
 {
     /**
      * The operator to use for the comparison.
@@ -55,35 +55,6 @@ abstract class Constraint
         );
 
         return new ColumnConstraint($a, $operator, $b);
-    }
-
-    /**
-     * Create a new instance from the raw data.
-     *
-     * @param  stdClass  $data
-     * @return static
-     */
-    public static function fromData($data)
-    {
-        return new static(
-            $data->column,
-            $data->operator,
-            $data->value
-        );
-    }
-
-    /**
-     * Get the raw data of the constraint.
-     *
-     * @return array
-     */
-    public function data()
-    {
-        return [
-            'column' => $this->column,
-            'operator' => $this->operator,
-            'value' => $this->value,
-        ];
     }
 
     /**
