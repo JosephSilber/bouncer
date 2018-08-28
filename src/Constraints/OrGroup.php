@@ -15,10 +15,12 @@ class OrGroup extends Group
      */
     public function check(Model $entity, Model $authority = null)
     {
-        return $this->constraints->contains(
-            function ($constraint) use ($entity, $authority) {
-                return $constraint->check($entity, $authority);
+        foreach ($this->constraints as $constraint) {
+            if ($constraint->check($entity, $authority)) {
+                return true;
             }
-        );
+        }
+
+        return false;
     }
 }
