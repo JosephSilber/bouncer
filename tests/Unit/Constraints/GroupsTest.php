@@ -62,7 +62,7 @@ class GroupsTest extends TestCase
     /**
      * @test
      */
-    function and_group_can_be_properly_serialized_and_deserialized()
+    function and_group_can_be_serialized_and_deserialized()
     {
         $activeAccount = new Account([
             'name' => 'the-account',
@@ -87,7 +87,7 @@ class GroupsTest extends TestCase
     /**
      * @test
      */
-    function or_group_can_be_properly_serialized_and_deserialized()
+    function or_group_can_be_serialized_and_deserialized()
     {
         $theAccount = new Account([
             'name' => 'the-account',
@@ -107,6 +107,92 @@ class GroupsTest extends TestCase
         $this->assertInstanceOf(OrGroup::class, $group);
         $this->assertTrue($group->check($theAccount, new User));
         $this->assertFalse($group->check($anotherAccount, new User));
+    }
+
+    /**
+     * @test
+     */
+    function and_group_can_be_added_to()
+    {
+        $activeAccount = new Account([
+            'name' => 'account',
+            'active' => true,
+        ]);
+
+        $inactiveAccount = new Account([
+            'name' => 'account',
+            'active' => false,
+        ]);
+
+        $group = Group::ofType('and')
+            ->add(Constraint::where('name', 'account'))
+            ->add(Constraint::where('active', true));
+
+        $this->assertTrue($group->check($activeAccount, new User));
+        $this->assertFalse($group->check($inactiveAccount, new User));
+    }
+
+    /**
+     * @test
+     */
+    function or_group_can_be_added_to()
+    {
+        $activeAccount = new Account([
+            'name' => 'another-account',
+            'active' => true,
+        ]);
+
+        $inactiveAccount = new Account([
+            'name' => 'another-account',
+            'active' => false,
+        ]);
+
+        $group = Group::ofType('or')
+            ->add(Constraint::where('name', 'the-account'))
+            ->add(Constraint::where('active', true));
+
+        $this->assertTrue($group->check($activeAccount, new User));
+        $this->assertFalse($group->check($inactiveAccount, new User));
+    }
+
+    /**
+     * @test
+     */
+    function and_group_can_be_checked_for_empty()
+    {
+        $this->assertTrue((new AndGroup([]))->isEmpty());
+        $this->assertFalse((new AndGroup([
+            Constraint::where('active', true),
+        ]))->isEmpty());
+    }
+
+    /**
+     * @test
+     */
+    function or_group_can_be_checked_for_empty()
+    {
+        $this->assertTrue((new OrGroup([]))->isEmpty());
+        $this->assertFalse((new OrGroup([
+            Constraint::where('active', true),
+        ]))->isEmpty());
+    }
+
+    /**
+     * @test
+     */
+    function and_group_can_be_checked_for_its_type()
+    {
+        $this->assertTrue(Group::ofType('and')->isOfType('and'));
+        $this->assertFalse(Group::ofType('and')->isOfType('or'));
+    }
+
+    /**
+     * @test
+     */
+    function or_group_can_be_checked_for_its_type()
+    {
+        $this->assertTrue(Group::ofType('or')->isOfType('or'));
+        $this->assertFalse(Group::ofType('or')->isOfType('and'));
     }
 
     /**

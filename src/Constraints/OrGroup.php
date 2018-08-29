@@ -23,4 +23,16 @@ class OrGroup extends Group
 
         return false;
     }
+
+    /**
+     * Checks whether the given instance's logical type
+     * is that of the given logical operator.
+     *
+     * @param  string  $logicalOperator
+     * @return bool
+     */
+    public function isOfType($logicalOperator)
+    {
+        return $logicalOperator == 'or';
+    }
 }
