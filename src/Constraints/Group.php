@@ -68,13 +68,38 @@ abstract class Group implements Constrainer
     /**
      * Add the given constraint to the list of constraints.
      *
-     * @param \Silber\Bouncer\Constraints  $constraint
+     * @param \Silber\Bouncer\Constraints\Constrainer  $constraint
      */
     public function add(Constrainer $constraint)
     {
         $this->constraints->push($constraint);
 
         return $this;
+    }
+
+    /**
+     * Determine whether the given constrainer is equal to this object.
+     *
+     * @param  \Silber\Bouncer\Constraints\Constrainer  $constrainer
+     * @return bool
+     */
+    public function equals(Constrainer $constrainer)
+    {
+        if (! $constrainer instanceof static) {
+            return false;
+        }
+
+        if ($this->constraints->count() != $constrainer->constraints->count()) {
+            return false;
+        }
+
+        foreach ($this->constraints as $index => $constraint) {
+            if (! $constrainer->constraints[$index]->equals($constraint)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -95,6 +120,26 @@ abstract class Group implements Constrainer
     }
 
     /**
+     * Returns either the single constrainer, or the group itself if there are multiple.
+     *
+     * @return \Silber\Bouncer\Constraints\Constrainer
+     */
+    public function unwrapIfSingle()
+    {
+        return $this->isSingle() ? $this->constraints->first() : $this;
+    }
+
+    /**
+     * Get the list of constraints.
+     *
+     * @return array
+     */
+    public function constraints()
+    {
+        return $this->constraints;
+    }
+
+    /**
      * Determine whether the constraints list is empty.
      *
      * @return array
@@ -102,5 +147,15 @@ abstract class Group implements Constrainer
     public function isEmpty()
     {
         return $this->constraints->isEmpty();
+    }
+
+    /**
+     * Determine whether the group only has a single constraint.
+     *
+     * @return array
+     */
+    public function isSingle()
+    {
+        return $this->constraints->count() == 1;
     }
 }

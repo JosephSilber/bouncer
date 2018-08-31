@@ -7,15 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 interface Constrainer
 {
     /**
-     * Determine whether the given entity/authority passes the constraint.
-     *
-     * @param  \Illuminate\Database\Eloquent\Model  $entity
-     * @param  \Illuminate\Database\Eloquent\Model|null  $authority
-     * @return bool
-     */
-    public function check(Model $entity, Model $authority = null);
-
-    /**
      * Create a new instance from the raw data.
      *
      * @param  array  $data
@@ -29,4 +20,21 @@ interface Constrainer
      * @return array
      */
     public function data();
+
+    /**
+     * Determine whether the given entity/authority passes this constraint.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $entity
+     * @param  \Illuminate\Database\Eloquent\Model|null  $authority
+     * @return bool
+     */
+    public function check(Model $entity, Model $authority = null);
+
+    /**
+     * Determine whether the given constrainer is equal to this object.
+     *
+     * @param  \Silber\Bouncer\Constraints\Constrainer  $constrainer
+     * @return bool
+     */
+    public function equals(Constrainer $constrainer);
 }

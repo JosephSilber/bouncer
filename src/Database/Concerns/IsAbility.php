@@ -40,7 +40,7 @@ trait IsAbility
             return [];
         }
 
-        return json_decode($this->attributes['options']);
+        return json_decode($this->attributes['options'], true);
     }
 
     /**

@@ -58,6 +58,21 @@ abstract class Constraint implements Constrainer
     }
 
     /**
+     * Determine whether the given constrainer is equal to this object.
+     *
+     * @param  \Silber\Bouncer\Constraints\Constrainer  $constrainer
+     * @return bool
+     */
+    public function equals(Constrainer $constrainer)
+    {
+        if (! $constrainer instanceof static) {
+            return false;
+        }
+
+        return $this->data()['params'] == $constrainer->data()['params'];
+    }
+
+    /**
      * Prepare the value and operator.
      *
      * @param  string  $operator
