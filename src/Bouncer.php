@@ -192,7 +192,9 @@ class Bouncer
             return $this;
         }
 
-        return $this->setClipboard(new CachedClipboard($cache));
+        return $this->setClipboard(
+            (new CachedClipboard($cache))->slot($this->clipboard->slot())
+        );
     }
 
     /**
@@ -202,7 +204,7 @@ class Bouncer
      */
     public function dontCache()
     {
-        return $this->setClipboard(new Clipboard);
+        return $this->setClipboard((new Clipboard)->slot($this->clipboard->slot()));
     }
 
     /**
@@ -386,6 +388,17 @@ class Bouncer
     public function ability(array $attributes = [])
     {
         return Models::ability($attributes);
+    }
+
+    /**
+     * Set Bouncer to run its checks after the policies.
+     *
+     * @param  bool  $boolean
+     * @return $this
+     */
+    public function runAfterPolicies($boolean = true)
+    {
+        $this->clipboard->slot($boolean ? 'after' : 'before');
     }
 
     /**

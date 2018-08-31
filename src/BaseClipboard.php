@@ -15,6 +15,15 @@ abstract class BaseClipboard implements Contracts\Clipboard
     use HandlesAuthorization;
 
     /**
+     * Determines where to run the clipboard's checks.
+     *
+     * Can be set to "before" or "after".
+     *
+     * @var string
+     */
+    protected $slot = 'before';
+
+    /**
      * Register the clipboard at the given gate.
      *
      * @param  \Illuminate\Contracts\Auth\Access\Gate  $gate
@@ -22,22 +31,106 @@ abstract class BaseClipboard implements Contracts\Clipboard
      */
     public function registerAt(Gate $gate)
     {
-        $gate->before(function ($authority, $ability, $arguments = [], $additional = null) {
-            list($model, $additional) = $this->parseGateArguments($arguments, $additional);
-
-            if (! is_null($additional)) {
-                return;
-            }
-
-            if ($id = $this->checkGetId($authority, $ability, $model)) {
-                return $this->allow('Bouncer granted permission via ability #'.$id);
-            }
-
-            // If the response from "checkGetId" is "false", then this ability
-            // has been explicity forbidden. We'll return false so the gate
-            // doesn't run any further checks. Otherwise we return null.
-            return $id;
+        $gate->before(function () {
+            return call_user_func_array([
+                $this, 'runBeforeCallback'
+            ], func_get_args());
         });
+
+        $gate->after(function () {
+            return call_user_func_array([
+                $this, 'runAfterCallback'
+            ], func_get_args());
+        });
+    }
+
+    /**
+     * Set at which slot to run the clipboard's checks.
+     *
+     * @param  string|null  $slot
+     * @return $this|string
+     */
+    public function slot($slot = null)
+    {
+        if (is_null($slot)) {
+            return $this->slot;
+        }
+
+        if (! in_array($slot, ['before', 'after'])) {
+            throw new InvalidArgumentException(
+                "{$slot} is an invalid gate slot"
+            );
+        }
+
+        $this->slot = $slot;
+
+        return $this;
+    }
+
+    /**
+     * Run the gate's "before" callback.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $authority
+     * @param  string  $ability
+     * @param  mixed  $arguments
+     * @param  mixed  $additional
+     * @return bool|null
+     */
+    protected function runBeforeCallback($authority, $ability, $arguments = [], $additional = null)
+    {
+        if ($this->slot != 'before') {
+            return;
+        }
+
+        list($model, $additional) = $this->parseGateArguments($arguments, $additional);
+
+        if (! is_null($additional)) {
+            return;
+        }
+
+        if ($id = $this->checkGetId($authority, $ability, $model)) {
+            return $this->allow('Bouncer granted permission via ability #'.$id);
+        }
+
+        // If the response from "checkGetId" is "false", then this ability
+        // has been explicity forbidden. We'll return false so the gate
+        // doesn't run any further checks. Otherwise we return null.
+        return $id;
+    }
+
+    /**
+     * Run the gate's "before" callback.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $authority
+     * @param  string  $ability
+     * @param  mixed  $result
+     * @param  array  $arguments
+     * @return bool|null
+     */
+    protected function runAfterCallback($authority, $ability, $result, $arguments)
+    {
+        if (! is_null($result)) {
+            return $result;
+        }
+
+        if ($this->slot != 'after') {
+            return;
+        }
+
+        if (count($arguments) > 2) {
+            return;
+        }
+
+        $model = isset($arguments[0]) ? $arguments[0] : null;
+
+        if ($id = $this->checkGetId($authority, $ability, $model)) {
+            return $this->allow('Bouncer granted permission via ability #'.$id);
+        }
+
+        // If the response from "checkGetId" is "false", then this ability
+        // has been explicity forbidden. We'll return false so the gate
+        // doesn't run any further checks. Otherwise we return null.
+        return $id;
     }
 
     /**
