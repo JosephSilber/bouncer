@@ -104,10 +104,10 @@ abstract class BaseClipboard implements Contracts\Clipboard
      * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @param  string  $ability
      * @param  mixed  $result
-     * @param  array  $arguments
+     * @param  array|null  $arguments
      * @return bool|null
      */
-    protected function runAfterCallback($authority, $ability, $result, $arguments)
+    protected function runAfterCallback($authority, $ability, $result, $arguments = null)
     {
         if (! is_null($result)) {
             return $result;
