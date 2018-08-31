@@ -24,7 +24,7 @@ class AbilityConstraintsTest extends BaseTestCase
         $empty = Ability::makeForModel(Account::class, '*');
 
         $full = Ability::makeForModel(Account::class, '*')->setConstraints(
-            Group::and()->add(Constraint::where('active', true))
+            Group::withAnd()->add(Constraint::where('active', true))
         );
 
         $this->assertFalse($empty->hasConstraints());

@@ -37,7 +37,7 @@ class Group implements Constrainer
      *
      * @return static
      */
-    public static function and()
+    public static function withAnd()
     {
         return new static;
     }
@@ -47,7 +47,7 @@ class Group implements Constrainer
      *
      * @return static
      */
-    public static function or()
+    public static function withOr()
     {
         return (new static)->logicalOperator('or');
     }

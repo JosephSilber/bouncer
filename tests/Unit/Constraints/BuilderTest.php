@@ -135,7 +135,7 @@ class BuilderTest extends TestCase
         $expected = (new Group)
             ->add(Constraint::where('active', false))
             ->add(
-                Group::or()
+                Group::withOr()
                     ->add(Constraint::where('a', 'b'))
                     ->add(Constraint::where('c', 'd'))
             );
@@ -159,11 +159,11 @@ class BuilderTest extends TestCase
         $expected = (new Group)
             ->add(Constraint::where('active', false))
             ->add(
-                Group::or()
+                Group::withOr()
                     ->add(Constraint::where('a', 'b'))
                     ->add(Constraint::where('c', 'd'))
                     ->add(
-                        Group::and()
+                        Group::withAnd()
                             ->add(Constraint::where('1', '2'))
                             ->add(Constraint::orWhere('3', '4'))
                     )

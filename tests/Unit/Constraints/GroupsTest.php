@@ -14,7 +14,7 @@ class GroupsTest extends TestCase
      */
     function named_and_constructor()
     {
-        $group = Group::and();
+        $group = Group::withAnd();
 
         $this->assertInstanceOf(Group::class, $group);
         $this->assertEquals('and', $group->logicalOperator());
@@ -25,7 +25,7 @@ class GroupsTest extends TestCase
      */
     function named_or_constructor()
     {
-        $group = Group::or();
+        $group = Group::withOr();
 
         $this->assertInstanceOf(Group::class, $group);
         $this->assertEquals('or', $group->logicalOperator());
