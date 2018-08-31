@@ -59,11 +59,13 @@ class ColumnConstraint extends Constraint
      */
     public static function fromData(array $data)
     {
-        return new static(
+        $constraint = new static(
             $data['a'],
             $data['operator'],
             $data['b']
         );
+
+        return $constraint->logicalOperator($data['logicalOperator']);
     }
 
     /**
@@ -79,6 +81,7 @@ class ColumnConstraint extends Constraint
                 'a' => $this->a,
                 'operator' => $this->operator,
                 'b' => $this->b,
+                'logicalOperator' => $this->logicalOperator,
             ],
         ];
     }

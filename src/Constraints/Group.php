@@ -2,10 +2,11 @@
 
 namespace Silber\Bouncer\Constraints;
 
-use InvalidArgumentException;
+use Silber\Bouncer\Helpers;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model;
 
-abstract class Group implements Constrainer
+class Group implements Constrainer
 {
     /**
      * The list of constraints.
@@ -13,6 +14,13 @@ abstract class Group implements Constrainer
      * @var \Illuminate\Support\Collection<\Silber\Bouncer\Constraints\Constrainer>
      */
     protected $constraints;
+
+    /**
+     * The logical operator to use when checked after a previous constrainer.
+     *
+     * @var string
+     */
+    protected $logicalOperator = 'and';
 
     /**
      * Constructor.
@@ -25,6 +33,26 @@ abstract class Group implements Constrainer
     }
 
     /**
+     * Create a new "and" group.
+     *
+     * @return static
+     */
+    public static function and()
+    {
+        return new static;
+    }
+
+    /**
+     * Create a new "and" group.
+     *
+     * @return static
+     */
+    public static function or()
+    {
+        return (new static)->logicalOperator('or');
+    }
+
+    /**
      * Create a new instance from the raw data.
      *
      * @param  array  $data
@@ -32,38 +60,12 @@ abstract class Group implements Constrainer
      */
     public static function fromData(array $data)
     {
-        return new static(array_map(function ($data) {
+        $group = new static(array_map(function ($data) {
             return $data['class']::fromData($data['params']);
         }, $data['constraints']));
+
+        return $group->logicalOperator($data['logicalOperator']);
     }
-
-    /**
-     * Create a new instance for this given logical operator.
-     *
-     * @param  string  $data
-     * @return static
-     *
-     * @throws \InvalidArgumentException
-     */
-    public static function ofType($logicalOperator)
-    {
-        if (! in_array($logicalOperator, ['and', 'or'])) {
-            throw new InvalidArgumentException(
-                "{$logicalOperator} is an invalid logical operator"
-            );
-        }
-
-        return $logicalOperator == 'and' ? new AndGroup : new OrGroup;
-    }
-
-    /**
-     * Checks whether the given instance's logical type
-     * is that of the given logical operator.
-     *
-     * @param  string  $logicalOperator
-     * @return bool
-     */
-    abstract public function isOfType($logicalOperator);
 
     /**
      * Add the given constraint to the list of constraints.
@@ -75,6 +77,69 @@ abstract class Group implements Constrainer
         $this->constraints->push($constraint);
 
         return $this;
+    }
+
+    /**
+     * Determine whether the given entity/authority passes this constraint.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $entity
+     * @param  \Illuminate\Database\Eloquent\Model|null  $authority
+     * @return bool
+     */
+    public function check(Model $entity, Model $authority = null)
+    {
+        if ($this->constraints->isEmpty()) {
+            return true;
+        }
+
+        return $this->constraints->reduce(function ($result, $constraint) use ($entity, $authority) {
+            $passes = $constraint->check($entity, $authority);
+
+            if (is_null($result)) {
+                return $passes;
+            }
+
+            return $constraint->isOr() ? ($result || $passes) : ($result && $passes);
+        });
+    }
+
+    /**
+     * Set the logical operator to use when checked after a previous constrainer.
+     *
+     * @param  string|null  $operator
+     * @return $this|string
+     */
+    public function logicalOperator($operator = null)
+    {
+        if (is_null($operator)) {
+            return $this->logicalOperator;
+        }
+
+        Helpers::ensureValidLogicalOperator($operator);
+
+        $this->logicalOperator = $operator;
+
+        return $this;
+    }
+
+    /**
+     * Checks whether the logical operator is an "and" operator.
+     *
+     * @param string  $operator
+     */
+    public function isAnd()
+    {
+        return $this->logicalOperator == 'and';
+    }
+
+    /**
+     * Checks whether the logical operator is an "and" operator.
+     *
+     * @param string  $operator
+     */
+    public function isOr()
+    {
+        return $this->logicalOperator == 'or';
     }
 
     /**
@@ -112,50 +177,11 @@ abstract class Group implements Constrainer
         return [
             'class' => static::class,
             'params' => [
+                'logicalOperator' => $this->logicalOperator,
                 'constraints' => $this->constraints->map(function ($constraint) {
                     return $constraint->data();
                 })->all(),
             ],
         ];
-    }
-
-    /**
-     * Returns either the single constrainer, or the group itself if there are multiple.
-     *
-     * @return \Silber\Bouncer\Constraints\Constrainer
-     */
-    public function unwrapIfSingle()
-    {
-        return $this->isSingle() ? $this->constraints->first() : $this;
-    }
-
-    /**
-     * Get the list of constraints.
-     *
-     * @return array
-     */
-    public function constraints()
-    {
-        return $this->constraints;
-    }
-
-    /**
-     * Determine whether the constraints list is empty.
-     *
-     * @return array
-     */
-    public function isEmpty()
-    {
-        return $this->constraints->isEmpty();
-    }
-
-    /**
-     * Determine whether the group only has a single constraint.
-     *
-     * @return array
-     */
-    public function isSingle()
-    {
-        return $this->constraints->count() == 1;
     }
 }

@@ -3,7 +3,6 @@
 namespace Silber\Bouncer\Constraints;
 
 use Closure;
-use InvalidArgumentException;
 use Illuminate\Support\Collection;
 
 class Builder
@@ -37,7 +36,7 @@ class Builder
     /**
      * Add a "where" constraint.
      *
-     * @param  string  $column
+     * @param  string|\Closure  $column
      * @param  mixed  $operator
      * @param  mixed  $value
      * @return $this
@@ -53,13 +52,13 @@ class Builder
             func_get_args()
         );
 
-        return $this->addConstraint('and', $constraint);
+        return $this->addConstraint($constraint);
     }
 
     /**
      * Add an "or where" constraint.
      *
-     * @param  string  $column
+     * @param  string|\Closure  $column
      * @param  mixed  $operator
      * @param  mixed  $value
      * @return $this
@@ -71,11 +70,11 @@ class Builder
         }
 
         $constraint = call_user_func_array(
-            [Constraint::class, 'where'],
+            [Constraint::class, 'orWhere'],
             func_get_args()
         );
 
-        return $this->addConstraint('or', $constraint);
+        return $this->addConstraint($constraint);
     }
 
     /**
@@ -93,7 +92,7 @@ class Builder
             func_get_args()
         );
 
-        return $this->addConstraint('and', $constraint);
+        return $this->addConstraint($constraint);
     }
 
     /**
@@ -107,63 +106,25 @@ class Builder
     public function orWhereColumn($a, $operator, $b = null)
     {
         $constraint = call_user_func_array(
-            [Constraint::class, 'whereColumn'],
+            [Constraint::class, 'orWhereColumn'],
             func_get_args()
         );
 
-        return $this->addConstraint('or', $constraint);
+        return $this->addConstraint($constraint);
     }
 
     /**
-     * Build the constraints.
+     * Build the compiled list of constraints.
      *
-     * @return \Silber\Bouncer\Constraints\Constrainer|null
+     * @return \Silber\Bouncer\Constraints\Constrainer
      */
     public function build()
     {
-        if ($this->constraints->isEmpty()) {
-            return null;
-        }
-
         if ($this->constraints->count() == 1) {
-            return $this->constraints->first()['source'];
+            return $this->constraints->first();
         }
 
-        return $this->buildGroup();
-    }
-
-    /**
-     * Build the group of constraints.
-     *
-     * @return \Silber\Bouncer\Constraints\Group
-     */
-    protected function buildGroup()
-    {
-        $group = new AndGroup;
-
-        foreach ($this->constraints as $constraint) {
-            $constrainer = $this->buildConstrainer($constraint['source']);
-
-            if ($group->isOfType($constraint['logicalOperator'])) {
-                $group->add($constrainer);
-            } else {
-                $group = Group::ofType($constraint['logicalOperator'])
-                    ->add($group->isSingle() ? $group->constraints()->first() : $group)
-                    ->add($constrainer);
-            }
-        }
-
-        return $group;
-    }
-
-    /**
-     * Extract the constrainer from the given object.
-     *
-     * @param \Silber\Bouncer\Constraints\Constraint|self  $object
-     */
-    protected function buildConstrainer($object)
-    {
-        return $object instanceof self ? $object->build() : $object;
+        return new Group($this->constraints);
     }
 
     /**
@@ -177,34 +138,20 @@ class Builder
     {
         $callback($builder = new static);
 
-        return $this->addConstraint($logicalOperator, $builder);
+        $constraint = $builder->build()->logicalOperator($logicalOperator);
+
+        return $this->addConstraint($constraint);
     }
 
     /**
      * Add a constraint to the list of constraints.
      *
-     * @param  string  $logicalOperator  'and'|'or'
-     * @param  \Silber\Bouncer\Constraints\Constrainer|self  $source
+     * @param  \Silber\Bouncer\Constraints\Constrainer  $constraint
      * @return $this
-     *
-     * @throws InvalidArgumentException
      */
-    protected function addConstraint($logicalOperator, $source)
+    protected function addConstraint($constraint)
     {
-        if (! in_array($logicalOperator, ['and', 'or'])) {
-            throw new InvalidArgumentException(
-                "{$logicalOperator} is an invalid logical operator"
-            );
-        }
-
-        // If we don't have any constraints yet, it doesn't make sense
-        // to start with an "or" operator, because there is nothing
-        // coming before it. We change it to the "and" operator.
-        if ($this->constraints->isEmpty()) {
-            $logicalOperator = 'and';
-        }
-
-        $this->constraints[] = compact('logicalOperator', 'source');
+        $this->constraints[] = $constraint;
 
         return $this;
     }

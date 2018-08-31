@@ -54,11 +54,13 @@ class ValueConstraint extends Constraint
      */
     public static function fromData(array $data)
     {
-        return new static(
+        $constraint = new static(
             $data['column'],
             $data['operator'],
             $data['value']
         );
+
+        return $constraint->logicalOperator($data['logicalOperator']);
     }
 
     /**
@@ -74,6 +76,7 @@ class ValueConstraint extends Constraint
                 'column' => $this->column,
                 'operator' => $this->operator,
                 'value' => $this->value,
+                'logicalOperator' => $this->logicalOperator,
             ],
         ];
     }

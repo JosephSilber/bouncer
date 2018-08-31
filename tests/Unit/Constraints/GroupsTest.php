@@ -5,8 +5,6 @@ namespace Tests\Unit;
 use Account, User;
 use PHPUnit\Framework\TestCase;
 use Silber\Bouncer\Constraints\Group;
-use Silber\Bouncer\Constraints\OrGroup;
-use Silber\Bouncer\Constraints\AndGroup;
 use Silber\Bouncer\Constraints\Constraint;
 
 class GroupsTest extends TestCase
@@ -14,19 +12,41 @@ class GroupsTest extends TestCase
     /**
      * @test
      */
-    function and_group_only_passes_if_all_constraints_pass_the_check()
+    function named_and_constructor()
+    {
+        $group = Group::and();
+
+        $this->assertInstanceOf(Group::class, $group);
+        $this->assertEquals('and', $group->logicalOperator());
+    }
+
+    /**
+     * @test
+     */
+    function named_or_constructor()
+    {
+        $group = Group::or();
+
+        $this->assertInstanceOf(Group::class, $group);
+        $this->assertEquals('or', $group->logicalOperator());
+    }
+
+    /**
+     * @test
+     */
+    function group_of_constraints_only_passes_if_all_constraints_pass_the_check()
     {
         $account = new Account([
             'name' => 'the-account',
             'active' => false,
         ]);
 
-        $groupA = new AndGroup([
+        $groupA = new Group([
             Constraint::where('name', 'the-account'),
             Constraint::where('active', false),
         ]);
 
-        $groupB = new AndGroup([
+        $groupB = new Group([
             Constraint::where('name', 'the-account'),
             Constraint::where('active', true),
         ]);
@@ -38,21 +58,21 @@ class GroupsTest extends TestCase
     /**
      * @test
      */
-    function or_group_passes_if_any_constraint_passes_the_check()
+    function group_of_ors_passes_if_any_constraint_passes_the_check()
     {
         $account = new Account([
             'name' => 'the-account',
             'active' => false,
         ]);
 
-        $groupA = new OrGroup([
-            Constraint::where('name', 'the-account'),
-            Constraint::where('active', true),
+        $groupA = new Group([
+            Constraint::orWhere('name', 'the-account'),
+            Constraint::orWhere('active', true),
         ]);
 
-        $groupB = new OrGroup([
-            Constraint::where('name', 'a-different-account'),
-            Constraint::where('active', true),
+        $groupB = new Group([
+            Constraint::orWhere('name', 'a-different-account'),
+            Constraint::orWhere('active', true),
         ]);
 
         $this->assertTrue($groupA->check($account, new User));
@@ -62,7 +82,7 @@ class GroupsTest extends TestCase
     /**
      * @test
      */
-    function and_group_can_be_serialized_and_deserialized()
+    function group_can_be_serialized_and_deserialized()
     {
         $activeAccount = new Account([
             'name' => 'the-account',
@@ -74,12 +94,12 @@ class GroupsTest extends TestCase
             'active' => false,
         ]);
 
-        $group = $this->serializeAndDeserializeGroup(new AndGroup([
+        $group = $this->serializeAndDeserializeGroup(new Group([
             Constraint::where('name', 'the-account'),
             Constraint::where('active', true),
         ]));
 
-        $this->assertInstanceOf(AndGroup::class, $group);
+        $this->assertInstanceOf(Group::class, $group);
         $this->assertTrue($group->check($activeAccount, new User));
         $this->assertFalse($group->check($inactiveAccount, new User));
     }
@@ -87,32 +107,7 @@ class GroupsTest extends TestCase
     /**
      * @test
      */
-    function or_group_can_be_serialized_and_deserialized()
-    {
-        $theAccount = new Account([
-            'name' => 'the-account',
-            'active' => false,
-        ]);
-
-        $anotherAccount = new Account([
-            'name' => 'another-account',
-            'active' => false,
-        ]);
-
-        $group = $this->serializeAndDeserializeGroup(new OrGroup([
-            Constraint::where('name', 'the-account'),
-            Constraint::where('active', true),
-        ]));
-
-        $this->assertInstanceOf(OrGroup::class, $group);
-        $this->assertTrue($group->check($theAccount, new User));
-        $this->assertFalse($group->check($anotherAccount, new User));
-    }
-
-    /**
-     * @test
-     */
-    function and_group_can_be_added_to()
+    function group_can_be_added_to()
     {
         $activeAccount = new Account([
             'name' => 'account',
@@ -124,165 +119,12 @@ class GroupsTest extends TestCase
             'active' => false,
         ]);
 
-        $group = Group::ofType('and')
+        $group = (new Group)
             ->add(Constraint::where('name', 'account'))
             ->add(Constraint::where('active', true));
 
         $this->assertTrue($group->check($activeAccount, new User));
         $this->assertFalse($group->check($inactiveAccount, new User));
-    }
-
-    /**
-     * @test
-     */
-    function or_group_can_be_added_to()
-    {
-        $activeAccount = new Account([
-            'name' => 'another-account',
-            'active' => true,
-        ]);
-
-        $inactiveAccount = new Account([
-            'name' => 'another-account',
-            'active' => false,
-        ]);
-
-        $group = Group::ofType('or')
-            ->add(Constraint::where('name', 'the-account'))
-            ->add(Constraint::where('active', true));
-
-        $this->assertTrue($group->check($activeAccount, new User));
-        $this->assertFalse($group->check($inactiveAccount, new User));
-    }
-
-    /**
-     * @test
-     */
-    function and_group_can_be_unwraped_if_contains_a_single_constrainer()
-    {
-        $single = Group::ofType('and')
-            ->add(Constraint::where('name', 'the-account'));
-
-        $double = Group::ofType('and')
-            ->add(Constraint::where('name', 'the-account'))
-            ->add(Constraint::where('active', true));
-
-        $this->assertInstanceOf(Constraint::class, $single->unwrapIfSingle());
-        $this->assertInstanceOf(AndGroup::class, $double->unwrapIfSingle());
-    }
-
-    /**
-     * @test
-     */
-    function or_group_can_be_unwraped_if_contains_a_single_constrainer()
-    {
-        $single = Group::ofType('or')
-            ->add(Constraint::where('name', 'the-account'));
-
-        $double = Group::ofType('or')
-            ->add(Constraint::where('name', 'the-account'))
-            ->add(Constraint::where('active', true));
-
-        $this->assertInstanceOf(Constraint::class, $single->unwrapIfSingle());
-        $this->assertInstanceOf(OrGroup::class, $double->unwrapIfSingle());
-    }
-
-    /**
-     * @test
-     */
-    function and_group_can_be_asked_for_its_list_of_constraints()
-    {
-        $group = new AndGroup($constraints = [
-            Constraint::where('a', true),
-            Constraint::where('b', true),
-        ]);
-
-        $this->assertEquals($constraints, $group->constraints()->all());
-    }
-
-    /**
-     * @test
-     */
-    function or_group_can_be_asked_for_its_list_of_constraints()
-    {
-        $group = new OrGroup($constraints = [
-            Constraint::where('a', true),
-            Constraint::where('b', true),
-        ]);
-
-        $this->assertEquals($constraints, $group->constraints()->all());
-    }
-
-    /**
-     * @test
-     */
-    function and_group_can_be_checked_for_empty()
-    {
-        $this->assertTrue((new AndGroup([]))->isEmpty());
-        $this->assertFalse((new AndGroup([
-            Constraint::where('active', true),
-        ]))->isEmpty());
-    }
-
-    /**
-     * @test
-     */
-    function or_group_can_be_checked_for_empty()
-    {
-        $this->assertTrue((new OrGroup([]))->isEmpty());
-        $this->assertFalse((new OrGroup([
-            Constraint::where('active', true),
-        ]))->isEmpty());
-    }
-
-    /**
-     * @test
-     */
-    function and_group_can_be_checked_for_single()
-    {
-        $this->assertFalse((new AndGroup([]))->isSingle());
-        $this->assertFalse((new AndGroup([
-            Constraint::where('a', true),
-            Constraint::where('b', true),
-        ]))->isSingle());
-
-        $this->assertTrue((new AndGroup([
-            Constraint::where('a', true),
-        ]))->isSingle());
-    }
-
-    /**
-     * @test
-     */
-    function or_group_can_be_checked_for_single()
-    {
-        $this->assertFalse((new OrGroup([]))->isSingle());
-        $this->assertFalse((new OrGroup([
-            Constraint::where('a', true),
-            Constraint::where('b', true),
-        ]))->isSingle());
-
-        $this->assertTrue((new OrGroup([
-            Constraint::where('a', true),
-        ]))->isSingle());
-    }
-
-    /**
-     * @test
-     */
-    function and_group_can_be_checked_for_its_type()
-    {
-        $this->assertTrue(Group::ofType('and')->isOfType('and'));
-        $this->assertFalse(Group::ofType('and')->isOfType('or'));
-    }
-
-    /**
-     * @test
-     */
-    function or_group_can_be_checked_for_its_type()
-    {
-        $this->assertTrue(Group::ofType('or')->isOfType('or'));
-        $this->assertFalse(Group::ofType('or')->isOfType('and'));
     }
 
     /**

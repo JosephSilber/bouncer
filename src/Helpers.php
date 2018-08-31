@@ -12,6 +12,23 @@ use Illuminate\Database\Eloquent\Model;
 class Helpers
 {
     /**
+     * Ensure that the given logical operator is 'and'|'or'.
+     *
+     * @param  string  $operator
+     * @return void
+     *
+     * @throws \InvalidArgumentException
+     */
+    public static function ensureValidLogicalOperator($operator)
+    {
+        if (! in_array($operator, ['and', 'or'])) {
+            throw new InvalidArgumentException(
+                "{$logicalOperator} is an invalid logical operator"
+            );
+        }
+    }
+
+    /**
      * Extract the model instance and model keys from the given parameters.
      *
      * @param  \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|string  $model

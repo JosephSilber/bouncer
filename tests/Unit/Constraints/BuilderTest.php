@@ -12,9 +12,13 @@ class BuilderTest extends TestCase
     /**
      * @test
      */
-    function building_without_constraints_returns_null()
+    function building_without_constraints_returns_empty_group()
     {
-        $this->assertNull((new Builder())->build());
+        $actual = (new Builder())->build();
+
+        $expected = new Group;
+
+        $this->assertTrue($expected->equals($actual));
     }
 
     /**
@@ -42,23 +46,25 @@ class BuilderTest extends TestCase
     /**
      * @test
      */
-    function a_single_or_where_returns_a_single_constraint()
+    function a_single_or_where_returns_a_single_or_constraint()
     {
-        $constraint = Builder::make()->orWhere('active', false)->build();
+        $actual = Builder::make()->orWhere('active', false)->build();
 
-        $this->assertTrue($constraint->equals(Constraint::where('active', false)));
+        $expected = Constraint::orWhere('active', false);
+
+        $this->assertTrue($expected->equals($actual));
     }
 
     /**
      * @test
      */
-    function two_wheres_return_an_and_group()
+    function two_wheres_return_a_group()
     {
         $builder = Builder::make()
             ->where('active', false)
             ->where('age', '>=', 18);
 
-        $expected = Group::ofType('and')
+        $expected = (new Group)
             ->add(Constraint::where('active', false))
             ->add(Constraint::where('age', '>=', 18));
 
@@ -68,13 +74,13 @@ class BuilderTest extends TestCase
     /**
      * @test
      */
-    function two_where_columns_return_an_and_group()
+    function two_where_columns_return_a_group()
     {
         $builder = Builder::make()
             ->whereColumn('active', false)
             ->whereColumn('age', '>=', 18);
 
-        $expected = Group::ofType('and')
+        $expected = $expected = (new Group)
             ->add(Constraint::whereColumn('active', false))
             ->add(Constraint::whereColumn('age', '>=', 18));
 
@@ -84,15 +90,84 @@ class BuilderTest extends TestCase
     /**
      * @test
      */
-    function or_wheres_return_an_or_group()
+    function or_wheres_return_a_group()
     {
         $builder = Builder::make()
             ->where('active', false)
             ->orWhere('age', '>=', 18);
 
-        $expected = Group::ofType('or')
+        $expected = (new Group)
             ->add(Constraint::where('active', false))
-            ->add(Constraint::where('age', '>=', 18));
+            ->add(Constraint::orWhere('age', '>=', 18));
+
+        $this->assertTrue($expected->equals($builder->build()));
+    }
+
+    /**
+     * @test
+     */
+    function nested_wheres_return_a_group()
+    {
+        $builder = Builder::make()->where('active', false)->where(function ($query) {
+            $query->where('a', 'b')->where('c', 'd');
+        });
+
+        $expected = (new Group)
+            ->add(Constraint::where('active', false))
+            ->add(
+                (new Group)
+                    ->add(Constraint::where('a', 'b'))
+                    ->add(Constraint::where('c', 'd'))
+            );
+
+        $this->assertTrue($expected->equals($builder->build()));
+    }
+
+    /**
+     * @test
+     */
+    function nested_or_where_returns_an_or_group()
+    {
+        $builder = Builder::make()->where('active', false)->orWhere(function ($query) {
+            $query->where('a', 'b')->where('c', 'd');
+        });
+
+        $expected = (new Group)
+            ->add(Constraint::where('active', false))
+            ->add(
+                Group::or()
+                    ->add(Constraint::where('a', 'b'))
+                    ->add(Constraint::where('c', 'd'))
+            );
+
+        $this->assertTrue($expected->equals($builder->build()));
+    }
+
+    /**
+     * @test
+     */
+    function can_nest_multiple_levels()
+    {
+        $builder = Builder::make()
+            ->where('active', false)
+            ->orWhere(function ($query) {
+                $query->where('a', 'b')->where('c', 'd')->where(function ($query) {
+                    $query->where('1', '2')->orWhere('3', '4');
+                });
+            });
+
+        $expected = (new Group)
+            ->add(Constraint::where('active', false))
+            ->add(
+                Group::or()
+                    ->add(Constraint::where('a', 'b'))
+                    ->add(Constraint::where('c', 'd'))
+                    ->add(
+                        Group::and()
+                            ->add(Constraint::where('1', '2'))
+                            ->add(Constraint::orWhere('3', '4'))
+                    )
+            );
 
         $this->assertTrue($expected->equals($builder->build()));
     }
