@@ -63,6 +63,38 @@ class AfterPoliciesTest extends BaseTestCase
     }
 
     /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function passes_auth_check_when_bouncer_allows($provider)
+    {
+        list($bouncer, $user) = $provider();
+
+        $this->setUpWithPolicy($bouncer);
+
+        $account = Account::create(['name' => 'ignored by policy']);
+
+        $bouncer->allow($user)->to('view', $account);
+
+        $this->assertTrue($bouncer->can('view', $account));
+    }
+
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function fails_auth_check_when_bouncer_does_not_allow($provider)
+    {
+        list($bouncer, $user) = $provider();
+
+        $this->setUpWithPolicy($bouncer);
+
+        $account = Account::create(['name' => 'ignored by policy']);
+
+        $this->assertTrue($bouncer->cannot('view', $account));
+    }
+
+    /**
      * Set up the given Bouncer instance with the test policy.
      *
      * @param \Silber\Buoncer\Bouncer  $bouncer
