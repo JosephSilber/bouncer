@@ -1,13 +1,3 @@
-create table `users` (
-    `id` int unsigned not null auto_increment primary key,
-    `name` varchar(255) not null,
-    `email` varchar(255) not null,
-    `password` varchar(255) not null,
-    `remember_token` varchar(100) null,
-    `created_at` timestamp null,
-    `updated_at` timestamp null
-) default character set utf8mb4 collate utf8mb4_unicode_ci;
-
 create table `abilities` (
     `id` int unsigned not null auto_increment primary key,
     `name` varchar(150) not null,
