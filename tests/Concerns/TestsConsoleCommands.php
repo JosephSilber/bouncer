@@ -2,6 +2,7 @@
 
 use Prophecy\Argument;
 use Illuminate\Console\Command;
+use Illuminate\Console\OutputStyle;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
@@ -23,6 +24,12 @@ trait TestsConsoleCommands
             list($command, $method) = $arguments[0];
 
             $command->{$method}();
+        });
+
+        $laravel->make(OutputStyle::class, Argument::type('array'))->will(function ($arguments) {
+            list($class, $arguments) = $arguments;
+
+            return new $class($arguments['input'], $arguments['output']);
         });
 
         return $laravel;
