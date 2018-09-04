@@ -5,6 +5,7 @@ create table `abilities` (
     `entity_id` int unsigned null,
     `entity_type` varchar(150) null,
     `only_owned` tinyint(1) not null default '0',
+    `options` json null default '{}', `scope` int null,
     `scope` int null,
     `created_at` timestamp null,
     `updated_at` timestamp null
@@ -33,6 +34,8 @@ create table `assigned_roles` (
     `role_id` int unsigned not null,
     `entity_id` int unsigned not null,
     `entity_type` varchar(150) not null,
+    `restricted_to_id` int unsigned null,
+    `restricted_to_type` varchar(150) null,
     `scope` int null
 ) default character set utf8mb4 collate utf8mb4_unicode_ci;
 
