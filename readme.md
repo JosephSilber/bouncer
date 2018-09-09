@@ -850,7 +850,7 @@ That's it. All roles and abilities will now be separately scoped for each sectio
 
 ### I'm trying to run the migration, but I'm getting a SQL error that the "specified key was too long". What does that mean?
 
-Starting with Laravel 5.4, the default database character set is now `utf8mb4`. When using older versions of some databases (MYSQL below 5.7.7, or MariaDB below 10.2.2) with Larvel 5.4+, you would get a SQL error when trying to create an index on a string column. To fix this, change Laravel's default string length in your `AppServiceProvider`:
+Starting with Laravel 5.4, the default database character set is now `utf8mb4`. If you're using older versions of some databases (MySQL below 5.7.7, or MariaDB below 10.2.2) with Larvel 5.4+, you'll get a SQL error when trying to create an index on a string column. To fix this, change Laravel's default string length in your `AppServiceProvider`:
 
 ```php
 use Illuminate\Support\Facades\Schema;
@@ -861,9 +861,7 @@ public function boot()
 }
 ```
 
-You can read more about this in [this Larvel News article](https://laravel-news.com/laravel-5-4-key-too-long-error).
-
- This only affects new applications and as long as you are running MySQL v5.7.7 and higher you do not need to do anything.
+You can read more in [this Larvel News article](https://laravel-news.com/laravel-5-4-key-too-long-error).
 
 ## Console commands
 
