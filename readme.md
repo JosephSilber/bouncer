@@ -847,6 +847,23 @@ Bouncer's [`scope`](#the-scope-middleware) can be used to section off different 
 
 That's it. All roles and abilities will now be separately scoped for each section of your site. To fine-tune the extent of the scope, see [Customizing Bouncer's scope](#customizing-bouncers-scope).
 
+### I'm trying to run the migration, but I'm getting a SQL error that the "specified key was too long". What does that mean?
+
+Starting with Laravel 5.4, the default database character set is now `utf8mb4`. When using older versions of some databases (MYSQL below 5.7.7, or MariaDB below 10.2.2) with Larvel 5.4+, you would get a SQL error when trying to create an index on a string column. To fix this, change Laravel's default string length in your `AppServiceProvider`:
+
+```php
+use Illuminate\Support\Facades\Schema;
+
+public function boot()
+{
+    Schema::defaultStringLength(191);
+}
+```
+
+You can read more about this in [this Larvel News article](https://laravel-news.com/laravel-5-4-key-too-long-error).
+
+ This only affects new applications and as long as you are running MySQL v5.7.7 and higher you do not need to do anything.
+
 ## Console commands
 
 ### `bouncer:clean`
