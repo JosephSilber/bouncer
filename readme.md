@@ -47,6 +47,7 @@ Bouncer is an elegant, framework-agnostic approach to managing roles and abiliti
 - [FAQ](#faq)
   - [Where do I set up my app's roles and abilities?](#where-do-i-set-up-my-apps-roles-and-abilities)
   - [Can I use a different set of roles & abilities for the public & dashboard sections of my site, respectively?](#can-i-use-a-different-set-of-roles--abilities-for-the-public--dashboard-sections-of-my-site-respectively)
+  - [I'm trying to run the migration, but I'm getting a SQL error that the "specified key was too long". What does that mean?](#im-trying-to-run-the-migration-but-im-getting-a-sql-error-that-the-specified-key-was-too-long-what-does-that-mean)
 - [Console commands](#console-commands)
   - [`bouncer:clean`](#bouncerclean)
 - [Cheat sheet](#cheat-sheet)
