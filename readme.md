@@ -861,7 +861,7 @@ public function boot()
 }
 ```
 
-You can read more in [this Larvel News article](https://laravel-news.com/laravel-5-4-key-too-long-error).
+You can read more in [this Laravel News article](https://laravel-news.com/laravel-5-4-key-too-long-error).
 
 ## Console commands
 
