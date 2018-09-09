@@ -5,7 +5,7 @@ create table `abilities` (
     `entity_id` int unsigned null,
     `entity_type` varchar(255) null,
     `only_owned` tinyint(1) not null default '0',
-    `options` json null default '{}', `scope` int null,
+    `options` json null default '{}',
     `scope` int null,
     `created_at` timestamp null,
     `updated_at` timestamp null
