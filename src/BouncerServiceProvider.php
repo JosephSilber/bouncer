@@ -163,7 +163,7 @@ class BouncerServiceProvider extends ServiceProvider
     {
         $gate = $this->app->make(Gate::class);
 
-        $clipboard = $this->app->make(Clipboard::class);
+        $clipboard = $this->app->make(Bouncer::class)->getClipboard();
 
         $clipboard->registerAt($gate);
     }
