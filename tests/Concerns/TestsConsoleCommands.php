@@ -1,5 +1,7 @@
 <?php
 
+namespace Silber\Bouncer\Tests\Concerns;
+
 use Prophecy\Argument;
 use Illuminate\Console\Command;
 use Illuminate\Console\OutputStyle;

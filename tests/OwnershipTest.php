@@ -1,12 +1,14 @@
 <?php
 
+namespace Silber\Bouncer\Tests;
+
 use Silber\Bouncer\Database\Role;
 use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Database\Ability;
 
 class OwnershipTest extends BaseTestCase
 {
-    use TestsClipboards;
+    use Concerns\TestsClipboards;
 
     /**
      * @test

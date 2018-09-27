@@ -1,8 +1,10 @@
 <?php
 
-namespace Tests\Unit;
+namespace Silber\Bouncer\Tests\Unit\Constraints;
 
-use Account, User;
+use Silber\Bouncer\Tests\User;
+use Silber\Bouncer\Tests\Account;
+
 use PHPUnit\Framework\TestCase;
 use Silber\Bouncer\Constraints\Group;
 use Silber\Bouncer\Constraints\Constraint;

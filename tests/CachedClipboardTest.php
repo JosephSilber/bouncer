@@ -1,5 +1,7 @@
 <?php
 
+namespace Silber\Bouncer\Tests;
+
 use Silber\Bouncer\CachedClipboard;
 
 use Illuminate\Cache\ArrayStore;

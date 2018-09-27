@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Silber\Bouncer\Tests\Unit\Constraints;
 
 use PHPUnit\Framework\TestCase;
 use Silber\Bouncer\Constraints\Group;

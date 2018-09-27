@@ -1,5 +1,7 @@
 <?php
 
+namespace Silber\Bouncer\Tests;
+
 use Silber\Bouncer\Bouncer;
 use Illuminate\Auth\Access\Gate;
 use Silber\Bouncer\Database\Role;
@@ -7,7 +9,7 @@ use Silber\Bouncer\Database\Ability;
 
 class AfterPoliciesTest extends BaseTestCase
 {
-    use TestsClipboards;
+    use Concerns\TestsClipboards;
 
     /**
      * Setup the world for the tests.

@@ -1,5 +1,7 @@
 <?php
 
+namespace Silber\Bouncer\Tests;
+
 use Silber\Bouncer\Database\Role;
 use Silber\Bouncer\Database\Ability;
 
