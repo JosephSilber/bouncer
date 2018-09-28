@@ -5,3 +5,4 @@
 /.travis.yml    export-ignore
 /phpunit.xml    export-ignore
 /readme.md      export-ignore
+/nitpick.json   export-ignore
