@@ -26,11 +26,11 @@ class CachedClipboardTest extends BaseTestCase
 
         $bouncer->allow($user)->to('ban-users');
 
-        $this->assertEquals(['ban-users'], $this->getAbliities($user));
+        $this->assertEquals(['ban-users'], $this->getAbilities($user));
 
         $bouncer->allow($user)->to('create-users');
 
-        $this->assertEquals(['ban-users'], $this->getAbliities($user));
+        $this->assertEquals(['ban-users'], $this->getAbilities($user));
     }
 
     /**
@@ -73,16 +73,16 @@ class CachedClipboardTest extends BaseTestCase
         $bouncer->assign('editor')->to($user);
         $bouncer->allow('editor')->to('delete-posts');
 
-        $this->assertEquals(['create-posts', 'delete-posts'], $this->getAbliities($user));
+        $this->assertEquals(['create-posts', 'delete-posts'], $this->getAbilities($user));
 
         $bouncer->disallow('editor')->to('delete-posts');
         $bouncer->allow('editor')->to('edit-posts');
 
-        $this->assertEquals(['create-posts', 'delete-posts'], $this->getAbliities($user));
+        $this->assertEquals(['create-posts', 'delete-posts'], $this->getAbilities($user));
 
         $bouncer->refresh();
 
-        $this->assertEquals(['create-posts', 'edit-posts'], $this->getAbliities($user));
+        $this->assertEquals(['create-posts', 'edit-posts'], $this->getAbilities($user));
     }
 
     /**
@@ -99,14 +99,14 @@ class CachedClipboardTest extends BaseTestCase
         $bouncer->assign('admin')->to($user1);
         $bouncer->assign('admin')->to($user2);
 
-        $this->assertEquals(['ban-users'], $this->getAbliities($user1));
-        $this->assertEquals(['ban-users'], $this->getAbliities($user2));
+        $this->assertEquals(['ban-users'], $this->getAbilities($user1));
+        $this->assertEquals(['ban-users'], $this->getAbilities($user2));
 
         $bouncer->disallow('admin')->to('ban-users');
         $bouncer->refreshFor($user1);
 
-        $this->assertEquals([], $this->getAbliities($user1));
-        $this->assertEquals(['ban-users'], $this->getAbliities($user2));
+        $this->assertEquals([], $this->getAbilities($user1));
+        $this->assertEquals(['ban-users'], $this->getAbilities($user2));
     }
 
     /**
@@ -115,7 +115,7 @@ class CachedClipboardTest extends BaseTestCase
      * @param  \Illuminate\Database\Eloquent\Model  $user
      * @return array
      */
-    protected function getAbliities(Model $user)
+    protected function getAbilities(Model $user)
     {
         return $user->getAbilities($user)->pluck('name')->sort()->values()->all();
     }
