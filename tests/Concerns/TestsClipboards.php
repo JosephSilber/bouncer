@@ -1,6 +1,9 @@
 <?php
 
+namespace Silber\Bouncer\Tests\Concerns;
+
 use Silber\Bouncer\Clipboard;
+use Silber\Bouncer\Tests\User;
 use Silber\Bouncer\CachedClipboard;
 
 use Illuminate\Cache\NullStore;

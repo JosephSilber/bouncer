@@ -1,5 +1,7 @@
 <?php
 
+namespace Silber\Bouncer\Tests;
+
 use Illuminate\Support\Collection;
 
 if (! function_exists('collect')) {

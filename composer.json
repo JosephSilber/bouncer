@@ -23,7 +23,9 @@
         }
     },
     "autoload-dev": {
-        "classmap": ["tests"],
+        "psr-4": {
+            "Silber\\Bouncer\\Tests\\": "tests/"
+        },
         "files": ["tests/helpers.php"]
     },
     "require": {

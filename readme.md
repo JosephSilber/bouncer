@@ -47,6 +47,7 @@ Bouncer is an elegant, framework-agnostic approach to managing roles and abiliti
 - [FAQ](#faq)
   - [Where do I set up my app's roles and abilities?](#where-do-i-set-up-my-apps-roles-and-abilities)
   - [Can I use a different set of roles & abilities for the public & dashboard sections of my site, respectively?](#can-i-use-a-different-set-of-roles--abilities-for-the-public--dashboard-sections-of-my-site-respectively)
+  - [I'm trying to run the migration, but I'm getting a SQL error that the "specified key was too long". What does that mean?](#im-trying-to-run-the-migration-but-im-getting-a-sql-error-that-the-specified-key-was-too-long-what-does-that-mean)
 - [Console commands](#console-commands)
   - [`bouncer:clean`](#bouncerclean)
 - [Cheat sheet](#cheat-sheet)
@@ -85,7 +86,7 @@ When you check abilities at the gate, the bouncer will be consulted first. If he
 Install Bouncer with [composer](https://getcomposer.org/doc/00-intro.md):
 
 ```
-$ composer require silber/bouncer v1.0.0-rc.2
+$ composer require silber/bouncer v1.0.0-rc.3
 ```
 
 > In Laravel 5.5, [service providers and aliases are automatically registered](https://laravel.com/docs/5.5/packages#package-discovery). If you're using Laravel 5.5, skip ahead directly to step 3 (do not pass go, but do collect $200).
@@ -144,7 +145,7 @@ For more information about Laravel Facades, refer to [the Laravel documentation]
 1) Install Bouncer with [composer](https://getcomposer.org/doc/00-intro.md):
 
     ```
-    $ composer require silber/bouncer v1.0.0-rc.1
+    $ composer require silber/bouncer v1.0.0-rc.3
     ```
 
 2) Set up the database with [the Eloquent Capsule component](https://github.com/illuminate/database/blob/master/README.md):
@@ -407,7 +408,7 @@ Here are some examples:
     ```
 
 - You may wish to occasionally ban users, removing their permission to all abilities. However, actually removing all of their roles & abilities would mean that when the ban is removed we'll have to figure out what their original roles and abilities were.
-    
+
     Using a forbidden ability means that they can keep all their existing roles and abilities, but still not be authorized for anything. We can accomplish this by creating a special `banned` role, for which we'll forbid everything:
 
     ```php
@@ -637,7 +638,7 @@ Bouncer will call the methods on the `Scope` interface at various points in its 
 
 Bouncer ships with sensible defaults, so most of the time there should be no need for any configuration. For finer-grained control, Bouncer can be customized by calling various configuration methods on the `Bouncer` class.
 
-If you only use one or two of these config options, you can stick them into your [main `AppServiceProvider`'s `boot` method](https://github.com/laravel/laravel/blob/bf3785d/app/Providers/AppServiceProvider.php#L14-L17). If they start growing, you may create a separate `BouncerServiceProvider` class in [your `app/Providers` directory](https://github.com/laravel/laravel/tree/bf3785d0bc3cd166119d8ed45c2f869bbc31021c/app/Providers) (remember to register it in [the `providers` config array](https://github.com/laravel/laravel/blob/bf3785d0bc3cd166119d8ed45c2f869bbc31021c/config/app.php#L140-L145)). 
+If you only use one or two of these config options, you can stick them into your [main `AppServiceProvider`'s `boot` method](https://github.com/laravel/laravel/blob/bf3785d/app/Providers/AppServiceProvider.php#L14-L17). If they start growing, you may create a separate `BouncerServiceProvider` class in [your `app/Providers` directory](https://github.com/laravel/laravel/tree/bf3785d0bc3cd166119d8ed45c2f869bbc31021c/app/Providers) (remember to register it in [the `providers` config array](https://github.com/laravel/laravel/blob/bf3785d0bc3cd166119d8ed45c2f869bbc31021c/config/app.php#L140-L145)).
 
 ### Cache
 
@@ -847,6 +848,21 @@ Bouncer's [`scope`](#the-scope-middleware) can be used to section off different 
 
 That's it. All roles and abilities will now be separately scoped for each section of your site. To fine-tune the extent of the scope, see [Customizing Bouncer's scope](#customizing-bouncers-scope).
 
+### I'm trying to run the migration, but I'm getting a SQL error that the "specified key was too long". What does that mean?
+
+Starting with Laravel 5.4, the default database character set is now `utf8mb4`. If you're using older versions of some databases (MySQL below 5.7.7, or MariaDB below 10.2.2) with Larvel 5.4+, you'll get a SQL error when trying to create an index on a string column. To fix this, change Laravel's default string length in your `AppServiceProvider`:
+
+```php
+use Illuminate\Support\Facades\Schema;
+
+public function boot()
+{
+    Schema::defaultStringLength(191);
+}
+```
+
+You can read more in [this Laravel News article](https://laravel-news.com/laravel-5-4-key-too-long-error).
+
 ## Console commands
 
 ### `bouncer:clean`
@@ -860,7 +876,7 @@ The `bouncer:clean` command deletes unused abilities. Running this command will 
 
     Bouncer::disallow($user)->to('view', Plan::class);
     ```
-    
+
     At this point, the "view plans" ability is not assigned to anyone, so it'll get deleted.
 
     > **Note**: depending on the context of your app, you may not want to delete these. If you let your users manage abilities in your app's UI, you probably _don't_ want to delete unassigned abilities. See below.

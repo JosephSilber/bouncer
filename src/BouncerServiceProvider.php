@@ -101,7 +101,7 @@ class BouncerServiceProvider extends ServiceProvider
     {
         $this->app->singleton(Bouncer::class, function () {
             return Bouncer::make()
-                ->withClipboard($this->app->make(Clipboard::class))
+                ->withClipboard($this->app->make(Contracts\Clipboard::class))
                 ->withGate($this->app->make(Gate::class))
                 ->create();
         });
@@ -163,7 +163,7 @@ class BouncerServiceProvider extends ServiceProvider
     {
         $gate = $this->app->make(Gate::class);
 
-        $clipboard = $this->app->make(Clipboard::class);
+        $clipboard = $this->app->make(Contracts\Clipboard::class);
 
         $clipboard->registerAt($gate);
     }

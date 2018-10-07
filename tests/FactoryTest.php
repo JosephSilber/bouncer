@@ -1,5 +1,7 @@
 <?php
 
+namespace Silber\Bouncer\Tests;
+
 use Silber\Bouncer\Bouncer;
 use Illuminate\Auth\Access\Gate;
 use Illuminate\Container\Container;

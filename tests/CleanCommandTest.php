@@ -1,11 +1,13 @@
 <?php
 
+namespace Silber\Bouncer\Tests;
+
 use Silber\Bouncer\Database\Ability;
 use Silber\Bouncer\Console\CleanCommand;
 
 class CleanCommandTest extends BaseTestCase
 {
-    use TestsConsoleCommands;
+    use Concerns\TestsConsoleCommands;
 
     /**
      * @test
