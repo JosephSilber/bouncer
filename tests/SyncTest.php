@@ -1,11 +1,13 @@
 <?php
 
+namespace Silber\Bouncer\Tests;
+
 use Silber\Bouncer\Database\Role;
 use Silber\Bouncer\Database\Ability;
 
 class SyncTest extends BaseTestCase
 {
-    use TestsClipboards;
+    use Concerns\TestsClipboards;
 
     /**
      * @test

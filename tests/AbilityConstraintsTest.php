@@ -1,5 +1,7 @@
 <?php
 
+namespace Silber\Bouncer\Tests;
+
 use Silber\Bouncer\Database\Ability;
 use Silber\Bouncer\Constraints\Group;
 use Silber\Bouncer\Constraints\Constraint;

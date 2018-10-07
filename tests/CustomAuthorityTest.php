@@ -1,24 +1,12 @@
 <?php
 
+namespace Silber\Bouncer\Tests;
+
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 
 class CustomAuthorityTest extends BaseTestCase
 {
-    use TestsClipboards;
-
-    protected function migratedTestTables()
-    {
-        Schema::create('accounts', function ($table) {
-            $table->increments('id');
-            $table->string('name')->nullable();
-            $table->timestamps();
-        });
-    }
-
-    protected function rollbackTestTables()
-    {
-        Schema::drop('accounts');
-    }
+    use Concerns\TestsClipboards;
 
     /**
      * @test

@@ -1,11 +1,14 @@
 <?php
 
+namespace Silber\Bouncer\Tests;
+
+use Exception;
 use Silber\Bouncer\Database\Role;
 use Silber\Bouncer\Database\Ability;
 
 class BouncerSimpleTest extends BaseTestCase
 {
-    use TestsClipboards;
+    use Concerns\TestsClipboards;
 
     /**
      * @test

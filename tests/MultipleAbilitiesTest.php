@@ -1,8 +1,10 @@
 <?php
 
+namespace Silber\Bouncer\Tests;
+
 class MultipleAbilitiesTest extends BaseTestCase
 {
-    use TestsClipboards;
+    use Concerns\TestsClipboards;
 
     /**
      * @test

@@ -1,11 +1,13 @@
 <?php
 
+namespace Silber\Bouncer\Tests;
+
 use Silber\Bouncer\Database\Ability;
 use Illuminate\Database\Eloquent\Model;
 
 class AbilitiesForModelsTest extends BaseTestCase
 {
-    use TestsClipboards;
+    use Concerns\TestsClipboards;
 
     /**
      * @test
@@ -105,7 +107,7 @@ class AbilitiesForModelsTest extends BaseTestCase
     {
         $ability = Ability::createForModel(Account::class, 'delete');
 
-        $this->assertEquals('Account', $ability->entity_type);
+        $this->assertEquals(Account::class, $ability->entity_type);
         $this->assertEquals('delete', $ability->name);
         $this->assertNull($ability->entity_id);
     }
@@ -121,7 +123,7 @@ class AbilitiesForModelsTest extends BaseTestCase
         ]);
 
         $this->assertEquals('Delete Accounts', $ability->title);
-        $this->assertEquals('Account', $ability->entity_type);
+        $this->assertEquals(Account::class, $ability->entity_type);
         $this->assertEquals('delete', $ability->name);
         $this->assertNull($ability->entity_id);
     }
@@ -136,7 +138,7 @@ class AbilitiesForModelsTest extends BaseTestCase
         $ability = Ability::createForModel($user, 'delete');
 
         $this->assertEquals($user->id, $ability->entity_id);
-        $this->assertEquals('User', $ability->entity_type);
+        $this->assertEquals(User::class, $ability->entity_type);
         $this->assertEquals('delete', $ability->name);
     }
 
@@ -154,7 +156,7 @@ class AbilitiesForModelsTest extends BaseTestCase
 
         $this->assertEquals('Delete this user', $ability->title);
         $this->assertEquals($user->id, $ability->entity_id);
-        $this->assertEquals('User', $ability->entity_type);
+        $this->assertEquals(User::class, $ability->entity_type);
         $this->assertEquals('delete', $ability->name);
     }
 

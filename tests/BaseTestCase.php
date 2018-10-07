@@ -1,7 +1,10 @@
 <?php
 
+namespace Silber\Bouncer\Tests;
+
 require __DIR__.'/../migrations/create_bouncer_tables.php';
 
+use CreateBouncerTables;
 use Silber\Bouncer\Bouncer;
 use Silber\Bouncer\Clipboard;
 use Silber\Bouncer\Database\Models;
@@ -13,6 +16,7 @@ use Illuminate\Auth\Access\Gate;
 use Illuminate\Cache\ArrayStore;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Container\Container;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Capsule\Manager as DB;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
@@ -48,6 +52,8 @@ abstract class BaseTestCase extends TestCase
     {
         Container::setInstance(new Container);
 
+        $this->registerDatabaseContainerBindings();
+
         $this->migrate();
 
         Models::setUsersModel(User::class);
@@ -61,6 +67,17 @@ abstract class BaseTestCase extends TestCase
 
         Container::getInstance()->bind(ClipboardContract::class, function () {
             return $this->clipboard;
+        });
+    }
+
+    protected function registerDatabaseContainerBindings()
+    {
+        $container = Container::getInstance();
+
+        Schema::setFacadeApplication($container);
+
+        $container->bind('db', function () {
+            return $this->db();
         });
     }
 
@@ -199,14 +216,4 @@ class Account extends Eloquent
     protected $table = 'accounts';
 
     protected $guarded = [];
-}
-
-class Schema
-{
-    public static function __callStatic($method, array $parameters)
-    {
-        $schema = DB::connection()->getSchemaBuilder();
-
-        return call_user_func_array([$schema, $method], $parameters);
-    }
 }
