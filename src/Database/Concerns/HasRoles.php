@@ -36,7 +36,7 @@ trait HasRoles
             Models::classname(Role::class),
             'entity',
             Models::table('assigned_roles')
-        );
+        )->withPivot('scope');
 
         return Models::scope()->applyToRelation($relation);
     }
