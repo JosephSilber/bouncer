@@ -76,7 +76,7 @@ abstract class BaseClipboard implements Contracts\Clipboard
      * @param  mixed  $additional
      * @return bool|null
      */
-    protected function runBeforeCallback($authority, $ability, $arguments = [], $additional = null)
+    public function runBeforeCallback($authority, $ability, $arguments = [], $additional = null)
     {
         if ($this->slot != 'before') {
             return;
@@ -107,7 +107,7 @@ abstract class BaseClipboard implements Contracts\Clipboard
      * @param  array|null  $arguments
      * @return bool|null
      */
-    protected function runAfterCallback($authority, $ability, $result, $arguments = null)
+    public function runAfterCallback($authority, $ability, $result, $arguments = null)
     {
         if (! is_null($result)) {
             return $result;
