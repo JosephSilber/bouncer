@@ -989,6 +989,7 @@ $boolean = $user->isAll('moderator', 'editor');
 $boolean = $user->isNotAn('admin', 'moderator');
 
 $abilities = $user->getAbilities();
+$forbidden = $user->getForbiddenAbilities();
 ```
 
 ## Alternative
