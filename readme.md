@@ -408,7 +408,7 @@ Here are some examples:
     ```
 
 - You may wish to occasionally ban users, removing their permission to all abilities. However, actually removing all of their roles & abilities would mean that when the ban is removed we'll have to figure out what their original roles and abilities were.
-    
+
     Using a forbidden ability means that they can keep all their existing roles and abilities, but still not be authorized for anything. We can accomplish this by creating a special `banned` role, for which we'll forbid everything:
 
     ```php
@@ -638,7 +638,7 @@ Bouncer will call the methods on the `Scope` interface at various points in its 
 
 Bouncer ships with sensible defaults, so most of the time there should be no need for any configuration. For finer-grained control, Bouncer can be customized by calling various configuration methods on the `Bouncer` class.
 
-If you only use one or two of these config options, you can stick them into your [main `AppServiceProvider`'s `boot` method](https://github.com/laravel/laravel/blob/bf3785d/app/Providers/AppServiceProvider.php#L14-L17). If they start growing, you may create a separate `BouncerServiceProvider` class in [your `app/Providers` directory](https://github.com/laravel/laravel/tree/bf3785d0bc3cd166119d8ed45c2f869bbc31021c/app/Providers) (remember to register it in [the `providers` config array](https://github.com/laravel/laravel/blob/bf3785d0bc3cd166119d8ed45c2f869bbc31021c/config/app.php#L140-L145)). 
+If you only use one or two of these config options, you can stick them into your [main `AppServiceProvider`'s `boot` method](https://github.com/laravel/laravel/blob/bf3785d/app/Providers/AppServiceProvider.php#L14-L17). If they start growing, you may create a separate `BouncerServiceProvider` class in [your `app/Providers` directory](https://github.com/laravel/laravel/tree/bf3785d0bc3cd166119d8ed45c2f869bbc31021c/app/Providers) (remember to register it in [the `providers` config array](https://github.com/laravel/laravel/blob/bf3785d0bc3cd166119d8ed45c2f869bbc31021c/config/app.php#L140-L145)).
 
 ### Cache
 
@@ -876,7 +876,7 @@ The `bouncer:clean` command deletes unused abilities. Running this command will 
 
     Bouncer::disallow($user)->to('view', Plan::class);
     ```
-    
+
     At this point, the "view plans" ability is not assigned to anyone, so it'll get deleted.
 
     > **Note**: depending on the context of your app, you may not want to delete these. If you let your users manage abilities in your app's UI, you probably _don't_ want to delete unassigned abilities. See below.

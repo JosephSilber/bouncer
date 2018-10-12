@@ -53,7 +53,7 @@ trait IsRole
             Models::classname(User::class),
             'entity',
             Models::table('assigned_roles')
-        );
+        )->withPivot('scope');
 
         return Models::scope()->applyToRelation($relation);
     }
