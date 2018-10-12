@@ -163,9 +163,17 @@ class BouncerServiceProvider extends ServiceProvider
     {
         $gate = $this->app->make(Gate::class);
 
-        $clipboard = $this->app->make(Contracts\Clipboard::class);
+        $gate->before(function () {
+            return call_user_func_array([
+                $this->app->make(Contracts\Clipboard::class), 'runBeforeCallback'
+            ], func_get_args());
+        });
 
-        $clipboard->registerAt($gate);
+        $gate->after(function () {
+            return call_user_func_array([
+                $this->app->make(Contracts\Clipboard::class), 'runAfterCallback'
+            ], func_get_args());
+        });
     }
 
     /**
