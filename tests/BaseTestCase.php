@@ -5,6 +5,7 @@ namespace Silber\Bouncer\Tests;
 require __DIR__.'/../migrations/create_bouncer_tables.php';
 
 use CreateBouncerTables;
+use Silber\Bouncer\Guard;
 use Silber\Bouncer\Bouncer;
 use Silber\Bouncer\Clipboard;
 use Silber\Bouncer\Database\Models;
@@ -136,9 +137,11 @@ abstract class BaseTestCase extends TestCase
      */
     protected function bouncer(Eloquent $authority = null)
     {
-        $bouncer = new Bouncer($this->clipboard);
+        $gate = $this->gate($authority ?: User::create());
 
-        return $bouncer->setGate($this->gate($authority ?: User::create()));
+        $bouncer = new Bouncer((new Guard($this->clipboard))->registerAt($gate));
+
+        return $bouncer->setGate($gate);
     }
 
     /**
@@ -149,13 +152,9 @@ abstract class BaseTestCase extends TestCase
      */
     protected function gate(Eloquent $authority)
     {
-        $gate = new Gate(Container::getInstance(), function () use ($authority) {
+        return new Gate(Container::getInstance(), function () use ($authority) {
             return $authority;
         });
-
-        $this->clipboard->registerAt($gate);
-
-        return $gate;
     }
 
     /**

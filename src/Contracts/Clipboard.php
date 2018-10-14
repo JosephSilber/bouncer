@@ -8,14 +8,6 @@ use Illuminate\Contracts\Auth\Access\Gate;
 interface Clipboard
 {
     /**
-     * Register the clipboard at the given gate.
-     *
-     * @param  \Illuminate\Contracts\Auth\Access\Gate  $gate
-     * @return void
-     */
-    public function registerAt(Gate $gate);
-
-    /**
      * Determine if the given authority has the given ability.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $authority
@@ -24,6 +16,16 @@ interface Clipboard
      * @return bool
      */
     public function check(Model $authority, $ability, $model = null);
+
+    /**
+     * Determine if the given authority has the given ability, and return the ability ID.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $authority
+     * @param  string  $ability
+     * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
+     * @return int|bool|null
+     */
+    public function checkGetId(Model $authority, $ability, $model = null);
 
     /**
      * Check if an authority has the given roles.

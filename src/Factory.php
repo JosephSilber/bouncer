@@ -39,6 +39,13 @@ class Factory
     protected $user;
 
     /**
+     * Determines whether the clipboard instance will be registered at the container.
+     *
+     * @var bool
+     */
+    protected $withContainerRegistration = true;
+
+    /**
      * Create a new Factory instance.
      *
      * @param mixed  $user
@@ -55,11 +62,15 @@ class Factory
      */
     public function create()
     {
-        $clipboard = $this->getClipboard();
+        $guard = $this->getGuard()->registerAt($gate = $this->getGate());
 
-        $clipboard->registerAt($gate = $this->getGate());
+        $bouncer = (new Bouncer($guard))->setGate($gate);
 
-        return (new Bouncer($clipboard))->setGate($gate);
+        if ($this->withContainerRegistration) {
+            $bouncer->registerClipboardAtContainer();
+        }
+
+        return $bouncer;
     }
 
     /**
@@ -112,6 +123,28 @@ class Factory
         $this->user = $user;
 
         return $this;
+    }
+
+    /**
+     * Set the factory to not register the clipboard instance with the container.
+     *
+     * @return $this
+     */
+    public function withoutContainerRegistration()
+    {
+        $this->withContainerRegistration = false;
+
+        return $this;
+    }
+
+    /**
+     * Get an instance of the clipboard.
+     *
+     * @return \Silber\Bouncer\Guard
+     */
+    protected function getGuard()
+    {
+        return new Guard($this->getClipboard());
     }
 
     /**
