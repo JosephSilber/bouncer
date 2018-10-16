@@ -16,11 +16,11 @@ use Silber\Bouncer\Database\Models;
 class Bouncer
 {
     /**
-     * The bouncer clipboard instance.
+     * The bouncer guard instance.
      *
-     * @var \Silber\Bouncer\Contracts\Clipboard
+     * @var \Silber\Bouncer\Guard
      */
-    protected $clipboard;
+    protected $guard;
 
     /**
      * The access gate instance.
@@ -32,11 +32,11 @@ class Bouncer
     /**
      * Constructor.
      *
-     * @param \Silber\Bouncer\Contracts\Clipboard  $clipboard
+     * @param \Silber\Bouncer\Guard  $guard
      */
-    public function __construct(Contracts\Clipboard $clipboard)
+    public function __construct(Guard $guard)
     {
-        $this->clipboard = $clipboard;
+        $this->guard = $guard;
     }
 
     /**
@@ -146,7 +146,7 @@ class Bouncer
      */
     public function is(Model $authority)
     {
-        return new Conductors\ChecksRoles($authority, $this->clipboard);
+        return new Conductors\ChecksRoles($authority, $this->getClipboard());
     }
 
     /**
@@ -156,7 +156,7 @@ class Bouncer
      */
     public function getClipboard()
     {
-        return $this->clipboard;
+        return $this->guard->getClipboard();
     }
 
     /**
@@ -169,9 +169,21 @@ class Bouncer
      */
     public function setClipboard(Contracts\Clipboard $clipboard)
     {
-        Container::getInstance()->instance(Contracts\Clipboard::class, $clipboard);
+        $this->guard->setClipboard($clipboard);
 
-        $this->clipboard = $clipboard;
+        return $this->registerClipboardAtContainer();
+    }
+
+    /**
+     * Register the guard's clipboard at the container.
+     *
+     * @return $this
+     */
+    public function registerClipboardAtContainer()
+    {
+        $clipboard = $this->guard->getClipboard();
+
+        Container::getInstance()->instance(Contracts\Clipboard::class, $clipboard);
 
         return $this;
     }
@@ -187,14 +199,12 @@ class Bouncer
         $cache = $cache ?: $this->resolve(CacheRepository::class)->getStore();
 
         if ($this->usesCachedClipboard()) {
-            $this->clipboard->setCache($cache);
+            $this->guard->getClipboard()->setCache($cache);
 
             return $this;
         }
 
-        return $this->setClipboard(
-            (new CachedClipboard($cache))->slot($this->clipboard->slot())
-        );
+        return $this->setClipboard(new CachedClipboard($cache));
     }
 
     /**
@@ -204,7 +214,7 @@ class Bouncer
      */
     public function dontCache()
     {
-        return $this->setClipboard((new Clipboard)->slot($this->clipboard->slot()));
+        return $this->setClipboard(new Clipboard);
     }
 
     /**
@@ -216,7 +226,7 @@ class Bouncer
     public function refresh(Model $authority = null)
     {
         if ($this->usesCachedClipboard()) {
-            $this->clipboard->refresh($authority);
+            $this->getClipboard()->refresh($authority);
         }
 
         return $this;
@@ -231,7 +241,7 @@ class Bouncer
     public function refreshFor(Model $authority)
     {
         if ($this->usesCachedClipboard()) {
-            $this->clipboard->refreshFor($authority);
+            $this->getClipboard()->refreshFor($authority);
         }
 
         return $this;
@@ -283,7 +293,7 @@ class Bouncer
      */
     public function usesCachedClipboard()
     {
-        return $this->clipboard instanceof Contracts\CachedClipboard;
+        return $this->guard->usesCachedClipboard();
     }
 
     /**
@@ -398,7 +408,7 @@ class Bouncer
      */
     public function runAfterPolicies($boolean = true)
     {
-        $this->clipboard->slot($boolean ? 'after' : 'before');
+        $this->guard->slot($boolean ? 'after' : 'before');
     }
 
     /**

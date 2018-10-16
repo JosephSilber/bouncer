@@ -71,7 +71,7 @@ class CachedClipboard extends BaseClipboard implements Contracts\CachedClipboard
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
      * @return int|bool|null
      */
-    protected function checkGetId(Model $authority, $ability, $model = null)
+    public function checkGetId(Model $authority, $ability, $model = null)
     {
         $applicable = $this->compileAbilityIdentifiers($ability, $model);
 

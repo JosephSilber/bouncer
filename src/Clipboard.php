@@ -15,7 +15,7 @@ class Clipboard extends BaseClipboard
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
      * @return int|bool|null
      */
-    protected function checkGetId(Model $authority, $ability, $model = null)
+    public function checkGetId(Model $authority, $ability, $model = null)
     {
         if ($this->isForbidden($authority, $ability, $model)) {
             return false;
