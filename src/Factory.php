@@ -43,7 +43,7 @@ class Factory
      *
      * @var bool
      */
-    protected $withContainerRegistration = true;
+    protected $registerAtContainer = true;
 
     /**
      * Create a new Factory instance.
@@ -66,7 +66,7 @@ class Factory
 
         $bouncer = (new Bouncer($guard))->setGate($gate);
 
-        if ($this->withContainerRegistration) {
+        if ($this->registerAtContainer) {
             $bouncer->registerClipboardAtContainer();
         }
 
@@ -132,7 +132,7 @@ class Factory
      */
     public function withoutContainerRegistration()
     {
-        $this->withContainerRegistration = false;
+        $this->registerAtContainer = false;
 
         return $this;
     }
