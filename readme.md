@@ -530,7 +530,13 @@ You can get all abilities for a user directly from the user model:
 $abilities = $user->getAbilities();
 ```
 
-This will return a collection of the user's abilities, including any abilities granted to the user through their roles.
+This will return a collection of the user's allowed abilities, including any abilities granted to the user through their roles.
+
+You can also get a list of abilities that have been _explicitly_ forfidden:
+
+```php
+$forbiddenAbilities = $user->getForbiddenAbilities();
+```
 
 ### Authorizing users
 
