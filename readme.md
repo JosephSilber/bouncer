@@ -967,6 +967,9 @@ Bouncer::dontCache();
 
 Bouncer::refresh();
 Bouncer::refreshFor($user);
+
+// Get all users who are admins
+User::whereIs('admin')->get();
 ```
 
 Some of this functionality is also available directly on the user model:
