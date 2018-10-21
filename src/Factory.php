@@ -46,6 +46,13 @@ class Factory
     protected $registerAtContainer = true;
 
     /**
+     * Determines whether the guard instance will be registered at the gate.
+     *
+     * @var bool
+     */
+    protected $registerAtGate = true;
+
+    /**
      * Create a new Factory instance.
      *
      * @param mixed  $user
@@ -62,9 +69,14 @@ class Factory
      */
     public function create()
     {
-        $guard = $this->getGuard()->registerAt($gate = $this->getGate());
+        $gate = $this->getGate();
+        $guard = $this->getGuard();
 
         $bouncer = (new Bouncer($guard))->setGate($gate);
+
+        if ($this->registerAtGate) {
+            $guard->registerAt($gate);
+        }
 
         if ($this->registerAtContainer) {
             $bouncer->registerClipboardAtContainer();
@@ -126,13 +138,27 @@ class Factory
     }
 
     /**
-     * Set the factory to not register the clipboard instance with the container.
+     * Set whether the factory registers the clipboard instance with the container.
      *
+     * @param  bool  $bool
      * @return $this
      */
-    public function withoutContainerRegistration()
+    public function registerClipboardAtContainer($bool = true)
     {
-        $this->registerAtContainer = false;
+        $this->registerAtContainer = $bool;
+
+        return $this;
+    }
+
+    /**
+     * Set whether the factory registers the guard instance with the gate.
+     *
+     * @param  bool  $bool
+     * @return $this
+     */
+    public function registerAtGate($bool = true)
+    {
+        $this->registerAtGate = $bool;
 
         return $this;
     }
