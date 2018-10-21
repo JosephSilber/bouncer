@@ -21,9 +21,7 @@ class BouncerServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->registerClipboard();
         $this->registerBouncer();
-
         $this->registerCommands();
     }
 
@@ -45,18 +43,6 @@ class BouncerServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register the clipboard as a singleton.
-     *
-     * @return void
-     */
-    protected function registerClipboard()
-    {
-        $this->app->singleton(Contracts\Clipboard::class, function () {
-            return new CachedClipboard(new ArrayStore);
-        });
-    }
-
-    /**
      * Register Bouncer as a singleton.
      *
      * @return void
@@ -64,7 +50,7 @@ class BouncerServiceProvider extends ServiceProvider
     protected function registerBouncer()
     {
         $bouncer = Bouncer::make()
-                ->withClipboard($this->app->make(Contracts\Clipboard::class))
+                ->withClipboard(new CachedClipboard(new ArrayStore))
                 ->withGate($this->app->make(Gate::class))
                 ->create();
 
