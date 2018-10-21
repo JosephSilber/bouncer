@@ -30,6 +30,7 @@ Bouncer is an elegant, framework-agnostic approach to managing roles and abiliti
   - [Forbidding an ability](#forbidding-an-ability)
   - [Unforbidding an ability](#unforbidding-an-ability)
   - [Checking a user's roles](#checking-a-users-roles)
+  - [Querying users by their roles](#querying-users-by-their-roles)
   - [Getting all roles for a user](#getting-all-roles-for-a-user)
   - [Getting all abilities for a user](#getting-all-abilities-for-a-user)
   - [Authorizing users](#authorizing-users)
@@ -493,6 +494,26 @@ $user->isNotA('subscriber');
 $user->isAll('editor', 'moderator');
 ```
 
+### Querying users by their roles
+
+You can query your users by whether they have a given role:
+
+```php
+$users = User::whereIs('admin')->get();
+```
+
+You may also pass in multiple roles, to query for users that have _any_ of the given roles:
+
+```php
+$users = User::whereIs('superadmin', 'admin')->get();
+```
+
+To query for users who have _all_ of the given roles, use the `whereIsAll` method:
+
+```php
+$users = User::whereIsAll('sales', 'marketing')->get();
+```
+
 ### Getting all roles for a user
 
 You can get all roles for a user directly from the user model:
@@ -937,16 +958,17 @@ Bouncer::forbid($user)->to('delete', $post);
 // And also remove a forbidden ability with the same syntax...
 Bouncer::unforbid($user)->to('delete', $post);
 
-// Re-sync a user's abilities
+// Re-syncing a user's abilities
 Bouncer::sync($user)->abilities($abilities);
 
 // Assigning & retracting roles from users
 Bouncer::assign('admin')->to($user);
 Bouncer::retract('admin')->from($user);
 
-// Re-sync a user's roles
+// Re-syncing a user's roles
 Bouncer::sync($user)->roles($roles);
 
+// Checking the current user's abilities
 $boolean = Bouncer::can('ban-users');
 $boolean = Bouncer::can('edit', Post::class);
 $boolean = Bouncer::can('delete', $post);
@@ -955,6 +977,7 @@ $boolean = Bouncer::cannot('ban-users');
 $boolean = Bouncer::cannot('edit', Post::class);
 $boolean = Bouncer::cannot('delete', $post);
 
+// Checking a user's roles
 $boolean = Bouncer::is($user)->a('subscriber');
 $boolean = Bouncer::is($user)->an('admin');
 $boolean = Bouncer::is($user)->notA('subscriber');
@@ -967,9 +990,6 @@ Bouncer::dontCache();
 
 Bouncer::refresh();
 Bouncer::refreshFor($user);
-
-// Get all users who are admins
-User::whereIs('admin')->get();
 ```
 
 Some of this functionality is also available directly on the user model:
@@ -990,6 +1010,11 @@ $boolean = $user->isAn('admin');
 $boolean = $user->isAn('editor', 'moderator');
 $boolean = $user->isAll('moderator', 'editor');
 $boolean = $user->isNotAn('admin', 'moderator');
+
+// Querying users by their roles
+$users = User::whereIs('superadmin')->get();
+$users = User::whereIs('superadmin', 'admin')->get();
+$users = User::whereIsAll('sales', 'marketing')->get();
 
 $abilities = $user->getAbilities();
 $forbidden = $user->getForbiddenAbilities();
