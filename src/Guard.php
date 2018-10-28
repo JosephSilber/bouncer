@@ -32,7 +32,7 @@ class Guard
      *
      * @param \Silber\Bouncer\Contracts\Clipboard  $clipboard
      */
-    public function __construct(COntracts\Clipboard $clipboard)
+    public function __construct(Contracts\Clipboard $clipboard)
     {
         $this->clipboard = $clipboard;
     }
