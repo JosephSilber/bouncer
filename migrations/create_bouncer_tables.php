@@ -37,7 +37,7 @@ class CreateBouncerTables extends Migration
 
             $table->unique(
                 ['name', 'scope'],
-                'roles_name_unique'
+                $table->getTable() . '_name_unique'
             );
         });
 
@@ -51,7 +51,7 @@ class CreateBouncerTables extends Migration
 
             $table->index(
                 ['entity_id', 'entity_type', 'scope'],
-                'assigned_roles_entity_index'
+                $table->getTable() . '_entity_index'
             );
 
             $table->foreign('role_id')
@@ -68,7 +68,7 @@ class CreateBouncerTables extends Migration
 
             $table->index(
                 ['entity_id', 'entity_type', 'scope'],
-                'permissions_entity_index'
+                $table->getTable() . '_entity_index'
             );
 
             $table->foreign('ability_id')
