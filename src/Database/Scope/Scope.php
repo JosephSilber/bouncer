@@ -168,6 +168,16 @@ class Scope implements ScopeContract
     }
 
     /**
+     * Get the current scope value.
+     *
+     * @return mixed
+     */
+    public function get()
+    {
+        return $this->scope;
+    }
+
+    /**
      * Get the additional attributes for pivot table records.
      *
      * @param  string|null  $authority
@@ -185,6 +195,47 @@ class Scope implements ScopeContract
         }
 
         return ['scope' => $this->scope];
+    }
+
+    /**
+     * Run the given callback with the given temporary scope.
+     *
+     * @param  mixed   $scope
+     * @param  callable  $callback
+     * @return mixed
+     */
+    public function onceTo($scope, callable $callback)
+    {
+        $mainScope = $this->scope;
+
+        $this->scope = $scope;
+
+        $result = $callback();
+
+        $this->scope = $mainScope;
+
+        return $result;
+    }
+
+    /**
+     * Remove the scope completely.
+     *
+     * @return $this
+     */
+    public function remove()
+    {
+        $this->scope = null;
+    }
+
+    /**
+     * Run the given callback without the scope applied.
+     *
+     * @param  callable  $callback
+     * @return mixed
+     */
+    public function removeOnce(callable $callback)
+    {
+        return $this->onceTo(null, $callback);
     }
 
     /**

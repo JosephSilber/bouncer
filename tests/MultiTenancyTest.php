@@ -30,6 +30,33 @@ class MultiTenancyTest extends BaseTestCase
 
     /**
      * @test
+     */
+    function can_set_and_get_the_current_scope()
+    {
+        $bouncer = $this->bouncer();
+
+        $this->assertNull($bouncer->scope()->get());
+
+        $bouncer->scope()->to(1);
+        $this->assertEquals(1, $bouncer->scope()->get());
+    }
+
+    /**
+     * @test
+     */
+    function can_remove_the_current_scope()
+    {
+        $bouncer = $this->bouncer();
+
+        $bouncer->scope()->to(1);
+        $this->assertEquals(1, $bouncer->scope()->get());
+
+        $bouncer->scope()->remove();
+        $this->assertNull($bouncer->scope()->get());
+    }
+
+    /**
+     * @test
      * @dataProvider bouncerProvider
      */
     function creating_roles_and_abilities_automatically_scopes_them($provider)
@@ -282,6 +309,44 @@ class MultiTenancyTest extends BaseTestCase
 
         $this->assertTrue($bouncer->can('delete', User::class));
     }
+
+    /**
+     * @test
+     */
+    function can_set_the_scope_temporarily()
+    {
+        $bouncer = $this->bouncer();
+
+        $this->assertNull($bouncer->scope()->get());
+
+        $result = $bouncer->scope()->onceTo(1, function () use ($bouncer) {
+            $this->assertEquals(1, $bouncer->scope()->get());
+
+            return 'result';
+        });
+
+        $this->assertEquals('result', $result);
+        $this->assertNull($bouncer->scope()->get());
+    }
+
+    /**
+     * @test
+     */
+    function can_remove_the_scope_temporarily()
+    {
+        $bouncer = $this->bouncer();
+
+        $bouncer->scope()->to(1);
+
+        $result = $bouncer->scope()->removeOnce(function () use ($bouncer) {
+            $this->assertEquals(null, $bouncer->scope()->get());
+
+            return 'result';
+        });
+
+        $this->assertEquals('result', $result);
+        $this->assertEquals(1, $bouncer->scope()->get());
+    }
 }
 
 
@@ -318,8 +383,28 @@ class MultiTenancyNullScopeStub implements ScopeContract
         return $relation;
     }
 
+    public function get()
+    {
+        return null;
+    }
+
     public function getAttachAttributes($authority = null)
     {
         return [];
+    }
+
+    public function onceTo($scope, callable $callback)
+    {
+        //
+    }
+
+    public function remove()
+    {
+        //
+    }
+
+    public function removeOnce(callable $callback)
+    {
+        //
     }
 }
