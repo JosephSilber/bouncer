@@ -254,6 +254,56 @@ class MultiTenancyTest extends BaseTestCase
      * @test
      * @dataProvider bouncerProvider
      */
+    function disallowing_abilities_only_affects_the_current_scope($provider)
+    {
+        list($bouncer, $user) = $provider();
+
+        $bouncer->scope()->to(1);
+        $bouncer->allow($user)->to('create', User::class);
+
+        $bouncer->scope()->to(2);
+        $bouncer->allow($user)->to('create', User::class);
+        $bouncer->disallow($user)->to('create', User::class);
+
+        $bouncer->scope()->to(1);
+
+        $this->assertTrue($bouncer->can('create', User::class));
+
+        $bouncer->scope()->to(2);
+
+        $this->assertTrue($bouncer->cannot('create', User::class));
+    }
+
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function unforbidding_abilities_only_affects_the_current_scope($provider)
+    {
+        list($bouncer, $user) = $provider();
+
+        $bouncer->scope()->to(1);
+        $bouncer->allow($user)->everything();
+        $bouncer->forbid($user)->to('create', User::class);
+
+        $bouncer->scope()->to(2);
+        $bouncer->allow($user)->everything();
+        $bouncer->forbid($user)->to('create', User::class);
+        $bouncer->unforbid($user)->to('create', User::class);
+
+        $bouncer->scope()->to(1);
+
+        $this->assertTrue($bouncer->cannot('create', User::class));
+
+        $bouncer->scope()->to(2);
+
+        $this->assertTrue($bouncer->can('create', User::class));
+    }
+
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
     function assigning_and_retracting_roles_scopes_them_properly($provider)
     {
         list($bouncer, $user) = $provider();
