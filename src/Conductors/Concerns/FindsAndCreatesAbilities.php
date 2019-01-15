@@ -132,11 +132,12 @@ trait FindsAndCreatesAbilities
     {
         $onlyOwned = isset($attributes['only_owned']) ? $attributes['only_owned'] : false;
 
-        return Models::ability()
+        $query = Models::ability()
                      ->where('name', $ability)
                      ->forModel($entity, true)
-                     ->where('only_owned', $onlyOwned)
-                     ->first();
+                     ->where('only_owned', $onlyOwned);
+
+        return Models::scope()->applyToModelQuery($query)->first();
     }
 
     /**

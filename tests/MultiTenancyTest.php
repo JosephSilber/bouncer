@@ -258,12 +258,15 @@ class MultiTenancyTest extends BaseTestCase
     {
         list($bouncer, $user) = $provider();
 
-        $bouncer->scope()->to(1);
-        $bouncer->allow($user)->to('create', User::class);
+        $admin = $bouncer->role()->create(['name' => 'admin']);
+        $user->assign($admin);
+
+        $bouncer->scope()->to(1)->onlyRelations();
+        $admin->allow('create', User::class);
 
         $bouncer->scope()->to(2);
-        $bouncer->allow($user)->to('create', User::class);
-        $bouncer->disallow($user)->to('create', User::class);
+        $admin->allow('create', User::class);
+        $admin->disallow('create', User::class);
 
         $bouncer->scope()->to(1);
 
@@ -282,14 +285,17 @@ class MultiTenancyTest extends BaseTestCase
     {
         list($bouncer, $user) = $provider();
 
-        $bouncer->scope()->to(1);
-        $bouncer->allow($user)->everything();
-        $bouncer->forbid($user)->to('create', User::class);
+        $admin = $bouncer->role()->create(['name' => 'admin']);
+        $user->assign($admin);
+
+        $bouncer->scope()->to(1)->onlyRelations();
+        $admin->allow()->everything();
+        $admin->forbid()->to('create', User::class);
 
         $bouncer->scope()->to(2);
-        $bouncer->allow($user)->everything();
-        $bouncer->forbid($user)->to('create', User::class);
-        $bouncer->unforbid($user)->to('create', User::class);
+        $admin->allow()->everything();
+        $admin->forbid()->to('create', User::class);
+        $admin->unforbid()->to('create', User::class);
 
         $bouncer->scope()->to(1);
 
@@ -418,7 +424,7 @@ class MultiTenancyNullScopeStub implements ScopeContract
         return $model;
     }
 
-    public function applyToModelQuery($query, $table)
+    public function applyToModelQuery($query, $table = null)
     {
         return $query;
     }

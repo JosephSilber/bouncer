@@ -27,10 +27,10 @@ interface Scope
      * Scope the given model query to the current tenant.
      *
      * @param  \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $table
+     * @param  string|null  $table
      * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
      */
-    public function applyToModelQuery($query, $table);
+    public function applyToModelQuery($query, $table = null);
 
     /**
      * Scope the given relationship query to the current tenant.

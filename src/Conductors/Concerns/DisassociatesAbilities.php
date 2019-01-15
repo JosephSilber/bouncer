@@ -66,10 +66,15 @@ trait DisassociatesAbilities
 
         list($foreignKeyName, $relatedKeyName) = $this->getRelationKeyNames($relation);
 
-        return $relation->newPivotStatement()
-                        ->where($foreignKeyName, $model->getKey())
-                        ->where('entity_type', $model->getMorphClass())
-                        ->whereIn($relatedKeyName, $ids);
+        $query = $relation
+            ->newPivotStatement()
+            ->where($foreignKeyName, $model->getKey())
+            ->where('entity_type', $model->getMorphClass())
+            ->whereIn($relatedKeyName, $ids);
+
+        return Models::scope()->applyToRelationQuery(
+            $query, $relation->getTable()
+        );
     }
 
     /**
