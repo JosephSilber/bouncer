@@ -28,17 +28,20 @@ trait AssociatesAbilities
      *
      * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @param  array  $abilityIds
-     * @param  bool $forbidden
+     * @param  bool  $forbidden
      * @return array
      */
     protected function getAssociatedAbilityIds(Model $authority, array $abilityIds, $forbidden)
     {
         $relation = $authority->abilities();
 
-        $relation->whereIn('id', $abilityIds)->wherePivot('forbidden', '=', $forbidden);
+        $table = Models::table('abilities');
+
+        $relation->whereIn("{$table}.id", $abilityIds)
+                 ->wherePivot('forbidden', '=', $forbidden);
 
         Models::scope()->applyToRelation($relation);
 
-        return $relation->get(['id'])->pluck('id')->all();
+        return $relation->get(["{$table}.id"])->pluck('id')->all();
     }
 }

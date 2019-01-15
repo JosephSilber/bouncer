@@ -42,6 +42,7 @@ class CreateBouncerTables extends Migration
         });
 
         Schema::create(Models::table('assigned_roles'), function (Blueprint $table) {
+            $table->increments('id');
             $table->integer('role_id')->unsigned()->index();
             $table->integer('entity_id')->unsigned();
             $table->string('entity_type');
@@ -60,6 +61,7 @@ class CreateBouncerTables extends Migration
         });
 
         Schema::create(Models::table('permissions'), function (Blueprint $table) {
+            $table->increments('id');
             $table->integer('ability_id')->unsigned()->index();
             $table->integer('entity_id')->unsigned();
             $table->string('entity_type');
