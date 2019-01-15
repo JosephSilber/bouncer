@@ -31,6 +31,7 @@ alter table `roles`
     add index `roles_scope_index`(`scope`);
 
 create table `assigned_roles` (
+    `id` int unsigned not null auto_increment primary key,
     `role_id` int unsigned not null,
     `entity_id` int unsigned not null,
     `entity_type` varchar(255) not null,
@@ -56,6 +57,7 @@ alter table `assigned_roles`
     add index `assigned_roles_scope_index`(`scope`);
 
 create table `permissions` (
+    `id` int unsigned not null auto_increment primary key,
     `ability_id` int unsigned not null,
     `entity_id` int unsigned not null,
     `entity_type` varchar(255) not null,
