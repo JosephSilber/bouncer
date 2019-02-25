@@ -2,6 +2,7 @@
 
 namespace Silber\Bouncer\Conductors\Concerns;
 
+use Illuminate\Support\Arr;
 use Silber\Bouncer\Database\Models;
 use Illuminate\Database\Eloquent\Model;
 
@@ -69,6 +70,6 @@ trait AssociatesAbilities
 
         Models::scope()->applyToRelationQuery($query, $query->from);
 
-        return $query->get(['ability_id'])->pluck('ability_id')->all();
+        return Arr::pluck($query->get(['ability_id']), 'ability_id');
     }
 }
