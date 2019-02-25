@@ -409,6 +409,8 @@ class Bouncer
     public function runAfterPolicies($boolean = true)
     {
         $this->guard->slot($boolean ? 'after' : 'before');
+
+        return $this;
     }
 
     /**
