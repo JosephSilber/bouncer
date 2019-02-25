@@ -67,7 +67,7 @@ trait AssociatesAbilities
             ->whereIn('ability_id', $abilityIds)
             ->where('forbidden', '=', $forbidden);
 
-        Models::scope()->applyToRelationQuery($query, Models::table('permissions'));
+        Models::scope()->applyToRelationQuery($query, $query->from);
 
         return $query->get(['ability_id'])->pluck('ability_id')->all();
     }
