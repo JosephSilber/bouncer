@@ -193,8 +193,7 @@ class Scope implements ScopeContract
             return [];
         }
 
-        if (! $this->scopeRoleAbilities && $this->isRoleClass($authority))
-        {
+        if (! $this->scopeRoleAbilities && $this->isRoleClass($authority)) {
             return [];
         }
 

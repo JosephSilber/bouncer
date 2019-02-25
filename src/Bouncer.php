@@ -73,6 +73,16 @@ class Bouncer
     }
 
     /**
+     * Start a chain, to allow everyone an ability.
+     *
+     * @return \Silber\Bouncer\Conductors\GivesAbilities
+     */
+    public function allowEveryone()
+    {
+        return new Conductors\GivesAbilities();
+    }
+
+    /**
      * Start a chain, to disallow the given authority an ability.
      *
      * @param  \Illuminate\Database\Eloquent\Model|string  $authority
@@ -81,6 +91,16 @@ class Bouncer
     public function disallow($authority)
     {
         return new Conductors\RemovesAbilities($authority);
+    }
+
+    /**
+     * Start a chain, to disallow everyone the an ability.
+     *
+     * @return \Silber\Bouncer\Conductors\RemovesAbilities
+     */
+    public function disallowEveryone()
+    {
+        return new Conductors\RemovesAbilities();
     }
 
     /**
@@ -95,6 +115,16 @@ class Bouncer
     }
 
     /**
+     * Start a chain, to forbid everyone an ability.
+     *
+     * @return \Silber\Bouncer\Conductors\GivesAbilities
+     */
+    public function forbidEveryone()
+    {
+        return new Conductors\ForbidsAbilities();
+    }
+
+    /**
      * Start a chain, to unforbid the given authority an ability.
      *
      * @param  \Illuminate\Database\Eloquent\Model|string  $authority
@@ -103,6 +133,16 @@ class Bouncer
     public function unforbid($authority)
     {
         return new Conductors\UnforbidsAbilities($authority);
+    }
+
+    /**
+     * Start a chain, to unforbid an ability from everyone.
+     *
+     * @return \Silber\Bouncer\Conductors\RemovesAbilities
+     */
+    public function unforbidEveryone()
+    {
+        return new Conductors\UnforbidsAbilities();
     }
 
     /**

@@ -12,10 +12,14 @@ trait AssociatesAbilities
     /**
      * Get the authority, creating a role authority if necessary.
      *
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return \Illuminate\Database\Eloquent\Model|null
      */
     protected function getAuthority()
     {
+        if (is_null($this->authority)) {
+            return null;
+        }
+
         if ($this->authority instanceof Model) {
             return $this->authority;
         }
@@ -26,13 +30,17 @@ trait AssociatesAbilities
     /**
      * Get the IDs of the associated abilities.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $authority
+     * @param  \Illuminate\Database\Eloquent\Model|null  $authority
      * @param  array  $abilityIds
      * @param  bool  $forbidden
      * @return array
      */
-    protected function getAssociatedAbilityIds(Model $authority, array $abilityIds, $forbidden)
+    protected function getAssociatedAbilityIds($authority, array $abilityIds, $forbidden)
     {
+        if (is_null($authority)) {
+            return $this->getAbilityIdsAssociatedWithEveryone($abilityIds, $forbidden);
+        }
+
         $relation = $authority->abilities();
 
         $table = Models::table('abilities');
@@ -43,5 +51,24 @@ trait AssociatesAbilities
         Models::scope()->applyToRelation($relation);
 
         return $relation->get(["{$table}.id"])->pluck('id')->all();
+    }
+
+    /**
+     * Get the IDs of the abilities associated with everyone.
+     *
+     * @param  array  $abilityIds
+     * @param  bool  $forbidden
+     * @return array
+     */
+    protected function getAbilityIdsAssociatedWithEveryone(array $abilityIds, $forbidden)
+    {
+        $query = Models::query('permissions')
+            ->whereNull('entity_id')
+            ->whereIn('ability_id', $abilityIds)
+            ->where('forbidden', '=', $forbidden);
+
+        Models::scope()->applyToRelationQuery($query, Models::table('permissions'));
+
+        return $query->get(['ability_id'])->pluck('ability_id')->all();
     }
 }

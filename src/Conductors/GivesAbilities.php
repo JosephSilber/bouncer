@@ -12,16 +12,16 @@ class GivesAbilities
     /**
      * The authority to be given abilities.
      *
-     * @var \Illuminate\Database\Eloquent\Model|string
+     * @var \Illuminate\Database\Eloquent\Model|string|null
      */
     protected $authority;
 
     /**
      * Constructor.
      *
-     * @param \Illuminate\Database\Eloquent\Model|string  $authority
+     * @param \Illuminate\Database\Eloquent\Model|string|null  $authority
      */
-    public function __construct($authority)
+    public function __construct($authority = null)
     {
         $this->authority = $authority;
     }
@@ -49,15 +49,48 @@ class GivesAbilities
      * Associate the given ability IDs as allowed abilities.
      *
      * @param  array  $ids
-     * @param  \Illuminate\Database\Eloquent\Model  $authority
+     * @param  \Illuminate\Database\Eloquent\Model|null  $authority
      * @return void
      */
-    protected function giveAbilities(array $ids, Model $authority)
+    protected function giveAbilities(array $ids, Model $authority = null)
     {
         $ids = array_diff($ids, $this->getAssociatedAbilityIds($authority, $ids, false));
 
+        if (is_null($authority)) {
+            $this->giveAbilitiesToEveryone($ids);
+        } else {
+            $this->giveAbilitiesToAuthority($ids, $authority);
+        }
+    }
+
+    /**
+     * Grant permission to these abilities to the given authority.
+     *
+     * @param  array  $ids
+     * @param  \Illuminate\Database\Eloquent\Model  $authority
+     * @return void
+     */
+    protected function giveAbilitiesToAuthority(array $ids, Model $authority)
+    {
         $attributes = Models::scope()->getAttachAttributes(get_class($authority));
 
         $authority->abilities()->attach($ids, $attributes);
+    }
+
+    /**
+     * Grant everyone permission to the given abilities.
+     *
+     * @param  array  $ids
+     * @return void
+     */
+    protected function giveAbilitiesToEveryone(array $ids)
+    {
+        $attributes = Models::scope()->getAttachAttributes();
+
+        $records = array_map(function ($id) use ($attributes) {
+            return ['ability_id' => $id] + $attributes;
+        }, $ids);
+
+        Models::query('permissions')->insert($records);
     }
 }

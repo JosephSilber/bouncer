@@ -28,28 +28,40 @@ trait DisassociatesAbilities
             return $this->conductLazy($abilities);
         }
 
-        $authority = $this->getAuthority();
-
         if ($ids = $this->getAbilityIds($abilities, $entity, $attributes)) {
-            $this->detachAbilities($authority, $ids);
+            $this->disassociateAbilities($this->getAuthority(), $ids);
         }
 
         return true;
     }
 
     /**
-     * Detach the given IDs from the model.
+     * Detach the given IDs from the authority.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  \Illuminate\Database\Eloquent\Model|null  $authority
      * @param  array  $ids
      * @return void
      */
-    protected function detachAbilities(Model $model, $ids)
+    protected function disassociateAbilities($authority, array $ids)
     {
-        $constraints = property_exists($this, 'constraints') ? $this->constraints : [];
+        if (is_null($authority)) {
+            $this->disassociateEveryone($ids);
+        } else {
+            $this->disassociateAuthority($authority, $ids);
+        }
+    }
 
-        $this->getAbilitiesPivotQuery($model, $ids)
-             ->where($this->constraints)
+    /**
+     * Disassociate the authority from the abilities with the given IDs.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $authority
+     * @param  array  $ids
+     * @return void
+     */
+    protected function disassociateAuthority(Model $authority, array $ids)
+    {
+        $this->getAbilitiesPivotQuery($authority, $ids)
+             ->where($this->constraints())
              ->delete();
     }
 
@@ -109,16 +121,48 @@ trait DisassociatesAbilities
     }
 
     /**
+     * Disassociate everyone from the abilities with the given IDs.
+     *
+     * @param  array  $ids
+     * @return void
+     */
+    protected function disassociateEveryone(array $ids)
+    {
+        $query = Models::query('permissions')
+            ->whereNull('entity_id')
+            ->where($this->constraints())
+            ->whereIn('ability_id', $ids);
+
+        Models::scope()->applyToRelationQuery($query, $query->from);
+
+        $query->delete();
+    }
+
+    /**
      * Get the authority from which to disassociate the abilities.
      *
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return \Illuminate\Database\Eloquent\Model|null
      */
     protected function getAuthority()
     {
+        if (is_null($this->authority)) {
+            return null;
+        }
+
         if ($this->authority instanceof Model) {
             return $this->authority;
         }
 
         return Models::role()->where('name', $this->authority)->firstOrFail();
+    }
+
+    /**
+     * Get the additional constraints for the detaching query.
+     *
+     * @return array
+     */
+    protected function constraints()
+    {
+        return property_exists($this, 'constraints') ? $this->constraints : [];
     }
 }

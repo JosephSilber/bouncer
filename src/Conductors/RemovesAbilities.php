@@ -9,7 +9,7 @@ class RemovesAbilities
     /**
      * The authority from which to remove abilities.
      *
-     * @var \Illuminate\Database\Eloquent\Model|string
+     * @var \Illuminate\Database\Eloquent\Model|string|null
      */
     protected $authority;
 
@@ -23,9 +23,9 @@ class RemovesAbilities
     /**
      * Constructor.
      *
-     * @param \Illuminate\Database\Eloquent\Model|string  $authority
+     * @param \Illuminate\Database\Eloquent\Model|string|null  $authority
      */
-    public function __construct($authority)
+    public function __construct($authority = null)
     {
         $this->authority = $authority;
     }

@@ -21,6 +21,7 @@ class Abilities
         return Models::ability()->where(function ($query) use ($authority, $allowed) {
             $query->whereExists(static::getRoleConstraint($authority, $allowed));
             $query->orWhereExists(static::getAuthorityConstraint($authority, $allowed));
+            $query->orWhereExists(static::getEveryoneConstraint($allowed));
         });
     }
 
@@ -131,11 +132,33 @@ class Abilities
             $query->from($table)
                   ->join($permissions, "{$table}.{$authority->getKeyName()}", '=', $permissions.'.entity_id')
                   ->whereRaw("{$prefix}{$permissions}.ability_id = {$prefix}{$abilities}.id")
-                  ->where("{$permissions}.entity_type", $authority->getMorphClass())
                   ->where("{$permissions}.forbidden", ! $allowed)
+                  ->where("{$permissions}.entity_type", $authority->getMorphClass())
                   ->where("{$table}.{$authority->getKeyName()}", $authority->getKey());
 
             Models::scope()->applyToModelQuery($query, $abilities);
+            Models::scope()->applyToRelationQuery($query, $permissions);
+        };
+    }
+
+    /**
+     * Get a constraint for abilities that have been granted to everyone.
+     *
+     * @param  bool  $allowed
+     * @return \Closure
+     */
+    protected static function getEveryoneConstraint($allowed)
+    {
+        return function ($query) use ($allowed) {
+            $permissions = Models::table('permissions');
+            $abilities   = Models::table('abilities');
+            $prefix      = Models::prefix();
+
+            $query->from($permissions)
+                  ->whereRaw("{$prefix}{$permissions}.ability_id = {$prefix}{$abilities}.id")
+                  ->where("{$permissions}.forbidden", ! $allowed)
+                  ->whereNull('entity_id');
+
             Models::scope()->applyToRelationQuery($query, $permissions);
         };
     }

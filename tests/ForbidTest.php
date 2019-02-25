@@ -190,6 +190,25 @@ class ForbidTest extends BaseTestCase
      * @test
      * @dataProvider bouncerProvider
      */
+    function forbidding_and_unforbidding_an_ability_for_everyone($provider)
+    {
+        list($bouncer, $user) = $provider();
+
+        $bouncer->allow($user)->everything();
+        $bouncer->forbidEveryone()->to('delete', Account::class);
+
+        $this->assertTrue($bouncer->can('delete', User::class));
+        $this->assertTrue($bouncer->cannot('delete', Account::class));
+
+        $bouncer->unforbidEveryone()->to('delete', Account::class);
+
+        $this->assertTrue($bouncer->can('delete', Account::class));
+    }
+
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
     function forbidding_an_ability_stops_all_further_checks($provider)
     {
         list($bouncer, $user) = $provider();

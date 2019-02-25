@@ -38,6 +38,35 @@ class BouncerSimpleTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('access-dashboard'));
     }
 
+
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function can_give_and_remove_abilities_for_everyone($provider)
+    {
+        list($bouncer, $user) = $provider();
+
+        $editSite = Ability::create(['name' => 'edit-site']);
+        $banUsers = Ability::create(['name' => 'ban-users']);
+        $accessDashboard = Ability::create(['name' => 'access-dashboard']);
+
+        $bouncer->allowEveryone()->to('edit-site');
+        $bouncer->allowEveryone()->to([$banUsers, $accessDashboard->id]);
+
+        $this->assertTrue($bouncer->can('edit-site'));
+        $this->assertTrue($bouncer->can('ban-users'));
+        $this->assertTrue($bouncer->can('access-dashboard'));
+
+        $bouncer->disallowEveryone()->to($editSite);
+        $bouncer->disallowEveryone()->to('ban-users');
+        $bouncer->disallowEveryone()->to($accessDashboard->id);
+
+        $this->assertTrue($bouncer->cannot('edit-site'));
+        $this->assertTrue($bouncer->cannot('ban-users'));
+        $this->assertTrue($bouncer->cannot('access-dashboard'));
+    }
+
     /**
      * @test
      * @dataProvider bouncerProvider

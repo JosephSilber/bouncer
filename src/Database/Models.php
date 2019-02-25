@@ -279,15 +279,18 @@ class Models
     /**
      * Get a new query builder instance.
      *
+     * @param  string  $table
      * @return \Illuminate\Database\Query\Builder
      */
-    public static function newQueryBuilder()
+    public static function query($table)
     {
-        return new Builder(
+        $query = new Builder(
             $connection = static::user()->getConnection(),
             $connection->getQueryGrammar(),
             $connection->getPostProcessor()
         );
+
+        return $query->from(static::table($table));
     }
 
     /**

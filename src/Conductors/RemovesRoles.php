@@ -134,6 +134,6 @@ class RemovesRoles
      */
     protected function newPivotTableQuery()
     {
-        return Models::newQueryBuilder()->from(Models::table('assigned_roles'));
+        return Models::query('assigned_roles');
     }
 }

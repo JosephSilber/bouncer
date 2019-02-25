@@ -63,8 +63,8 @@ class CreateBouncerTables extends Migration
         Schema::create(Models::table('permissions'), function (Blueprint $table) {
             $table->increments('id');
             $table->integer('ability_id')->unsigned()->index();
-            $table->integer('entity_id')->unsigned();
-            $table->string('entity_type');
+            $table->integer('entity_id')->unsigned()->nullable();
+            $table->string('entity_type')->nullable();
             $table->boolean('forbidden')->default(false);
             $table->integer('scope')->nullable()->index();
 
