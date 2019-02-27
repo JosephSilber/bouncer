@@ -80,6 +80,10 @@ abstract class BaseTestCase extends TestCase
         $container->bind('db', function () {
             return $this->db();
         });
+
+        $container->bind('db.schema', function () {
+            return $this->db()->connection()->getSchemaBuilder();
+        });
     }
 
     protected function migrate()

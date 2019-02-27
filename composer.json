@@ -29,15 +29,15 @@
         "files": ["tests/helpers.php"]
     },
     "require": {
-        "illuminate/auth": "5.1.20 - 5.7",
-        "illuminate/cache": "5.1.20 - 5.7",
-        "illuminate/container": "5.1.20 - 5.7",
-        "illuminate/contracts": "5.1.20 - 5.7",
-        "illuminate/database": "5.1.20 - 5.7"
+        "illuminate/auth": "5.1.20 - 5.8",
+        "illuminate/cache": "5.1.20 - 5.8",
+        "illuminate/container": "5.1.20 - 5.8",
+        "illuminate/contracts": "5.1.20 - 5.8",
+        "illuminate/database": "5.1.20 - 5.8"
     },
     "require-dev": {
-        "illuminate/console": "5.1.20 - 5.7",
-        "illuminate/events": "5.1.20 - 5.7",
+        "illuminate/console": "5.1.20 - 5.8",
+        "illuminate/events": "5.1.20 - 5.8",
         "mockery/mockery": "^0.9.5",
         "phpunit/phpunit": "^4.8.35",
         "larapack/dd": "^1.1"
