@@ -215,7 +215,7 @@ class MultiTenancyTest extends BaseTestCase
         $bouncer->scope()->to(1)->onlyRelations();
         $bouncer->allow($user)->to('delete', User::class);
 
-        $abilities = $user->abilities()->get();
+        $abilities = $user->abilities()->orderBy('id')->get();
 
         $this->assertCount(2, $abilities);
         $this->assertNull($abilities->first()->scope);
