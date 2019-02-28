@@ -59,8 +59,8 @@ alter table `assigned_roles`
 create table `permissions` (
     `id` int unsigned not null auto_increment primary key,
     `ability_id` int unsigned not null,
-    `entity_id` int unsigned not null,
-    `entity_type` varchar(255) not null,
+    `entity_id` int unsigned null,
+    `entity_type` varchar(255) null,
     `forbidden` tinyint(1) not null default '0',
     `scope` int null
 ) default character set utf8mb4 collate utf8mb4_unicode_ci;
