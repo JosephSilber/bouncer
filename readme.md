@@ -78,7 +78,7 @@ Bouncer::assign('admin')->to($user);
 Bouncer::allow($user)->to('edit', $post);
 ```
 
-When you check abilities at the gate, the bouncer will be consulted first. If he sees an ability that has been granted to the current user (whether directly, or through a role) he'll authorize the check.
+When you check abilities at Laravel's gate, the bouncer will automatically be consulted. If he sees an ability that has been granted to the current user (whether directly, or through a role) he'll authorize the check.
 
 ## Installation
 
