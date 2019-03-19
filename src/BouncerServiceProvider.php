@@ -33,6 +33,7 @@ class BouncerServiceProvider extends ServiceProvider
         $this->registerMorphs();
         $this->setTablePrefix();
         $this->setUserModel();
+        $this->app->make(Bouncer::class);
 
         if ($this->runningInConsole()) {
             $this->publishMiddleware();
