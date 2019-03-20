@@ -34,6 +34,8 @@ class BouncerServiceProvider extends ServiceProvider
         $this->setTablePrefix();
         $this->setUserModel();
 
+        $this->registerAtGate();
+
         if ($this->runningInConsole()) {
             $this->publishMiddleware();
             $this->publishMigrations();
@@ -178,6 +180,19 @@ class BouncerServiceProvider extends ServiceProvider
         }
 
         return $config->get("auth.providers.{$provider}.model");
+    }
+
+    /**
+     * Register the bouncer's clipboard at the gate.
+     *
+     * @return void
+     */
+    protected function registerAtGate()
+    {
+        // When creating a Bouncer instance thru the Factory class, it'll
+        // auto-register at the gate. We already registered Bouncer in
+        // the container using the Factory, so now we'll resolve it.
+        $this->app->make(Bouncer::class);
     }
 
     /**
