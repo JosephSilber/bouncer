@@ -10,6 +10,7 @@ use Silber\Bouncer\Bouncer;
 use Silber\Bouncer\Clipboard;
 use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
+use Silber\Bouncer\Database\Concerns\Authorizable;
 use Silber\Bouncer\Contracts\Clipboard as ClipboardContract;
 
 use PHPUnit\Framework\TestCase;
@@ -201,7 +202,9 @@ abstract class BaseTestCase extends TestCase
 
 class User extends Eloquent
 {
-    use HasRolesAndAbilities;
+    use Authorizable, HasRolesAndAbilities {
+        Authorizable::getClipboardInstance insteadof HasRolesAndAbilities;
+    }
 
     protected $table = 'users';
 

@@ -61,7 +61,7 @@ class SyncTest extends BaseTestCase
      * @test
      * @dataProvider bouncerProvider
      */
-    function syncing_abilities_With_a_map($provider)
+    function syncing_abilities_with_a_map($provider)
     {
         list($bouncer, $user) = $provider();
 
@@ -136,6 +136,25 @@ class SyncTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('edit-site'));
         $this->assertTrue($bouncer->can('ban-users'));
         $this->assertTrue($bouncer->can('access-dashboard'));
+    }
+
+    /**
+     * @test
+     */
+    function syncing_user_abilities_does_not_alter_role_abilities_with_same_id()
+    {
+        $user = User::create(['id' => 1]);
+        $bouncer = $this->bouncer($user);
+        $role = $bouncer->role()->create(['id' => 1, 'name' => 'alcoholic']);
+
+        $bouncer->allow($user)->to(['eat', 'drink']);
+        $bouncer->allow($role)->to('drink');
+
+        $bouncer->sync($user)->abilities(['eat']);
+
+        $this->assertTrue($user->can('eat'));
+        $this->assertTrue($user->cannot('drink'));
+        $this->assertTrue($role->can('drink'));
     }
 
     /**
