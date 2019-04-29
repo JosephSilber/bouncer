@@ -22,7 +22,6 @@ class Role extends Model
      */
     protected $casts = [
         'id' => 'int',
-        'entity_id' => 'int',
         'level' => 'int',
     ];
 
