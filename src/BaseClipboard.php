@@ -78,9 +78,9 @@ abstract class BaseClipboard implements Contracts\Clipboard
      */
     public function getRolesLookup(Model $authority)
     {
-        $roles = $authority->roles()->pluck(
+        $roles = $authority->roles()->get([
             'name', Models::role()->getQualifiedKeyName()
-        );
+        ])->pluck('name', Models::role()->getKeyName());
 
         // In Laravel 5.1, "pluck" returns an Eloquent collection,
         // so we call "toBase" on it. In 5.2, "pluck" returns a
