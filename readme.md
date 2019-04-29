@@ -48,7 +48,8 @@ Bouncer is an elegant, framework-agnostic approach to managing roles and abiliti
 - [FAQ](#faq)
   - [Where do I set up my app's roles and abilities?](#where-do-i-set-up-my-apps-roles-and-abilities)
   - [Can I use a different set of roles & abilities for the public & dashboard sections of my site, respectively?](#can-i-use-a-different-set-of-roles--abilities-for-the-public--dashboard-sections-of-my-site-respectively)
-  - [I'm trying to run the migration, but I'm getting a SQL error that the "specified key was too long". What does that mean?](#im-trying-to-run-the-migration-but-im-getting-a-sql-error-that-the-specified-key-was-too-long-what-does-that-mean)
+  - [I'm trying to run the migration, but I'm getting a SQL error that the "specified key was too long"](#im-trying-to-run-the-migration-but-im-getting-a-sql-error-that-the-specified-key-was-too-long)
+  - [I'm trying to run the migration, but I'm getting a SQL error that there is a "Syntax error or access violation: 1064 ... to use near json not null)"](#im-trying-to-run-the-migration-but-im-getting-a-sql-error-that-there-is-a-syntax-error-or-access-violation-1064--to-use-near-json-not-null)
 - [Console commands](#console-commands)
   - [`bouncer:clean`](#bouncerclean)
 - [Cheat sheet](#cheat-sheet)
@@ -875,7 +876,7 @@ Bouncer's [`scope`](#the-scope-middleware) can be used to section off different 
 
 That's it. All roles and abilities will now be separately scoped for each section of your site. To fine-tune the extent of the scope, see [Customizing Bouncer's scope](#customizing-bouncers-scope).
 
-### I'm trying to run the migration, but I'm getting a SQL error that the "specified key was too long". What does that mean?
+### I'm trying to run the migration, but I'm getting a SQL error that the "specified key was too long"
 
 Starting with Laravel 5.4, the default database character set is now `utf8mb4`. If you're using older versions of some databases (MySQL below 5.7.7, or MariaDB below 10.2.2) with Larvel 5.4+, you'll get a SQL error when trying to create an index on a string column. To fix this, change Laravel's default string length in your `AppServiceProvider`:
 
