@@ -63,6 +63,29 @@ class CachedClipboardTest extends BaseTestCase
     /**
      * @test
      */
+    function it_always_checks_roles_in_the_cache()
+    {
+        $bouncer = $this->bouncer($user = User::create());
+        $admin = $bouncer->role()->create(['name' => 'admin']);
+
+        $bouncer->assign($admin)->to($user);
+
+        $this->assertTrue($bouncer->is($user)->an('admin'));
+
+        $this->db()->connection()->enableQueryLog();
+
+        $this->assertTrue($bouncer->is($user)->an($admin));
+        $this->assertTrue($bouncer->is($user)->an('admin'));
+        $this->assertTrue($bouncer->is($user)->an($admin->id));
+
+        $this->assertEmpty($this->db()->connection()->getQueryLog());
+
+        $this->db()->connection()->disableQueryLog();
+    }
+
+    /**
+     * @test
+     */
     function it_can_refresh_the_cache()
     {
         $cache = new ArrayStore;

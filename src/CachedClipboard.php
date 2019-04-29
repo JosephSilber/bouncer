@@ -221,17 +221,17 @@ class CachedClipboard extends BaseClipboard implements Contracts\CachedClipboard
     }
 
     /**
-     * Get the given authority's roles.
+     * Get the given authority's roles' IDs and names.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $authority
-     * @return \Illuminate\Support\Collection
+     * @return array
      */
-    public function getRoles(Model $authority)
+    public function getRolesLookup(Model $authority)
     {
         $key = $this->getCacheKey($authority, 'roles');
 
         return $this->sear($key, function () use ($authority) {
-            return parent::getRoles($authority);
+            return parent::getRolesLookup($authority);
         });
     }
 

@@ -34,36 +34,73 @@ abstract class BaseClipboard implements Contracts\Clipboard
      */
     public function checkRole(Model $authority, $roles, $boolean = 'or')
     {
-        $available = $this->getRoles($authority)
-                          ->intersect(Models::role()->getRoleNames($roles));
+        $count = $this->countMatchingRoles($authority, $roles);
 
         if ($boolean == 'or') {
-            return $available->count() > 0;
+            return $count > 0;
         } elseif ($boolean === 'not') {
-            return $available->count() === 0;
+            return $count === 0;
         }
 
-        return $available->count() == count((array) $roles);
+        return $count == count((array) $roles);
     }
 
     /**
-     * Get the given authority's roles.
+     * Count the authority's roles matching the given roles.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $authority
+     * @param  array|string  $roles
+     * @return int
+     */
+    protected function countMatchingRoles($authority, $roles)
+    {
+        $lookups = $this->getRolesLookup($authority);
+
+        return count(array_filter($roles, function ($role) use ($lookups) {
+            switch (true) {
+                case is_string($role):
+                    return $lookups['names']->has($role);
+                case is_numeric($role):
+                    return $lookups['ids']->has($role);
+                case $role instanceof Model:
+                    return $lookups['ids']->has($role->getKey());
+            }
+
+            throw new InvalidArgumentException('Invalid model identifier');
+        }));
+    }
+
+    /**
+     * Get the given authority's roles' IDs and names.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $authority
+     * @return array
+     */
+    public function getRolesLookup(Model $authority)
+    {
+        $roles = $authority->roles()->pluck(
+            'name', Models::role()->getQualifiedKeyName()
+        );
+
+        // In Laravel 5.1, "pluck" returns an Eloquent collection,
+        // so we call "toBase" on it. In 5.2, "pluck" returns a
+        // base instance, so there is no "toBase" available.
+        if (method_exists($roles, 'toBase')) {
+            $roles = $roles->toBase();
+        }
+
+        return ['ids' => $roles, 'names' => $roles->flip()];
+    }
+
+    /**
+     * Get the given authority's roles' names.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @return \Illuminate\Support\Collection
      */
     public function getRoles(Model $authority)
     {
-        $collection = $authority->roles()->get(['name'])->pluck('name');
-
-        // In Laravel 5.1, "pluck" returns an Eloquent collection,
-        // so we call "toBase" on it. In 5.2, "pluck" returns a
-        // base instance, so there is no "toBase" available.
-        if (method_exists($collection, 'toBase')) {
-            $collection = $collection->toBase();
-        }
-
-        return $collection;
+        return $this->getRolesLookup($authority)['names']->keys();
     }
 
     /**
