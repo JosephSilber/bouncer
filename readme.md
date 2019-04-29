@@ -890,10 +890,16 @@ public function boot()
 
 You can read more in [this Laravel News article](https://laravel-news.com/laravel-5-4-key-too-long-error).
 
-## I'm trying to run the migration, but I'm getting a SQL error that there is a "Syntax error or access violation: 1064 ... to use near 'json not null) ..."
+## I'm trying to run the migration, but I'm getting a SQL error that there is a "Syntax error or access violation: 1064 ... to use near json not null)"
 
-This error means that you may have an MariaDB version earlier than 10.2.7 which doesn't have the JSON Data Type. XAMPP is included with 10.1.38, at least to version 7.3.4.
-The solution is to update it to a newer version.
+JSON columns are a relatively new addition to MySQL (5.7.8) and MariaDB (10.0.1). If you're using an older version of these databases, you cannot use JSON columns.
+
+The best solution would be to upgrade your DB. If that's not currently possible, you can change [your published migration file](https://github.com/JosephSilber/bouncer/blob/2e31b84e9c1f6c2b86084df2af9d05299ba73c62/migrations/create_bouncer_tables.php#L25) to use a `text` column instead:
+
+```diff
+- $table->json('options')->nullable();
++ $table->text('options')->nullable();
+```
 
 ## Console commands
 
