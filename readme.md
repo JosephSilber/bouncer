@@ -890,6 +890,11 @@ public function boot()
 
 You can read more in [this Laravel News article](https://laravel-news.com/laravel-5-4-key-too-long-error).
 
+## I'm trying to run the migration, but I'm getting a SQL error that there is a "Syntax error or access violation: 1064 ... to use near 'json not null) ..."
+
+This error means that you may have an MariaDB version earlier than 10.2.7 which doesn't have the JSON Data Type. XAMPP is included with 10.1.38, at least to version 7.3.4.
+The solution is to update it to a newer version.
+
 ## Console commands
 
 ### `bouncer:clean`
