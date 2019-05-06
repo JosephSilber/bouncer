@@ -83,7 +83,7 @@ class Bouncer
         $returnAuthorities = array();
         
         foreach ($authorities as $authority){
-            $returnAuthorities[] = new Conductors\GivesAbilities($authority);
+            $returnAuthorities[] = $this->allow($authority);
         }
         
         return $returnAuthorities;
