@@ -71,6 +71,23 @@ class Bouncer
     {
         return new Conductors\GivesAbilities($authority);
     }
+    
+    /**
+     * Start a chain, to allow the given authorities an ability.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model|string  $authority
+     * @return \Silber\Bouncer\Conductors\GivesAbilities
+     */
+    public function allowMany(array $authorities)
+    {
+        $returnAuthorities = array();
+        
+        foreach ($authorities as $authority){
+            $returnAuthorities[] = new Conductors\GivesAbilities($authority);
+        }
+        
+        return $returnAuthorities;
+    }
 
     /**
      * Start a chain, to allow everyone an ability.
