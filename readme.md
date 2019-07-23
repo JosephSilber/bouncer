@@ -226,7 +226,7 @@ For more information about Laravel Facades, refer to [the Laravel documentation]
     $bouncer->useUserModel(User::class);
     ```
 
-    For additional configuration, check out [the Congifuration section](#configuration) below.
+    For additional configuration, check out [the Configuration section](#configuration) below.
 
 ### Enabling cache
 
