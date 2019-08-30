@@ -2,6 +2,7 @@
 
 namespace Silber\Bouncer;
 
+use Illuminate\Support\Arr;
 use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Console\CleanCommand;
 
@@ -98,9 +99,9 @@ class BouncerServiceProvider extends ServiceProvider
     {
         $config = $this->app->config['database'];
 
-        $connection = array_get($config, 'default');
+        $connection = Arr::get($config, 'default');
 
-        return array_get($config, "connections.{$connection}.prefix");
+        return Arr::get($config, "connections.{$connection}.prefix");
     }
 
     /**
