@@ -983,6 +983,9 @@ Bouncer::sync($user)->abilities($abilities);
 Bouncer::assign('admin')->to($user);
 Bouncer::retract('admin')->from($user);
 
+// Assigning roles to multiple users by ID
+Bouncer::assign('admin')->to([1,2,3]);
+
 // Re-syncing a user's roles
 Bouncer::sync($user)->roles($roles);
 
