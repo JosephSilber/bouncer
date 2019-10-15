@@ -20,7 +20,7 @@ class Abilities
     {
         return Models::ability()->where(function ($query) use ($authority, $allowed) {
             $abilities = Models::table('abilities');
-            $query->whereExists(static::getRoleConstraint($authority, $allowed));
+            $query->whereIn("{$abilities}.id", static::getRoleConstraint($authority, $allowed));
             $query->orWhereIn("{$abilities}.id", static::getAuthorityConstraint($authority, $allowed));
             $query->orWhereIn("{$abilities}.id", static::getEveryoneConstraint($allowed));
         });
@@ -48,13 +48,12 @@ class Abilities
     {
         return function ($query) use ($authority, $allowed) {
             $permissions = Models::table('permissions');
-            $abilities   = Models::table('abilities');
             $roles       = Models::table('roles');
             $prefix      = Models::prefix();
 
             $query->from($roles)
+                  ->select("{$prefix}{$permissions}.ability_id")
                   ->join($permissions, $roles.'.id', '=', $permissions.'.entity_id')
-                  ->whereRaw("{$prefix}{$permissions}.ability_id = {$prefix}{$abilities}.id")
                   ->where($permissions.".forbidden", ! $allowed)
                   ->where($permissions.".entity_type", Models::role()->getMorphClass());
 
