@@ -61,7 +61,7 @@ class Abilities
             Models::scope()->applyToRelationQuery($query, $permissions);
 
             $query->where(function ($query) use ($roles, $authority, $allowed) {
-                $query->whereExists(static::getAuthorityRoleConstraint($authority));
+                $query->whereIn("{$roles}.id", static::getAuthorityRoleConstraint($authority));
 
                 if ($allowed) {
                     static::addRoleInheritCondition($query, $authority, $roles);
@@ -83,7 +83,7 @@ class Abilities
         $query->orWhere('level', '<', function ($query) use ($authority, $roles) {
             $query->selectRaw('max(level)')
                   ->from($roles)
-                  ->whereExists(static::getAuthorityRoleConstraint($authority));
+                  ->whereIn("{$roles}.id", static::getAuthorityRoleConstraint($authority));
 
             Models::scope()->applyToModelQuery($query, $roles);
         });
@@ -104,8 +104,8 @@ class Abilities
             $prefix = Models::prefix();
 
             $query->from($table)
+                  ->select("{$prefix}{$pivot}.role_id")
                   ->join($pivot, "{$table}.{$authority->getKeyName()}", '=', $pivot.'.entity_id')
-                  ->whereRaw("{$prefix}{$pivot}.role_id = {$prefix}{$roles}.id")
                   ->where($pivot.'.entity_type', $authority->getMorphClass())
                   ->where("{$table}.{$authority->getKeyName()}", $authority->getKey());
 
