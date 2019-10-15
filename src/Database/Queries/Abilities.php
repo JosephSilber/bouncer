@@ -21,7 +21,7 @@ class Abilities
         return Models::ability()->where(function ($query) use ($authority, $allowed) {
             $abilities = Models::table('abilities');
             $query->whereExists(static::getRoleConstraint($authority, $allowed));
-            $query->orWhereExists(static::getAuthorityConstraint($authority, $allowed));
+            $query->orWhereIn("{$abilities}.id", static::getAuthorityConstraint($authority, $allowed));
             $query->orWhereIn("{$abilities}.id", static::getEveryoneConstraint($allowed));
         });
     }
@@ -131,8 +131,8 @@ class Abilities
             $prefix      = Models::prefix();
 
             $query->from($table)
+                  ->select("{$prefix}{$permissions}.ability_id")
                   ->join($permissions, "{$table}.{$authority->getKeyName()}", '=', $permissions.'.entity_id')
-                  ->whereRaw("{$prefix}{$permissions}.ability_id = {$prefix}{$abilities}.id")
                   ->where("{$permissions}.forbidden", ! $allowed)
                   ->where("{$permissions}.entity_type", $authority->getMorphClass())
                   ->where("{$table}.{$authority->getKeyName()}", $authority->getKey());
