@@ -19,9 +19,10 @@ class Abilities
     public static function forAuthority(Model $authority, $allowed = true)
     {
         return Models::ability()->where(function ($query) use ($authority, $allowed) {
+            $abilities = Models::table('abilities');
             $query->whereExists(static::getRoleConstraint($authority, $allowed));
             $query->orWhereExists(static::getAuthorityConstraint($authority, $allowed));
-            $query->orWhereExists(static::getEveryoneConstraint($allowed));
+            $query->orWhereIn("{$abilities}.id", static::getEveryoneConstraint($allowed));
         });
     }
 
@@ -151,11 +152,10 @@ class Abilities
     {
         return function ($query) use ($allowed) {
             $permissions = Models::table('permissions');
-            $abilities   = Models::table('abilities');
             $prefix      = Models::prefix();
 
             $query->from($permissions)
-                  ->whereRaw("{$prefix}{$permissions}.ability_id = {$prefix}{$abilities}.id")
+                  ->select("{$prefix}{$permissions}.ability_id")
                   ->where("{$permissions}.forbidden", ! $allowed)
                   ->whereNull('entity_id');
 
