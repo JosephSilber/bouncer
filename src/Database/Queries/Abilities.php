@@ -18,7 +18,7 @@ class Abilities
      */
     public static function forAuthority(Model $authority, $allowed = true)
     {
-        return Models::ability()->where(function ($query) use ($authority, $allowed) {
+        return Models::ability()->on($authority->getConnectionName())->where(function ($query) use ($authority, $allowed) {
             $query->whereExists(static::getRoleConstraint($authority, $allowed));
             $query->orWhereExists(static::getAuthorityConstraint($authority, $allowed));
             $query->orWhereExists(static::getEveryoneConstraint($allowed));
