@@ -11,12 +11,12 @@ class Roles
      * Constrain the given query by the provided role.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $role
+     * @param  string|array  $roles
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function constrainWhereIs($query, $role)
+    public function constrainWhereIs($query, $roles)
     {
-        $roles = array_slice(func_get_args(), 1);
+        $roles = is_array($roles) ? $roles : array_slice(func_get_args(), 1);
 
         return $query->whereHas('roles', function ($query) use ($roles) {
             $query->whereIn('name', $roles);
