@@ -48,9 +48,9 @@ class AssignsRoles
     /**
      * Assign the given roles to the given authorities.
      *
-     * @param  \Illuminate\Suuport\Collection  $roles
+     * @param  \Illuminate\Support\Collection  $roles
      * @param  string $authorityClass
-     * @param  \Illuminate\Suuport\Collection  $authorityIds
+     * @param  \Illuminate\Support\Collection  $authorityIds
      * @return void
      */
     protected function assignRoles(Collection $roles, $authorityClass, Collection $authorityIds)
@@ -71,9 +71,9 @@ class AssignsRoles
     /**
      * Get the pivot table records for the roles already assigned.
      *
-     * @param  \Illuminate\Suuport\Collection  $roleIds
+     * @param  \Illuminate\Support\Collection  $roleIds
      * @param  string $morphType
-     * @param  \Illuminate\Suuport\Collection  $authorityIds
+     * @param  \Illuminate\Support\Collection  $authorityIds
      * @return \Illuminate\Support\Collection
      */
     protected function getExistingAttachRecords($roleIds, $morphType, $authorityIds)
@@ -91,9 +91,9 @@ class AssignsRoles
     /**
      * Build the raw attach records for the assigned roles pivot table.
      *
-     * @param  \Illuminate\Suuport\Collection  $roleIds
+     * @param  \Illuminate\Support\Collection  $roleIds
      * @param  string $morphType
-     * @param  \Illuminate\Suuport\Collection  $authorityIds
+     * @param  \Illuminate\Support\Collection  $authorityIds
      * @return \Illuminate\Support\Collection
      */
     protected function buildAttachRecords($roleIds, $morphType, $authorityIds)
