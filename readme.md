@@ -3,7 +3,7 @@
 # Bouncer
 
 <p>
-<a href="https://travis-ci.org/JosephSilber/bouncer"><img src="https://travis-ci.org/JosephSilber/bouncer.svg" alt="Build Status"></a>
+<a href="https://github.com/JosephSilber/bouncer/actions"><img src="https://github.com/JosephSilber/bouncer/workflows/Tests/badge.svg" alt="Build Status"></a>
 <a href="https://packagist.org/packages/silber/bouncer"><img src="https://poser.pugx.org/silber/bouncer/d/total.svg" alt="Total Downloads"></a>
 <a href="https://github.com/JosephSilber/bouncer/blob/master/LICENSE.txt"><img src="https://poser.pugx.org/silber/bouncer/license.svg" alt="License"></a>
 </p>
