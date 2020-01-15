@@ -1,0 +1,42 @@
+name: Tests
+
+on:
+  push:
+    paths-ignore:
+      - 'readme.md'
+      - 'assets/**'
+  pull_request:
+    paths-ignore:
+      - 'readme.md'
+      - 'assets/**'
+  release:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        laravel: [6.*]
+        php: [7.2, 7.3, 7.4]
+      fail-fast: false
+
+    name: Laravel ${{ matrix.laravel }}, PHP ${{ matrix.php }}
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v1
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v1
+        with:
+          php-version: ${{ matrix.php }}
+          extension: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick
+
+      - name: Install dependencies
+        run: |
+            composer require "illuminate/auth:${{ matrix.laravel }}" "illuminate/cache:${{ matrix.laravel }}" "illuminate/container:${{ matrix.laravel }}" "illuminate/contracts:${{ matrix.laravel }}" "illuminate/database:${{ matrix.laravel }}" "illuminate/console:${{ matrix.laravel }}" "illuminate/events:${{ matrix.laravel }}" --no-interaction --no-update
+            composer update --prefer-stable --prefer-dist --no-interaction --no-suggest
+
+      - name: Run tests
+        run: vendor/bin/phpunit
