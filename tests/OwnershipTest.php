@@ -195,4 +195,21 @@ class OwnershipTest extends BaseTestCase
 
         Models::reset();
     }
+    
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function can_forbid_abilities_after_owning_a_model_class($provider)
+    {
+        list($bouncer, $user) = $provider();
+
+        $bouncer->allow($user)->toOwn(Account::class);
+        $bouncer->forbid($user)->to('publish', Account::class);
+
+        $account = Account::create(['user_id' => $user->id]);
+
+        $this->assertTrue($bouncer->can('update', $account));
+        $this->assertTrue($bouncer->cannot('publish', $account));
+    }
 }
