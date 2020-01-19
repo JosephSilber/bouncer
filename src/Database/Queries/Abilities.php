@@ -53,7 +53,7 @@ class Abilities
 
             $query->from($roles)
                   ->join($permissions, $roles.'.id', '=', $permissions.'.entity_id')
-                  ->whereRaw("{$prefix}{$permissions}.ability_id = {$prefix}{$abilities}.id")
+                  ->whereColumn("{$prefix}{$permissions}.ability_id", "{$prefix}{$abilities}.id")
                   ->where($permissions.".forbidden", ! $allowed)
                   ->where($permissions.".entity_type", Models::role()->getMorphClass());
 
@@ -105,7 +105,7 @@ class Abilities
 
             $query->from($table)
                   ->join($pivot, "{$table}.{$authority->getKeyName()}", '=', $pivot.'.entity_id')
-                  ->whereRaw("{$prefix}{$pivot}.role_id = {$prefix}{$roles}.id")
+                  ->whereColumn("{$prefix}{$pivot}.role_id", "{$prefix}{$roles}.id")
                   ->where($pivot.'.entity_type', $authority->getMorphClass())
                   ->where("{$table}.{$authority->getKeyName()}", $authority->getKey());
 
@@ -131,7 +131,7 @@ class Abilities
 
             $query->from($table)
                   ->join($permissions, "{$table}.{$authority->getKeyName()}", '=', $permissions.'.entity_id')
-                  ->whereRaw("{$prefix}{$permissions}.ability_id = {$prefix}{$abilities}.id")
+                  ->whereColumn("{$prefix}{$permissions}.ability_id", "{$prefix}{$abilities}.id")
                   ->where("{$permissions}.forbidden", ! $allowed)
                   ->where("{$permissions}.entity_type", $authority->getMorphClass())
                   ->where("{$table}.{$authority->getKeyName()}", $authority->getKey());
@@ -155,7 +155,7 @@ class Abilities
             $prefix      = Models::prefix();
 
             $query->from($permissions)
-                  ->whereRaw("{$prefix}{$permissions}.ability_id = {$prefix}{$abilities}.id")
+                  ->whereColumn("{$prefix}{$permissions}.ability_id", "{$prefix}{$abilities}.id")
                   ->where("{$permissions}.forbidden", ! $allowed)
                   ->whereNull('entity_id');
 
