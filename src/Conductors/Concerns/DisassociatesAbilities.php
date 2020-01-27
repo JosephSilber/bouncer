@@ -76,48 +76,15 @@ trait DisassociatesAbilities
     {
         $relation = $model->abilities();
 
-        list($foreignKeyName, $relatedKeyName) = $this->getRelationKeyNames($relation);
-
         $query = $relation
             ->newPivotStatement()
-            ->where($foreignKeyName, $model->getKey())
+            ->where($relation->getQualifiedForeignPivotKeyName(), $model->getKey())
             ->where('entity_type', $model->getMorphClass())
-            ->whereIn($relatedKeyName, $ids);
+            ->whereIn($relation->getQualifiedRelatedPivotKeyName(), $ids);
 
         return Models::scope()->applyToRelationQuery(
             $query, $relation->getTable()
         );
-    }
-
-    /**
-     * Get the two primary key names from the relation.
-     *
-     * @param  Illuminate\Database\Eloquent\Relations\MorphToMany  $relation
-     * @return array
-     */
-    protected function getRelationKeyNames(MorphToMany $relation)
-    {
-        // We need to get the keys of both tables from the relation class.
-        // The method names have changed in Laravel 5.4 & again in 5.5,
-        // so we will first check which methods are available to us.
-        if (method_exists($relation, 'getForeignKey')) {
-            return [
-                $relation->getForeignKey(),
-                $relation->getOtherKey(),
-            ];
-        }
-
-        if (method_exists($relation, 'getQualifiedForeignKeyName')) {
-            return [
-                $relation->getQualifiedForeignKeyName(),
-                $relation->getQualifiedRelatedKeyName(),
-            ];
-        }
-
-        return [
-            $relation->getQualifiedForeignPivotKeyName(),
-            $relation->getQualifiedRelatedPivotKeyName(),
-        ];
     }
 
     /**

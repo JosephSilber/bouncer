@@ -84,10 +84,7 @@ trait ConductsAbilities
             return false;
         }
 
-        // In an ideal world, we'd be using $collection->every('is_string').
-        // Since we also support older versions of Laravel, we'll need to
-        // use "array_filter" with a double count. Such is legacy life.
-        return count(array_filter($abilities, 'is_string')) == count($abilities);
+        return (new Collection($abilities))->every('is_string');
     }
 
     /**

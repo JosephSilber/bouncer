@@ -8,7 +8,7 @@ use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Constraints\Group;
 use Silber\Bouncer\Constraints\constrainer;
 use Silber\Bouncer\Database\Titles\AbilityTitle;
-use Silber\Bouncer\Database\Scope\BaseTenantScope;
+use Silber\Bouncer\Database\Scope\TenantScope;
 use Silber\Bouncer\Database\Queries\AbilitiesForModel;
 
 trait IsAbility
@@ -20,7 +20,7 @@ trait IsAbility
      */
     public static function bootIsAbility()
     {
-        BaseTenantScope::register(static::class);
+        TenantScope::register(static::class);
 
         static::creating(function ($ability) {
             Models::scope()->applyToModel($ability);

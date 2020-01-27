@@ -82,7 +82,7 @@ class SyncsRolesAndAbilities
 
         $this->newPivotQuery($relation)
              ->where('entity_type', $authority->getMorphClass())
-             ->whereNotIn($this->getRelatedPivotKeyName($relation), $abilityKeys)
+             ->whereNotIn($relation->getRelatedPivotKeyName(), $abilityKeys)
              ->where('forbidden', $options['forbidden'])
              ->delete();
 
@@ -134,7 +134,7 @@ class SyncsRolesAndAbilities
     {
         $current = $this->pluck(
             $this->newPivotQuery($relation),
-            $this->getRelatedPivotKeyName($relation)
+            $relation->getRelatedPivotKeyName()
         );
 
         $this->detach(array_diff($current, $ids), $relation);
@@ -159,7 +159,7 @@ class SyncsRolesAndAbilities
         }
 
         $this->newPivotQuery($relation)
-             ->whereIn($this->getRelatedPivotKeyName($relation), $ids)
+             ->whereIn($relation->getRelatedPivotKeyName(), $ids)
              ->delete();
     }
 
@@ -172,59 +172,13 @@ class SyncsRolesAndAbilities
     protected function newPivotQuery(BelongsToMany $relation)
     {
         $query = $relation->newPivotStatement()->where(
-            $this->getForeignPivotKeyName($relation),
+            $relation->getForeignPivotKeyName(),
             $relation->getParent()->getKey()
         );
 
         return Models::scope()->applyToRelationQuery(
             $query, $relation->getTable()
         );
-    }
-
-    /**
-     * Get the column name for the foreign key on the pivot table.
-     *
-     * The name of the underlying method changed in
-     * Laravel 5.4, and then again in 5.5, so we
-     * first check which method is available.
-     *
-     * @param  \Illuminate\Database\Eloquent\Relations\BelongsToMany  $relation
-     * @return string
-     */
-    protected function getForeignPivotKeyName(BelongsToMany $relation)
-    {
-        if (method_exists($relation, 'getForeignPivotKeyName')) {
-            return $relation->getForeignPivotKeyName();
-        }
-
-        if (method_exists($relation, 'getQualifiedForeignKeyName')) {
-            return $relation->getQualifiedForeignKeyName();
-        }
-
-        return $relation->getForeignKey();
-    }
-
-    /**
-     * Get the column name for the related key on the pivot table.
-     *
-     * The name of the underlying method changed in
-     * Laravel 5.4, and then again in 5.5, so we
-     * first check which method is available.
-     *
-     * @param  \Illuminate\Database\Eloquent\Relations\BelongsToMany  $relation
-     * @return string
-     */
-    protected function getRelatedPivotKeyName(BelongsToMany $relation)
-    {
-        if (method_exists($relation, 'getRelatedPivotKeyName')) {
-            return $relation->getRelatedPivotKeyName();
-        }
-
-        if (method_exists($relation, 'getQualifiedRelatedKeyName')) {
-            return $relation->getQualifiedRelatedKeyName();
-        }
-
-        return $relation->getOtherKey();
     }
 
     /**
