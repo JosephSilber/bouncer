@@ -12,25 +12,6 @@ class AfterPoliciesTest extends BaseTestCase
     use Concerns\TestsClipboards;
 
     /**
-     * Setup the world for the tests.
-     *
-     * @return void
-     */
-    public function setUp()
-    {
-        // Returning a result from an "after" callback, is only supported
-        // in Laravel 5.7+, so we only want to run the tests for those
-        // versions. We check for the "canBeCalledWithUser" method.
-        $shouldRun = method_exists(Gate::class, 'canBeCalledWithUser');
-
-        if (! $shouldRun) {
-            return $this->markTestSkipped();
-        }
-
-        parent::setUp();
-    }
-
-    /**
      * @test
      * @dataProvider bouncerProvider
      */
