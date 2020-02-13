@@ -38,7 +38,6 @@
     "require-dev": {
         "illuminate/console": "^6.0",
         "illuminate/events": "^6.0",
-        "mockery/mockery": "^0.9.5",
         "phpunit/phpunit": "^8.0",
         "larapack/dd": "^1.1"
     },
