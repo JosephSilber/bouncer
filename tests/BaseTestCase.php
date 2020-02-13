@@ -50,7 +50,7 @@ abstract class BaseTestCase extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         Container::setInstance(new Container);
 
@@ -115,7 +115,7 @@ abstract class BaseTestCase extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->rollbackTestTables();
 

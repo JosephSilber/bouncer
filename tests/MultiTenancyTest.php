@@ -21,7 +21,7 @@ class MultiTenancyTest extends BaseTestCase
      *
      * @return void
      */
-    function tearDown()
+    function tearDown(): void
     {
         Models::scope(new Scope);
 

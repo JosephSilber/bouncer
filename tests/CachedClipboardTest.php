@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class CachedClipboardTest extends BaseTestCase
 {
-    function setUp()
+    function setUp(): void
     {
         parent::setUp();
 

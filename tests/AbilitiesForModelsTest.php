@@ -93,7 +93,7 @@ class AbilitiesForModelsTest extends BaseTestCase
      */
     function allowing_on_non_existent_model_throws($provider)
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
 
         list($bouncer, $user) = $provider();
 
