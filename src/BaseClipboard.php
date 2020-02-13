@@ -5,6 +5,7 @@ namespace Silber\Bouncer;
 use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Database\Queries\Abilities;
 
+use InvalidArgumentException;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Access\Gate;
