@@ -17,8 +17,8 @@ jobs:
 
     strategy:
       matrix:
-        laravel: [6.*]
-        php: [7.2, 7.3, 7.4]
+        laravel: [6.15.0]
+        php: [7.4]
       fail-fast: false
 
     name: Laravel ${{ matrix.laravel }}, PHP ${{ matrix.php }}
