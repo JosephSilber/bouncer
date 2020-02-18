@@ -39,4 +39,4 @@ jobs:
             composer update --prefer-stable --prefer-dist --no-interaction --no-suggest
 
       - name: Run tests
-        run: vendor/bin/phpunit
+        run: vendor/bin/phpunit --do-not-cache-result
