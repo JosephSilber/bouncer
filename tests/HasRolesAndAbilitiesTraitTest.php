@@ -2,6 +2,8 @@
 
 namespace Silber\Bouncer\Tests;
 
+use Silber\Bouncer\Database\Models;
+
 class HasRolesAndAbilitiesTraitTest extends BaseTestCase
 {
     use Concerns\TestsClipboards;
@@ -242,6 +244,27 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
     /**
      * @test
      */
+    function soft_deleting_a_model_persists_the_permissions_pivot_table_records()
+    {
+        Models::setUsersModel(UserWithSoftDeletes::class);
+        $bouncer = $this->bouncer();
+
+        $user1 = UserWithSoftDeletes::create();
+        $user2 = UserWithSoftDeletes::create();
+
+        $bouncer->allow($user1)->everything();
+        $bouncer->allow($user2)->everything();
+
+        $this->assertEquals(2, $this->db()->table('permissions')->count());
+
+        $user1->delete();
+
+        $this->assertEquals(2, $this->db()->table('permissions')->count());
+    }
+
+    /**
+     * @test
+     */
     function deleting_a_model_deletes_the_assigned_roles_pivot_table_records()
     {
         $bouncer = $this->bouncer();
@@ -257,5 +280,26 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $user1->delete();
 
         $this->assertEquals(1, $this->db()->table('assigned_roles')->count());
+    }
+
+    /**
+     * @test
+     */
+    function soft_deleting_a_model_persists_the_assigned_roles_pivot_table_records()
+    {
+        Models::setUsersModel(UserWithSoftDeletes::class);
+        $bouncer = $this->bouncer();
+
+        $user1 = UserWithSoftDeletes::create();
+        $user2 = UserWithSoftDeletes::create();
+
+        $bouncer->assign('admin')->to($user1);
+        $bouncer->assign('admin')->to($user2);
+
+        $this->assertEquals(2, $this->db()->table('assigned_roles')->count());
+
+        $user1->delete();
+
+        $this->assertEquals(2, $this->db()->table('assigned_roles')->count());
     }
 }
