@@ -14,28 +14,28 @@ use Silber\Bouncer\Contracts\Scope as ScopeContract;
 class Models
 {
     /**
-     * The prefix for the tables.
+     * The prefix for all tables.
      *
      * @var string
      */
     protected static $prefix = '';
 
     /**
-     * Map for the bouncer's models.
+     * Map of bouncer's models.
      *
      * @var array
      */
     protected static $models = [];
 
     /**
-     * Holds the map of ownership for models.
+     * Map of ownership for models.
      *
      * @var array
      */
     protected static $ownership = [];
 
     /**
-     * Map for the bouncer's tables.
+     * Map of bouncer's tables.
      *
      * @var array
      */
