@@ -21,6 +21,7 @@ use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Capsule\Manager as DB;
 use Illuminate\Database\Eloquent\Model as Eloquent;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 abstract class BaseTestCase extends TestCase
 {
@@ -99,6 +100,7 @@ abstract class BaseTestCase extends TestCase
             $table->string('name')->nullable();
             $table->integer('age')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('accounts', function ($table) {
@@ -207,6 +209,11 @@ class User extends Eloquent
     protected $table = 'users';
 
     protected $guarded = [];
+}
+
+class UserWithSoftDeletes extends User
+{
+    use SoftDeletes;
 }
 
 class Account extends Eloquent
