@@ -37,7 +37,7 @@ class BouncerServiceProvider extends ServiceProvider
 
         $this->registerAtGate();
 
-        if ($this->runningInConsole()) {
+        if ($this->app->runningInConsole()) {
             $this->publishMiddleware();
             $this->publishMigrations();
         }
@@ -194,17 +194,5 @@ class BouncerServiceProvider extends ServiceProvider
         // auto-register at the gate. We already registered Bouncer in
         // the container using the Factory, so now we'll resolve it.
         $this->app->make(Bouncer::class);
-    }
-
-    /**
-     * Determine if we are running in the console.
-     *
-     * Copied from Laravel's Application class, since we need to support 5.1.
-     *
-     * @return bool
-     */
-    protected function runningInConsole()
-    {
-        return php_sapi_name() == 'cli' || php_sapi_name() == 'phpdbg';
     }
 }
