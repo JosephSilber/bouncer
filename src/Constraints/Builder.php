@@ -47,12 +47,7 @@ class Builder
             return $this->whereNested('and', $column);
         }
 
-        $constraint = call_user_func_array(
-            [Constraint::class, 'where'],
-            func_get_args()
-        );
-
-        return $this->addConstraint($constraint);
+        return $this->addConstraint(Constraint::where(...func_get_args()));
     }
 
     /**
@@ -69,12 +64,7 @@ class Builder
             return $this->whereNested('or', $column);
         }
 
-        $constraint = call_user_func_array(
-            [Constraint::class, 'orWhere'],
-            func_get_args()
-        );
-
-        return $this->addConstraint($constraint);
+        return $this->addConstraint(Constraint::orWhere(...func_get_args()));
     }
 
     /**
@@ -87,12 +77,7 @@ class Builder
      */
     public function whereColumn($a, $operator, $b = null)
     {
-        $constraint = call_user_func_array(
-            [Constraint::class, 'whereColumn'],
-            func_get_args()
-        );
-
-        return $this->addConstraint($constraint);
+        return $this->addConstraint(Constraint::whereColumn(...func_get_args()));
     }
 
     /**
@@ -105,12 +90,7 @@ class Builder
      */
     public function orWhereColumn($a, $operator, $b = null)
     {
-        $constraint = call_user_func_array(
-            [Constraint::class, 'orWhereColumn'],
-            func_get_args()
-        );
-
-        return $this->addConstraint($constraint);
+        return $this->addConstraint(Constraint::orWhereColumn(...func_get_args()));
     }
 
     /**

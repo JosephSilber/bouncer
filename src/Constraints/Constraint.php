@@ -60,9 +60,7 @@ abstract class Constraint implements Constrainer
      */
     public static function orWhere($column, $operator, $value = null)
     {
-        return call_user_func_array([
-            static::class, 'where',
-        ], func_get_args())->logicalOperator('or');
+        return static::where(...func_get_args())->logicalOperator('or');
     }
 
     /**
@@ -93,9 +91,7 @@ abstract class Constraint implements Constrainer
      */
     public static function orWhereColumn($a, $operator, $b = null)
     {
-        return call_user_func_array([
-            static::class, 'whereColumn',
-        ], func_get_args())->logicalOperator('or');
+        return static::whereColumn(...func_get_args())->logicalOperator('or');
     }
 
     /**

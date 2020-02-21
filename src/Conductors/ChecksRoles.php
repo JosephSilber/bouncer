@@ -36,65 +36,55 @@ class ChecksRoles
     /**
      * Check if the authority has any of the given roles.
      *
-     * @param  string  $role
+     * @param  string  ...$roles
      * @return bool
      */
-    public function a($role)
+    public function a(...$roles)
     {
-        $roles = func_get_args();
-
         return $this->clipboard->checkRole($this->authority, $roles, 'or');
     }
 
     /**
      * Check if the authority doesn't have any of the given roles.
      *
-     * @param  string  $role
+     * @param  string  ...$roles
      * @return bool
      */
-    public function notA($role)
+    public function notA(...$roles)
     {
-        $roles = func_get_args();
-
         return $this->clipboard->checkRole($this->authority, $roles, 'not');
     }
 
     /**
      * Alias to the "a" method.
      *
-     * @param  string  $role
+     * @param  string  ...$roles
      * @return bool
      */
-    public function an($role)
+    public function an(...$roles)
     {
-        $roles = func_get_args();
-
         return $this->clipboard->checkRole($this->authority, $roles, 'or');
     }
 
     /**
      * Alias to the "notA" method.
      *
-     * @param  string  $role
+     * @param  string  ...$roles
      * @return bool
      */
-    public function notAn($role)
+    public function notAn(...$roles)
     {
-        $roles = func_get_args();
-
         return $this->clipboard->checkRole($this->authority, $roles, 'not');
     }
 
     /**
      * Check if the authority has all of the given roles.
      *
-     * @param  string  $role
+     * @param  string  ...$roles
      * @return bool
      */
-    public function all($role)
+    public function all(...$roles)
     {
-        $roles = func_get_args();
-
         return $this->clipboard->checkRole($this->authority, $roles, 'and');
     }
 }

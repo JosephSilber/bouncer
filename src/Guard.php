@@ -102,15 +102,11 @@ class Guard
     public function registerAt(Gate $gate)
     {
         $gate->before(function () {
-            return call_user_func_array([
-                $this, 'runBeforeCallback'
-            ], func_get_args());
+            return $this->runBeforeCallback(...func_get_args());
         });
 
         $gate->after(function () {
-            return call_user_func_array([
-                $this, 'runAfterCallback'
-            ], func_get_args());
+            return $this->runAfterCallback(...func_get_args());
         });
 
         return $this;

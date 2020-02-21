@@ -36,7 +36,7 @@ class GivesAbilities
      */
     public function to($abilities, $model = null, array $attributes = [])
     {
-        if (call_user_func_array([$this, 'shouldConductLazy'], func_get_args())) {
+        if ($this->shouldConductLazy(...func_get_args())) {
             return $this->conductLazy($abilities);
         }
 
