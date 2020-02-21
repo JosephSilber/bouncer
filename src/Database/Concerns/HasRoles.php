@@ -48,7 +48,9 @@ trait HasRoles
      */
     public function getRoles()
     {
-        return $this->getClipboardInstance()->getRoles($this);
+        return Container::getInstance()
+            ->make(Clipboard::class)
+            ->getRoles($this);
     }
 
     /**
@@ -87,9 +89,9 @@ trait HasRoles
     {
         $roles = func_get_args();
 
-        $clipboard = $this->getClipboardInstance();
-
-        return $clipboard->checkRole($this, $roles, 'or');
+        return Container::getInstance()
+            ->make(Clipboard::class)
+            ->checkRole($this, $roles, 'or');
     }
 
     /**
@@ -115,9 +117,9 @@ trait HasRoles
     {
         $roles = func_get_args();
 
-        $clipboard = $this->getClipboardInstance();
-
-        return $clipboard->checkRole($this, $roles, 'not');
+        return Container::getInstance()
+            ->make(Clipboard::class)
+            ->checkRole($this, $roles, 'not');
     }
 
     /**
@@ -143,9 +145,9 @@ trait HasRoles
     {
         $roles = func_get_args();
 
-        $clipboard = $this->getClipboardInstance();
-
-        return $clipboard->checkRole($this, $roles, 'and');
+        return Container::getInstance()
+            ->make(Clipboard::class)
+            ->checkRole($this, $roles, 'and');
     }
 
     /**
@@ -191,17 +193,5 @@ trait HasRoles
             [new RolesQuery, 'constrainWhereIsNot'],
             func_get_args()
         );
-    }
-
-    /**
-     * Get an instance of the bouncer's clipboard.
-     *
-     * @return \Silber\Bouncer\Contracts\Clipboard
-     */
-    protected function getClipboardInstance()
-    {
-        $container = Container::getInstance() ?: new Container;
-
-        return $container->make(Clipboard::class);
     }
 }

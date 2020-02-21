@@ -202,9 +202,7 @@ abstract class BaseTestCase extends TestCase
 
 class User extends Eloquent
 {
-    use Authorizable, HasRolesAndAbilities {
-        Authorizable::getClipboardInstance insteadof HasRolesAndAbilities;
-    }
+    use Authorizable, HasRolesAndAbilities;
 
     protected $table = 'users';
 

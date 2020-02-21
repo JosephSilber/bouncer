@@ -16,9 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 
 trait IsRole
 {
-    use HasAbilities, Authorizable {
-        HasAbilities::getClipboardInstance insteadof Authorizable;
-    }
+    use HasAbilities, Authorizable;
 
     /**
      * Boot the is role trait.

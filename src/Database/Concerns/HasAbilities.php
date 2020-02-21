@@ -49,7 +49,9 @@ trait HasAbilities
      */
     public function getAbilities()
     {
-        return $this->getClipboardInstance()->getAbilities($this);
+        return Container::getInstance()
+            ->make(Clipboard::class)
+            ->getAbilities($this);
     }
 
     /**
@@ -59,7 +61,9 @@ trait HasAbilities
      */
     public function getForbiddenAbilities()
     {
-        return $this->getClipboardInstance()->getAbilities($this, false);
+        return Container::getInstance()
+            ->make(Clipboard::class)
+            ->getAbilities($this, false);
     }
 
     /**
@@ -132,17 +136,5 @@ trait HasAbilities
         (new UnforbidsAbilities($this))->to($ability, $model);
 
         return $this;
-    }
-
-    /**
-     * Get an instance of the bouncer's clipboard.
-     *
-     * @return \Silber\Bouncer\Contracts\Clipboard
-     */
-    protected function getClipboardInstance()
-    {
-        $container = Container::getInstance() ?: new Container;
-
-        return $container->make(Clipboard::class);
     }
 }
