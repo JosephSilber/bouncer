@@ -16,7 +16,9 @@ trait Authorizable
      */
     public function can($ability, $model = null)
     {
-        return $this->getClipboardInstance()->check($this, $ability, $model);
+        return Container::getInstance()
+            ->make(Clipboard::class)
+            ->check($this, $ability, $model);
     }
 
     /**
@@ -41,17 +43,5 @@ trait Authorizable
     public function cannot($ability, $model = null)
     {
         return $this->cant($ability, $model);
-    }
-
-    /**
-     * Get an instance of the bouncer's clipboard.
-     *
-     * @return \Silber\Bouncer\Contracts\Clipboard
-     */
-    protected function getClipboardInstance()
-    {
-        $container = Container::getInstance() ?: new Container;
-
-        return $container->make(Clipboard::class);
     }
 }

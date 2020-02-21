@@ -7,7 +7,5 @@ use Silber\Bouncer\Database\Concerns\HasAbilities;
 
 trait HasRolesAndAbilities
 {
-    use HasRoles, HasAbilities {
-        HasRoles::getClipboardInstance insteadof HasAbilities;
-    }
+    use HasRoles, HasAbilities;
 }
