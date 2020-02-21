@@ -121,19 +121,17 @@ class Guard
      * @param  mixed  $additional
      * @return bool|null
      */
-    protected function runBeforeCallback($authority, $ability, $arguments = [], $additional = null)
+    protected function runBeforeCallback($authority, $ability, $arguments = [])
     {
         if ($this->slot != 'before') {
             return;
         }
 
-        list($model, $additional) = $this->parseGateBeforeArguments(
-            $arguments, $additional
-        );
-
-        if (! is_null($additional)) {
+        if (count($arguments) > 2) {
             return;
         }
+
+        $model = isset($arguments[0]) ? $arguments[0] : null;
 
         return $this->checkAtClipboard($authority, $ability, $model);
     }
@@ -144,10 +142,10 @@ class Guard
      * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @param  string  $ability
      * @param  mixed  $result
-     * @param  array|null  $arguments
+     * @param  array  $arguments
      * @return bool|null
      */
-    protected function runAfterCallback($authority, $ability, $result, $arguments = null)
+    protected function runAfterCallback($authority, $ability, $result, $arguments = [])
     {
         if (! is_null($result)) {
             return $result;
@@ -164,32 +162,6 @@ class Guard
         $model = isset($arguments[0]) ? $arguments[0] : null;
 
         return $this->checkAtClipboard($authority, $ability, $model);
-    }
-
-    /**
-     * Parse the arguments we got from the gate.
-     *
-     * @param  mixed  $arguments
-     * @param  mixed  $additional
-     * @return array
-     */
-    protected function parseGateBeforeArguments($arguments, $additional)
-    {
-        // The way arguments are passed into the gate's before callback has changed in Laravel
-        // in the middle of the 5.2 release. Before, arguments were spread out. Now they're
-        // all supplied in a single array instead. We will normalize it into two values.
-        if (! is_null($additional)) {
-            return [$arguments, $additional];
-        }
-
-        if (is_array($arguments)) {
-            return [
-                isset($arguments[0]) ? $arguments[0] : null,
-                isset($arguments[1]) ? $arguments[1] : null,
-            ];
-        }
-
-        return [$arguments, null];
     }
 
     /**
