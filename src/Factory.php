@@ -204,22 +204,8 @@ class Factory
             return $this->gate;
         }
 
-        return new Gate($this->getContainer(), function () {
+        return new Gate(Container::getInstance(), function () {
             return $this->user;
         });
-    }
-
-    /**
-     * Get the container singleton.
-     *
-     * @return \Illuminate\Container\Container
-     */
-    protected function getContainer()
-    {
-        if (is_null(Container::getInstance())) {
-            Container::setInstance(new Container);
-        }
-
-        return Container::getInstance();
     }
 }
