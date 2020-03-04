@@ -88,7 +88,7 @@ When you check abilities at Laravel's gate, the bouncer will automatically be co
 Install Bouncer with [composer](https://getcomposer.org/doc/00-intro.md):
 
 ```
-$ composer require silber/bouncer v1.0.0-rc.6
+$ composer require silber/bouncer v1.0.0-rc.7
 ```
 
 > In Laravel 5.5, [service providers and aliases are automatically registered](https://laravel.com/docs/6.0/packages#package-discovery). If you're using Laravel 5.5, skip ahead directly to step 3 (do not pass go, but do collect $200).
@@ -147,7 +147,7 @@ For more information about Laravel Facades, refer to [the Laravel documentation]
 1) Install Bouncer with [composer](https://getcomposer.org/doc/00-intro.md):
 
     ```
-    $ composer require silber/bouncer v1.0.0-rc.6
+    $ composer require silber/bouncer v1.0.0-rc.7
     ```
 
 2) Set up the database with [the Eloquent Capsule component](https://github.com/illuminate/database/blob/master/README.md):
