@@ -14,13 +14,6 @@ use Silber\Bouncer\Contracts\Scope as ScopeContract;
 class Models
 {
     /**
-     * The prefix for all tables.
-     *
-     * @var string
-     */
-    protected static $prefix = '';
-
-    /**
      * Map of bouncer's models.
      *
      * @var array
@@ -101,17 +94,6 @@ class Models
     }
 
     /**
-     * Set the prefix for the tables.
-     *
-     * @param  string  $prefix
-     * @return void
-     */
-    public static function setPrefix($prefix)
-    {
-        static::$prefix = $prefix;
-    }
-
-    /**
      * Get a custom table name mapping for the given table.
      *
      * @param  string  $table
@@ -124,16 +106,6 @@ class Models
         }
 
         return $table;
-    }
-
-    /**
-     * Get the prefix for the tables.
-     *
-     * @return string
-     */
-    public static function prefix()
-    {
-        return static::$prefix;
     }
 
     /**

@@ -66,11 +66,10 @@ class Roles
             $key    = "{$table}.{$model->getKeyName()}";
             $pivot  = Models::table('assigned_roles');
             $roles  = Models::table('roles');
-            $prefix = Models::prefix();
 
             $query->from($table)
                   ->join($pivot, $key, '=', $pivot.'.entity_id')
-                  ->whereColumn("{$prefix}{$pivot}.role_id", "{$prefix}{$roles}.id")
+                  ->whereColumn("{$pivot}.role_id", "{$roles}.id")
                   ->where("{$pivot}.entity_type", $model->getMorphClass())
                   ->whereIn($key, $keys);
 

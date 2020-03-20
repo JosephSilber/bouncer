@@ -32,7 +32,6 @@ class BouncerServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerMorphs();
-        $this->setTablePrefix();
         $this->setUserModel();
 
         $this->registerAtGate();
@@ -76,32 +75,6 @@ class BouncerServiceProvider extends ServiceProvider
     protected function registerMorphs()
     {
         Models::updateMorphMap();
-    }
-
-    /**
-     * Set the table prefix for Bouncer's tables.
-     *
-     * @return void
-     */
-    protected function setTablePrefix()
-    {
-        if ($prefix = $this->getTablePrefix()) {
-            Models::setPrefix($prefix);
-        }
-    }
-
-    /**
-     * Get the configured table prefix.
-     *
-     * @return string|null
-     */
-    protected function getTablePrefix()
-    {
-        $config = $this->app->config['database'];
-
-        $connection = Arr::get($config, 'default');
-
-        return Arr::get($config, "connections.{$connection}.prefix");
     }
 
     /**
