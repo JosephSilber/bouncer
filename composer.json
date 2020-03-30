@@ -29,6 +29,7 @@
         "files": ["tests/helpers.php"]
     },
     "require": {
+        "php": "^7.2",
         "illuminate/auth": "^6.0|^7.0",
         "illuminate/cache": "^6.0|^7.0",
         "illuminate/container": "^6.0|^7.0",
