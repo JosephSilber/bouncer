@@ -130,21 +130,6 @@ class BouncerServiceProvider extends ServiceProvider
     {
         $config = $this->app->make('config');
 
-        if (! is_null($model = $this->getUserModelFromDefaultGuard($config))) {
-            return $model;
-        }
-
-        return $config->get('auth.model', \App\User::class);
-    }
-
-    /**
-     * Get the user model from the application's auth config.
-     *
-     * @param  \Illuminate\Config\Repository  $config
-     * @return string|null
-     */
-    protected function getUserModelFromDefaultGuard($config)
-    {
         if (is_null($guard = $config->get('auth.defaults.guard'))) {
             return null;
         }
