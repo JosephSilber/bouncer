@@ -83,6 +83,10 @@ When you check abilities at Laravel's gate, the bouncer will automatically be co
 
 ## Installation
 
+> **Note**: Bouncer requires PHP 7.2+ and Laravel/Eloquent 6.0+
+> 
+> If you're not up to date, use [Bouncer RC6](https://github.com/JosephSilber/bouncer/tree/v1.0.0-rc.6). It supports all the way back to PHP 5.5 & Laravel 5.1, and has no known bugs.
+
 ### Installing Bouncer in a Laravel app
 
 1) Install Bouncer with [composer](https://getcomposer.org/doc/00-intro.md):
