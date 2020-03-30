@@ -247,6 +247,7 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
     function soft_deleting_a_model_persists_the_permissions_pivot_table_records()
     {
         Models::setUsersModel(UserWithSoftDeletes::class);
+
         $bouncer = $this->bouncer();
 
         $user1 = UserWithSoftDeletes::create();
@@ -288,6 +289,7 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
     function soft_deleting_a_model_persists_the_assigned_roles_pivot_table_records()
     {
         Models::setUsersModel(UserWithSoftDeletes::class);
+
         $bouncer = $this->bouncer();
 
         $user1 = UserWithSoftDeletes::create();
