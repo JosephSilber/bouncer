@@ -533,8 +533,13 @@ For convenience, the bouncer class provides these passthrough methods:
 
 ```php
 Bouncer::can($ability);
+Bouncer::can($ability, $model);
+Bouncer::canAny($arrayOfAbilities);
+Bouncer::canAny($arrayOfAbilities, $model);
 Bouncer::cannot($ability);
+Bouncer::cannot($ability, $model);
 Bouncer::authorize($ability);
+Bouncer::authorize($ability, $model);
 ```
 
 These call directly into the `Gate` class.
