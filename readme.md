@@ -529,20 +529,23 @@ $forbiddenAbilities = $user->getForbiddenAbilities();
 
 Authorizing users is handled directly at [Laravel's `Gate`](https://laravel.com/docs/7.x/authorization#gates), or on the user model (`$user->can($ability)`).
 
-For convenience, the bouncer class provides these passthrough methods:
+For convenience, the `Bouncer` class provides these passthrough methods:
 
 ```php
 Bouncer::can($ability);
 Bouncer::can($ability, $model);
-Bouncer::canAny($arrayOfAbilities);
-Bouncer::canAny($arrayOfAbilities, $model);
+
+Bouncer::canAny($abilities);
+Bouncer::canAny($abilities, $model);
+
 Bouncer::cannot($ability);
 Bouncer::cannot($ability, $model);
+
 Bouncer::authorize($ability);
 Bouncer::authorize($ability, $model);
 ```
 
-These call directly into the `Gate` class.
+These call directly into their equivalent methods on the `Gate` class.
 
 ### Blade directives
 
