@@ -143,6 +143,24 @@ class Helpers
     }
 
     /**
+     * Determines whether the given model is set to soft delete.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @return bool
+     */
+    public static function isSoftDeleting(Model $model)
+    {
+        // Soft deleting models is controlled by adding the SoftDeletes trait
+        // to the model. Instead of recursively looking for that trait, we
+        // will check for the existence of the `isForceDeleting` method.
+        if (! method_exists($model, 'isForceDeleting')) {
+            return false;
+        }
+
+        return ! $model->isForceDeleting();
+    }
+
+    /**
      * Convert the given value to an array.
      *
      * @param  mixed  $value

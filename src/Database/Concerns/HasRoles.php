@@ -4,6 +4,7 @@ namespace Silber\Bouncer\Database\Concerns;
 
 use Illuminate\Container\Container;
 
+use Silber\Bouncer\Helpers;
 use Silber\Bouncer\Database\Role;
 use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Contracts\Clipboard;
@@ -21,11 +22,9 @@ trait HasRoles
     public static function bootHasRoles()
     {
         static::deleted(function ($model) {
-            if (method_exists($model, 'isForceDeleting') && ! $model->isForceDeleting()) {
-                return;
+            if (! Helpers::isSoftDeleting($model)) {
+                $model->roles()->detach();
             }
-
-            $model->roles()->detach();
         });
     }
 

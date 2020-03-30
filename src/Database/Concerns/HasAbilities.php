@@ -4,6 +4,7 @@ namespace Silber\Bouncer\Database\Concerns;
 
 use Illuminate\Container\Container;
 
+use Silber\Bouncer\Helpers;
 use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Database\Ability;
 use Silber\Bouncer\Contracts\Clipboard;
@@ -22,11 +23,9 @@ trait HasAbilities
     public static function bootHasAbilities()
     {
         static::deleted(function ($model) {
-            if (method_exists($model, 'isForceDeleting') && ! $model->isForceDeleting()) {
-                return;
+            if (! Helpers::isSoftDeleting($model)) {
+                $model->abilities()->detach();
             }
-
-            $model->abilities()->detach();
         });
     }
 
