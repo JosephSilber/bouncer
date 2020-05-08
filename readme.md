@@ -887,7 +887,7 @@ You can read more in [this Laravel News article](https://laravel-news.com/larave
 
 ## I'm trying to run the migration, but I'm getting a SQL error that there is a "Syntax error or access violation: 1064 ... to use near json not null)"
 
-JSON columns are a relatively new addition to MySQL (5.7.8) and MariaDB (10.0.1). If you're using an older version of these databases, you cannot use JSON columns.
+JSON columns are a relatively new addition to MySQL (5.7.8) and MariaDB (10.2.7). If you're using an older version of these databases, you cannot use JSON columns.
 
 The best solution would be to upgrade your DB. If that's not currently possible, you can change [your published migration file](https://github.com/JosephSilber/bouncer/blob/2e31b84e9c1f6c2b86084df2af9d05299ba73c62/migrations/create_bouncer_tables.php#L25) to use a `text` column instead:
 
