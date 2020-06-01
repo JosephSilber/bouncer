@@ -385,7 +385,7 @@ class Bouncer
      */
     public function canAny($abilities, $arguments = [])
     {
-        return $this->gate()->canAny($abilities, $arguments);
+        return $this->gate()->any($abilities, $arguments);
     }
 
     /**
