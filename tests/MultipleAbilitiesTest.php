@@ -367,4 +367,29 @@ class MultipleAbilitiesTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('view', $account1));
         $this->assertTrue($bouncer->can('update', $account1));
     }
+
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function checking_any_abilities($provider)
+    {
+        list($bouncer, $user1, $user2) = $provider(2);
+
+        $user1->allow('create', User::class);
+        $user1->allow('retrieve', User::class);
+        $user1->allow('update', User::class);
+        $user1->allow('delete', User::class);
+
+        $this->assertTrue($user1->can('create', User::class));
+        $this->assertTrue($user1->can('retrieve', User::class));
+        $this->assertTrue($user1->can('update', User::class));
+        $this->assertTrue($user1->can('delete', User::class));
+        $this->assertTrue($bouncer->canAny([
+            'create',
+            'retrieve',
+            'update',
+            'delete'
+        ], User::class));
+    }
 }
