@@ -85,7 +85,7 @@ class Models
         static::$models[User::class] = $model;
 
         static::$customTableResolvers['users'] = function () {
-            static::user()->getTable();
+            return static::user()->getTable();
         };
     }
 
