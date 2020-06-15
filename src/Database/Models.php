@@ -35,6 +35,13 @@ class Models
     protected static $tables = [];
 
     /**
+     * The defined custom table resolvers.
+     *
+     * @var array
+     */
+    protected static $customTableResolvers = [];
+
+    /**
      * The model scoping instance.
      *
      * @var \Silber\Bouncer\Database\Scope\Scope
@@ -77,7 +84,9 @@ class Models
     {
         static::$models[User::class] = $model;
 
-        static::$tables['users'] = static::user()->getTable();
+        static::$customTableResolvers['users'] = function () {
+            static::user()->getTable();
+        };
     }
 
     /**
@@ -101,6 +110,10 @@ class Models
      */
     public static function table($table)
     {
+        if (isset(static::$customTableResolvers[$table])) {
+            return static::$customTableResolvers[$table]();
+        }
+
         if (isset(static::$tables[$table])) {
             return static::$tables[$table];
         }
