@@ -218,7 +218,7 @@ class UserWithSoftDeletes extends User
 
 class Account extends Eloquent
 {
-    use HasRolesAndAbilities;
+    use Authorizable, HasRolesAndAbilities;
 
     protected $table = 'accounts';
 

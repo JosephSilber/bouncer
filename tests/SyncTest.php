@@ -158,6 +158,50 @@ class SyncTest extends BaseTestCase
     }
 
     /**
+     * @test
+     */
+    function syncing_abilities_does_not_affect_another_entity_type_with_same_id()
+    {
+        $user = User::create(['id' => 1]);
+        $account = Account::create(['id' => 1]);
+
+        $bouncer = $this->bouncer();
+
+        $bouncer->allow($user)->to('relax');
+        $bouncer->allow($account)->to('relax');
+
+        $this->assertTrue($user->can('relax'));
+        $this->assertTrue($account->can('relax'));
+
+        $bouncer->sync($user)->abilities([]);
+
+        $this->assertTrue($user->cannot('relax'));
+        $this->assertTrue($account->can('relax'));
+    }
+
+    /**
+     * @test
+     */
+    function syncing_roles_does_not_affect_another_entity_type_with_same_id()
+    {
+        $user = User::create(['id' => 1]);
+        $account = Account::create(['id' => 1]);
+
+        $bouncer = $this->bouncer();
+
+        $bouncer->assign('admin')->to($user);
+        $bouncer->assign('admin')->to($account);
+
+        $this->assertTrue($user->isAn('admin'));
+        $this->assertTrue($account->isAn('admin'));
+
+        $bouncer->sync($user)->roles([]);
+
+        $this->assertTrue($user->isNotAn('admin'));
+        $this->assertTrue($account->isAn('admin'));
+    }
+
+    /**
      * Create a new role with the given name.
      *
      * @param  string  $name

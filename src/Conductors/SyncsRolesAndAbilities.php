@@ -94,17 +94,19 @@ class SyncsRolesAndAbilities
     }
 
     /**
-     * Get the authority for whom to sync roles/abilities.
+     * Get (and cache) the authority for whom to sync roles/abilities.
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
     protected function getAuthority()
     {
-        if ($this->authority instanceof Model) {
-            return $this->authority;
+        if (is_string($this->authority)) {
+            $this->authority = Models::role()->firstOrCreate([
+                'name' => $this->authority
+            ]);
         }
 
-        return Models::role()->firstOrCreate(['name' => $this->authority]);
+        return $this->authority;
     }
 
     /**
@@ -171,10 +173,13 @@ class SyncsRolesAndAbilities
      */
     protected function newPivotQuery(BelongsToMany $relation)
     {
-        $query = $relation->newPivotStatement()->where(
-            $relation->getForeignPivotKeyName(),
-            $relation->getParent()->getKey()
-        );
+        $query = $relation
+            ->newPivotStatement()
+            ->where('entity_type', $this->getAuthority()->getMorphClass())
+            ->where(
+                $relation->getForeignPivotKeyName(),
+                $relation->getParent()->getKey()
+            );
 
         return Models::scope()->applyToRelationQuery(
             $query, $relation->getTable()
