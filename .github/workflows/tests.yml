@@ -17,7 +17,7 @@ jobs:
 
     strategy:
       matrix:
-        laravel: [6.*, 7.*]
+        laravel: [6.*, 7.*, 8.*]
         php: [7.2, 7.3]
       fail-fast: false
 

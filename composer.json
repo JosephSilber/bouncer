@@ -30,15 +30,15 @@
     },
     "require": {
         "php": "^7.2",
-        "illuminate/auth": "^6.0|^7.0",
-        "illuminate/cache": "^6.0|^7.0",
-        "illuminate/container": "^6.0|^7.0",
-        "illuminate/contracts": "^6.0|^7.0",
-        "illuminate/database": "^6.0|^7.0"
+        "illuminate/auth": "^6.0|^7.0|^8.0",
+        "illuminate/cache": "^6.0|^7.0|^8.0",
+        "illuminate/container": "^6.0|^7.0|^8.0",
+        "illuminate/contracts": "^6.0|^7.0|^8.0",
+        "illuminate/database": "^6.0|^7.0|^8.0"
     },
     "require-dev": {
-        "illuminate/console": "^6.0|^7.0",
-        "illuminate/events": "^6.0|^7.0",
+        "illuminate/console": "^6.0|^7.0|^8.0",
+        "illuminate/events": "^6.0|^7.0|^8.0",
         "phpunit/phpunit": "^8.0",
         "larapack/dd": "^1.1"
     },
