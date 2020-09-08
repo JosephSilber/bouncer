@@ -19,6 +19,9 @@ jobs:
       matrix:
         laravel: [6.*, 7.*, 8.*]
         php: [7.2, 7.3]
+        exclude:
+          - laravel: 8.*
+            php: 7.2
       fail-fast: false
 
     name: Laravel ${{ matrix.laravel }}, PHP ${{ matrix.php }}
