@@ -13,7 +13,7 @@ class Ability extends Model
      *
      * @var array
      */
-    protected $fillable = ['name', 'title'];
+    protected $fillable = ['name', 'title', 'description'];
 
     /**
      * The attributes that should be cast to native types.
