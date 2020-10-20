@@ -19,6 +19,7 @@ class CreateBouncerTables extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('title')->nullable();
+            $table->string('description')->nullable(); //added by airon
             $table->bigInteger('entity_id')->unsigned()->nullable();
             $table->string('entity_type')->nullable();
             $table->boolean('only_owned')->default(false);
@@ -31,6 +32,7 @@ class CreateBouncerTables extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('title')->nullable();
+            $table->string('description')->nullable(); //added by airon
             $table->integer('level')->unsigned()->nullable();
             $table->integer('scope')->nullable()->index();
             $table->timestamps();
