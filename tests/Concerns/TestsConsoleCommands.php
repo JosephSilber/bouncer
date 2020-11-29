@@ -6,6 +6,7 @@ use Prophecy\Argument;
 use Illuminate\Console\Command;
 use Illuminate\Console\OutputStyle;
 use Prophecy\Prophecy\ObjectProphecy;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Illuminate\Contracts\Foundation\Application;
@@ -13,6 +14,8 @@ use Symfony\Component\Console\Formatter\OutputFormatter;
 
 trait TestsConsoleCommands
 {
+    use ProphecyTrait;
+
     /**
      * Get a prophesy for the laravel application class.
      *
