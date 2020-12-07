@@ -2,35 +2,37 @@
 
 namespace Silber\Bouncer\Tests\Concerns;
 
-use Prophecy\Argument;
 use Illuminate\Console\Command;
 use Illuminate\Console\OutputStyle;
-use Prophecy\Prophecy\ObjectProphecy;
+use Illuminate\Contracts\Foundation\Application;
+use Mockery as m;
+use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
-use Illuminate\Contracts\Foundation\Application;
-use Symfony\Component\Console\Formatter\OutputFormatter;
 
 trait TestsConsoleCommands
 {
+    public function tearDown(): void
+    {
+        m::close();
+    }
+
     /**
      * Get a prophesy for the laravel application class.
      *
-     * @return \Prophecy\Prophecy\ObjectProphecy
+     * @return \Illuminate\Contracts\Foundation\Application
      */
     protected function laravel()
     {
-        $laravel = $this->prophesize(Application::class);
+        $laravel = m::mock(Application::class);
 
-        $laravel->call(Argument::type('array'))->will(function ($arguments) {
-            list($command, $method) = $arguments[0];
+        $laravel->shouldReceive('call')->andReturnUsing(function ($callback) {
+            list($command, $method) = $callback;
 
             $command->{$method}();
         });
 
-        $laravel->make(OutputStyle::class, Argument::type('array'))->will(function ($arguments) {
-            list($class, $arguments) = $arguments;
-
+        $laravel->shouldReceive('make')->andReturnUsing(function ($class, $arguments) {
             return new $class($arguments['input'], $arguments['output']);
         });
 
@@ -40,14 +42,14 @@ trait TestsConsoleCommands
     /**
      * Get a prophesy for the console output class.
      *
-     * @return \Prophecy\Prophecy\ObjectProphecy
+     * @return \Symfony\Component\Console\Output\NullOutput
      */
     protected function output()
     {
-        $output = $this->prophesize(NullOutput::class);
+        $output = m::mock(NullOutput::class);
 
-        $output->getVerbosity()->willReturn(NullOutput::VERBOSITY_QUIET);
-        $output->getFormatter()->willReturn(new OutputFormatter);
+        $output->shouldReceive('getVerbosity')->andReturn(NullOutput::VERBOSITY_QUIET);
+        $output->shouldReceive('getFormatter')->andReturn(new OutputFormatter);
 
         return $output;
     }
@@ -62,9 +64,13 @@ trait TestsConsoleCommands
     {
         $messages = is_array($message) ? $message : [$message];
 
-        return function (ObjectProphecy $output) use ($messages) {
+        return function ($output) use ($messages) {
             foreach ($messages as $message) {
-                $output->writeln($message, Argument::any())->shouldBeCalled();
+                $output
+                    ->shouldReceive('writeln')
+                    ->withArgs(function ($m) use ($message) {
+                        return $m == $message;
+                    });
             }
         };
     }
@@ -91,9 +97,9 @@ trait TestsConsoleCommands
             $outputPredictions($output);
         }
 
-        $command->setLaravel($this->laravel()->reveal());
+        $command->setLaravel($this->laravel());
 
-        $command->run(new ArrayInput($parameters), $output->reveal());
+        $command->run(new ArrayInput($parameters), $output);
 
         return $output;
     }
