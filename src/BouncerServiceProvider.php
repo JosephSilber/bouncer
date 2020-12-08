@@ -10,6 +10,7 @@ use Illuminate\Cache\ArrayStore;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Eloquent\Model as EloquentModel;
 
 class BouncerServiceProvider extends ServiceProvider
 {
@@ -118,13 +119,15 @@ class BouncerServiceProvider extends ServiceProvider
      */
     protected function setUserModel()
     {
-        Models::setUsersModel($this->getUserModel());
+        if ($model = $this->getUserModel()) {
+            Models::setUsersModel($model);
+        }
     }
 
     /**
      * Get the user model from the application's auth config.
      *
-     * @return string
+     * @return string|null
      */
     protected function getUserModel()
     {
@@ -138,7 +141,14 @@ class BouncerServiceProvider extends ServiceProvider
             return null;
         }
 
-        return $config->get("auth.providers.{$provider}.model");
+        $model = $config->get("auth.providers.{$provider}.model");
+
+        // The standard auth config that ships with Laravel references the
+        // Eloquent User model in the above config path. However, users
+        // are free to reference anything there - so we check first.
+        if (is_subclass_of($model, EloquentModel::class)) {
+            return $model;
+        }
     }
 
     /**
