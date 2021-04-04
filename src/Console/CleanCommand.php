@@ -2,6 +2,7 @@
 
 namespace Silber\Bouncer\Console;
 
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Str;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
@@ -32,7 +33,7 @@ class CleanCommand extends Command
      */
     public function handle()
     {
-        list($unassigned, $orphaned) = $this->getComputedOptions();
+        [$unassigned, $orphaned] = $this->getComputedOptions();
 
         if ($unassigned) {
             $this->deleteUnassignedAbilities();
@@ -125,17 +126,30 @@ class CleanCommand extends Command
      */
     protected function scopeQueryToWhereModelIsMissing($query, $modelName)
     {
-        $model = new $modelName;
+        $modelClass = $this->getQualifiedModelName($modelName);
+        $model = new $modelClass;
         $table = $this->abilitiesTable();
 
         $query->where("{$table}.entity_type", $modelName);
 
-        $query->whereNotIn("{$table}.entity_id", function ($query) use ($modelName) {
-            $model = new $modelName;
+        $query->whereNotIn("{$table}.entity_id", function ($query) use ($model) {
             $table = $model->getTable();
 
             $query->from($table)->select($table.'.'.$model->getKeyName());
         });
+    }
+
+    /**
+     * Returns the qualified model class name,
+     * checking if it has been registered with a morph map first
+     *
+     * @param string $modelName
+     *
+     * @return string
+     */
+    protected function getQualifiedModelName($modelName)
+    {
+        return Relation::getMorphedModel($modelName) ?? $modelName;
     }
 
     /**
