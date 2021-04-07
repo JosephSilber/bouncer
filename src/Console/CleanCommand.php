@@ -2,11 +2,11 @@
 
 namespace Silber\Bouncer\Console;
 
-use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Str;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Silber\Bouncer\Database\Models;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 class CleanCommand extends Command
 {
@@ -101,9 +101,9 @@ class CleanCommand extends Command
     protected function deleteOrphanedAbilities()
     {
         $query = $this->getBaseOrphanedQuery()->where(function ($query) {
-            foreach ($this->getEntityModels() as $modelName) {
-                $query->orWhere(function ($query) use ($modelName) {
-                    $this->scopeQueryToWhereModelIsMissing($query, $modelName);
+            foreach ($this->getEntityTypes() as $entityType) {
+                $query->orWhere(function ($query) use ($entityType) {
+                    $this->scopeQueryToWhereModelIsMissing($query, $entityType);
                 });
             }
         });
@@ -121,18 +121,17 @@ class CleanCommand extends Command
      * Scope the given query to where the ability's model is missing.
      *
      * @param  \Illuminate\Database\Query\Builder  $query
-     * @param  string  $modelName
+     * @param  string  $entityType
      * @return void
      */
-    protected function scopeQueryToWhereModelIsMissing($query, $modelName)
+    protected function scopeQueryToWhereModelIsMissing($query, $entityType)
     {
-        $modelClass = $this->getQualifiedModelName($modelName);
-        $model = new $modelClass;
-        $table = $this->abilitiesTable();
+        $model = $this->makeModel($entityType);
+        $abilities = $this->abilitiesTable();
 
-        $query->where("{$table}.entity_type", $modelName);
+        $query->where("{$abilities}.entity_type", $entityType);
 
-        $query->whereNotIn("{$table}.entity_id", function ($query) use ($model) {
+        $query->whereNotIn("{$abilities}.entity_id", function ($query) use ($model) {
             $table = $model->getTable();
 
             $query->from($table)->select($table.'.'.$model->getKeyName());
@@ -140,24 +139,11 @@ class CleanCommand extends Command
     }
 
     /**
-     * Returns the qualified model class name,
-     * checking if it has been registered with a morph map first
-     *
-     * @param string $modelName
-     *
-     * @return string
-     */
-    protected function getQualifiedModelName($modelName)
-    {
-        return Relation::getMorphedModel($modelName) ?? $modelName;
-    }
-
-    /**
-     * Get the model names of all model abilities.
+     * Get the entity types of all model abilities.
      *
      * @return iterable
      */
-    protected function getEntityModels()
+    protected function getEntityTypes()
     {
         return $this->getBaseOrphanedQuery()->distinct()
                      ->get(['entity_type'])->pluck('entity_type');
@@ -186,5 +172,18 @@ class CleanCommand extends Command
     protected function abilitiesTable()
     {
         return Models::ability()->getTable();
+    }
+
+    /**
+     * Get an instance of the model for the given entity type.
+     *
+     * @param  string  $entityType
+     * @return string
+     */
+    protected function makeModel($entityType)
+    {
+        $class = Relation::getMorphedModel($entityType) ?? $entityType;
+
+        return new $class;
     }
 }
