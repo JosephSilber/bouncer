@@ -50,10 +50,10 @@ class BouncerServiceProvider extends ServiceProvider
      */
     protected function registerBouncer()
     {
-        $this->app->singleton(Bouncer::class, function () {
+        $this->app->singleton(Bouncer::class, function ($app) {
             return Bouncer::make()
                 ->withClipboard(new CachedClipboard(new ArrayStore))
-                ->withGate($this->app->make(Gate::class))
+                ->withGate($app->make(Gate::class))
                 ->create();
         });
     }
