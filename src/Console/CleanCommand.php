@@ -145,8 +145,10 @@ class CleanCommand extends Command
      */
     protected function getEntityTypes()
     {
-        return $this->getBaseOrphanedQuery()->distinct()
-                     ->get(['entity_type'])->pluck('entity_type');
+        return $this
+            ->getBaseOrphanedQuery()
+            ->distinct()
+            ->pluck('entity_type');
     }
 
     /**
