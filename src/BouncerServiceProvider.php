@@ -5,6 +5,7 @@ namespace Silber\Bouncer;
 use Illuminate\Support\Arr;
 use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Console\CleanCommand;
+use Laravel\Octane\Events\RequestReceived;
 
 use Illuminate\Cache\ArrayStore;
 use Illuminate\Support\ServiceProvider;
@@ -162,5 +163,14 @@ class BouncerServiceProvider extends ServiceProvider
         // auto-register at the gate. We already registered Bouncer in
         // the container using the Factory, so now we'll resolve it.
         $this->app->make(Bouncer::class);
+
+        // When using Octane, we need to re-register Bouncer at the gate
+        // for every new request. We'll first remove the old instance
+        // then create a new singleton for this particular sandbox.
+        $this->app->make('events')->listen(function (RequestReceived $event) {
+            $event->sandbox->forgetInstance(Bouncer::class);
+
+            $event->sandbox->make(Bouncer::class);
+        });
     }
 }
