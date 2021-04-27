@@ -81,6 +81,7 @@ class Abilities
     {
         $query->orWhere('level', '<', function ($query) use ($authority, $roles) {
             $column = $query->getGrammar()->wrap('level');
+            
             $query->selectRaw("max($column)")
                   ->from($roles)
                   ->whereExists(static::getAuthorityRoleConstraint($authority));
