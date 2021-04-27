@@ -80,7 +80,9 @@ class Abilities
     protected static function addRoleInheritCondition(Builder $query, Model $authority, $roles)
     {
         $query->orWhere('level', '<', function ($query) use ($authority, $roles) {
-            $query->selectRaw('max(level)')
+            $column = $query->getGrammar()->wrap('level');
+            
+            $query->selectRaw("max($column)")
                   ->from($roles)
                   ->whereExists(static::getAuthorityRoleConstraint($authority));
 
