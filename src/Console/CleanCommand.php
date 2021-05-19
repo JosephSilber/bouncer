@@ -162,7 +162,6 @@ class CleanCommand extends Command
 
         return Models::ability()
                      ->whereNotNull("{$table}.entity_id")
-                     ->where("{$table}.entity_id", '!=', '*')
                      ->where("{$table}.entity_type", '!=', '*');
     }
 
