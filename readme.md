@@ -955,12 +955,11 @@ $boolean = Bouncer::cannot('edit', Post::class);
 $boolean = Bouncer::cannot('delete', $post);
 
 // Checking a user's roles
-$boolean = Bouncer::is($user)->a('subscriber');
-$boolean = Bouncer::is($user)->an('admin');
-$boolean = Bouncer::is($user)->notA('subscriber');
-$boolean = Bouncer::is($user)->notAn('admin');
-$boolean = Bouncer::is($user)->a('moderator', 'editor');
-$boolean = Bouncer::is($user)->all('moderator', 'editor');
+$boolean = $user->isA('subscriber');
+$boolean = $user->isAn('admin');
+$boolean = $user->isNotA('subscriber');
+$boolean = $user->isNotAn('admin');
+$boolean = $user->isAll('moderator', 'editor');
 
 Bouncer::cache();
 Bouncer::dontCache();
