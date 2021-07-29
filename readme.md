@@ -431,45 +431,7 @@ Bouncer::unforbid($user)->to('view', $classifiedDocument);
 
 > **Note**: Generally speaking, you should not have a need to check roles directly. It is better to allow a role certain abilities, then check for those abilities instead. If what you need is very general, you can create very broad abilities. For example, an `access-dashboard` ability is always better than checking for `admin` or `editor` roles directly. For the rare occasion that you do want to check a role, that functionality is available here.
 
-The bouncer can check if a user has a specific role:
-
-```php
-Bouncer::is($user)->a('moderator');
-```
-
-If the role you're checking starts with a vowel, you might want to use the `an` alias method:
-
-```php
-Bouncer::is($user)->an('admin');
-```
-
-For the inverse, you can also check if a user *doesn't* have a specific role:
-
-```php
-Bouncer::is($user)->notA('moderator');
-
-Bouncer::is($user)->notAn('admin');
-```
-
-You can check if a user has one of many roles:
-
-```php
-Bouncer::is($user)->a('moderator', 'editor');
-```
-
-You can also check if the user has all of the given roles:
-
-```php
-Bouncer::is($user)->all('editor', 'moderator');
-```
-
-You can also check if a user has none of the given roles:
-
-```php
-Bouncer::is($user)->notAn('editor', 'moderator');
-```
-
-These checks can also be done directly on the user:
+Checking if a user has a specific role can be done directly on the user:
 
 ```php
 $user->isAn('admin');
