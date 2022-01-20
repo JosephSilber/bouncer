@@ -59,7 +59,5 @@
                 "Bouncer": "Silber\\Bouncer\\BouncerFacade"
             }
         }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    }
 }
