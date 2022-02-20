@@ -13,7 +13,7 @@ class Role extends Model
      *
      * @var array
      */
-    protected $fillable = ['name', 'title', 'level'];
+    protected $fillable = ['name', 'title'];
 
     /**
      * The attributes that should be cast to native types.
@@ -22,7 +22,6 @@ class Role extends Model
      */
     protected $casts = [
         'id' => 'int',
-        'level' => 'int',
     ];
 
     /**

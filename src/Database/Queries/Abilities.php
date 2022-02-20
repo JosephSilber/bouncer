@@ -61,33 +61,8 @@ class Abilities
 
             $query->where(function ($query) use ($roles, $authority, $allowed) {
                 $query->whereExists(static::getAuthorityRoleConstraint($authority));
-
-                if ($allowed) {
-                    static::addRoleInheritCondition($query, $authority, $roles);
-                }
             });
         };
-    }
-
-    /**
-     * Add the role inheritence "where" clause to the given query.
-     *
-     * @param  \Illuminate\Database\Query\Builder  $query
-     * @param  \Illuminate\Database\Eloquent\Model  $authority
-     * @param  string  $roles
-     * @return \Closure
-     */
-    protected static function addRoleInheritCondition(Builder $query, Model $authority, $roles)
-    {
-        $query->orWhere('level', '<', function ($query) use ($authority, $roles) {
-            $column = $query->getGrammar()->wrap('level');
-            
-            $query->selectRaw("max($column)")
-                  ->from($roles)
-                  ->whereExists(static::getAuthorityRoleConstraint($authority));
-
-            Models::scope()->applyToModelQuery($query, $roles);
-        });
     }
 
     /**
