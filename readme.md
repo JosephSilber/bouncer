@@ -79,7 +79,7 @@ Bouncer::assign('admin')->to($user);
 Bouncer::allow($user)->to('edit', $post);
 ```
 
-When you check abilities at Laravel's gate, the bouncer will automatically be consulted. If he sees an ability that has been granted to the current user (whether directly, or through a role) he'll authorize the check.
+When you check abilities at Laravel's gate, Bouncer will automatically be consulted. If Bouncer sees an ability that has been granted to the current user (whether directly, or through a role) it'll authorize the check.
 
 ## Installation
 
@@ -106,7 +106,7 @@ $ composer require silber/bouncer v1.0.0-rc.12
     }
     ```
 
-3) Now, to run Bouncer's migrations, first publish the migrations into your app's `migrations` directory, by running the following command:
+3) Now, to run Bouncer's migrations. First publish the migrations into your app's `migrations` directory, by running the following command:
 
     ```
     php artisan vendor:publish --tag="bouncer.migrations"
@@ -126,7 +126,7 @@ Whenever you use the `Bouncer` facade in your code, remember to add this line to
 use Bouncer;
 ```
 
-For more information about Laravel Facades, refer to [the Laravel documentation](https://laravel.com/docs/7.x/facades).
+For more information about Laravel Facades, refer to [the Laravel documentation](https://laravel.com/docs/9.x/facades).
 
 ### Installing Bouncer in a non-Laravel app
 
@@ -152,7 +152,7 @@ For more information about Laravel Facades, refer to [the Laravel documentation]
 
 3) Run the migrations by either of the following methods:
 
-    - Use a tool such as [vagabond](https://github.com/michaeldyrynda/vagabond) to run Laravel migrations outside of a Laravel app. You'll find the necessary migrations in [the migrations stub file](https://github.com/JosephSilber/bouncer/blob/master/migrations/create_bouncer_tables.php#L17-L73).
+    - Use a tool such as [vagabond](https://github.com/michaeldyrynda/vagabond) to run Laravel migrations outside of a Laravel app. You'll find the necessary migrations in [the migrations stub file](https://github.com/JosephSilber/bouncer/blob/master/migrations/create_bouncer_tables.php#L18-L79).
 
     - Alternatively, you can run [the raw SQL](https://github.com/JosephSilber/bouncer/blob/master/migrations/sql/MySQL.sql) directly in your database.
 
@@ -348,7 +348,7 @@ Or directly on the user:
 $user->disallow('ban-users');
 ```
 
-> **Note:** if the user has a role that allows them to `ban-users` they will still have that ability. To disallow it, either remove the ability from the role or retract the role from the user.
+> **Note:** if the user has a role that allows them to `ban-users`, they will still have that ability. To disallow it, either remove the ability from the role or retract the role from the user.
 
 If the ability has been granted through a role, tell the bouncer to remove the ability from the role instead:
 
@@ -527,7 +527,7 @@ $forbiddenAbilities = $user->getForbiddenAbilities();
 
 ### Authorizing users
 
-Authorizing users is handled directly at [Laravel's `Gate`](https://laravel.com/docs/7.x/authorization#gates), or on the user model (`$user->can($ability)`).
+Authorizing users is handled directly at [Laravel's `Gate`](https://laravel.com/docs/9.x/authorization#gates), or on the user model (`$user->can($ability)`).
 
 For convenience, the `Bouncer` class provides these passthrough methods:
 
@@ -575,7 +575,7 @@ Whenever you need, you can fully refresh the bouncer's cache:
 Bouncer::refresh();
 ```
 
-> **Note:** fully refreshing the cache for all users uses [cache tags](https://laravel.com/docs/7.x/cache#cache-tags) if they're available. Not all cache drivers support this. Refer to [Laravel's documentation](https://laravel.com/docs/7.x/cache#cache-tags) to see if your driver supports cache tags. If your driver does not support cache tags, calling `refresh` might be a little slow, depending on the amount of users in your system.
+> **Note:** fully refreshing the cache for all users uses [cache tags](https://laravel.com/docs/9.x/cache#cache-tags) if they're available. Not all cache drivers support this. Refer to [Laravel's documentation](https://laravel.com/docs/9.x/cache#cache-tags) to see if your driver supports cache tags. If your driver does not support cache tags, calling `refresh` might be a little slow, depending on the amount of users in your system.
 
 Alternatively, you can refresh the cache only for a specific user:
 
@@ -660,7 +660,7 @@ Bouncer will call the methods on the `Scope` interface at various points in its 
 
 Bouncer ships with sensible defaults, so most of the time there should be no need for any configuration. For finer-grained control, Bouncer can be customized by calling various configuration methods on the `Bouncer` class.
 
-If you only use one or two of these config options, you can stick them into your [main `AppServiceProvider`'s `boot` method](https://github.com/laravel/laravel/blob/bf3785d/app/Providers/AppServiceProvider.php#L14-L17). If they start growing, you may create a separate `BouncerServiceProvider` class in [your `app/Providers` directory](https://github.com/laravel/laravel/tree/bf3785d0bc3cd166119d8ed45c2f869bbc31021c/app/Providers) (remember to register it in [the `providers` config array](https://github.com/laravel/laravel/blob/bf3785d0bc3cd166119d8ed45c2f869bbc31021c/config/app.php#L140-L145)).
+If you only use one or two of these config options, you can stick them into your [main `AppServiceProvider`'s `boot` method](https://github.com/laravel/laravel/blob/e077976680bdb2644698fb8965a1e2a8710b5d4b/app/Providers/AppServiceProvider.php#L24-L27). If they start growing, you may create a separate `BouncerServiceProvider` class in [your `app/Providers` directory](https://github.com/laravel/laravel/tree/e077976680bdb2644698fb8965a1e2a8710b5d4b/app/Providers) (remember to register it in [the `providers` config array](https://github.com/laravel/laravel/blob/e077976680bdb2644698fb8965a1e2a8710b5d4b/config/app.php#L171-L178)).
 
 ### Cache
 
@@ -691,7 +691,7 @@ Bouncer::tables([
 ]);
 ```
 
-Bouncer's published migration uses the table names from this configuration, so be sure to have these in place before actually running the migration file.
+Bouncer's published migration uses the table names from this configuration, so be sure to have these in place before actually running the migration.
 
 ### Custom models
 
@@ -791,7 +791,7 @@ There are some concepts in Bouncer that people keep on asking about, so here's a
 
 ### Where do I set up my app's roles and abilities?
 
-Seeding the initial roles and abilities can be done in a regular [Laravel seeder](https://laravel.com/docs/7.x/seeding) class. Start by creating a specific seeder file for Bouncer:
+Seeding the initial roles and abilities can be done in a regular [Laravel seeder](https://laravel.com/docs/9.x/seeding) class. Start by creating a specific seeder file for Bouncer:
 
 ```
 php artisan make:seeder BouncerSeeder
@@ -831,7 +831,7 @@ php artisan db:seed --class=BouncerSeeder
 
 Bouncer's [`scope`](#the-scope-middleware) can be used to section off different parts of the site, creating a silo for each one of them with its own set of roles & abilities:
 
-1. Create a `ScopeBouncer` [middleware](https://laravel.com/docs/7.x/middleware#defining-middleware) that takes an `$identifier` and sets it as the current scope:
+1. Create a `ScopeBouncer` [middleware](https://laravel.com/docs/9.x/middleware#defining-middleware) that takes an `$identifier` and sets it as the current scope:
 
     ```php
     use Bouncer, Closure;
@@ -872,7 +872,7 @@ That's it. All roles and abilities will now be separately scoped for each sectio
 
 ### I'm trying to run the migration, but I'm getting a SQL error that the "specified key was too long"
 
-Starting with Laravel 5.4, the default database character set is now `utf8mb4`. If you're using older versions of some databases (MySQL below 5.7.7, or MariaDB below 10.2.2) with Larvel 5.4+, you'll get a SQL error when trying to create an index on a string column. To fix this, change Laravel's default string length in your `AppServiceProvider`:
+Starting with Laravel 5.4, the default database character set is now `utf8mb4`. If you're using older versions of some databases (MySQL below 5.7.7, or MariaDB below 10.2.2) with Laravel 5.4+, you'll get a SQL error when trying to create an index on a string column. To fix this, change Laravel's default string length in your `AppServiceProvider`:
 
 ```php
 use Illuminate\Support\Facades\Schema;
@@ -933,7 +933,7 @@ php artisan bouncer:clean --orphaned
 
 If you don't pass it any flags, it will delete both types of unused abilities.
 
-To automatically run this command periodically, add it to [your console kernel's schedule](https://laravel.com/docs/7.x/scheduling#defining-schedules):
+To automatically run this command periodically, add it to [your console kernel's schedule](https://laravel.com/docs/9.x/scheduling#defining-schedules):
 
 ```php
 $schedule->command('bouncer:clean')->weekly();
