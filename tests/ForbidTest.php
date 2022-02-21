@@ -221,6 +221,8 @@ class ForbidTest extends BaseTestCase
 
         $bouncer->forbid($user)->to('sleep');
 
+        $bouncer->runBeforePolicies();
+
         $this->assertTrue($bouncer->cannot('sleep'));
     }
 }

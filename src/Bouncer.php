@@ -453,14 +453,14 @@ class Bouncer
     }
 
     /**
-     * Set Bouncer to run its checks after the policies.
+     * Set Bouncer to run its checks before the policies.
      *
      * @param  bool  $boolean
      * @return $this
      */
-    public function runAfterPolicies($boolean = true)
+    public function runBeforePolicies($boolean = true)
     {
-        $this->guard->slot($boolean ? 'after' : 'before');
+        $this->guard->slot($boolean ? 'before' : 'after');
 
         return $this;
     }

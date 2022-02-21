@@ -25,7 +25,7 @@ class Guard
      *
      * @var string
      */
-    protected $slot = 'before';
+    protected $slot = 'after';
 
     /**
      * Create a new guard instance.

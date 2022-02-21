@@ -7,7 +7,7 @@ use Illuminate\Auth\Access\Gate;
 use Silber\Bouncer\Database\Role;
 use Silber\Bouncer\Database\Ability;
 
-class AfterPoliciesTest extends BaseTestCase
+class BeforePoliciesTest extends BaseTestCase
 {
     use Concerns\TestsClipboards;
 
@@ -15,7 +15,7 @@ class AfterPoliciesTest extends BaseTestCase
      * @test
      * @dataProvider bouncerProvider
      */
-    function fails_auth_check_when_policy_fails_even_if_bouncer_allows($provider)
+    function policy_forbids_and_bouncer_allows($provider)
     {
         list($bouncer, $user) = $provider();
 
@@ -26,13 +26,17 @@ class AfterPoliciesTest extends BaseTestCase
         $bouncer->allow($user)->to('view', $account);
 
         $this->assertTrue($bouncer->cannot('view', $account));
+
+        $bouncer->runBeforePolicies();
+
+        $this->assertTrue($bouncer->can('view', $account));
     }
 
     /**
      * @test
      * @dataProvider bouncerProvider
      */
-    function passes_auth_check_when_policy_passes_even_if_bouncer_fails($provider)
+    function policy_allows_and_bouncer_forbids($provider)
     {
         list($bouncer, $user) = $provider();
 
@@ -43,6 +47,10 @@ class AfterPoliciesTest extends BaseTestCase
         $bouncer->forbid($user)->to('view', $account);
 
         $this->assertTrue($bouncer->can('view', $account));
+
+        $bouncer->runBeforePolicies();
+
+        $this->assertTrue($bouncer->cannot('view', $account));
     }
 
     /**
@@ -60,6 +68,10 @@ class AfterPoliciesTest extends BaseTestCase
         $bouncer->allow($user)->to('view', $account);
 
         $this->assertTrue($bouncer->can('view', $account));
+
+        $bouncer->runBeforePolicies();
+
+        $this->assertTrue($bouncer->can('view', $account));
     }
 
     /**
@@ -75,6 +87,10 @@ class AfterPoliciesTest extends BaseTestCase
         $account = Account::create(['name' => 'ignored by policy']);
 
         $this->assertTrue($bouncer->cannot('view', $account));
+
+        $bouncer->runBeforePolicies();
+
+        $this->assertTrue($bouncer->cannot('view', $account));
     }
 
     /**
@@ -84,8 +100,6 @@ class AfterPoliciesTest extends BaseTestCase
      */
     protected function setUpWithPolicy(Bouncer $bouncer)
     {
-        $bouncer->runAfterPolicies();
-
         $bouncer->gate()->policy(Account::class, AccountPolicyForAfter::class);
     }
 }
