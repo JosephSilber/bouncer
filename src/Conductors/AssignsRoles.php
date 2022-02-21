@@ -98,15 +98,15 @@ class AssignsRoles
      */
     protected function buildAttachRecords($roleIds, $morphType, $authorityIds)
     {
-        return $roleIds->map(function ($roleId) use ($morphType, $authorityIds) {
-            return $authorityIds->map(function ($authorityId) use ($roleId, $morphType) {
+        return $roleIds
+            ->crossJoin($authorityIds)
+            ->mapSpread(function ($roleId, $authorityId) use ($morphType) {
                 return Models::scope()->getAttachAttributes() + [
                     'role_id' => $roleId,
                     'entity_id' => $authorityId,
                     'entity_type' => $morphType,
                 ];
             });
-        })->collapse();
     }
 
     /**
