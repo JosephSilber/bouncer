@@ -13,6 +13,7 @@ use Illuminate\Support\Arr;
 use InvalidArgumentException;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 trait IsRole
 {
@@ -43,9 +44,9 @@ trait IsRole
     /**
      * The users relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphedByMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphedToMany
      */
-    public function users()
+    public function users(): MorphToMany
     {
         $relation = $this->morphedByMany(
             Models::classname(User::class),

@@ -11,6 +11,8 @@ use Silber\Bouncer\Database\Titles\AbilityTitle;
 use Silber\Bouncer\Database\Scope\TenantScope;
 use Silber\Bouncer\Database\Queries\AbilitiesForModel;
 
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+
 trait IsAbility
 {
     /**
@@ -147,7 +149,7 @@ trait IsAbility
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
-    public function roles()
+    public function roles(): MorphToMany
     {
         $relation = $this->morphedByMany(
             Models::classname(Role::class),
@@ -163,7 +165,7 @@ trait IsAbility
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
-    public function users()
+    public function users(): MorphToMany
     {
         $relation = $this->morphedByMany(
             Models::classname(User::class),

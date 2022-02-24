@@ -13,6 +13,8 @@ use Silber\Bouncer\Conductors\ForbidsAbilities;
 use Silber\Bouncer\Conductors\RemovesAbilities;
 use Silber\Bouncer\Conductors\UnforbidsAbilities;
 
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+
 trait HasAbilities
 {
     /**
@@ -34,7 +36,7 @@ trait HasAbilities
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
-    public function abilities()
+    public function abilities(): MorphToMany
     {
         $relation = $this->morphToMany(
             Models::classname(Ability::class),
