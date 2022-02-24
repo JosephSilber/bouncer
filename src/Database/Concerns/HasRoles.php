@@ -12,6 +12,8 @@ use Silber\Bouncer\Conductors\AssignsRoles;
 use Silber\Bouncer\Conductors\RemovesRoles;
 use Silber\Bouncer\Database\Queries\Roles as RolesQuery;
 
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+
 trait HasRoles
 {
     /**
@@ -33,7 +35,7 @@ trait HasRoles
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
-    public function roles()
+    public function roles(): MorphToMany
     {
         $relation = $this->morphToMany(
             Models::classname(Role::class),
