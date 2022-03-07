@@ -91,9 +91,9 @@ When you check abilities at Laravel's gate, Bouncer will automatically be consul
 
 1) Install Bouncer with [composer](https://getcomposer.org/doc/00-intro.md):
 
-```
-$ composer require silber/bouncer
-```
+    ```
+    composer require silber/bouncer
+    ```
 
 2) Add Bouncer's trait to your user model:
 
@@ -133,7 +133,7 @@ For more information about Laravel Facades, refer to [the Laravel documentation]
 1) Install Bouncer with [composer](https://getcomposer.org/doc/00-intro.md):
 
     ```
-    $ composer require silber/bouncer
+    composer require silber/bouncer
     ```
 
 2) Set up the database with [the Eloquent Capsule component](https://github.com/illuminate/database/blob/master/README.md):
