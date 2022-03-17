@@ -185,11 +185,11 @@ trait IsAbility
     {
         $slug = $this->attributes['name'];
 
-        if ($this->attributes['entity_type']) {
+        if ($this->attributes['entity_type'] !== null) {
             $slug .= '-'.$this->attributes['entity_type'];
         }
 
-        if ($this->attributes['entity_id']) {
+        if ($this->attributes['entity_id'] !== null) {
             $slug .= '-'.$this->attributes['entity_id'];
         }
 
