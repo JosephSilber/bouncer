@@ -190,6 +190,23 @@ class ForbidTest extends BaseTestCase
      * @test
      * @dataProvider bouncerProvider
      */
+    function forbid_an_ability_on_everything_with_zero_id($provider)
+    {
+        list($bouncer, $user1, $user2, $user3) = $provider(3);
+
+        $user2->setAttribute($user2->getKeyName(), 0);
+
+        $bouncer->allow($user1)->everything();
+        $bouncer->forbid($user1)->to('edit', $user2);
+
+        $this->assertTrue($bouncer->cannot('edit', $user2));
+        $this->assertTrue($bouncer->can('edit', $user3));
+    }
+
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
     function forbidding_and_unforbidding_an_ability_for_everyone($provider)
     {
         list($bouncer, $user) = $provider();
