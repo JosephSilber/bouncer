@@ -93,7 +93,7 @@ class Scope implements ScopeContract
      */
     public function applyToModel(Model $model)
     {
-        if (! $this->onlyScopeRelations && ! is_null($this->scope)) {
+        if (! $this->onlyScopeRelations) {
             $model->scope = $this->scope;
         }
 
@@ -109,7 +109,7 @@ class Scope implements ScopeContract
      */
     public function applyToModelQuery($query, $table = null)
     {
-        if (is_null($this->scope) || $this->onlyScopeRelations) {
+        if ($this->onlyScopeRelations) {
             return $query;
         }
 
@@ -129,10 +129,6 @@ class Scope implements ScopeContract
      */
     public function applyToRelationQuery($query, $table)
     {
-        if (is_null($this->scope)) {
-            return $query;
-        }
-
         return $this->applyToQuery($query, $table);
     }
 
@@ -165,10 +161,12 @@ class Scope implements ScopeContract
      */
     protected function applyToQuery($query, $table)
     {
-        return $query->where(function ($query) use ($table) {
-            $query->where("{$table}.scope", $this->scope)
-                  ->orWhereNull("{$table}.scope");
-        });
+        return is_null($this->scope)
+            ? $query->whereNull("{$table}.scope")
+            : $query->where(function ($query) use ($table) {
+                    $query->where("{$table}.scope", $this->scope)
+                          ->orWhereNull("{$table}.scope");
+                });
     }
 
     /**

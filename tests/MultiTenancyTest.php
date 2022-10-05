@@ -140,6 +140,26 @@ class MultiTenancyTest extends BaseTestCase
      * @test
      * @dataProvider bouncerProvider
      */
+    function scoped_abilities_do_not_work_when_unscoped($provider)
+    {
+        list($bouncer, $user) = $provider();
+
+        $bouncer->scope()->to(1);
+        $bouncer->allow($user)->to(['write', 'read']);
+
+        $this->assertTrue($bouncer->can('write'));
+        $this->assertTrue($bouncer->can('read'));
+        $this->assertEquals(2, $user->abilities()->count());
+
+        $bouncer->scope()->to(null);
+        $this->assertFalse($bouncer->can('write'));
+        $this->assertFalse($bouncer->can('read'));
+    }
+
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
     function relation_queries_are_properly_scoped($provider)
     {
         list($bouncer, $user) = $provider();
