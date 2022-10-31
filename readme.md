@@ -758,9 +758,9 @@ Bouncer::useAbilityModel(\App\Models\Ability::class);
 Bouncer::useRoleModel(\App\Models\Role::class);
 ```
 
-> **Note**: Eloquent determines the foreign key of relationships based on the parent model name (see [the Eloquent docs](https://laravel.com/docs/9.x/eloquent-relationships#one-to-one)). To keep things simple, name your custom classes the same as Bouncers: `Ability` and `Role`, respectively.
+> **Note**: Eloquent determines the foreign key of relationships based on the parent model name (see [the Eloquent docs](https://laravel.com/docs/9.x/eloquent-relationships#one-to-one)). To keep things simple, name your custom classes the same as Bouncer's: `Ability` and `Role`, respectively.
 >
-> If you need to use different names, be sure to either update your migration file or override the relationship methods to explicitely set their foreign keys.
+> If you need to use different names, be sure to either update your migration file or override the relationship methods to explicitly set their foreign keys.
 
 ### User Model
 
