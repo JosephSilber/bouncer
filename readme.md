@@ -698,18 +698,22 @@ Bouncer's published migration uses the table names from this configuration, so b
 You can easily extend Bouncer's built-in `Role` and `Ability` models:
 
 ```php
-use Silber\Bouncer\Database\Ability;
+namespace App\Models;
 
-class MyAbility extends Ability
+use Silber\Bouncer\Database\Ability as BouncerAbility;
+
+class Ability extends BouncerAbility
 {
     // custom code
 }
 ```
 
 ```php
-use Silber\Bouncer\Database\Role;
+namespace App\Models;
 
-class MyRole extends Role
+use Silber\Bouncer\Database\Role as BouncerRole;
+
+class Role extends BouncerRole
 {
     // custom code
 }
@@ -718,10 +722,12 @@ class MyRole extends Role
 Alternatively, you can use Bouncer's `IsAbility` and `IsRole` traits without actually extending any of Bouncer's models:
 
 ```php
+namespace App\Models;
+
 use Illuminate\Database\Eloquent\Model;
 use Silber\Bouncer\Database\Concerns\IsAbility;
 
-class MyAbility extends Model
+class Ability extends Model
 {
     use IsAbility;
 
@@ -730,10 +736,12 @@ class MyAbility extends Model
 ```
 
 ```php
+namespace App\Models;
+
 use Illuminate\Database\Eloquent\Model;
 use Silber\Bouncer\Database\Concerns\IsRole;
 
-class MyRole extends Model
+class Role extends Model
 {
     use IsRole;
 
@@ -746,9 +754,13 @@ If you use the traits instead of extending Bouncer's models, be sure to set the 
 Regardless of which method you use, the next step is to actually tell Bouncer to use your custom models:
 
 ```php
-Bouncer::useAbilityModel(MyAbility::class);
-Bouncer::useRoleModel(MyRole::class);
+Bouncer::useAbilityModel(\App\Models\Ability::class);
+Bouncer::useRoleModel(\App\Models\Role::class);
 ```
+
+> **Note**: Eloquent determines the foreign key of relationships based on the parent model name (see [the Eloquent docs](https://laravel.com/docs/9.x/eloquent-relationships#one-to-one)). To keep things simple, name your custom classes the same as Bouncers: `Ability` and `Role`, respectively.
+>
+> If you need to use different names, be sure to either update your migration file or override the relationship methods to explicitely set their foreign keys.
 
 ### User Model
 
