@@ -33,6 +33,10 @@ trait TestsConsoleCommands
         });
 
         $laravel->shouldReceive('make')->andReturnUsing(function ($class, $arguments) {
+            if (empty($arguments['input'])) {
+                return new $class($arguments['output']);
+            }
+
             return new $class($arguments['input'], $arguments['output']);
         });
 
