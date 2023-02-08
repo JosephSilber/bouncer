@@ -346,6 +346,9 @@ class MultiTenancyTest extends BaseTestCase
 
         $bouncer->scope()->to(2);
         $this->assertFalse($bouncer->is($user)->an('admin'));
+
+        $bouncer->scope()->to(null);
+        $this->assertFalse($bouncer->is($user)->an('admin'));
     }
 
     /**
