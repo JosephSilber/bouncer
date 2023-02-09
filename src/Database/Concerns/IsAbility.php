@@ -155,7 +155,7 @@ trait IsAbility
             Models::classname(Role::class),
             'entity',
             Models::table('permissions')
-        )->withPivot('forbidden', 'scope');
+        )->withPivot('id', 'forbidden', 'scope');
 
         return Models::scope()->applyToRelation($relation);
     }
@@ -171,7 +171,7 @@ trait IsAbility
             Models::classname(User::class),
             'entity',
             Models::table('permissions')
-        )->withPivot('forbidden', 'scope');
+        )->withPivot('id', 'forbidden', 'scope');
 
         return Models::scope()->applyToRelation($relation);
     }

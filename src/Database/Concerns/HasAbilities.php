@@ -42,7 +42,7 @@ trait HasAbilities
             Models::classname(Ability::class),
             'entity',
             Models::table('permissions')
-        )->withPivot('forbidden', 'scope');
+        )->withPivot('id', 'forbidden', 'scope');
 
         return Models::scope()->applyToRelation($relation);
     }
