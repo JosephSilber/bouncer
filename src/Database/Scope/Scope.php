@@ -93,7 +93,7 @@ class Scope implements ScopeContract
      */
     public function applyToModel(Model $model)
     {
-        if (! $this->onlyScopeRelations) {
+        if (! $this->onlyScopeRelations && ! is_null($this->scope)) {
             $model->scope = $this->scope;
         }
 
