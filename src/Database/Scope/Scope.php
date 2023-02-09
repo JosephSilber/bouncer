@@ -161,12 +161,13 @@ class Scope implements ScopeContract
      */
     protected function applyToQuery($query, $table)
     {
-        return is_null($this->scope)
-            ? $query->whereNull("{$table}.scope")
-            : $query->where(function ($query) use ($table) {
-                    $query->where("{$table}.scope", $this->scope)
-                          ->orWhereNull("{$table}.scope");
-                });
+        return $query->where(function ($query) use ($table) {
+            $query->whereNull("{$table}.scope");
+
+            if (! is_null($this->scope)) {
+                $query->orWhere("{$table}.scope", $this->scope)            
+            }      
+        });
     }
 
     /**
