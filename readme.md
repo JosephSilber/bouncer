@@ -583,7 +583,7 @@ Alternatively, you can refresh the cache only for a specific user:
 Bouncer::refreshFor($user);
 ```
 
-> **Warning** This will only refresh the cache for the user in the current scope's context. It will not refresh the cache for the user for other scopes.
+> **Note**: When using [multi-tenancy scopes](#multi-tenancy), this will only refresh the cache for the user in the current scope's context. To clear cached data for the same user in a different scope context, it must be called from within that scope.
 
 ## Multi-tenancy
 
