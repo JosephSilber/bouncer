@@ -583,7 +583,7 @@ Alternatively, you can refresh the cache only for a specific user:
 Bouncer::refreshFor($user);
 ```
 
-> **Warning** This will only refresh the cache for the user in the current scope's context. It will not refresh the scope for the user for other scopes.
+> **Warning** This will only refresh the cache for the user in the current scope's context. It will not refresh the cache for the user for other scopes.
 
 ## Multi-tenancy
 
