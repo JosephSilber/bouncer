@@ -102,7 +102,9 @@ class CachedClipboard extends BaseClipboard implements Contracts\CachedClipboard
      */
     protected function findMatchingAbility($abilities, $applicable, $model, $authority)
     {
-        $abilities = $abilities->toBase()->pluck('identifier', 'id');
+        $abilities = $abilities->mapWithKeys(function ($ability) {
+            return [$ability->id => $ability->identifier];
+        });
 
         if ($id = $this->getMatchedAbilityId($abilities, $applicable)) {
             return $id;
