@@ -4,7 +4,7 @@ namespace Silber\Bouncer;
 
 use Illuminate\Support\Facades\Facade;
 
- /**
+/**
  * @method static \Silber\Bouncer\Conductors\GivesAbilities allow(\Illuminate\Database\Eloquent\Model|string $authority)
  * @method static \Silber\Bouncer\Conductors\GivesAbilities allowEveryone()
  * @method static \Silber\Bouncer\Conductors\RemovesAbilities disallow(\Illuminate\Database\Eloquent\Model|string $authority)
