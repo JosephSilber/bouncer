@@ -13,7 +13,7 @@ trait AssociatesAbilities
     /**
      * Associate the abilities with the authority.
      *
-     * @param  \Illuminate\Database\Eloquent\model|array|int  $abilities
+     * @param  \Illuminate\Database\Eloquent\model|array|int|string  $abilities
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
      * @param  array  $attributes
      * @return \Silber\Bouncer\Conductors\Lazy\ConductsAbilities|null
