@@ -20,9 +20,9 @@ use Illuminate\Support\Facades\Facade;
  * @method static \Silber\Bouncer\Contracts\Clipboard getClipboard()
  * @method static self setClipboard(\Silber\Bouncer\Contracts\Clipboard $clipboard)
  * @method static self registerClipboardAtContainer()
- * @method static self cache(null|\Illuminate\Contracts\Cache\Store $cache)
+ * @method static self cache(null|\Illuminate\Contracts\Cache\Store $cache = null)
  * @method static self dontCache()
- * @method static self refresh(null|\Illuminate\Database\Eloquent\Model $authority)
+ * @method static self refresh(null|\Illuminate\Database\Eloquent\Model $authority = null)
  * @method static self refreshFor(\Illuminate\Database\Eloquent\Model $authority)
  * @method static self setGate(\Illuminate\Contracts\Auth\Access\Gate $gate)
  * @method static \Illuminate\Contracts\Auth\Access\Gate|null getGate()
@@ -37,14 +37,14 @@ use Illuminate\Support\Facades\Facade;
  * @method static bool denies(string $ability, array|mixed $arguments = [])
  * @method static \Silber\Bouncer\Database\Role role(array $attributes = [])
  * @method static \Silber\Bouncer\Database\Ability ability(array $attributes = [])
- * @method static self runBeforePolicies(bool $boolean)
- * @method static self ownedVia(string|\Closure $model, string|\Closure|null $attribute)
+ * @method static self runBeforePolicies(bool $boolean = true)
+ * @method static self ownedVia(string|\Closure $model, string|\Closure|null $attribute = null)
  * @method static self useAbilityModel(string $model)
  * @method static self useRoleModel(string $model)
  * @method static self useUserModel(string $model)
  * @method static self tables(array $map)
- * @method static mixed scope(null|\Silber\Bouncer\Contracts\Scope $scope)
- * 
+ * @method static mixed scope(null|\Silber\Bouncer\Contracts\Scope $scope = null)
+ *
  * @see \Silber\Bouncer\Bouncer
  */
 class BouncerFacade extends Facade
