@@ -186,6 +186,7 @@ class Models
     public static function isOwnedBy(Model $authority, Model $model)
     {
         $type = get_class($model);
+        $isDefaultAttribute = false;
 
         if (isset(static::$ownership[$type])) {
             $attribute = static::$ownership[$type];
@@ -193,9 +194,10 @@ class Models
             $attribute = static::$ownership['*'];
         } else {
             $attribute = strtolower(static::basename($authority)).'_id';
+            $isDefaultAttribute = true;
         }
 
-        return static::isOwnedVia($attribute, $authority, $model);
+        return static::isOwnedVia($attribute, $authority, $model, $isDefaultAttribute);
     }
 
     /**
@@ -204,12 +206,17 @@ class Models
      * @param  string|\Closure  $attribute
      * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  bool  $isDefaultAttribute
      * @return bool
      */
-    protected static function isOwnedVia($attribute, Model $authority, Model $model)
+    protected static function isOwnedVia($attribute, Model $authority, Model $model, $isDefaultAttribute = false)
     {
         if ($attribute instanceof Closure) {
             return $attribute($model, $authority);
+        }
+
+        if ($isDefaultAttribute && !array_key_exists($attribute, $model->getAttributes())) {
+            return false;
         }
 
         return $authority->getKey() == $model->{$attribute};
