@@ -160,6 +160,26 @@ class MultiTenancyTest extends BaseTestCase
      * @test
      * @dataProvider bouncerProvider
      */
+    function scoped_abilities_work_when_unscoped_and_allowed($provider)
+    {
+        list($bouncer, $user) = $provider();
+
+        $bouncer->scope()->to(1)->allowNullScope();
+        $bouncer->allow($user)->to(['write', 'read']);
+
+        $this->assertTrue($bouncer->can('write'));
+        $this->assertTrue($bouncer->can('read'));
+        $this->assertEquals(2, $user->abilities()->count());
+
+        $bouncer->scope()->to(null);
+        $this->assertTrue($bouncer->can('write'));
+        $this->assertTrue($bouncer->can('read'));
+    }
+
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
     function relation_queries_are_properly_scoped($provider)
     {
         list($bouncer, $user) = $provider();
@@ -349,6 +369,31 @@ class MultiTenancyTest extends BaseTestCase
 
         $bouncer->scope()->to(null);
         $this->assertFalse($bouncer->is($user)->an('admin'));
+    }
+
+    /**
+     * @test
+     * @dataProvider bouncerProvider
+     */
+    function assigning_and_retracting_roles_scopes_them_properly_when_allowing_null_scopes($provider)
+    {
+        list($bouncer, $user) = $provider();
+
+        $bouncer->scope()->to(1)->onlyRelations()->allowNullScope();
+        $bouncer->assign('admin')->to($user);
+
+        $bouncer->scope()->to(2);
+        $bouncer->assign('admin')->to($user);
+        $bouncer->retract('admin')->from($user);
+
+        $bouncer->scope()->to(1);
+        $this->assertTrue($bouncer->is($user)->an('admin'));
+
+        $bouncer->scope()->to(2);
+        $this->assertFalse($bouncer->is($user)->an('admin'));
+
+        $bouncer->scope()->to(null);
+        $this->assertTrue($bouncer->is($user)->an('admin'));
     }
 
     /**

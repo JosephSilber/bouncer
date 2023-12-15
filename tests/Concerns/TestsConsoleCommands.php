@@ -40,6 +40,8 @@ trait TestsConsoleCommands
             return new $class($arguments['input'], $arguments['output']);
         });
 
+        $laravel->shouldReceive('runningUnitTests')->andReturn(false);
+
         return $laravel;
     }
 

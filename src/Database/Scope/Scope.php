@@ -35,6 +35,14 @@ class Scope implements ScopeContract
     protected $scopeRoleAbilities = true;
 
     /**
+     * Determines whether queries should check null scopes
+     * when there is a scope set.
+     *
+     * @var bool
+     */
+    protected $allowNullScope = false;
+
+    /**
      * Scope queries to the given tenant ID.
      *
      * @param  mixed  $id
@@ -75,6 +83,18 @@ class Scope implements ScopeContract
     }
 
     /**
+     * Don't include null scope in queries.
+     *
+     * @return $this
+     */
+    public function allowNullScope()
+    {
+        $this->allowNullScope = true;
+
+        return $this;
+    }
+
+    /**
      * Append the tenant ID to the given cache key.
      *
      * @param  string  $key
@@ -93,7 +113,7 @@ class Scope implements ScopeContract
      */
     public function applyToModel(Model $model)
     {
-        if (! $this->onlyScopeRelations && ! is_null($this->scope)) {
+        if ($this->shouldApplyScopeToModel()) {
             $model->scope = $this->scope;
         }
 
@@ -109,7 +129,7 @@ class Scope implements ScopeContract
      */
     public function applyToModelQuery($query, $table = null)
     {
-        if ($this->onlyScopeRelations) {
+        if ($this->shouldApplyScopeToModelQuery()) {
             return $query;
         }
 
@@ -129,6 +149,10 @@ class Scope implements ScopeContract
      */
     public function applyToRelationQuery($query, $table)
     {
+        if (is_null($this->scope) && $this->allowNullScope) {
+            return $query;
+        }
+
         return $this->applyToQuery($query, $table);
     }
 
@@ -249,5 +273,27 @@ class Scope implements ScopeContract
     protected function isRoleClass($className)
     {
         return Models::classname(Role::class) === $className;
+    }
+
+    /**
+     * Determine of the scope should be applied to the model.
+     *
+     * @return bool
+     */
+    protected function shouldApplyScopeToModel()
+    {
+        return ! $this->onlyScopeRelations &&
+            ($this->allowNullScope || ! is_null($this->scope));
+    }
+
+    /**
+     * Determine if the scope should be applied to the model query.
+     *
+     * @return bool
+     */
+    public function shouldApplyScopeToModelQuery()
+    {
+        return $this->onlyScopeRelations ||
+            ($this->allowNullScope && is_null($this->scope));
     }
 }
