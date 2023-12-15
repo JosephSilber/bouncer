@@ -188,7 +188,7 @@ class Scope implements ScopeContract
         return $query->where(function ($query) use ($table) {
             $query->whereNull("{$table}.scope");
 
-            if ($this->allowNullScope || ! is_null($this->scope)) {
+            if (! is_null($this->scope)) {
                 $query->orWhere("{$table}.scope", $this->scope);
             }
         });
