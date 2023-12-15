@@ -296,9 +296,4 @@ class Scope implements ScopeContract
         return $this->onlyScopeRelations ||
             ($this->allowNullScope && is_null($this->scope));
     }
-
-    protected function applyS()
-    {
-        return $this->allowNullScope;
-    }
 }
