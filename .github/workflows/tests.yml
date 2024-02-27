@@ -3,12 +3,12 @@ name: Tests
 on:
   push:
     paths-ignore:
-      - 'readme.md'
-      - 'assets/**'
+      - readme.md
+      - assets/**
   pull_request:
     paths-ignore:
-      - 'readme.md'
-      - 'assets/**'
+      - readme.md
+      - assets/**
   release:
 
 jobs:
@@ -17,7 +17,7 @@ jobs:
 
     strategy:
       matrix:
-        laravel: [6.*, 7.*, 8.*, 9.*, 10.*]
+        laravel: ['6.*', '7.*', '8.*', '9.*', '10.*', '11.*']
         php: [7.2, 7.3, 8.0, 8.1, 8.2]
         exclude:
           - laravel: 10.*
@@ -32,6 +32,14 @@ jobs:
             php: 7.2
           - laravel: 9.*
             php: 7.3
+          - laravel: 11.*
+            php: 7.2
+          - laravel: 11.*
+            php: 7.3
+          - laravel: 11.*
+            php: 8.0
+          - laravel: 11.*
+            php: 8.1
       fail-fast: false
 
     name: Laravel ${{ matrix.laravel }}, PHP ${{ matrix.php }}
@@ -48,8 +56,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-            composer require "illuminate/auth:${{ matrix.laravel }}" "illuminate/cache:${{ matrix.laravel }}" "illuminate/container:${{ matrix.laravel }}" "illuminate/contracts:${{ matrix.laravel }}" "illuminate/database:${{ matrix.laravel }}" "illuminate/console:${{ matrix.laravel }}" "illuminate/events:${{ matrix.laravel }}" --no-interaction --no-update
-            composer update --prefer-stable --prefer-dist --no-interaction --no-suggest
+          composer require "illuminate/auth:${{ matrix.laravel }}" "illuminate/cache:${{ matrix.laravel }}" "illuminate/container:${{ matrix.laravel }}" "illuminate/contracts:${{ matrix.laravel }}" "illuminate/database:${{ matrix.laravel }}" "illuminate/console:${{ matrix.laravel }}" "illuminate/events:${{ matrix.laravel }}" --no-interaction --no-update
+          composer update --prefer-stable --prefer-dist --no-interaction --no-suggest
 
       - name: Run tests
         run: vendor/bin/phpunit --do-not-cache-result
