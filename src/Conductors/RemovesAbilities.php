@@ -23,7 +23,7 @@ class RemovesAbilities
     /**
      * Constructor.
      *
-     * @param \Illuminate\Database\Eloquent\Model|string|null  $authority
+     * @param  \Illuminate\Database\Eloquent\Model|string|null  $authority
      */
     public function __construct($authority = null)
     {

@@ -2,13 +2,11 @@
 
 namespace Silber\Bouncer\Tests;
 
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\DataProvider;
-
+use PHPUnit\Framework\Attributes\Test;
 use Silber\Bouncer\Database\Models;
 use Workbench\App\Models\User;
 use Workbench\App\Models\UserWithSoftDeletes;
-use Workbench\App\Models\Account;
 
 class HasRolesAndAbilitiesTraitTest extends BaseTestCase
 {

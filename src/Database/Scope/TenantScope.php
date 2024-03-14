@@ -2,11 +2,10 @@
 
 namespace Silber\Bouncer\Database\Scope;
 
-use Illuminate\Support\Collection;
-use Silber\Bouncer\Database\Models;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope as EloquentScope;
+use Silber\Bouncer\Database\Models;
 
 class TenantScope implements EloquentScope
 {
@@ -24,8 +23,6 @@ class TenantScope implements EloquentScope
     /**
      * Apply the scope to a given Eloquent query builder.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  \Illuminate\Database\Eloquent\Model  $model
      * @return void
      */
     public function apply(Builder $query, Model $model)

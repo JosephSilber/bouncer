@@ -3,13 +3,11 @@
 namespace Silber\Bouncer\Tests;
 
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\DataProvider;
-
-use Silber\Bouncer\Database\Ability;
-use Silber\Bouncer\Constraints\Group;
 use Silber\Bouncer\Constraints\Constraint;
-use Workbench\App\Models\User;
+use Silber\Bouncer\Constraints\Group;
+use Silber\Bouncer\Database\Ability;
 use Workbench\App\Models\Account;
+use Workbench\App\Models\User;
 
 class AbilityConstraintsTest extends BaseTestCase
 {
@@ -39,7 +37,7 @@ class AbilityConstraintsTest extends BaseTestCase
     {
         $ability = Ability::makeForModel(Account::class, '*')->setConstraints(
             new Group([
-                Constraint::where('active', true)
+                Constraint::where('active', true),
             ])
         );
 

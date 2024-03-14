@@ -43,7 +43,8 @@
         "illuminate/events": "^11.0",
         "phpunit/phpunit": "^11.0",
         "orchestra/testbench": "^9.0",
-        "pestphp/pest": "3.x-dev"
+        "pestphp/pest": "3.x-dev",
+        "laravel/pint": "^1.14"
     },
     "suggest": {
         "illuminate/console": "Allows running the bouncer:clean artisan command",

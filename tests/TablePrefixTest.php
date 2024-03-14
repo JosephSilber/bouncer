@@ -2,11 +2,8 @@
 
 namespace Silber\Bouncer\Tests;
 
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\DataProvider;
-
-use Workbench\App\Models\User;
-use Workbench\App\Models\Account;
+use PHPUnit\Framework\Attributes\Test;
 
 class TablePrefixTest extends BaseTestCase
 {

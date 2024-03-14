@@ -2,14 +2,8 @@
 
 namespace Silber\Bouncer\Tests;
 
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\DataProvider;
-
-use Silber\Bouncer\Database\Role;
-use Silber\Bouncer\Database\Ability;
-
-use Workbench\App\Models\User;
-use Workbench\App\Models\Account;
+use PHPUnit\Framework\Attributes\Test;
 
 class ReportedIssuesTest extends BaseTestCase
 {
@@ -20,7 +14,7 @@ class ReportedIssuesTest extends BaseTestCase
      */
     #[Test]
     #[DataProvider('bouncerProvider')]
-    function forbid_an_ability_on_everything_with_zero_id($provider)
+    public function forbid_an_ability_on_everything_with_zero_id($provider)
     {
         [$bouncer, $user1, $user2, $user3] = $provider(3);
 

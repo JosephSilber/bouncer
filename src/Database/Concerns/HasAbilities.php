@@ -3,17 +3,15 @@
 namespace Silber\Bouncer\Database\Concerns;
 
 use Illuminate\Container\Container;
-
-use Silber\Bouncer\Helpers;
-use Silber\Bouncer\Database\Models;
-use Silber\Bouncer\Database\Ability;
-use Silber\Bouncer\Contracts\Clipboard;
-use Silber\Bouncer\Conductors\GivesAbilities;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Silber\Bouncer\Conductors\ForbidsAbilities;
+use Silber\Bouncer\Conductors\GivesAbilities;
 use Silber\Bouncer\Conductors\RemovesAbilities;
 use Silber\Bouncer\Conductors\UnforbidsAbilities;
-
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Silber\Bouncer\Contracts\Clipboard;
+use Silber\Bouncer\Database\Ability;
+use Silber\Bouncer\Database\Models;
+use Silber\Bouncer\Helpers;
 
 trait HasAbilities
 {
@@ -33,8 +31,6 @@ trait HasAbilities
 
     /**
      * The abilities relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
     public function abilities(): MorphToMany
     {

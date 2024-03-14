@@ -23,9 +23,9 @@ class ValueConstraint extends Constraint
     /**
      * Constructor.
      *
-     * @param string  $column
-     * @param string  $operator
-     * @param mixed  $value
+     * @param  string  $column
+     * @param  string  $operator
+     * @param  mixed  $value
      */
     public function __construct($column, $operator, $value)
     {
@@ -37,11 +37,9 @@ class ValueConstraint extends Constraint
     /**
      * Determine whether the given entity/authority passed this constraint.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $entity
-     * @param  \Illuminate\Database\Eloquent\Model|null  $authority
      * @return bool
      */
-    public function check(Model $entity, Model $authority = null)
+    public function check(Model $entity, ?Model $authority = null)
     {
         return $this->compare($entity->{$this->column}, $this->value);
     }
@@ -49,7 +47,6 @@ class ValueConstraint extends Constraint
     /**
      * Create a new instance from the raw data.
      *
-     * @param  array  $data
      * @return static
      */
     public static function fromData(array $data)

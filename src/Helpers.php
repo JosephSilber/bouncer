@@ -2,12 +2,11 @@
 
 namespace Silber\Bouncer;
 
-use Silber\Bouncer\Database\Models;
-
 use App\User;
-use InvalidArgumentException;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+use InvalidArgumentException;
+use Silber\Bouncer\Database\Models;
 
 class Helpers
 {
@@ -32,10 +31,9 @@ class Helpers
      * Extract the model instance and model keys from the given parameters.
      *
      * @param  \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|string  $model
-     * @param  array|null  $keys
      * @return array
      */
-    public static function extractModelAndKeys($model, array $keys = null)
+    public static function extractModelAndKeys($model, ?array $keys = null)
     {
         if (! is_null($keys)) {
             if (is_string($model)) {
@@ -88,9 +86,9 @@ class Helpers
         $groups = (new Collection($models))->groupBy(function ($model) {
             if (is_numeric($model)) {
                 return 'integers';
-            } else if (is_string($model)) {
+            } elseif (is_string($model)) {
                 return 'strings';
-            } else if ($model instanceof Model) {
+            } elseif ($model instanceof Model) {
                 return 'models';
             }
 
@@ -145,7 +143,6 @@ class Helpers
     /**
      * Determines whether the given model is set to soft delete.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
      * @return bool
      */
     public static function isSoftDeleting(Model $model)
@@ -182,7 +179,6 @@ class Helpers
     /**
      * Map a list of authorities by their class name.
      *
-     * @param  array  $authorities
      * @return array
      */
     public static function mapAuthorityByClass(array $authorities)
@@ -204,7 +200,6 @@ class Helpers
      * Partition the given collection into two collection using the given callback.
      *
      * @param  iterable  $items
-     * @param  callable  $callback
      * @return \Illuminate\Support\Collection
      */
     public static function partition($items, callable $callback)

@@ -26,8 +26,6 @@ class Role extends Model
 
     /**
      * Constructor.
-     *
-     * @param array  $attributes
      */
     public function __construct(array $attributes = [])
     {

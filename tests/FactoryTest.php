@@ -2,14 +2,11 @@
 
 namespace Silber\Bouncer\Tests;
 
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\DataProvider;
-
-use Silber\Bouncer\Bouncer;
 use Illuminate\Auth\Access\Gate;
 use Illuminate\Container\Container;
+use PHPUnit\Framework\Attributes\Test;
+use Silber\Bouncer\Bouncer;
 use Workbench\App\Models\User;
-use Workbench\App\Models\Account;
 
 class FactoryTest extends BaseTestCase
 {

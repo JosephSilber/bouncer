@@ -2,20 +2,16 @@
 
 namespace Silber\Bouncer;
 
+use Illuminate\Database\Eloquent\Model;
+use InvalidArgumentException;
 use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Database\Queries\Abilities;
-
-use InvalidArgumentException;
-use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Contracts\Auth\Access\Gate;
 
 abstract class BaseClipboard implements Contracts\Clipboard
 {
     /**
      * Determine if the given authority has the given ability.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @param  string  $ability
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
      * @return bool
@@ -28,7 +24,6 @@ abstract class BaseClipboard implements Contracts\Clipboard
     /**
      * Check if an authority has the given roles.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @param  array|string  $roles
      * @param  string  $boolean
      * @return bool
@@ -74,13 +69,12 @@ abstract class BaseClipboard implements Contracts\Clipboard
     /**
      * Get the given authority's roles' IDs and names.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @return array
      */
     public function getRolesLookup(Model $authority)
     {
         $roles = $authority->roles()->get([
-            'name', Models::role()->getQualifiedKeyName()
+            'name', Models::role()->getQualifiedKeyName(),
         ])->pluck('name', Models::role()->getKeyName());
 
         return ['ids' => $roles, 'names' => $roles->flip()];
@@ -89,7 +83,6 @@ abstract class BaseClipboard implements Contracts\Clipboard
     /**
      * Get the given authority's roles' names.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @return \Illuminate\Support\Collection
      */
     public function getRoles(Model $authority)
@@ -100,7 +93,6 @@ abstract class BaseClipboard implements Contracts\Clipboard
     /**
      * Get a list of the authority's abilities.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @param  bool  $allowed
      * @return \Illuminate\Database\Eloquent\Collection
      */
@@ -112,7 +104,6 @@ abstract class BaseClipboard implements Contracts\Clipboard
     /**
      * Get a list of the authority's forbidden abilities.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getForbiddenAbilities(Model $authority)

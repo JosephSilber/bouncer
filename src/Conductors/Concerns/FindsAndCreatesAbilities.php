@@ -2,13 +2,12 @@
 
 namespace Silber\Bouncer\Conductors\Concerns;
 
-use Silber\Bouncer\Helpers;
-use Silber\Bouncer\Database\Models;
-
-use Illuminate\Support\Arr;
-use InvalidArgumentException;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
+use InvalidArgumentException;
+use Silber\Bouncer\Database\Models;
+use Silber\Bouncer\Helpers;
 
 trait FindsAndCreatesAbilities
 {
@@ -17,7 +16,6 @@ trait FindsAndCreatesAbilities
      *
      * @param  \Illuminate\Database\Eloquent\model|array|int  $abilities
      * @param  \Illuminate\Database\Eloquent\Model|string|array|null  $model
-     * @param  array  $attributes
      * @return array
      */
     protected function getAbilityIds($abilities, $model = null, array $attributes = [])
@@ -26,7 +24,7 @@ trait FindsAndCreatesAbilities
             return [$abilities->getKey()];
         }
 
-        if ( ! is_null($model)) {
+        if (! is_null($model)) {
             return $this->getModelAbilityKeys($abilities, $model, $attributes);
         }
 
@@ -46,13 +44,11 @@ trait FindsAndCreatesAbilities
      *
      * The map should use the ['ability-name' => Entity::class] format.
      *
-     * @param  array  $map
-     * @param  array  $attributes
      * @return array
      */
     protected function getAbilityIdsFromMap(array $map, array $attributes)
     {
-        list($map, $list) = Helpers::partition($map, function ($value, $key) {
+        [$map, $list] = Helpers::partition($map, function ($value, $key) {
             return ! is_int($key);
         });
 
@@ -65,7 +61,6 @@ trait FindsAndCreatesAbilities
      * Get the ability IDs from the provided array, creating the ones that don't exist.
      *
      * @param  iterable  $abilities
-     * @param  array  $attributes
      * @return array
      */
     protected function getAbilityIdsFromArray($abilities, array $attributes)
@@ -75,7 +70,7 @@ trait FindsAndCreatesAbilities
         $keyName = Models::ability()->getKeyName();
 
         $groups['strings'] = $this->abilitiesByName($groups['strings'], $attributes)
-                                  ->pluck($keyName)->all();
+            ->pluck($keyName)->all();
 
         $groups['models'] = Arr::pluck($groups['models'], $keyName);
 
@@ -87,7 +82,6 @@ trait FindsAndCreatesAbilities
      *
      * @param  array|string  $abilities
      * @param  \Illuminate\Database\Eloquent\Model|string|array  $model
-     * @param  array  $attributes
      * @return array
      */
     protected function getModelAbilityKeys($abilities, $model, array $attributes)
@@ -108,7 +102,6 @@ trait FindsAndCreatesAbilities
      *
      * @param  string  $ability
      * @param  \Illuminate\Database\Eloquent\Model|string  $entity
-     * @param  array  $attributes
      * @return \Silber\Bouncer\Database\Ability
      */
     protected function getModelAbility($ability, $entity, array $attributes)
@@ -133,9 +126,9 @@ trait FindsAndCreatesAbilities
         $onlyOwned = isset($attributes['only_owned']) ? $attributes['only_owned'] : false;
 
         $query = Models::ability()
-                     ->where('name', $ability)
-                     ->forModel($entity, true)
-                     ->where('only_owned', $onlyOwned);
+            ->where('name', $ability)
+            ->forModel($entity, true)
+            ->where('only_owned', $onlyOwned);
 
         return Models::scope()->applyToModelQuery($query)->first();
     }
@@ -167,14 +160,14 @@ trait FindsAndCreatesAbilities
             return '*';
         }
 
-        if ( ! $model instanceof Model) {
+        if (! $model instanceof Model) {
             return new $model;
         }
 
         // Creating an ability for a non-existent model gives the authority that
         // ability on all instances of that model. If the developer passed in
         // a model instance that does not exist, it is probably a mistake.
-        if ( ! $model->exists) {
+        if (! $model->exists) {
             throw new InvalidArgumentException(
                 'The model does not exist. To edit access to all models, use the class name instead'
             );

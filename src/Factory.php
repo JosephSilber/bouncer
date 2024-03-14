@@ -5,8 +5,8 @@ namespace Silber\Bouncer;
 use Illuminate\Auth\Access\Gate;
 use Illuminate\Cache\ArrayStore;
 use Illuminate\Container\Container;
-use Illuminate\Contracts\Cache\Store;
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
+use Illuminate\Contracts\Cache\Store;
 
 class Factory
 {
@@ -55,7 +55,7 @@ class Factory
     /**
      * Create a new Factory instance.
      *
-     * @param mixed  $user
+     * @param  mixed  $user
      */
     public function __construct($user = null)
     {
@@ -88,7 +88,6 @@ class Factory
     /**
      * Set the cache instance to use for the clipboard.
      *
-     * @param  \Illuminate\Contracts\Cache\Store  $cache
      * @return $this
      */
     public function withCache(Store $cache)
@@ -101,7 +100,6 @@ class Factory
     /**
      * Set the instance of the clipboard to use.
      *
-     * @param  \Silber\Bouncer\Contracts\Clipboard  $clipboard
      * @return $this
      */
     public function withClipboard(Contracts\Clipboard $clipboard)
@@ -114,7 +112,6 @@ class Factory
     /**
      * Set the gate instance to use.
      *
-     * @param  \Illuminate\Contracts\Auth\Access\Gate  $gate
      * @return $this
      */
     public function withGate(GateContract $gate)

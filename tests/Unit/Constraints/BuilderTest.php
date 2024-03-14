@@ -3,12 +3,10 @@
 namespace Silber\Bouncer\Tests\Unit\Constraints;
 
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\DataProvider;
-
 use PHPUnit\Framework\TestCase;
-use Silber\Bouncer\Constraints\Group;
 use Silber\Bouncer\Constraints\Builder;
 use Silber\Bouncer\Constraints\Constraint;
+use Silber\Bouncer\Constraints\Group;
 
 class BuilderTest extends TestCase
 {

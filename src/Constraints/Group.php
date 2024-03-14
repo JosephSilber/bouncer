@@ -2,9 +2,9 @@
 
 namespace Silber\Bouncer\Constraints;
 
-use Silber\Bouncer\Helpers;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+use Silber\Bouncer\Helpers;
 
 class Group implements Constrainer
 {
@@ -25,7 +25,7 @@ class Group implements Constrainer
     /**
      * Constructor.
      *
-     * @param iterable<\Silber\Bouncer\Constraints\Constrainer>  $constraints
+     * @param  iterable<\Silber\Bouncer\Constraints\Constrainer>  $constraints
      */
     public function __construct($constraints = [])
     {
@@ -55,7 +55,6 @@ class Group implements Constrainer
     /**
      * Create a new instance from the raw data.
      *
-     * @param  array  $data
      * @return static
      */
     public static function fromData(array $data)
@@ -69,8 +68,6 @@ class Group implements Constrainer
 
     /**
      * Add the given constraint to the list of constraints.
-     *
-     * @param \Silber\Bouncer\Constraints\Constrainer  $constraint
      */
     public function add(Constrainer $constraint)
     {
@@ -82,11 +79,9 @@ class Group implements Constrainer
     /**
      * Determine whether the given entity/authority passes this constraint.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $entity
-     * @param  \Illuminate\Database\Eloquent\Model|null  $authority
      * @return bool
      */
-    public function check(Model $entity, Model $authority = null)
+    public function check(Model $entity, ?Model $authority = null)
     {
         if ($this->constraints->isEmpty()) {
             return true;
@@ -125,7 +120,7 @@ class Group implements Constrainer
     /**
      * Checks whether the logical operator is an "and" operator.
      *
-     * @param string  $operator
+     * @param  string  $operator
      */
     public function isAnd()
     {
@@ -135,7 +130,7 @@ class Group implements Constrainer
     /**
      * Checks whether the logical operator is an "and" operator.
      *
-     * @param string  $operator
+     * @param  string  $operator
      */
     public function isOr()
     {
@@ -145,7 +140,6 @@ class Group implements Constrainer
     /**
      * Determine whether the given constrainer is equal to this object.
      *
-     * @param  \Silber\Bouncer\Constraints\Constrainer  $constrainer
      * @return bool
      */
     public function equals(Constrainer $constrainer)

@@ -2,8 +2,8 @@
 
 namespace Silber\Bouncer\Database\Queries;
 
-use Silber\Bouncer\Helpers;
 use Silber\Bouncer\Database\Models;
+use Silber\Bouncer\Helpers;
 
 class Roles
 {
@@ -54,24 +54,23 @@ class Roles
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @param  string|\Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection  $model
-     * @param  array  $keys
      * @return void
      */
-    public function constrainWhereAssignedTo($query, $model, array $keys = null)
+    public function constrainWhereAssignedTo($query, $model, ?array $keys = null)
     {
-        list($model, $keys) = Helpers::extractModelAndKeys($model, $keys);
+        [$model, $keys] = Helpers::extractModelAndKeys($model, $keys);
 
         $query->whereExists(function ($query) use ($model, $keys) {
-            $table  = $model->getTable();
-            $key    = "{$table}.{$model->getKeyName()}";
-            $pivot  = Models::table('assigned_roles');
-            $roles  = Models::table('roles');
+            $table = $model->getTable();
+            $key = "{$table}.{$model->getKeyName()}";
+            $pivot = Models::table('assigned_roles');
+            $roles = Models::table('roles');
 
             $query->from($table)
-                  ->join($pivot, $key, '=', $pivot.'.entity_id')
-                  ->whereColumn("{$pivot}.role_id", "{$roles}.id")
-                  ->where("{$pivot}.entity_type", $model->getMorphClass())
-                  ->whereIn($key, $keys);
+                ->join($pivot, $key, '=', $pivot.'.entity_id')
+                ->whereColumn("{$pivot}.role_id", "{$roles}.id")
+                ->where("{$pivot}.entity_type", $model->getMorphClass())
+                ->whereIn($key, $keys);
 
             Models::scope()->applyToModelQuery($query, $roles);
             Models::scope()->applyToRelationQuery($query, $pivot);

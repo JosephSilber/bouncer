@@ -2,9 +2,9 @@
 
 namespace Silber\Bouncer\Constraints;
 
-use Silber\Bouncer\Helpers;
-use InvalidArgumentException;
 use Illuminate\Database\Eloquent\Model;
+use InvalidArgumentException;
+use Silber\Bouncer\Helpers;
 
 abstract class Constraint implements Constrainer
 {
@@ -25,11 +25,9 @@ abstract class Constraint implements Constrainer
     /**
      * Determine whether the given entity/authority passes this constraint.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $entity
-     * @param  \Illuminate\Database\Eloquent\Model|null  $authority
      * @return bool
      */
-    abstract public function check(Model $entity, Model $authority = null);
+    abstract public function check(Model $entity, ?Model $authority = null);
 
     /**
      * Create a new constraint for where a column matches the given value.
@@ -41,13 +39,12 @@ abstract class Constraint implements Constrainer
      */
     public static function where($column, $operator, $value = null)
     {
-        list($operator, $value) = static::prepareOperatorAndValue(
+        [$operator, $value] = static::prepareOperatorAndValue(
             $operator, $value, func_num_args() === 2
         );
 
         return new ValueConstraint($column, $operator, $value);
     }
-
 
     /**
      * Create a new constraint for where a column matches the given value,
@@ -73,7 +70,7 @@ abstract class Constraint implements Constrainer
      */
     public static function whereColumn($a, $operator, $b = null)
     {
-        list($operator, $b) = static::prepareOperatorAndValue(
+        [$operator, $b] = static::prepareOperatorAndValue(
             $operator, $b, func_num_args() === 2
         );
 
@@ -116,7 +113,7 @@ abstract class Constraint implements Constrainer
     /**
      * Checks whether the logical operator is an "and" operator.
      *
-     * @param string  $operator
+     * @param  string  $operator
      */
     public function isAnd()
     {
@@ -126,7 +123,7 @@ abstract class Constraint implements Constrainer
     /**
      * Checks whether the logical operator is an "and" operator.
      *
-     * @param string  $operator
+     * @param  string  $operator
      */
     public function isOr()
     {
@@ -136,7 +133,6 @@ abstract class Constraint implements Constrainer
     /**
      * Determine whether the given constrainer is equal to this object.
      *
-     * @param  \Silber\Bouncer\Constraints\Constrainer  $constrainer
      * @return bool
      */
     public function equals(Constrainer $constrainer)

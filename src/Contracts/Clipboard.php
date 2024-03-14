@@ -3,14 +3,12 @@
 namespace Silber\Bouncer\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Contracts\Auth\Access\Gate;
 
 interface Clipboard
 {
     /**
      * Determine if the given authority has the given ability.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @param  string  $ability
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
      * @return bool
@@ -20,7 +18,6 @@ interface Clipboard
     /**
      * Determine if the given authority has the given ability, and return the ability ID.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @param  string  $ability
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
      * @return int|bool|null
@@ -30,7 +27,6 @@ interface Clipboard
     /**
      * Check if an authority has the given roles.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @param  array|string  $roles
      * @param  string  $boolean
      * @return bool
@@ -40,7 +36,6 @@ interface Clipboard
     /**
      * Get the given authority's roles.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @return \Illuminate\Support\Collection
      */
     public function getRoles(Model $authority);
@@ -48,7 +43,6 @@ interface Clipboard
     /**
      * Get a list of the authority's abilities.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @param  bool  $allowed
      * @return \Illuminate\Database\Eloquent\Collection
      */
@@ -57,7 +51,6 @@ interface Clipboard
     /**
      * Get a list of the authority's forbidden abilities.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getForbiddenAbilities(Model $authority);

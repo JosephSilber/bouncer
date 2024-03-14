@@ -2,15 +2,13 @@
 
 namespace Silber\Bouncer;
 
-use Illuminate\Support\Arr;
-use Silber\Bouncer\Database\Models;
-use Silber\Bouncer\Console\CleanCommand;
-
 use Illuminate\Cache\ArrayStore;
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Auth\Access\Gate;
-use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\ServiceProvider;
+use Silber\Bouncer\Console\CleanCommand;
+use Silber\Bouncer\Database\Models;
 
 class BouncerServiceProvider extends ServiceProvider
 {

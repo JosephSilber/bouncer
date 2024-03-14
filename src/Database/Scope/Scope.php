@@ -2,12 +2,11 @@
 
 namespace Silber\Bouncer\Database\Scope;
 
-use Silber\Bouncer\Database\Role;
-use Silber\Bouncer\Database\Models;
-use Silber\Bouncer\Contracts\Scope as ScopeContract;
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Silber\Bouncer\Contracts\Scope as ScopeContract;
+use Silber\Bouncer\Database\Models;
+use Silber\Bouncer\Database\Role;
 
 class Scope implements ScopeContract
 {
@@ -88,7 +87,6 @@ class Scope implements ScopeContract
     /**
      * Scope the given model to the current tenant.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
      * @return \Illuminate\Database\Eloquent\Model
      */
     public function applyToModel(Model $model)
@@ -135,7 +133,6 @@ class Scope implements ScopeContract
     /**
      * Scope the given relation to the current tenant.
      *
-     * @param  \Illuminate\Database\Eloquent\Relations\BelongsToMany  $relation
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function applyToRelation(BelongsToMany $relation)
@@ -202,8 +199,7 @@ class Scope implements ScopeContract
     /**
      * Run the given callback with the given temporary scope.
      *
-     * @param  mixed   $scope
-     * @param  callable  $callback
+     * @param  mixed  $scope
      * @return mixed
      */
     public function onceTo($scope, callable $callback)
@@ -232,7 +228,6 @@ class Scope implements ScopeContract
     /**
      * Run the given callback without the scope applied.
      *
-     * @param  callable  $callback
      * @return mixed
      */
     public function removeOnce(callable $callback)
@@ -243,7 +238,7 @@ class Scope implements ScopeContract
     /**
      * Determine whether the given class name is the role model.
      *
-     * @param  string|null $className
+     * @param  string|null  $className
      * @return bool
      */
     protected function isRoleClass($className)

@@ -2,11 +2,8 @@
 
 namespace Silber\Bouncer\Tests;
 
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\DataProvider;
-
-use Silber\Bouncer\Database\HasRolesAndAbilities;
-use Workbench\App\Models\User;
+use PHPUnit\Framework\Attributes\Test;
 use Workbench\App\Models\Account;
 
 class CustomAuthorityTest extends BaseTestCase

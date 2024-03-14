@@ -2,13 +2,9 @@
 
 namespace Silber\Bouncer\Conductors\Concerns;
 
-use Silber\Bouncer\Database\Models;
-use Silber\Bouncer\Database\Ability;
-
-use InvalidArgumentException;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Silber\Bouncer\Database\Ability;
+use Silber\Bouncer\Database\Models;
 
 trait DisassociatesAbilities
 {
@@ -19,7 +15,6 @@ trait DisassociatesAbilities
      *
      * @param  mixed  $abilities
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $entity
-     * @param  array  $attributes
      * @return bool|\Silber\Bouncer\Conductors\Lazy\ConductsAbilities
      */
     public function to($abilities, $entity = null, array $attributes = [])
@@ -39,7 +34,6 @@ trait DisassociatesAbilities
      * Detach the given IDs from the authority.
      *
      * @param  \Illuminate\Database\Eloquent\Model|null  $authority
-     * @param  array  $ids
      * @return void
      */
     protected function disassociateAbilities($authority, array $ids)
@@ -54,21 +48,18 @@ trait DisassociatesAbilities
     /**
      * Disassociate the authority from the abilities with the given IDs.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $authority
-     * @param  array  $ids
      * @return void
      */
     protected function disassociateAuthority(Model $authority, array $ids)
     {
         $this->getAbilitiesPivotQuery($authority, $ids)
-             ->where($this->constraints())
-             ->delete();
+            ->where($this->constraints())
+            ->delete();
     }
 
     /**
      * Get the base abilities pivot query.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
      * @param  array  $ids
      * @return \Illuminate\Database\Query\Builder
      */
@@ -90,7 +81,6 @@ trait DisassociatesAbilities
     /**
      * Disassociate everyone from the abilities with the given IDs.
      *
-     * @param  array  $ids
      * @return void
      */
     protected function disassociateEveryone(array $ids)

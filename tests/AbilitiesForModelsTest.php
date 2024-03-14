@@ -2,13 +2,11 @@
 
 namespace Silber\Bouncer\Tests;
 
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\DataProvider;
-
+use PHPUnit\Framework\Attributes\Test;
 use Silber\Bouncer\Database\Ability;
-use Illuminate\Database\Eloquent\Model;
-use Workbench\App\Models\User;
 use Workbench\App\Models\Account;
+use Workbench\App\Models\User;
 
 class AbilitiesForModelsTest extends BaseTestCase
 {

@@ -2,10 +2,10 @@
 
 namespace Silber\Bouncer\Conductors;
 
-use Silber\Bouncer\Helpers;
-use Silber\Bouncer\Database\Role;
-use Silber\Bouncer\Database\Models;
 use Illuminate\Database\Eloquent\Model;
+use Silber\Bouncer\Database\Models;
+use Silber\Bouncer\Database\Role;
+use Silber\Bouncer\Helpers;
 
 class RemovesRoles
 {
@@ -19,7 +19,7 @@ class RemovesRoles
     /**
      * Constructor.
      *
-     * @param \Illuminate\Support\Collection|\Silber\Bouncer\Database\Role|string  $roles
+     * @param  \Illuminate\Support\Collection|\Silber\Bouncer\Database\Role|string  $roles
      */
     public function __construct($roles)
     {
@@ -52,7 +52,7 @@ class RemovesRoles
      */
     protected function getRoleIds()
     {
-        list($models, $names) = Helpers::partition($this->roles, function ($role) {
+        [$models, $names] = Helpers::partition($this->roles, function ($role) {
             return $role instanceof Model;
         });
 
@@ -78,17 +78,17 @@ class RemovesRoles
         $key = Models::role()->getKeyName();
 
         return Models::role()
-                     ->whereIn('name', $names)
-                     ->get([$key])
-                     ->pluck($key);
+            ->whereIn('name', $names)
+            ->get([$key])
+            ->pluck($key);
     }
 
     /**
      * Retract the given roles from the given authorities.
      *
      * @param  array  $roleIds
-     * @param  string $authorityClass
-     * @param  array $authorityIds
+     * @param  string  $authorityClass
+     * @param  array  $authorityIds
      * @return void
      */
     protected function retractRoles($roleIds, $authorityClass, $authorityIds)

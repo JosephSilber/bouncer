@@ -23,9 +23,6 @@ class ChecksRoles
 
     /**
      * Constructor.
-     *
-     * @param \Illuminate\Database\Eloquent\Model  $authority
-     * @param \Silber\Bouncer\Contracts\Clipboard  $clipboard
      */
     public function __construct(Model $authority, Clipboard $clipboard)
     {

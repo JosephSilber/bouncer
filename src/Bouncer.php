@@ -2,14 +2,12 @@
 
 namespace Silber\Bouncer;
 
-use RuntimeException;
-use Illuminate\Cache\NullStore;
 use Illuminate\Container\Container;
-use Illuminate\Contracts\Cache\Store;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
-
+use Illuminate\Contracts\Cache\Store;
+use Illuminate\Database\Eloquent\Model;
+use RuntimeException;
 use Silber\Bouncer\Contracts\Scope;
 use Silber\Bouncer\Database\Models;
 
@@ -31,8 +29,6 @@ class Bouncer
 
     /**
      * Constructor.
-     *
-     * @param \Silber\Bouncer\Guard  $guard
      */
     public function __construct(Guard $guard)
     {
@@ -181,7 +177,6 @@ class Bouncer
     /**
      * Start a chain, to check if the given authority has a certain role.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @return \Silber\Bouncer\Conductors\ChecksRoles
      */
     public function is(Model $authority)
@@ -231,10 +226,9 @@ class Bouncer
     /**
      * Use a cached clipboard with the given cache instance.
      *
-     * @param  \Illuminate\Contracts\Cache\Store  $cache
      * @return $this
      */
-    public function cache(Store $cache = null)
+    public function cache(?Store $cache = null)
     {
         $cache = $cache ?: $this->resolve(CacheRepository::class)->getStore();
 
@@ -260,10 +254,9 @@ class Bouncer
     /**
      * Clear the cache.
      *
-     * @param  null|\Illuminate\Database\Eloquent\Model  $authority
      * @return $this
      */
-    public function refresh(Model $authority = null)
+    public function refresh(?Model $authority = null)
     {
         if ($this->usesCachedClipboard()) {
             $this->getClipboard()->refresh($authority);
@@ -275,7 +268,6 @@ class Bouncer
     /**
      * Clear the cache for the given authority.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @return $this
      */
     public function refreshFor(Model $authority)
@@ -290,7 +282,6 @@ class Bouncer
     /**
      * Set the access gate instance.
      *
-     * @param \Illuminate\Contracts\Auth\Access\Gate  $gate
      * @return $this
      */
     public function setGate(Gate $gate)
@@ -406,6 +397,7 @@ class Bouncer
      * Alias for the "can" method.
      *
      * @deprecated
+     *
      * @param  string  $ability
      * @param  array|mixed  $arguments
      * @return bool
@@ -421,6 +413,7 @@ class Bouncer
      * Alias for the "cannot" method.
      *
      * @deprecated
+     *
      * @param  string  $ability
      * @param  array|mixed  $arguments
      * @return bool
@@ -433,7 +426,6 @@ class Bouncer
     /**
      * Get an instance of the role model.
      *
-     * @param  array  $attributes
      * @return \Silber\Bouncer\Database\Role
      */
     public function role(array $attributes = [])
@@ -444,7 +436,6 @@ class Bouncer
     /**
      * Get an instance of the ability model.
      *
-     * @param  array  $attributes
      * @return \Silber\Bouncer\Database\Ability
      */
     public function ability(array $attributes = [])
@@ -521,7 +512,6 @@ class Bouncer
     /**
      * Set custom table names.
      *
-     * @param  array  $map
      * @return $this
      */
     public function tables(array $map)
@@ -534,10 +524,9 @@ class Bouncer
     /**
      * Get the model scoping instance.
      *
-     * @param  \Silber\Bouncer\Contracts\Scope|null  $scope
      * @return mixed
      */
-    public function scope(Scope $scope = null)
+    public function scope(?Scope $scope = null)
     {
         return Models::scope($scope);
     }
@@ -546,7 +535,6 @@ class Bouncer
      * Resolve the given type from the container.
      *
      * @param  string  $abstract
-     * @param  array  $parameters
      * @return mixed
      */
     protected function resolve($abstract, array $parameters = [])

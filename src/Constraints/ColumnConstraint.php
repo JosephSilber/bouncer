@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class ColumnConstraint extends Constraint
 {
-
     /**
      * The column on the entity against which to compare.
      *
@@ -24,9 +23,9 @@ class ColumnConstraint extends Constraint
     /**
      * Constructor.
      *
-     * @param string  $a
-     * @param string  $operator
-     * @param mixed  $b
+     * @param  string  $a
+     * @param  string  $operator
+     * @param  mixed  $b
      */
     public function __construct($a, $operator, $b)
     {
@@ -38,11 +37,9 @@ class ColumnConstraint extends Constraint
     /**
      * Determine whether the given entity/authority passes the constraint.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $entity
-     * @param  \Illuminate\Database\Eloquent\Model|null  $authority
      * @return bool
      */
-    public function check(Model $entity, Model $authority = null)
+    public function check(Model $entity, ?Model $authority = null)
     {
         if (is_null($authority)) {
             return false;
@@ -54,7 +51,6 @@ class ColumnConstraint extends Constraint
     /**
      * Create a new instance from the raw data.
      *
-     * @param  array  $data
      * @return static
      */
     public static function fromData(array $data)

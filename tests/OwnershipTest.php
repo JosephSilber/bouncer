@@ -2,14 +2,9 @@
 
 namespace Silber\Bouncer\Tests;
 
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\DataProvider;
-
-use Silber\Bouncer\Database\Role;
+use PHPUnit\Framework\Attributes\Test;
 use Silber\Bouncer\Database\Models;
-use Silber\Bouncer\Database\Ability;
-
-use Workbench\App\Models\User;
 use Workbench\App\Models\Account;
 
 class OwnershipTest extends BaseTestCase
@@ -187,7 +182,7 @@ class OwnershipTest extends BaseTestCase
 
         Models::reset();
     }
-    
+
     #[Test]
     #[DataProvider('bouncerProvider')]
     public function can_forbid_abilities_after_owning_a_model_class($provider)

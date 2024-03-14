@@ -2,14 +2,9 @@
 
 namespace Silber\Bouncer\Tests;
 
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\DataProvider;
-
+use PHPUnit\Framework\Attributes\Test;
 use Silber\Bouncer\Bouncer;
-use Illuminate\Auth\Access\Gate;
-use Silber\Bouncer\Database\Role;
-use Silber\Bouncer\Database\Ability;
-use Workbench\App\Models\User;
 use Workbench\App\Models\Account;
 
 class BeforePoliciesTest extends BaseTestCase
@@ -93,7 +88,7 @@ class BeforePoliciesTest extends BaseTestCase
     /**
      * Set up the given Bouncer instance with the test policy.
      *
-     * @param \Silber\Buoncer\Bouncer  $bouncer
+     * @param  \Silber\Buoncer\Bouncer  $bouncer
      */
     protected function setUpWithPolicy(Bouncer $bouncer)
     {

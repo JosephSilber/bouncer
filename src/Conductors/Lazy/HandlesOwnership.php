@@ -35,9 +35,8 @@ class HandlesOwnership
     /**
      * Constructor.
      *
-     * @param \Silber\Bouncer\Conductors\Concerns\ConductsAbilities  $conductor
-     * @param string|object  $model
-     * @param array  $attributes
+     * @param  \Silber\Bouncer\Conductors\Concerns\ConductsAbilities  $conductor
+     * @param  string|object  $model
      */
     public function __construct($conductor, $model, array $attributes = [])
     {
@@ -50,7 +49,6 @@ class HandlesOwnership
      * Limit ownership to the given ability.
      *
      * @param  string|string[]  $ability
-     * @param  array  $attributes
      * @return void
      */
     public function to($ability, array $attributes = [])
@@ -62,7 +60,6 @@ class HandlesOwnership
 
     /**
      * Destructor.
-     *
      */
     public function __destruct()
     {

@@ -2,33 +2,31 @@
 
 namespace Silber\Bouncer\Database\Titles;
 
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\model;
+use Illuminate\Support\Str;
 
 class AbilityTitle extends Title
 {
     /**
      * Constructor.
-     *
-     * @param \Illuminate\Database\Eloquent\model  $ability
      */
     public function __construct(Model $ability)
     {
         if ($this->isWildcardAbility($ability)) {
             $this->title = $this->getWildcardAbilityTitle($ability);
-        } else if ($this->isRestrictedWildcardAbility($ability)) {
+        } elseif ($this->isRestrictedWildcardAbility($ability)) {
             $this->title = 'All simple abilities';
-        } else if ($this->isSimpleAbility($ability)) {
+        } elseif ($this->isSimpleAbility($ability)) {
             $this->title = $this->humanize($ability->name);
-        } else if ($this->isRestrictedOwnershipAbility($ability)) {
+        } elseif ($this->isRestrictedOwnershipAbility($ability)) {
             $this->title = $this->humanize($ability->name.' everything owned');
-        } else if ($this->isGeneralManagementAbility($ability)) {
+        } elseif ($this->isGeneralManagementAbility($ability)) {
             $this->title = $this->getBlanketModelAbilityTitle($ability);
-        } else if ($this->isBlanketModelAbility($ability)) {
+        } elseif ($this->isBlanketModelAbility($ability)) {
             $this->title = $this->getBlanketModelAbilityTitle($ability, $ability->name);
-        } else if ($this->isSpecificModelAbility($ability)) {
+        } elseif ($this->isSpecificModelAbility($ability)) {
             $this->title = $this->getSpecificModelAbilityTitle($ability);
-        } else if ($this->isGlobalActionAbility($ability)) {
+        } elseif ($this->isGlobalActionAbility($ability)) {
             $this->title = $this->humanize($ability->name.' everything');
         }
     }
@@ -36,7 +34,6 @@ class AbilityTitle extends Title
     /**
      * Determines if the given ability allows all abilities.
      *
-     * @param  \Illuminate\Database\Eloquent\model  $ability
      * @return bool
      */
     protected function isWildcardAbility(Model $ability)
@@ -47,7 +44,6 @@ class AbilityTitle extends Title
     /**
      * Determines if the given ability allows all simple abilities.
      *
-     * @param  \Illuminate\Database\Eloquent\model  $ability
      * @return bool
      */
     protected function isRestrictedWildcardAbility(Model $ability)
@@ -58,7 +54,6 @@ class AbilityTitle extends Title
     /**
      * Determines if the given ability is a simple (non model) ability.
      *
-     * @param  \Illuminate\Database\Eloquent\model  $ability
      * @return bool
      */
     protected function isSimpleAbility(Model $ability)
@@ -70,7 +65,6 @@ class AbilityTitle extends Title
      * Determines whether the given ability is a global
      * ownership ability restricted to a specific action.
      *
-     * @param  \Illuminate\Database\Eloquent\model  $ability
      * @return bool
      */
     protected function isRestrictedOwnershipAbility(Model $ability)
@@ -81,7 +75,6 @@ class AbilityTitle extends Title
     /**
      * Determines whether the given ability is for managing all models of a given type.
      *
-     * @param  \Illuminate\Database\Eloquent\model  $ability
      * @return bool
      */
     protected function isGeneralManagementAbility(Model $ability)
@@ -95,7 +88,6 @@ class AbilityTitle extends Title
     /**
      * Determines whether the given ability is for an action on all models of a given type.
      *
-     * @param  \Illuminate\Database\Eloquent\model  $ability
      * @return bool
      */
     protected function isBlanketModelAbility(Model $ability)
@@ -109,7 +101,6 @@ class AbilityTitle extends Title
     /**
      * Determines whether the given ability is for an action on a specific model.
      *
-     * @param  \Illuminate\Database\Eloquent\model  $ability
      * @return bool
      */
     protected function isSpecificModelAbility(Model $ability)
@@ -122,7 +113,6 @@ class AbilityTitle extends Title
     /**
      * Determines whether the given ability allows an action on all models.
      *
-     * @param  \Illuminate\Database\Eloquent\model  $ability
      * @return bool
      */
     protected function isGlobalActionAbility(Model $ability)
@@ -135,7 +125,6 @@ class AbilityTitle extends Title
     /**
      * Get the title for the given wildcard ability.
      *
-     * @param  \Illuminate\Database\Eloquent\model  $ability
      * @return string
      */
     protected function getWildcardAbilityTitle(Model $ability)
@@ -150,7 +139,6 @@ class AbilityTitle extends Title
     /**
      * Get the title for the given blanket model ability.
      *
-     * @param  \Illuminate\Database\Eloquent\model  $ability
      * @param  string  $name
      * @return string
      */
@@ -162,7 +150,6 @@ class AbilityTitle extends Title
     /**
      * Get the title for the given model ability.
      *
-     * @param  \Illuminate\Database\Eloquent\model  $ability
      * @return string
      */
     protected function getSpecificModelAbilityTitle(Model $ability)

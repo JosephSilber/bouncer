@@ -2,9 +2,9 @@
 
 namespace Silber\Bouncer\Conductors\Concerns;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Silber\Bouncer\Database\Models;
-use Illuminate\Database\Eloquent\Model;
 
 trait AssociatesAbilities
 {
@@ -15,7 +15,6 @@ trait AssociatesAbilities
      *
      * @param  \Illuminate\Database\Eloquent\model|array|int|string  $abilities
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
-     * @param  array  $attributes
      * @return \Silber\Bouncer\Conductors\Lazy\ConductsAbilities|null
      */
     public function to($abilities, $model = null, array $attributes = [])
@@ -51,7 +50,6 @@ trait AssociatesAbilities
      * Get the IDs of the associated abilities.
      *
      * @param  \Illuminate\Database\Eloquent\Model|null  $authority
-     * @param  array  $abilityIds
      * @return array
      */
     protected function getAssociatedAbilityIds($authority, array $abilityIds)
@@ -65,7 +63,7 @@ trait AssociatesAbilities
         $table = Models::table('abilities');
 
         $relation->whereIn("{$table}.id", $abilityIds)
-                 ->wherePivot('forbidden', '=', $this->forbidding);
+            ->wherePivot('forbidden', '=', $this->forbidding);
 
         Models::scope()->applyToRelation($relation);
 
@@ -75,7 +73,6 @@ trait AssociatesAbilities
     /**
      * Get the IDs of the abilities associated with everyone.
      *
-     * @param  array  $abilityIds
      * @return array
      */
     protected function getAbilityIdsAssociatedWithEveryone(array $abilityIds)
@@ -93,11 +90,9 @@ trait AssociatesAbilities
     /**
      * Associate the given ability IDs on the permissions table.
      *
-     * @param  array  $ids
-     * @param  \Illuminate\Database\Eloquent\Model|null  $authority
      * @return void
      */
-    protected function associateAbilities(array $ids, Model $authority = null)
+    protected function associateAbilities(array $ids, ?Model $authority = null)
     {
         $ids = array_diff($ids, $this->getAssociatedAbilityIds($authority, $ids, false));
 
@@ -111,8 +106,6 @@ trait AssociatesAbilities
     /**
      * Associate these abilities with the given authority.
      *
-     * @param  array  $ids
-     * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @return void
      */
     protected function associateAbilitiesToAuthority(array $ids, Model $authority)
@@ -127,7 +120,6 @@ trait AssociatesAbilities
     /**
      * Associate these abilities with everyone.
      *
-     * @param  array  $ids
      * @return void
      */
     protected function associateAbilitiesToEveryone(array $ids)

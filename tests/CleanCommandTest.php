@@ -3,7 +3,6 @@
 namespace Silber\Bouncer\Tests;
 
 use Illuminate\Console\Application as Artisan;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Silber\Bouncer\Console\CleanCommand;
 use Silber\Bouncer\Database\Ability;

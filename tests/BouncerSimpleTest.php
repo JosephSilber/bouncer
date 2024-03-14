@@ -2,14 +2,13 @@
 
 namespace Silber\Bouncer\Tests;
 
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\DataProvider;
-
 use Exception;
-use Silber\Bouncer\Database\Role;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Silber\Bouncer\Database\Ability;
-use Workbench\App\Models\User;
+use Silber\Bouncer\Database\Role;
 use Workbench\App\Models\Account;
+use Workbench\App\Models\User;
 
 class BouncerSimpleTest extends BaseTestCase
 {
@@ -40,7 +39,6 @@ class BouncerSimpleTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('ban-users'));
         $this->assertTrue($bouncer->cannot('access-dashboard'));
     }
-
 
     #[Test]
     #[DataProvider('bouncerProvider')]
@@ -156,8 +154,8 @@ class BouncerSimpleTest extends BaseTestCase
     {
         [$bouncer, $user] = $provider();
 
-        $admin    = $this->role('admin');
-        $editor   = $this->role('editor');
+        $admin = $this->role('admin');
+        $editor = $this->role('editor');
         $reviewer = $this->role('reviewer');
 
         $bouncer->assign(collect([$admin, 'editor', $reviewer->id]))->to($user);
@@ -312,7 +310,7 @@ class BouncerSimpleTest extends BaseTestCase
         [$bouncer, $user] = $provider();
 
         $bouncer->define('edit', function ($user, $account) {
-            if ( ! $account instanceof Account) {
+            if (! $account instanceof Account) {
                 return null;
             }
 

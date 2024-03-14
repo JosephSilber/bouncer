@@ -2,14 +2,12 @@
 
 namespace Silber\Bouncer\Tests;
 
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\DataProvider;
-
-use Silber\Bouncer\Database\Role;
+use PHPUnit\Framework\Attributes\Test;
 use Silber\Bouncer\Database\Ability;
-
-use Workbench\App\Models\User;
+use Silber\Bouncer\Database\Role;
 use Workbench\App\Models\Account;
+use Workbench\App\Models\User;
 
 class SyncTest extends BaseTestCase
 {
@@ -21,9 +19,9 @@ class SyncTest extends BaseTestCase
     {
         [$bouncer, $user] = $provider();
 
-        $admin      = $this->role('admin');
-        $editor     = $this->role('editor');
-        $reviewer   = $this->role('reviewer');
+        $admin = $this->role('admin');
+        $editor = $this->role('editor');
+        $reviewer = $this->role('reviewer');
         $subscriber = $this->role('subscriber');
 
         $user->assign([$admin, $editor]);

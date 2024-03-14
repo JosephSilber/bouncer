@@ -2,26 +2,22 @@
 
 namespace Silber\Bouncer\Tests;
 
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\DataProvider;
-
-use function Orchestra\Testbench\artisan;
-use function Orchestra\Testbench\workbench_path;
-use function Orchestra\Testbench\package_path;
-
-use Silber\Bouncer\Database\Models;
-use Workbench\App\Models\User;
+use Illuminate\Auth\Access\Gate;
+use Illuminate\Container\Container;
 use Illuminate\Database\DatabaseManager;
-use Silber\Bouncer\Guard;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Orchestra\Testbench\TestCase;
 use Silber\Bouncer\Bouncer;
 use Silber\Bouncer\Clipboard;
 use Silber\Bouncer\Contracts\Clipboard as ClipboardContract;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Silber\Bouncer\Database\Models;
+use Silber\Bouncer\Guard;
+use Workbench\App\Models\User;
 
-use Illuminate\Auth\Access\Gate;
-use Illuminate\Container\Container;
-use Illuminate\Database\Eloquent\Model;
-use Orchestra\Testbench\TestCase;
+use function Orchestra\Testbench\artisan;
+use function Orchestra\Testbench\package_path;
+use function Orchestra\Testbench\workbench_path;
 
 abstract class BaseTestCase extends TestCase
 {
@@ -33,7 +29,7 @@ abstract class BaseTestCase extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        
+
         Models::setUsersModel(User::class);
 
         static::registerClipboard();
@@ -72,7 +68,7 @@ abstract class BaseTestCase extends TestCase
     /**
      * Get a bouncer instance.
      */
-    protected static function bouncer(Model $authority = null): Bouncer
+    protected static function bouncer(?Model $authority = null): Bouncer
     {
         $gate = static::gate($authority ?: User::create());
 

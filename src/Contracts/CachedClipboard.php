@@ -10,7 +10,6 @@ interface CachedClipboard extends Clipboard
     /**
      * Set the cache instance.
      *
-     * @param  \Illuminate\Contracts\Cache\Store  $cache
      * @return $this
      */
     public function setCache(Store $cache);
@@ -25,7 +24,6 @@ interface CachedClipboard extends Clipboard
     /**
      * Get a fresh copy of the given authority's abilities.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @param  bool  $allowed
      * @return \Illuminate\Database\Eloquent\Collection
      */
@@ -42,7 +40,6 @@ interface CachedClipboard extends Clipboard
     /**
      * Clear the cache for the given authority.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @return $this
      */
     public function refreshFor(Model $authority);

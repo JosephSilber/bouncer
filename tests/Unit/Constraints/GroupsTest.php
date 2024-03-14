@@ -3,14 +3,11 @@
 namespace Silber\Bouncer\Tests\Unit\Constraints;
 
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\DataProvider;
-
-use Workbench\App\Models\User;
-use Workbench\App\Models\Account;
-
 use PHPUnit\Framework\TestCase;
-use Silber\Bouncer\Constraints\Group;
 use Silber\Bouncer\Constraints\Constraint;
+use Silber\Bouncer\Constraints\Group;
+use Workbench\App\Models\Account;
+use Workbench\App\Models\User;
 
 class GroupsTest extends TestCase
 {
@@ -123,7 +120,6 @@ class GroupsTest extends TestCase
     /**
      * Convert the given object to JSON, then back.
      *
-     * @param  \Silber\Bouncer\Constraints\Group  $group
      * @return \Silber\Bouncer\Constraints\Group
      */
     protected function serializeAndDeserializeGroup(Group $group)

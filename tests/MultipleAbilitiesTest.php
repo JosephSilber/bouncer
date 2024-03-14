@@ -2,11 +2,10 @@
 
 namespace Silber\Bouncer\Tests;
 
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\DataProvider;
-
-use Workbench\App\Models\User;
+use PHPUnit\Framework\Attributes\Test;
 use Workbench\App\Models\Account;
+use Workbench\App\Models\User;
 
 class MultipleAbilitiesTest extends BaseTestCase
 {
@@ -89,9 +88,9 @@ class MultipleAbilitiesTest extends BaseTestCase
         $account2 = Account::create();
 
         $bouncer->allow($user1)->to([
-            'edit'   => User::class,
+            'edit' => User::class,
             'delete' => $user1,
-            'view'   => Account::class,
+            'view' => Account::class,
             'update' => $account1,
             'access-dashboard',
         ]);
@@ -159,14 +158,14 @@ class MultipleAbilitiesTest extends BaseTestCase
         $account2 = Account::create();
 
         $bouncer->allow($user1)->to([
-            'edit'   => User::class,
+            'edit' => User::class,
             'delete' => $user1,
-            'view'   => Account::class,
+            'view' => Account::class,
             'update' => $account1,
         ]);
 
         $bouncer->disallow($user1)->to([
-            'edit'   => User::class,
+            'edit' => User::class,
             'update' => $account1,
         ]);
 
@@ -242,14 +241,14 @@ class MultipleAbilitiesTest extends BaseTestCase
         $account2 = Account::create();
 
         $bouncer->allow($user1)->to([
-            'edit'   => User::class,
+            'edit' => User::class,
             'delete' => $user1,
-            'view'   => Account::class,
+            'view' => Account::class,
             'update' => $account1,
         ]);
 
         $bouncer->forbid($user1)->to([
-            'edit'   => User::class,
+            'edit' => User::class,
             'update' => $account1,
         ]);
 
@@ -314,21 +313,21 @@ class MultipleAbilitiesTest extends BaseTestCase
         $account2 = Account::create();
 
         $bouncer->allow($user1)->to([
-            'edit'   => User::class,
+            'edit' => User::class,
             'delete' => $user1,
-            'view'   => Account::class,
+            'view' => Account::class,
             'update' => $account1,
         ]);
 
         $bouncer->forbid($user1)->to([
-            'edit'   => User::class,
+            'edit' => User::class,
             'delete' => $user1,
-            'view'   => Account::class,
+            'view' => Account::class,
             'update' => $account1,
         ]);
 
         $bouncer->unforbid($user1)->to([
-            'edit'   => User::class,
+            'edit' => User::class,
             'update' => $account1,
         ]);
 

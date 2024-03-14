@@ -2,8 +2,8 @@
 
 namespace Silber\Bouncer\Database\Queries;
 
-use Silber\Bouncer\Database\Models;
 use Illuminate\Database\Eloquent\Model;
+use Silber\Bouncer\Database\Models;
 
 class AbilitiesForModel
 {
@@ -16,7 +16,6 @@ class AbilitiesForModel
 
     /**
      * Constructor.
-     *
      */
     public function __construct()
     {
@@ -57,7 +56,6 @@ class AbilitiesForModel
      * Constrain a query to an ability for a specific model.
      *
      * @param  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder  $query
-     * @param  \Illuminate\Database\Eloquent\Model  $model
      * @param  bool  $strict
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
@@ -71,14 +69,13 @@ class AbilitiesForModel
 
         return $query->where(function ($query) use ($model, $strict) {
             $query->where("{$this->table}.entity_type", '*')
-                  ->orWhere($this->modelAbilityConstraint($model, $strict));
+                ->orWhere($this->modelAbilityConstraint($model, $strict));
         });
     }
 
     /**
      * Get the constraint for regular model abilities.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
      * @param  bool  $strict
      * @return \Closure
      */
@@ -94,7 +91,6 @@ class AbilitiesForModel
     /**
      * Get the constraint for the ability subquery.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
      * @param  bool  $strict
      * @return \Closure
      */
@@ -104,7 +100,7 @@ class AbilitiesForModel
             // If the model does not exist, we want to search for blanket abilities
             // that cover all instances of this model. If it does exist, we only
             // want to find blanket abilities if we're not using strict mode.
-            if ( ! $model->exists || ! $strict) {
+            if (! $model->exists || ! $strict) {
                 $query->whereNull("{$this->table}.entity_id");
             }
 

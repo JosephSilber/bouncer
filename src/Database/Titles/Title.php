@@ -2,8 +2,8 @@
 
 namespace Silber\Bouncer\Database\Titles;
 
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 abstract class Title
 {
@@ -17,7 +17,6 @@ abstract class Title
     /**
      * Create a new title instance for the given model.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
      * @return static
      */
     public static function from(Model $model)

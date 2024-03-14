@@ -3,15 +3,12 @@
 namespace Silber\Bouncer\Tests\Unit\Constraints;
 
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\DataProvider;
-
-use Workbench\App\Models\User;
-use Workbench\App\Models\Account;
-
 use PHPUnit\Framework\TestCase;
+use Silber\Bouncer\Constraints\ColumnConstraint;
 use Silber\Bouncer\Constraints\Constraint;
 use Silber\Bouncer\Constraints\ValueConstraint;
-use Silber\Bouncer\Constraints\ColumnConstraint;
+use Workbench\App\Models\Account;
+use Workbench\App\Models\User;
 
 class ConstraintTest extends TestCase
 {

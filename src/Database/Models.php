@@ -2,14 +2,13 @@
 
 namespace Silber\Bouncer\Database;
 
-use Closure;
 use App\User;
-use Illuminate\Database\Query\Builder;
+use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
-
-use Silber\Bouncer\Database\Scope\Scope;
+use Illuminate\Database\Query\Builder;
 use Silber\Bouncer\Contracts\Scope as ScopeContract;
+use Silber\Bouncer\Database\Scope\Scope;
 
 class Models
 {
@@ -83,7 +82,6 @@ class Models
     /**
      * Set custom table names.
      *
-     * @param  array  $map
      * @return void
      */
     public static function setTables(array $map)
@@ -111,10 +109,9 @@ class Models
     /**
      * Get or set the model scoping instance.
      *
-     * @param  \Silber\Bouncer\Contracts\Scope|null  $scope
      * @return mixed
      */
-    public static function scope(ScopeContract $scope = null)
+    public static function scope(?ScopeContract $scope = null)
     {
         if (! is_null($scope)) {
             return static::$scope = $scope;
@@ -179,8 +176,6 @@ class Models
     /**
      * Determines whether the given model is owned by the given authority.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $authority
-     * @param  \Illuminate\Database\Eloquent\Model  $model
      * @return bool
      */
     public static function isOwnedBy(Model $authority, Model $model)
@@ -202,8 +197,6 @@ class Models
      * Determines ownership via the given attribute.
      *
      * @param  string|\Closure  $attribute
-     * @param  \Illuminate\Database\Eloquent\Model  $authority
-     * @param  \Illuminate\Database\Eloquent\Model  $model
      * @return bool
      */
     protected static function isOwnedVia($attribute, Model $authority, Model $model)
@@ -218,7 +211,6 @@ class Models
     /**
      * Get an instance of the ability model.
      *
-     * @param  array  $attributes
      * @return \Silber\Bouncer\Database\Ability
      */
     public static function ability(array $attributes = [])
@@ -229,7 +221,6 @@ class Models
     /**
      * Get an instance of the role model.
      *
-     * @param  array  $attributes
      * @return \Silber\Bouncer\Database\Role
      */
     public static function role(array $attributes = [])
@@ -240,7 +231,6 @@ class Models
     /**
      * Get an instance of the user model.
      *
-     * @param  array  $attributes
      * @return \Illuminate\Database\Eloquent\Model
      */
     public static function user(array $attributes = [])
@@ -279,7 +269,6 @@ class Models
      * Get an instance of the given model.
      *
      * @param  string  $model
-     * @param  array  $attributes
      * @return \Illuminate\Database\Eloquent\Model
      */
     protected static function make($model, array $attributes = [])
@@ -297,7 +286,7 @@ class Models
      */
     protected static function basename($class)
     {
-        if ( ! is_string($class)) {
+        if (! is_string($class)) {
             $class = get_class($class);
         }
 

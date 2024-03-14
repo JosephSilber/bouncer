@@ -2,10 +2,10 @@
 
 namespace Silber\Bouncer;
 
-use InvalidArgumentException;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Contracts\Auth\Access\Gate;
+use Illuminate\Database\Eloquent\Model;
+use InvalidArgumentException;
 
 class Guard
 {
@@ -29,8 +29,6 @@ class Guard
 
     /**
      * Create a new guard instance.
-     *
-     * @param \Silber\Bouncer\Contracts\Clipboard  $clipboard
      */
     public function __construct(Contracts\Clipboard $clipboard)
     {
@@ -50,7 +48,6 @@ class Guard
     /**
      * Set the clipboard instance.
      *
-     * @param  \Silber\Bouncer\Contracts\Clipboard  $clipboard
      * @return $this
      */
     public function setClipboard(Contracts\Clipboard $clipboard)
@@ -96,7 +93,6 @@ class Guard
     /**
      * Register the clipboard at the given gate.
      *
-     * @param  \Illuminate\Contracts\Auth\Access\Gate  $gate
      * @return $this
      */
     public function registerAt(Gate $gate)
@@ -167,7 +163,6 @@ class Guard
     /**
      * Run an auth check at the clipboard.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $authority
      * @param  string  $ability
      * @param  \Illuminate\Database\Eloquent\Model|string|null  $model
      * @return mixed

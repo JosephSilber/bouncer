@@ -2,13 +2,9 @@
 
 namespace Silber\Bouncer\Conductors;
 
-use Silber\Bouncer\Helpers;
-use Silber\Bouncer\Database\Models;
-
-use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Arr;
+use Silber\Bouncer\Database\Models;
 
 class SyncsRolesAndAbilities
 {
@@ -24,7 +20,7 @@ class SyncsRolesAndAbilities
     /**
      * Constructor.
      *
-     * @param \Illuminate\Database\Eloquent\Model|string  $authority
+     * @param  \Illuminate\Database\Eloquent\Model|string  $authority
      */
     public function __construct($authority)
     {
@@ -81,10 +77,10 @@ class SyncsRolesAndAbilities
         $relation = $authority->abilities();
 
         $this->newPivotQuery($relation)
-             ->where('entity_type', $authority->getMorphClass())
-             ->whereNotIn($relation->getRelatedPivotKeyName(), $abilityKeys)
-             ->where('forbidden', $options['forbidden'])
-             ->delete();
+            ->where('entity_type', $authority->getMorphClass())
+            ->whereNotIn($relation->getRelatedPivotKeyName(), $abilityKeys)
+            ->where('forbidden', $options['forbidden'])
+            ->delete();
 
         if ($options['forbidden']) {
             (new ForbidsAbilities($this->authority))->to($abilityKeys);
@@ -102,7 +98,7 @@ class SyncsRolesAndAbilities
     {
         if (is_string($this->authority)) {
             $this->authority = Models::role()->firstOrCreate([
-                'name' => $this->authority
+                'name' => $this->authority,
             ]);
         }
 
@@ -128,8 +124,6 @@ class SyncsRolesAndAbilities
      * BelongsToMany@sync - which we sadly cannot use because
      * our scope sets a "closure where" on the pivot table.
      *
-     * @param  array  $ids
-     * @param  \Illuminate\Database\Eloquent\Relations\BelongsToMany  $relation
      * @return void
      */
     protected function sync(array $ids, BelongsToMany $relation)
@@ -150,8 +144,6 @@ class SyncsRolesAndAbilities
     /**
      * Detach the records with the given IDs from the relationship.
      *
-     * @param  array  $ids
-     * @param  \Illuminate\Database\Eloquent\Relations\BelongsToMany  $relation
      * @return void
      */
     public function detach(array $ids, BelongsToMany $relation)
@@ -161,14 +153,13 @@ class SyncsRolesAndAbilities
         }
 
         $this->newPivotQuery($relation)
-             ->whereIn($relation->getRelatedPivotKeyName(), $ids)
-             ->delete();
+            ->whereIn($relation->getRelatedPivotKeyName(), $ids)
+            ->delete();
     }
 
     /**
      * Get a scoped query for the pivot table.
      *
-     * @param  \Illuminate\Database\Eloquent\Relations\BelongsToMany  $relation
      * @return \Illuminate\Database\Query\Builder
      */
     protected function newPivotQuery(BelongsToMany $relation)
@@ -190,7 +181,7 @@ class SyncsRolesAndAbilities
      * Pluck the values of the given column using the provided query.
      *
      * @param  mixed  $query
-     * @param  string $column
+     * @param  string  $column
      * @return string[]
      */
     protected function pluck($query, $column)

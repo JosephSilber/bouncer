@@ -16,7 +16,6 @@ class Builder
 
     /**
      * Constructor.
-     *
      */
     public function __construct()
     {
@@ -111,7 +110,6 @@ class Builder
      * Add a nested "where" clause.
      *
      * @param  string  $logicalOperator  'and'|'or'
-     * @param  \Closure  $callback
      * @return $this
      */
     protected function whereNested($logicalOperator, Closure $callback)

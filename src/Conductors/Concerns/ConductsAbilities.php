@@ -2,16 +2,15 @@
 
 namespace Silber\Bouncer\Conductors\Concerns;
 
-use Silber\Bouncer\Helpers;
 use Illuminate\Support\Collection;
 use Silber\Bouncer\Conductors\Lazy;
+use Silber\Bouncer\Helpers;
 
 trait ConductsAbilities
 {
     /**
      * Allow/disallow all abilities on everything.
      *
-     * @param  array  $attributes
      * @return mixed
      */
     public function everything(array $attributes = [])
@@ -23,7 +22,6 @@ trait ConductsAbilities
      * Allow/disallow all abilities on the given model.
      *
      * @param  string|array|\Illuminate\Database\Eloquent\Model  $models
-     * @param  array  $attributes
      * @return void
      */
     public function toManage($models, array $attributes = [])
@@ -41,7 +39,6 @@ trait ConductsAbilities
      * Allow/disallow owning the given model.
      *
      * @param  string|object  $model
-     * @param  array  $attributes
      * @return \Silber\Bouncer\Conductors\Lazy\HandlesOwnership
      */
     public function toOwn($model, array $attributes = [])
@@ -52,7 +49,6 @@ trait ConductsAbilities
     /**
      * Allow/disallow owning all models.
      *
-     * @param  array  $attributes
      * @return \Silber\Bouncer\Conductors\Lazy\HandlesOwnership
      */
     public function toOwnEverything(array $attributes = [])

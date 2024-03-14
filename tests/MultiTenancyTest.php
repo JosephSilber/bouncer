@@ -2,21 +2,14 @@
 
 namespace Silber\Bouncer\Tests;
 
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\DataProvider;
-
-use Silber\Bouncer\Database\Role;
-use Silber\Bouncer\Database\Models;
-use Silber\Bouncer\Database\Ability;
-use Silber\Bouncer\Database\Scope\Scope;
-use Silber\Bouncer\Contracts\Scope as ScopeContract;
-
-use Illuminate\Events\Dispatcher;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
+use Silber\Bouncer\Contracts\Scope as ScopeContract;
+use Silber\Bouncer\Database\Models;
+use Silber\Bouncer\Database\Scope\Scope;
 use Workbench\App\Models\User;
-use Workbench\App\Models\Account;
 
 class MultiTenancyTest extends BaseTestCase
 {
@@ -24,10 +17,8 @@ class MultiTenancyTest extends BaseTestCase
 
     /**
      * Reset any scopes that have been applied in a test.
-     *
-     * @return void
      */
-    function tearDown(): void
+    public function tearDown(): void
     {
         Models::scope(new Scope);
 
@@ -338,8 +329,8 @@ class MultiTenancyTest extends BaseTestCase
         [$bouncer, $user] = $provider();
 
         $bouncer->scope()->to(1)
-                ->onlyRelations()
-                ->dontScopeRoleAbilities();
+            ->onlyRelations()
+            ->dontScopeRoleAbilities();
 
         $bouncer->allow('admin')->to('delete', User::class);
 
@@ -399,8 +390,6 @@ class MultiTenancyTest extends BaseTestCase
         $this->assertEquals(1, $bouncer->scope()->get());
     }
 }
-
-
 
 class MultiTenancyNullScopeStub implements ScopeContract
 {

@@ -2,22 +2,20 @@
 
 namespace Silber\Bouncer\Database\Concerns;
 
-use Silber\Bouncer\Helpers;
-use Silber\Bouncer\Database\Models;
-use Silber\Bouncer\Database\Titles\RoleTitle;
-use Silber\Bouncer\Database\Scope\TenantScope;
-use Silber\Bouncer\Database\Queries\Roles as RolesQuery;
-
 use App\User;
-use Illuminate\Support\Arr;
-use InvalidArgumentException;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
+use Silber\Bouncer\Database\Models;
+use Silber\Bouncer\Database\Queries\Roles as RolesQuery;
+use Silber\Bouncer\Database\Scope\TenantScope;
+use Silber\Bouncer\Database\Titles\RoleTitle;
+use Silber\Bouncer\Helpers;
 
 trait IsRole
 {
-    use HasAbilities, Authorizable;
+    use Authorizable, HasAbilities;
 
     /**
      * Boot the is role trait.
@@ -61,12 +59,11 @@ trait IsRole
      * Assign the role to the given model(s).
      *
      * @param  string|\Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection  $model
-     * @param  array|null  $keys
      * @return $this
      */
-    public function assignTo($model, array $keys = null)
+    public function assignTo($model, ?array $keys = null)
     {
-        list($model, $keys) = Helpers::extractModelAndKeys($model, $keys);
+        [$model, $keys] = Helpers::extractModelAndKeys($model, $keys);
 
         $query = $this->newBaseQueryBuilder()->from(Models::table('assigned_roles'));
 
@@ -107,11 +104,11 @@ trait IsRole
         $existing = static::whereIn('name', $names)->get()->keyBy('name');
 
         return (new Collection($names))
-                ->diff($existing->pluck('name'))
-                ->map(function ($name) {
-                    return static::create(compact('name'));
-                })
-                ->merge($existing);
+            ->diff($existing->pluck('name'))
+            ->map(function ($name) {
+                return static::create(compact('name'));
+            })
+            ->merge($existing);
     }
 
     /**
@@ -161,8 +158,8 @@ trait IsRole
         }
 
         return $this->whereIn('name', $names)
-                    ->select($this->getKeyName())->get()
-                    ->pluck($this->getKeyName())->all();
+            ->select($this->getKeyName())->get()
+            ->pluck($this->getKeyName())->all();
     }
 
     /**
@@ -178,20 +175,19 @@ trait IsRole
         }
 
         return $this->whereIn($this->getKeyName(), $keys)
-                    ->select('name')->get()
-                    ->pluck('name')->all();
+            ->select('name')->get()
+            ->pluck('name')->all();
     }
 
     /**
      * Retract the role from the given model(s).
      *
      * @param  string|\Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection  $model
-     * @param  array|null  $keys
      * @return $this
      */
-    public function retractFrom($model, array $keys = null)
+    public function retractFrom($model, ?array $keys = null)
     {
-        list($model, $keys) = Helpers::extractModelAndKeys($model, $keys);
+        [$model, $keys] = Helpers::extractModelAndKeys($model, $keys);
 
         $query = $this->newBaseQueryBuilder()
             ->from(Models::table('assigned_roles'))
@@ -209,8 +205,6 @@ trait IsRole
     /**
      * Create the pivot table records for assigning the role to given models.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @param  array  $keys
      * @return array
      */
     protected function createAssignRecords(Model $model, array $keys)
@@ -219,9 +213,9 @@ trait IsRole
 
         return array_map(function ($key) use ($type) {
             return Models::scope()->getAttachAttributes() + [
-                'role_id'     => $this->getKey(),
+                'role_id' => $this->getKey(),
                 'entity_type' => $type,
-                'entity_id'   => $key,
+                'entity_id' => $key,
             ];
         }, $keys);
     }
@@ -231,10 +225,9 @@ trait IsRole
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @param  string|\Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection  $model
-     * @param  array  $keys
      * @return void
      */
-    public function scopeWhereAssignedTo($query, $model, array $keys = null)
+    public function scopeWhereAssignedTo($query, $model, ?array $keys = null)
     {
         (new RolesQuery)->constrainWhereAssignedTo($query, $model, $keys);
     }

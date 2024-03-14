@@ -3,11 +3,9 @@
 namespace Silber\Bouncer\Tests\QueryScopes;
 
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\DataProvider;
-
-use Workbench\App\Models\User;
 use Silber\Bouncer\Database\Role;
 use Silber\Bouncer\Tests\BaseTestCase;
+use Workbench\App\Models\User;
 
 class RoleScopesTest extends BaseTestCase
 {

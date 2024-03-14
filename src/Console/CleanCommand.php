@@ -2,11 +2,10 @@
 
 namespace Silber\Bouncer\Console;
 
-use Illuminate\Support\Str;
 use Illuminate\Console\Command;
-use Illuminate\Support\Collection;
-use Silber\Bouncer\Database\Models;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Str;
+use Silber\Bouncer\Database\Models;
 
 class CleanCommand extends Command
 {
@@ -161,8 +160,8 @@ class CleanCommand extends Command
         $table = $this->abilitiesTable();
 
         return Models::ability()
-                     ->whereNotNull("{$table}.entity_id")
-                     ->where("{$table}.entity_type", '!=', '*');
+            ->whereNotNull("{$table}.entity_id")
+            ->where("{$table}.entity_type", '!=', '*');
     }
 
     /**

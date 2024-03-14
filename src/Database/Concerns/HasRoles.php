@@ -3,16 +3,14 @@
 namespace Silber\Bouncer\Database\Concerns;
 
 use Illuminate\Container\Container;
-
-use Silber\Bouncer\Helpers;
-use Silber\Bouncer\Database\Role;
-use Silber\Bouncer\Database\Models;
-use Silber\Bouncer\Contracts\Clipboard;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Silber\Bouncer\Conductors\AssignsRoles;
 use Silber\Bouncer\Conductors\RemovesRoles;
+use Silber\Bouncer\Contracts\Clipboard;
+use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Database\Queries\Roles as RolesQuery;
-
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Silber\Bouncer\Database\Role;
+use Silber\Bouncer\Helpers;
 
 trait HasRoles
 {
@@ -32,8 +30,6 @@ trait HasRoles
 
     /**
      * The roles relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
     public function roles(): MorphToMany
     {

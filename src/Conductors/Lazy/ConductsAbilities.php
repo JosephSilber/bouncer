@@ -35,9 +35,9 @@ class ConductsAbilities
     /**
      * Constructor.
      *
-     * @param \Silber\Bouncer\Conductors\Concerns\ConductsAbilities  $conductor
-     * @param mixed  $model
-     * @param array  $attributes
+     * @param  \Silber\Bouncer\Conductors\Concerns\ConductsAbilities  $conductor
+     * @param  mixed  $model
+     * @param  array  $attributes
      */
     public function __construct($conductor, $abilities)
     {
@@ -48,7 +48,6 @@ class ConductsAbilities
     /**
      * Sets that the abilities should be applied towards everything.
      *
-     * @param  array  $attributes
      * @return void
      */
     public function everything(array $attributes = [])
@@ -60,7 +59,6 @@ class ConductsAbilities
 
     /**
      * Destructor.
-     *
      */
     public function __destruct()
     {

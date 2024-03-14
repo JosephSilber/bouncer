@@ -2,16 +2,13 @@
 
 namespace Silber\Bouncer\Tests;
 
+use Illuminate\Cache\ArrayStore;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\DataProvider;
-
 use Silber\Bouncer\CachedClipboard;
 use Silber\Bouncer\Contracts\Clipboard as ClipboardContract;
-use Illuminate\Cache\ArrayStore;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Collection;
 use Workbench\App\Models\User;
-use Workbench\App\Models\Account;
 
 class CachedClipboardTest extends BaseTestCase
 {
@@ -129,7 +126,6 @@ class CachedClipboardTest extends BaseTestCase
     /**
      * Get the name of all of the user's abilities.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $user
      * @return array
      */
     protected function getAbilities(Model $user)

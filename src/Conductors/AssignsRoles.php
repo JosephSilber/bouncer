@@ -2,10 +2,9 @@
 
 namespace Silber\Bouncer\Conductors;
 
-use Silber\Bouncer\Helpers;
 use Illuminate\Support\Collection;
 use Silber\Bouncer\Database\Models;
-use Illuminate\Database\Eloquent\Model;
+use Silber\Bouncer\Helpers;
 
 class AssignsRoles
 {
@@ -19,7 +18,7 @@ class AssignsRoles
     /**
      * Constructor.
      *
-     * @param \Illuminate\Support\Collection|\Silber\Bouncer\Database\Role|string  $roles
+     * @param  \Illuminate\Support\Collection|\Silber\Bouncer\Database\Role|string  $roles
      */
     public function __construct($roles)
     {
@@ -48,9 +47,7 @@ class AssignsRoles
     /**
      * Assign the given roles to the given authorities.
      *
-     * @param  \Illuminate\Support\Collection  $roles
-     * @param  string $authorityClass
-     * @param  \Illuminate\Support\Collection  $authorityIds
+     * @param  string  $authorityClass
      * @return void
      */
     protected function assignRoles(Collection $roles, $authorityClass, Collection $authorityIds)
@@ -72,7 +69,7 @@ class AssignsRoles
      * Get the pivot table records for the roles already assigned.
      *
      * @param  \Illuminate\Support\Collection  $roleIds
-     * @param  string $morphType
+     * @param  string  $morphType
      * @param  \Illuminate\Support\Collection  $authorityIds
      * @return \Illuminate\Support\Collection
      */
@@ -92,7 +89,7 @@ class AssignsRoles
      * Build the raw attach records for the assigned roles pivot table.
      *
      * @param  \Illuminate\Support\Collection  $roleIds
-     * @param  string $morphType
+     * @param  string  $morphType
      * @param  \Illuminate\Support\Collection  $authorityIds
      * @return \Illuminate\Support\Collection
      */
@@ -112,8 +109,6 @@ class AssignsRoles
     /**
      * Save the non-existing attach records in the DB.
      *
-     * @param  \Illuminate\Support\Collection  $records
-     * @param  \Illuminate\Support\Collection  $existing
      * @return void
      */
     protected function createMissingAssignRecords(Collection $records, Collection $existing)
@@ -132,7 +127,6 @@ class AssignsRoles
     /**
      * Get a string identifying the given attach record.
      *
-     * @param  array  $record
      * @return string
      */
     protected function getAttachRecordHash(array $record)

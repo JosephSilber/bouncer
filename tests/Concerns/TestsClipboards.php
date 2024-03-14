@@ -2,14 +2,10 @@
 
 namespace Silber\Bouncer\Tests\Concerns;
 
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\DataProvider;
-
+use Illuminate\Cache\NullStore;
+use Silber\Bouncer\CachedClipboard;
 use Silber\Bouncer\Clipboard;
 use Workbench\App\Models\User;
-use Silber\Bouncer\CachedClipboard;
-
-use Illuminate\Cache\NullStore;
 
 trait TestsClipboards
 {
@@ -26,14 +22,14 @@ trait TestsClipboards
                     return static::provideBouncer(
                         new Clipboard, $authoriesCount, $authority
                     );
-                }
+                },
             ],
             'null cached clipboard' => [
                 function ($authoriesCount = 1, $authority = User::class) {
                     return static::provideBouncer(
                         new CachedClipboard(new NullStore), $authoriesCount, $authority
                     );
-                }
+                },
             ],
         ];
     }
