@@ -2,17 +2,30 @@
 
 namespace Silber\Bouncer\Tests;
 
-use Silber\Bouncer\Database\Ability;
+use Illuminate\Console\Application as Artisan;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Silber\Bouncer\Console\CleanCommand;
+use Silber\Bouncer\Database\Ability;
+use Workbench\App\Models\Account;
+use Workbench\App\Models\User;
 
 class CleanCommandTest extends BaseTestCase
 {
-    use Concerns\TestsConsoleCommands;
-
     /**
-     * @test
+     * Setup the world for the tests.
      */
-    function the_orphaned_flag()
+    public function setUp(): void
+    {
+        Artisan::starting(
+            fn ($artisan) => $artisan->resolveCommands(CleanCommand::class)
+        );
+
+        parent::setUp();
+    }
+
+    #[Test]
+    public function the_orphaned_flag()
     {
         $bouncer = $this->bouncer($user = User::create())->dontCache();
 
@@ -21,16 +34,16 @@ class CleanCommandTest extends BaseTestCase
 
         $this->assertEquals(3, Ability::query()->count());
 
-        $this->clean(['--unassigned' => true], '<info>Deleted 2 unassigned abilities.</info>');
+        $this
+            ->artisan('bouncer:clean --unassigned')
+            ->expectsOutput('Deleted 2 unassigned abilities.');
 
         $this->assertEquals(1, Ability::query()->count());
         $this->assertTrue($bouncer->can('throw-dishes'));
     }
 
-    /**
-     * @test
-     */
-    function the_orphaned_flag_with_no_orphaned_abilities()
+    #[Test]
+    public function the_orphaned_flag_with_no_orphaned_abilities()
     {
         $bouncer = $this->bouncer($user = User::create())->dontCache();
 
@@ -38,15 +51,15 @@ class CleanCommandTest extends BaseTestCase
 
         $this->assertEquals(3, Ability::query()->count());
 
-        $this->clean(['--unassigned' => true], '<info>No unassigned abilities.</info>');
+        $this
+            ->artisan('bouncer:clean --unassigned')
+            ->expectsOutput('No unassigned abilities.');
 
         $this->assertEquals(3, Ability::query()->count());
     }
 
-    /**
-     * @test
-     */
-    function the_missing_flag()
+    #[Test]
+    public function the_missing_flag()
     {
         $bouncer = $this->bouncer($user1 = User::create())->dontCache();
 
@@ -66,7 +79,9 @@ class CleanCommandTest extends BaseTestCase
 
         $this->assertEquals(6, Ability::query()->count());
 
-        $this->clean(['--orphaned' => true], '<info>Deleted 2 orphaned abilities.</info>');
+        $this
+            ->artisan('bouncer:clean --orphaned')
+            ->expectsOutput('Deleted 2 orphaned abilities.');
 
         $this->assertEquals(4, Ability::query()->count());
         $this->assertTrue($bouncer->can('create', Account::class));
@@ -75,10 +90,8 @@ class CleanCommandTest extends BaseTestCase
         $this->assertTrue($bouncer->can('update', $account2));
     }
 
-    /**
-     * @test
-     */
-    function no_flags()
+    #[Test]
+    public function no_flags()
     {
         $bouncer = $this->bouncer($user1 = User::create())->dontCache();
 
@@ -96,25 +109,11 @@ class CleanCommandTest extends BaseTestCase
 
         $this->assertEquals(4, Ability::query()->count());
 
-        $this->clean([], [
-            '<info>Deleted 1 unassigned ability.</info>',
-            '<info>Deleted 1 orphaned ability.</info>'
-        ]);
+        $this
+            ->artisan('bouncer:clean')
+            ->expectsOutput('Deleted 1 unassigned ability.')
+            ->expectsOutput('Deleted 1 orphaned ability.');
 
         $this->assertEquals(2, Ability::query()->count());
-    }
-
-    /**
-     * Run the clean command, and see the given message in the output.
-     *
-     * @param  array  $parameters
-     * @param  string|array  $message
-     * @return \Prophecy\Prophecy\ObjectProphecy
-     */
-    protected function clean(array $parameters = [], $message)
-    {
-        return $this->runCommand(
-            new CleanCommand, $parameters, $this->predictOutputMessage($message)
-        );
     }
 }

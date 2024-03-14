@@ -2,16 +2,17 @@
 
 namespace Silber\Bouncer\Tests\QueryScopes;
 
-use Silber\Bouncer\Tests\User;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\DataProvider;
+
+use Workbench\App\Models\User;
 use Silber\Bouncer\Database\Role;
 use Silber\Bouncer\Tests\BaseTestCase;
 
 class RoleScopesTest extends BaseTestCase
 {
-    /**
-     * @test
-     */
-    function roles_can_be_constrained_by_a_user()
+    #[Test]
+    public function roles_can_be_constrained_by_a_user()
     {
         $bouncer = $this->bouncer($user = User::create());
 
@@ -32,10 +33,8 @@ class RoleScopesTest extends BaseTestCase
         $this->assertFalse($roles->contains('name', 'subscriber'));
     }
 
-    /**
-     * @test
-     */
-    function roles_can_be_constrained_by_a_collection_of_users()
+    #[Test]
+    public function roles_can_be_constrained_by_a_collection_of_users()
     {
         $user1 = User::create();
         $user2 = User::create();
@@ -60,10 +59,8 @@ class RoleScopesTest extends BaseTestCase
         $this->assertFalse($roles->contains('name', 'admin'));
     }
 
-    /**
-     * @test
-     */
-    function roles_can_be_constrained_by_a_model_name_and_keys()
+    #[Test]
+    public function roles_can_be_constrained_by_a_model_name_and_keys()
     {
         $user1 = User::create();
         $user2 = User::create();

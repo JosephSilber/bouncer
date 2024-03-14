@@ -2,16 +2,19 @@
 
 namespace Silber\Bouncer\Tests;
 
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\DataProvider;
+
 use Silber\Bouncer\Bouncer;
 use Illuminate\Auth\Access\Gate;
 use Illuminate\Container\Container;
+use Workbench\App\Models\User;
+use Workbench\App\Models\Account;
 
 class FactoryTest extends BaseTestCase
 {
-    /**
-     * @test
-     */
-    function can_create_default_bouncer_instance()
+    #[Test]
+    public function can_create_default_bouncer_instance()
     {
         $bouncer = Bouncer::create();
 
@@ -20,10 +23,8 @@ class FactoryTest extends BaseTestCase
         $this->assertTrue($bouncer->usesCachedClipboard());
     }
 
-    /**
-     * @test
-     */
-    function can_create_bouncer_instance_for_given_the_user()
+    #[Test]
+    public function can_create_bouncer_instance_for_given_the_user()
     {
         $bouncer = Bouncer::create($user = User::create());
 
@@ -33,10 +34,8 @@ class FactoryTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('delete-bouncers'));
     }
 
-    /**
-     * @test
-     */
-    function can_build_up_bouncer_with_the_given_user()
+    #[Test]
+    public function can_build_up_bouncer_with_the_given_user()
     {
         $bouncer = Bouncer::make()->withUser($user = User::create())->create();
 
@@ -46,10 +45,8 @@ class FactoryTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('delete-bouncers'));
     }
 
-    /**
-     * @test
-     */
-    function can_build_up_bouncer_with_the_given_gate()
+    #[Test]
+    public function can_build_up_bouncer_with_the_given_gate()
     {
         $user = User::create();
 

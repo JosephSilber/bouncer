@@ -2,8 +2,11 @@
 
 namespace Silber\Bouncer\Tests\Concerns;
 
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\DataProvider;
+
 use Silber\Bouncer\Clipboard;
-use Silber\Bouncer\Tests\User;
+use Workbench\App\Models\User;
 use Silber\Bouncer\CachedClipboard;
 
 use Illuminate\Cache\NullStore;
@@ -15,19 +18,19 @@ trait TestsClipboards
      *
      * @return array
      */
-    function bouncerProvider()
+    public static function bouncerProvider()
     {
         return [
             'basic clipboard' => [
                 function ($authoriesCount = 1, $authority = User::class) {
-                    return $this->provideBouncer(
+                    return static::provideBouncer(
                         new Clipboard, $authoriesCount, $authority
                     );
                 }
             ],
             'null cached clipboard' => [
                 function ($authoriesCount = 1, $authority = User::class) {
-                    return $this->provideBouncer(
+                    return static::provideBouncer(
                         new CachedClipboard(new NullStore), $authoriesCount, $authority
                     );
                 }
@@ -43,15 +46,14 @@ trait TestsClipboards
      * @param  string  $authority
      * @return array
      */
-    protected function provideBouncer($clipboard, $authoriesCount, $authority)
+    protected static function provideBouncer($clipboard, $authoriesCount, $authority)
     {
-        $authorities = array_map(function () use ($authority) {
-            return $authority::create();
-        }, range(0, $authoriesCount));
+        $authorities = array_map(
+            fn () => $authority::create(),
+            range(0, $authoriesCount),
+        );
 
-        $this->clipboard = $clipboard;
-
-        $bouncer = $this->bouncer($authorities[0]);
+        $bouncer = static::bouncer($authorities[0]);
 
         return array_merge([$bouncer], $authorities);
     }

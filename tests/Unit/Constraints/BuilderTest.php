@@ -2,6 +2,9 @@
 
 namespace Silber\Bouncer\Tests\Unit\Constraints;
 
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\DataProvider;
+
 use PHPUnit\Framework\TestCase;
 use Silber\Bouncer\Constraints\Group;
 use Silber\Bouncer\Constraints\Builder;
@@ -9,10 +12,8 @@ use Silber\Bouncer\Constraints\Constraint;
 
 class BuilderTest extends TestCase
 {
-    /**
-     * @test
-     */
-    function building_without_constraints_returns_empty_group()
+    #[Test]
+    public function building_without_constraints_returns_empty_group()
     {
         $actual = (new Builder())->build();
 
@@ -21,20 +22,16 @@ class BuilderTest extends TestCase
         $this->assertTrue($expected->equals($actual));
     }
 
-    /**
-     * @test
-     */
-    function a_single_where_returns_a_single_constraint()
+    #[Test]
+    public function a_single_where_returns_a_single_constraint()
     {
         $constraint = Builder::make()->where('active', false)->build();
 
         $this->assertTrue($constraint->equals(Constraint::where('active', false)));
     }
 
-    /**
-     * @test
-     */
-    function a_single_where_column_returns_a_single_column_constraint()
+    #[Test]
+    public function a_single_where_column_returns_a_single_column_constraint()
     {
         $builder = Builder::make()->whereColumn('team_id', 'team_id');
 
@@ -43,10 +40,8 @@ class BuilderTest extends TestCase
         $this->assertTrue($expected->equals($builder->build()));
     }
 
-    /**
-     * @test
-     */
-    function a_single_or_where_returns_a_single_or_constraint()
+    #[Test]
+    public function a_single_or_where_returns_a_single_or_constraint()
     {
         $actual = Builder::make()->orWhere('active', false)->build();
 
@@ -55,10 +50,8 @@ class BuilderTest extends TestCase
         $this->assertTrue($expected->equals($actual));
     }
 
-    /**
-     * @test
-     */
-    function two_wheres_return_a_group()
+    #[Test]
+    public function two_wheres_return_a_group()
     {
         $builder = Builder::make()
             ->where('active', false)
@@ -71,10 +64,8 @@ class BuilderTest extends TestCase
         $this->assertTrue($expected->equals($builder->build()));
     }
 
-    /**
-     * @test
-     */
-    function two_where_columns_return_a_group()
+    #[Test]
+    public function two_where_columns_return_a_group()
     {
         $builder = Builder::make()
             ->whereColumn('active', false)
@@ -87,10 +78,8 @@ class BuilderTest extends TestCase
         $this->assertTrue($expected->equals($builder->build()));
     }
 
-    /**
-     * @test
-     */
-    function or_wheres_return_a_group()
+    #[Test]
+    public function or_wheres_return_a_group()
     {
         $builder = Builder::make()
             ->where('active', false)
@@ -103,10 +92,8 @@ class BuilderTest extends TestCase
         $this->assertTrue($expected->equals($builder->build()));
     }
 
-    /**
-     * @test
-     */
-    function nested_wheres_return_a_group()
+    #[Test]
+    public function nested_wheres_return_a_group()
     {
         $builder = Builder::make()->where('active', false)->where(function ($query) {
             $query->where('a', 'b')->where('c', 'd');
@@ -123,10 +110,8 @@ class BuilderTest extends TestCase
         $this->assertTrue($expected->equals($builder->build()));
     }
 
-    /**
-     * @test
-     */
-    function nested_or_where_returns_an_or_group()
+    #[Test]
+    public function nested_or_where_returns_an_or_group()
     {
         $builder = Builder::make()->where('active', false)->orWhere(function ($query) {
             $query->where('a', 'b')->where('c', 'd');
@@ -143,10 +128,8 @@ class BuilderTest extends TestCase
         $this->assertTrue($expected->equals($builder->build()));
     }
 
-    /**
-     * @test
-     */
-    function can_nest_multiple_levels()
+    #[Test]
+    public function can_nest_multiple_levels()
     {
         $builder = Builder::make()
             ->where('active', false)

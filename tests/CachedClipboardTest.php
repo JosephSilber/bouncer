@@ -2,25 +2,29 @@
 
 namespace Silber\Bouncer\Tests;
 
-use Silber\Bouncer\CachedClipboard;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\DataProvider;
 
+use Silber\Bouncer\CachedClipboard;
+use Silber\Bouncer\Contracts\Clipboard as ClipboardContract;
 use Illuminate\Cache\ArrayStore;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
+use Workbench\App\Models\User;
+use Workbench\App\Models\Account;
 
 class CachedClipboardTest extends BaseTestCase
 {
-    function setUp(): void
+    /**
+     * Make a new clipboard with the container.
+     */
+    protected static function makeClipboard(): ClipboardContract
     {
-        parent::setUp();
-
-        $this->clipboard = new CachedClipboard(new ArrayStore);
+        return new CachedClipboard(new ArrayStore);
     }
 
-    /**
-     * @test
-     */
-    function it_caches_abilities()
+    #[Test]
+    public function it_caches_abilities()
     {
         $bouncer = $this->bouncer($user = User::create());
 
@@ -33,21 +37,17 @@ class CachedClipboardTest extends BaseTestCase
         $this->assertEquals(['ban-users'], $this->getAbilities($user));
     }
 
-    /**
-     * @test
-     */
-    function it_caches_empty_abilities()
+    #[Test]
+    public function it_caches_empty_abilities()
     {
         $user = User::create();
 
-        $this->assertInstanceOf(Collection::class, $this->clipboard->getAbilities($user));
-        $this->assertInstanceOf(Collection::class, $this->clipboard->getAbilities($user));
+        $this->assertInstanceOf(Collection::class, $this->clipboard()->getAbilities($user));
+        $this->assertInstanceOf(Collection::class, $this->clipboard()->getAbilities($user));
     }
 
-    /**
-     * @test
-     */
-    function it_caches_roles()
+    #[Test]
+    public function it_caches_roles()
     {
         $bouncer = $this->bouncer($user = User::create());
 
@@ -60,10 +60,8 @@ class CachedClipboardTest extends BaseTestCase
         $this->assertFalse($bouncer->is($user)->a('moderator'));
     }
 
-    /**
-     * @test
-     */
-    function it_always_checks_roles_in_the_cache()
+    #[Test]
+    public function it_always_checks_roles_in_the_cache()
     {
         $bouncer = $this->bouncer($user = User::create());
         $admin = $bouncer->role()->create(['name' => 'admin']);
@@ -83,10 +81,8 @@ class CachedClipboardTest extends BaseTestCase
         $this->db()->connection()->disableQueryLog();
     }
 
-    /**
-     * @test
-     */
-    function it_can_refresh_the_cache()
+    #[Test]
+    public function it_can_refresh_the_cache()
     {
         $cache = new ArrayStore;
 
@@ -108,10 +104,8 @@ class CachedClipboardTest extends BaseTestCase
         $this->assertEquals(['create-posts', 'edit-posts'], $this->getAbilities($user));
     }
 
-    /**
-     * @test
-     */
-    function it_can_refresh_the_cache_only_for_one_user()
+    #[Test]
+    public function it_can_refresh_the_cache_only_for_one_user()
     {
         $user1 = User::create();
         $user2 = User::create();

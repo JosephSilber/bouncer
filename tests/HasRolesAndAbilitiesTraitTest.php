@@ -2,19 +2,23 @@
 
 namespace Silber\Bouncer\Tests;
 
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\DataProvider;
+
 use Silber\Bouncer\Database\Models;
+use Workbench\App\Models\User;
+use Workbench\App\Models\UserWithSoftDeletes;
+use Workbench\App\Models\Account;
 
 class HasRolesAndAbilitiesTraitTest extends BaseTestCase
 {
     use Concerns\TestsClipboards;
 
-    /**
-     * @test
-     * @dataProvider bouncerProvider
-     */
-    function get_abilities_gets_all_allowed_abilities($provider)
+    #[Test]
+    #[DataProvider('bouncerProvider')]
+    public function get_abilities_gets_all_allowed_abilities($provider)
     {
-        list($bouncer, $user) = $provider();
+        [$bouncer, $user] = $provider();
 
         $bouncer->allow('admin')->to('edit-site');
         $bouncer->allow($user)->to('create-posts');
@@ -29,13 +33,11 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         );
     }
 
-    /**
-     * @test
-     * @dataProvider bouncerProvider
-     */
-    function get_forbidden_abilities_gets_all_forbidden_abilities($provider)
+    #[Test]
+    #[DataProvider('bouncerProvider')]
+    public function get_forbidden_abilities_gets_all_forbidden_abilities($provider)
     {
-        list($bouncer, $user) = $provider();
+        [$bouncer, $user] = $provider();
 
         $bouncer->forbid('admin')->to('edit-site');
         $bouncer->forbid($user)->to('create-posts');
@@ -50,13 +52,11 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         );
     }
 
-    /**
-     * @test
-     * @dataProvider bouncerProvider
-     */
-    function can_give_and_remove_abilities($provider)
+    #[Test]
+    #[DataProvider('bouncerProvider')]
+    public function can_give_and_remove_abilities($provider)
     {
-        list($bouncer, $user) = $provider();
+        [$bouncer, $user] = $provider();
 
         $user->allow('edit-site');
 
@@ -67,13 +67,11 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('edit-site'));
     }
 
-    /**
-     * @test
-     * @dataProvider bouncerProvider
-     */
-    function can_give_and_remove_model_abilities($provider)
+    #[Test]
+    #[DataProvider('bouncerProvider')]
+    public function can_give_and_remove_model_abilities($provider)
     {
-        list($bouncer, $user) = $provider();
+        [$bouncer, $user] = $provider();
 
         $user->allow('delete', $user);
 
@@ -86,13 +84,11 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('delete', $user));
     }
 
-    /**
-     * @test
-     * @dataProvider bouncerProvider
-     */
-    function can_give_and_remove_ability_for_everything($provider)
+    #[Test]
+    #[DataProvider('bouncerProvider')]
+    public function can_give_and_remove_ability_for_everything($provider)
     {
-        list($bouncer, $user) = $provider();
+        [$bouncer, $user] = $provider();
 
         $user->allow()->everything();
 
@@ -107,13 +103,11 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('*', '*'));
     }
 
-    /**
-     * @test
-     * @dataProvider bouncerProvider
-     */
-    function can_forbid_and_unforbid_abilities($provider)
+    #[Test]
+    #[DataProvider('bouncerProvider')]
+    public function can_forbid_and_unforbid_abilities($provider)
     {
-        list($bouncer, $user) = $provider();
+        [$bouncer, $user] = $provider();
 
         $user->allow('edit-site');
         $user->forbid('edit-site');
@@ -125,13 +119,11 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $this->assertTrue($bouncer->can('edit-site'));
     }
 
-    /**
-     * @test
-     * @dataProvider bouncerProvider
-     */
-    function can_forbid_and_unforbid_model_abilities($provider)
+    #[Test]
+    #[DataProvider('bouncerProvider')]
+    public function can_forbid_and_unforbid_model_abilities($provider)
     {
-        list($bouncer, $user) = $provider();
+        [$bouncer, $user] = $provider();
 
         $user->allow('delete', $user);
         $user->forbid('delete', $user);
@@ -143,13 +135,11 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $this->assertTrue($bouncer->can('delete', $user));
     }
 
-    /**
-     * @test
-     * @dataProvider bouncerProvider
-     */
-    function can_forbid_and_unforbid_everything($provider)
+    #[Test]
+    #[DataProvider('bouncerProvider')]
+    public function can_forbid_and_unforbid_everything($provider)
     {
-        list($bouncer, $user) = $provider();
+        [$bouncer, $user] = $provider();
 
         $user->allow('delete', $user);
         $user->forbid()->everything();
@@ -161,13 +151,11 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $this->assertTrue($bouncer->can('delete', $user));
     }
 
-    /**
-     * @test
-     * @dataProvider bouncerProvider
-     */
-    function can_assign_and_retract_roles($provider)
+    #[Test]
+    #[DataProvider('bouncerProvider')]
+    public function can_assign_and_retract_roles($provider)
     {
-        list($bouncer, $user) = $provider();
+        [$bouncer, $user] = $provider();
 
         $bouncer->allow('admin')->to('edit-site');
         $user->assign('admin');
@@ -181,13 +169,11 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('edit-site'));
     }
 
-    /**
-     * @test
-     * @dataProvider bouncerProvider
-     */
-    function can_check_roles($provider)
+    #[Test]
+    #[DataProvider('bouncerProvider')]
+    public function can_check_roles($provider)
     {
-        list($bouncer, $user) = $provider();
+        [$bouncer, $user] = $provider();
 
         $this->assertTrue($user->isNotAn('admin'));
         $this->assertFalse($user->isAn('admin'));
@@ -203,13 +189,11 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $this->assertTrue($user->isNotAn('editor'));
     }
 
-    /**
-     * @test
-     * @dataProvider bouncerProvider
-     */
-    function can_check_multiple_roles($provider)
+    #[Test]
+    #[DataProvider('bouncerProvider')]
+    public function can_check_multiple_roles($provider)
     {
-        list($bouncer, $user) = $provider();
+        [$bouncer, $user] = $provider();
 
         $this->assertFalse($user->isAn('admin', 'editor'));
 
@@ -221,10 +205,8 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $this->assertFalse($user->isAll('moderator', 'admin'));
     }
 
-    /**
-     * @test
-     */
-    function deleting_a_model_deletes_the_permissions_pivot_table_records()
+    #[Test]
+    public function deleting_a_model_deletes_the_permissions_pivot_table_records()
     {
         $bouncer = $this->bouncer();
 
@@ -241,10 +223,8 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $this->assertEquals(1, $this->db()->table('permissions')->count());
     }
 
-    /**
-     * @test
-     */
-    function soft_deleting_a_model_persists_the_permissions_pivot_table_records()
+    #[Test]
+    public function soft_deleting_a_model_persists_the_permissions_pivot_table_records()
     {
         Models::setUsersModel(UserWithSoftDeletes::class);
 
@@ -263,10 +243,8 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $this->assertEquals(2, $this->db()->table('permissions')->count());
     }
 
-    /**
-     * @test
-     */
-    function deleting_a_model_deletes_the_assigned_roles_pivot_table_records()
+    #[Test]
+    public function deleting_a_model_deletes_the_assigned_roles_pivot_table_records()
     {
         $bouncer = $this->bouncer();
 
@@ -283,10 +261,8 @@ class HasRolesAndAbilitiesTraitTest extends BaseTestCase
         $this->assertEquals(1, $this->db()->table('assigned_roles')->count());
     }
 
-    /**
-     * @test
-     */
-    function soft_deleting_a_model_persists_the_assigned_roles_pivot_table_records()
+    #[Test]
+    public function soft_deleting_a_model_persists_the_assigned_roles_pivot_table_records()
     {
         Models::setUsersModel(UserWithSoftDeletes::class);
 

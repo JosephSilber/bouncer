@@ -2,17 +2,20 @@
 
 namespace Silber\Bouncer\Tests;
 
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\DataProvider;
+
 use Silber\Bouncer\Database\Role;
+use Workbench\App\Models\User;
+use Workbench\App\Models\Account;
 
 class AuthorizableTest extends BaseTestCase
 {
     use Concerns\TestsClipboards;
 
-    /**
-     * @test
-     * @dataProvider bouncerProvider
-     */
-    function checking_simple_abilities_on_roles($provider)
+    #[Test]
+    #[DataProvider('bouncerProvider')]
+    public function checking_simple_abilities_on_roles($provider)
     {
         $provider();
 
@@ -25,11 +28,9 @@ class AuthorizableTest extends BaseTestCase
         $this->assertTrue($role->cannot('cry'));
     }
 
-    /**
-     * @test
-     * @dataProvider bouncerProvider
-     */
-    function checking_model_abilities_on_roles($provider)
+    #[Test]
+    #[DataProvider('bouncerProvider')]
+    public function checking_model_abilities_on_roles($provider)
     {
         $provider();
 

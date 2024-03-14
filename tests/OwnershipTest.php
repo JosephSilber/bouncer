@@ -2,21 +2,25 @@
 
 namespace Silber\Bouncer\Tests;
 
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\DataProvider;
+
 use Silber\Bouncer\Database\Role;
 use Silber\Bouncer\Database\Models;
 use Silber\Bouncer\Database\Ability;
+
+use Workbench\App\Models\User;
+use Workbench\App\Models\Account;
 
 class OwnershipTest extends BaseTestCase
 {
     use Concerns\TestsClipboards;
 
-    /**
-     * @test
-     * @dataProvider bouncerProvider
-     */
-    function can_own_a_model_class($provider)
+    #[Test]
+    #[DataProvider('bouncerProvider')]
+    public function can_own_a_model_class($provider)
     {
-        list($bouncer, $user) = $provider();
+        [$bouncer, $user] = $provider();
 
         $bouncer->allow($user)->toOwn(Account::class);
 
@@ -39,13 +43,11 @@ class OwnershipTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('update', $account));
     }
 
-    /**
-     * @test
-     * @dataProvider bouncerProvider
-     */
-    function can_own_a_model($provider)
+    #[Test]
+    #[DataProvider('bouncerProvider')]
+    public function can_own_a_model($provider)
     {
-        list($bouncer, $user) = $provider();
+        [$bouncer, $user] = $provider();
 
         $account1 = Account::create(['user_id' => $user->id]);
         $account2 = Account::create(['user_id' => $user->id]);
@@ -70,13 +72,11 @@ class OwnershipTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('update', $account1));
     }
 
-    /**
-     * @test
-     * @dataProvider bouncerProvider
-     */
-    function can_own_a_model_for_a_given_ability($provider)
+    #[Test]
+    #[DataProvider('bouncerProvider')]
+    public function can_own_a_model_for_a_given_ability($provider)
     {
-        list($bouncer, $user) = $provider();
+        [$bouncer, $user] = $provider();
 
         $account1 = Account::create(['user_id' => $user->id]);
         $account2 = Account::create(['user_id' => $user->id]);
@@ -105,13 +105,11 @@ class OwnershipTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('update', $account1));
     }
 
-    /**
-     * @test
-     * @dataProvider bouncerProvider
-     */
-    function can_own_everything($provider)
+    #[Test]
+    #[DataProvider('bouncerProvider')]
+    public function can_own_everything($provider)
     {
-        list($bouncer, $user) = $provider();
+        [$bouncer, $user] = $provider();
 
         $bouncer->allow($user)->toOwnEverything();
 
@@ -131,13 +129,11 @@ class OwnershipTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('delete', $account));
     }
 
-    /**
-     * @test
-     * @dataProvider bouncerProvider
-     */
-    function can_own_everything_for_a_given_ability($provider)
+    #[Test]
+    #[DataProvider('bouncerProvider')]
+    public function can_own_everything_for_a_given_ability($provider)
     {
-        list($bouncer, $user) = $provider();
+        [$bouncer, $user] = $provider();
 
         $bouncer->allow($user)->toOwnEverything()->to('view');
 
@@ -158,13 +154,11 @@ class OwnershipTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('view', $account));
     }
 
-    /**
-     * @test
-     * @dataProvider bouncerProvider
-     */
-    function can_use_custom_ownership_attribute($provider)
+    #[Test]
+    #[DataProvider('bouncerProvider')]
+    public function can_use_custom_ownership_attribute($provider)
     {
-        list($bouncer, $user) = $provider();
+        [$bouncer, $user] = $provider();
 
         $bouncer->ownedVia('userId');
 
@@ -177,13 +171,11 @@ class OwnershipTest extends BaseTestCase
         Models::reset();
     }
 
-    /**
-     * @test
-     * @dataProvider bouncerProvider
-     */
-    function can_use_custom_ownership_attribute_for_model_type($provider)
+    #[Test]
+    #[DataProvider('bouncerProvider')]
+    public function can_use_custom_ownership_attribute_for_model_type($provider)
     {
-        list($bouncer, $user) = $provider();
+        [$bouncer, $user] = $provider();
 
         $bouncer->ownedVia(Account::class, 'userId');
 
@@ -196,13 +188,11 @@ class OwnershipTest extends BaseTestCase
         Models::reset();
     }
     
-    /**
-     * @test
-     * @dataProvider bouncerProvider
-     */
-    function can_forbid_abilities_after_owning_a_model_class($provider)
+    #[Test]
+    #[DataProvider('bouncerProvider')]
+    public function can_forbid_abilities_after_owning_a_model_class($provider)
     {
-        list($bouncer, $user) = $provider();
+        [$bouncer, $user] = $provider();
 
         $bouncer->allow($user)->toOwn(Account::class);
         $bouncer->forbid($user)->to('publish', Account::class);

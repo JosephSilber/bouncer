@@ -2,8 +2,11 @@
 
 namespace Silber\Bouncer\Tests\Unit\Constraints;
 
-use Silber\Bouncer\Tests\User;
-use Silber\Bouncer\Tests\Account;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\DataProvider;
+
+use Workbench\App\Models\User;
+use Workbench\App\Models\Account;
 
 use PHPUnit\Framework\TestCase;
 use Silber\Bouncer\Constraints\Constraint;
@@ -12,10 +15,8 @@ use Silber\Bouncer\Constraints\ColumnConstraint;
 
 class ConstraintTest extends TestCase
 {
-    /**
-     * @test
-     */
-    function value_constraint_implicit_equals()
+    #[Test]
+    public function value_constraint_implicit_equals()
     {
         $authority = new User();
         $activeAccount = new Account(['active' => true]);
@@ -27,10 +28,8 @@ class ConstraintTest extends TestCase
         $this->assertFalse($constraint->check($inactiveAccount, $authority));
     }
 
-    /**
-     * @test
-     */
-    function value_constraint_explicit_equals()
+    #[Test]
+    public function value_constraint_explicit_equals()
     {
         $authority = new User();
         $activeAccount = new Account(['active' => true]);
@@ -42,10 +41,8 @@ class ConstraintTest extends TestCase
         $this->assertFalse($constraint->check($inactiveAccount, $authority));
     }
 
-    /**
-     * @test
-     */
-    function value_constraint_explicit_double_equals()
+    #[Test]
+    public function value_constraint_explicit_double_equals()
     {
         $authority = new User();
         $activeAccount = new Account(['active' => true]);
@@ -57,10 +54,8 @@ class ConstraintTest extends TestCase
         $this->assertFalse($constraint->check($inactiveAccount, $authority));
     }
 
-    /**
-     * @test
-     */
-    function value_constraint_not_equals()
+    #[Test]
+    public function value_constraint_not_equals()
     {
         $authority = new User();
         $activeAccount = new Account(['active' => true]);
@@ -72,10 +67,8 @@ class ConstraintTest extends TestCase
         $this->assertFalse($constraint->check($inactiveAccount, $authority));
     }
 
-    /**
-     * @test
-     */
-    function value_constraint_greater_than()
+    #[Test]
+    public function value_constraint_greater_than()
     {
         $authority = new User();
         $forty = new User(['age' => 40]);
@@ -87,10 +80,8 @@ class ConstraintTest extends TestCase
         $this->assertFalse($constraint->check($forty, $authority));
     }
 
-    /**
-     * @test
-     */
-    function value_constraint_less_than()
+    #[Test]
+    public function value_constraint_less_than()
     {
         $authority = new User();
         $thirtyNine = new User(['age' => 39]);
@@ -102,10 +93,8 @@ class ConstraintTest extends TestCase
         $this->assertFalse($constraint->check($forty, $authority));
     }
 
-    /**
-     * @test
-     */
-    function value_constraint_greater_than_or_equal()
+    #[Test]
+    public function value_constraint_greater_than_or_equal()
     {
         $authority = new User();
         $minor = new User(['age' => 17]);
@@ -119,10 +108,8 @@ class ConstraintTest extends TestCase
         $this->assertFalse($constraint->check($minor, $authority));
     }
 
-    /**
-     * @test
-     */
-    function value_constraint_less_than_or_equal()
+    #[Test]
+    public function value_constraint_less_than_or_equal()
     {
         $authority = new User();
         $youngerTeen = new User(['age' => 18]);
@@ -136,10 +123,8 @@ class ConstraintTest extends TestCase
         $this->assertFalse($constraint->check($adult, $authority));
     }
 
-    /**
-     * @test
-     */
-    function column_constraint_implicit_equals()
+    #[Test]
+    public function column_constraint_implicit_equals()
     {
         $authority = new User(['age' => 1]);
         $one = new User(['age' => 1]);
@@ -151,10 +136,8 @@ class ConstraintTest extends TestCase
         $this->assertFalse($constraint->check($two, $authority));
     }
 
-    /**
-     * @test
-     */
-    function column_constraint_explicit_equals()
+    #[Test]
+    public function column_constraint_explicit_equals()
     {
         $authority = new User(['age' => 1]);
         $one = new User(['age' => 1]);
@@ -166,10 +149,8 @@ class ConstraintTest extends TestCase
         $this->assertFalse($constraint->check($two, $authority));
     }
 
-    /**
-     * @test
-     */
-    function column_constraint_explicit_double_equals()
+    #[Test]
+    public function column_constraint_explicit_double_equals()
     {
         $authority = new User(['age' => 1]);
         $one = new User(['age' => 1]);
@@ -181,10 +162,8 @@ class ConstraintTest extends TestCase
         $this->assertFalse($constraint->check($two, $authority));
     }
 
-    /**
-     * @test
-     */
-    function column_constraint_not_equals()
+    #[Test]
+    public function column_constraint_not_equals()
     {
         $authority = new User(['age' => 1]);
         $one = new User(['age' => 1]);
@@ -196,10 +175,8 @@ class ConstraintTest extends TestCase
         $this->assertFalse($constraint->check($one, $authority));
     }
 
-    /**
-     * @test
-     */
-    function column_constraint_greater_than()
+    #[Test]
+    public function column_constraint_greater_than()
     {
         $authority = new User(['age' => 18]);
 
@@ -214,10 +191,8 @@ class ConstraintTest extends TestCase
         $this->assertFalse($constraint->check($same, $authority));
     }
 
-    /**
-     * @test
-     */
-    function column_constraint_less_than()
+    #[Test]
+    public function column_constraint_less_than()
     {
         $authority = new User(['age' => 18]);
 
@@ -232,10 +207,8 @@ class ConstraintTest extends TestCase
         $this->assertFalse($constraint->check($same, $authority));
     }
 
-    /**
-     * @test
-     */
-    function column_constraint_greater_than_or_equal()
+    #[Test]
+    public function column_constraint_greater_than_or_equal()
     {
         $authority = new User(['age' => 18]);
 
@@ -250,10 +223,8 @@ class ConstraintTest extends TestCase
         $this->assertFalse($constraint->check($younger, $authority));
     }
 
-    /**
-     * @test
-     */
-    function column_constraint_less_than_or_equal()
+    #[Test]
+    public function column_constraint_less_than_or_equal()
     {
         $authority = new User(['age' => 18]);
 
@@ -268,10 +239,8 @@ class ConstraintTest extends TestCase
         $this->assertFalse($constraint->check($older, $authority));
     }
 
-    /**
-     * @test
-     */
-    function value_constraint_can_be_properly_serialized_and_deserialized()
+    #[Test]
+    public function value_constraint_can_be_properly_serialized_and_deserialized()
     {
         $authority = new User();
         $activeAccount = new Account(['active' => true]);
@@ -286,10 +255,8 @@ class ConstraintTest extends TestCase
         $this->assertFalse($constraint->check($inactiveAccount, $authority));
     }
 
-    /**
-     * @test
-     */
-    function column_constraint_can_be_properly_serialized_and_deserialized()
+    #[Test]
+    public function column_constraint_can_be_properly_serialized_and_deserialized()
     {
         $authority = new User(['age' => 1]);
         $one = new User(['age' => 1]);

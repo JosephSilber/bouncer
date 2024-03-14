@@ -2,19 +2,22 @@
 
 namespace Silber\Bouncer\Tests;
 
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\DataProvider;
+
 use Silber\Bouncer\Database\HasRolesAndAbilities;
+use Workbench\App\Models\User;
+use Workbench\App\Models\Account;
 
 class CustomAuthorityTest extends BaseTestCase
 {
     use Concerns\TestsClipboards;
 
-    /**
-     * @test
-     * @dataProvider bouncerProvider
-     */
-    function can_give_and_remove_abilities($provider)
+    #[Test]
+    #[DataProvider('bouncerProvider')]
+    public function can_give_and_remove_abilities($provider)
     {
-        list($bouncer, $account) = $provider(1, Account::class);
+        [$bouncer, $account] = $provider(1, Account::class);
 
         $bouncer->allow($account)->to('edit-site');
 
@@ -25,13 +28,11 @@ class CustomAuthorityTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('edit-site'));
     }
 
-    /**
-     * @test
-     * @dataProvider bouncerProvider
-     */
-    function can_give_and_remove_roles($provider)
+    #[Test]
+    #[DataProvider('bouncerProvider')]
+    public function can_give_and_remove_roles($provider)
     {
-        list($bouncer, $account) = $provider(1, Account::class);
+        [$bouncer, $account] = $provider(1, Account::class);
 
         $bouncer->allow('admin')->to('edit-site');
         $bouncer->assign('admin')->to($account);
@@ -48,13 +49,11 @@ class CustomAuthorityTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('edit-site'));
     }
 
-    /**
-     * @test
-     * @dataProvider bouncerProvider
-     */
-    function can_disallow_abilities_on_roles($provider)
+    #[Test]
+    #[DataProvider('bouncerProvider')]
+    public function can_disallow_abilities_on_roles($provider)
     {
-        list($bouncer, $account) = $provider(1, Account::class);
+        [$bouncer, $account] = $provider(1, Account::class);
 
         $bouncer->allow('admin')->to('edit-site');
         $bouncer->disallow('admin')->to('edit-site');
@@ -63,13 +62,11 @@ class CustomAuthorityTest extends BaseTestCase
         $this->assertTrue($bouncer->cannot('edit-site'));
     }
 
-    /**
-     * @test
-     * @dataProvider bouncerProvider
-     */
-    function can_check_roles($provider)
+    #[Test]
+    #[DataProvider('bouncerProvider')]
+    public function can_check_roles($provider)
     {
-        list($bouncer, $account) = $provider(1, Account::class);
+        [$bouncer, $account] = $provider(1, Account::class);
 
         $this->assertTrue($bouncer->is($account)->notA('moderator'));
         $this->assertTrue($bouncer->is($account)->notAn('editor'));
@@ -86,13 +83,11 @@ class CustomAuthorityTest extends BaseTestCase
         $this->assertFalse($bouncer->is($account)->an('admin'));
     }
 
-    /**
-     * @test
-     * @dataProvider bouncerProvider
-     */
-    function can_check_multiple_roles($provider)
+    #[Test]
+    #[DataProvider('bouncerProvider')]
+    public function can_check_multiple_roles($provider)
     {
-        list($bouncer, $account) = $provider(1, Account::class);
+        [$bouncer, $account] = $provider(1, Account::class);
 
         $this->assertTrue($bouncer->is($account)->notAn('editor', 'moderator'));
         $this->assertTrue($bouncer->is($account)->notAn('admin', 'moderator'));

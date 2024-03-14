@@ -2,16 +2,17 @@
 
 namespace Silber\Bouncer\Tests\QueryScopes;
 
-use Silber\Bouncer\Tests\User;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\DataProvider;
+
+use Workbench\App\Models\User;
 use Silber\Bouncer\Database\Role;
 use Silber\Bouncer\Tests\BaseTestCase;
 
 class UserIsScopesTest extends BaseTestCase
 {
-    /**
-     * @test
-     */
-    function users_can_be_constrained_to_having_a_role()
+    #[Test]
+    public function users_can_be_constrained_to_having_a_role()
     {
         $user1 = User::create(['name' => 'Joseph']);
         $user2 = User::create(['name' => 'Silber']);
@@ -25,10 +26,8 @@ class UserIsScopesTest extends BaseTestCase
         $this->assertEquals('Joseph', $users->first()->name);
     }
 
-    /**
-     * @test
-     */
-    function users_can_be_constrained_to_having_one_of_many_roles()
+    #[Test]
+    public function users_can_be_constrained_to_having_one_of_many_roles()
     {
         $user1 = User::create(['name' => 'Joseph']);
         $user2 = User::create(['name' => 'Silber']);
@@ -42,10 +41,8 @@ class UserIsScopesTest extends BaseTestCase
         $this->assertEquals('Silber', $users->first()->name);
     }
 
-    /**
-     * @test
-     */
-    function users_can_be_constrained_to_having_all_provided_roles()
+    #[Test]
+    public function users_can_be_constrained_to_having_all_provided_roles()
     {
         $user1 = User::create(['name' => 'Joseph']);
         $user2 = User::create(['name' => 'Silber']);
@@ -59,10 +56,8 @@ class UserIsScopesTest extends BaseTestCase
         $this->assertEquals('Joseph', $users->first()->name);
     }
 
-    /**
-     * @test
-     */
-    function users_can_be_constrained_to_not_having_a_role()
+    #[Test]
+    public function users_can_be_constrained_to_not_having_a_role()
     {
         $user1 = User::create();
         $user2 = User::create();
@@ -80,10 +75,8 @@ class UserIsScopesTest extends BaseTestCase
         $this->assertTrue($users->contains($user3));
     }
 
-    /**
-     * @test
-     */
-    function users_can_be_constrained_to_not_having_any_of_the_given_roles()
+    #[Test]
+    public function users_can_be_constrained_to_not_having_any_of_the_given_roles()
     {
         $user1 = User::create();
         $user2 = User::create();
