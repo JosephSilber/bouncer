@@ -126,7 +126,7 @@ Whenever you use the `Bouncer` facade in your code, remember to add this line to
 use Bouncer;
 ```
 
-For more information about Laravel Facades, refer to [the Laravel documentation](https://laravel.com/docs/9.x/facades).
+For more information about Laravel Facades, refer to [the Laravel documentation](https://laravel.com/docs/11.x/facades).
 
 ### Installing Bouncer in a non-Laravel app
 
@@ -527,7 +527,7 @@ $forbiddenAbilities = $user->getForbiddenAbilities();
 
 ### Authorizing users
 
-Authorizing users is handled directly at [Laravel's `Gate`](https://laravel.com/docs/9.x/authorization#gates), or on the user model (`$user->can($ability)`).
+Authorizing users is handled directly at [Laravel's `Gate`](https://laravel.com/docs/11.x/authorization#gates), or on the user model (`$user->can($ability)`).
 
 For convenience, the `Bouncer` class provides these passthrough methods:
 
@@ -575,7 +575,7 @@ Whenever you need, you can fully refresh the bouncer's cache:
 Bouncer::refresh();
 ```
 
-> **Note:** fully refreshing the cache for all users uses [cache tags](https://laravel.com/docs/9.x/cache#cache-tags) if they're available. Not all cache drivers support this. Refer to [Laravel's documentation](https://laravel.com/docs/9.x/cache#cache-tags) to see if your driver supports cache tags. If your driver does not support cache tags, calling `refresh` might be a little slow, depending on the amount of users in your system.
+> **Note:** fully refreshing the cache for all users uses [cache tags](https://laravel.com/docs/11.x/cache#cache-tags) if they're available. Not all cache drivers support this. Refer to [Laravel's documentation](https://laravel.com/docs/11.x/cache#cache-tags) to see if your driver supports cache tags. If your driver does not support cache tags, calling `refresh` might be a little slow, depending on the amount of users in your system.
 
 Alternatively, you can refresh the cache only for a specific user:
 
@@ -760,7 +760,7 @@ Bouncer::useAbilityModel(\App\Models\Ability::class);
 Bouncer::useRoleModel(\App\Models\Role::class);
 ```
 
-> **Note**: Eloquent determines the foreign key of relationships based on the parent model name (see [the Eloquent docs](https://laravel.com/docs/9.x/eloquent-relationships#one-to-one)). To keep things simple, name your custom classes the same as Bouncer's: `Ability` and `Role`, respectively.
+> **Note**: Eloquent determines the foreign key of relationships based on the parent model name (see [the Eloquent docs](https://laravel.com/docs/11.x/eloquent-relationships#one-to-one)). To keep things simple, name your custom classes the same as Bouncer's: `Ability` and `Role`, respectively.
 >
 > If you need to use different names, be sure to either update your migration file or override the relationship methods to explicitly set their foreign keys.
 
@@ -805,7 +805,7 @@ There are some concepts in Bouncer that people keep on asking about, so here's a
 
 ### Where do I set up my app's roles and abilities?
 
-Seeding the initial roles and abilities can be done in a regular [Laravel seeder](https://laravel.com/docs/9.x/seeding) class. Start by creating a specific seeder file for Bouncer:
+Seeding the initial roles and abilities can be done in a regular [Laravel seeder](https://laravel.com/docs/11.x/seeding) class. Start by creating a specific seeder file for Bouncer:
 
 ```
 php artisan make:seeder BouncerSeeder
@@ -845,7 +845,7 @@ php artisan db:seed --class=BouncerSeeder
 
 Bouncer's [`scope`](#the-scope-middleware) can be used to section off different parts of the site, creating a silo for each one of them with its own set of roles & abilities:
 
-1. Create a `ScopeBouncer` [middleware](https://laravel.com/docs/9.x/middleware#defining-middleware) that takes an `$identifier` and sets it as the current scope:
+1. Create a `ScopeBouncer` [middleware](https://laravel.com/docs/11.x/middleware#defining-middleware) that takes an `$identifier` and sets it as the current scope:
 
     ```php
     use Bouncer, Closure;
@@ -947,7 +947,7 @@ php artisan bouncer:clean --orphaned
 
 If you don't pass it any flags, it will delete both types of unused abilities.
 
-To automatically run this command periodically, add it to [your console kernel's schedule](https://laravel.com/docs/9.x/scheduling#defining-schedules):
+To automatically run this command periodically, add it to [your console kernel's schedule](https://laravel.com/docs/11.x/scheduling#defining-schedules):
 
 ```php
 $schedule->command('bouncer:clean')->weekly();
