@@ -83,9 +83,9 @@ When you check abilities at Laravel's gate, Bouncer will automatically be consul
 
 ## Installation
 
-> **Note**: Bouncer requires PHP 7.2+ and Laravel/Eloquent 6.0+
-> 
-> If you're not up to date, use [Bouncer RC6](https://github.com/JosephSilber/bouncer/tree/v1.0.0-rc.6). It supports all the way back to PHP 5.5 & Laravel 5.1, and has no known bugs.
+> **Note**: Bouncer v1.0.2 requires PHP 8.2+ and Laravel/Eloquent 11+.
+>
+> If you're on Laravel v6-v10, use [Bouncer v1.0.1](https://github.com/JosephSilber/bouncer/tree/v1.0.1). If you're on Laravel v5.5-v5.8, use [Bouncer RC6](https://github.com/JosephSilber/bouncer/tree/v1.0.0-rc.6).
 
 ### Installing Bouncer in a Laravel app
 
