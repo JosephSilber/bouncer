@@ -109,9 +109,9 @@ class Models
     /**
      * Get or set the model scoping instance.
      *
-     * @return mixed
+     * @return ScopeContract
      */
-    public static function scope(?ScopeContract $scope = null)
+    public static function scope(?ScopeContract $scope = null): ScopeContract
     {
         if (! is_null($scope)) {
             return static::$scope = $scope;
