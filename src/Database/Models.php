@@ -7,6 +7,7 @@ use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Facades\DB;
 use Silber\Bouncer\Contracts\Scope as ScopeContract;
 use Silber\Bouncer\Database\Scope\Scope;
 
@@ -246,13 +247,7 @@ class Models
      */
     public static function query($table)
     {
-        $query = new Builder(
-            $connection = static::user()->getConnection(),
-            $connection->getQueryGrammar(),
-            $connection->getPostProcessor()
-        );
-
-        return $query->from(static::table($table));
+        return DB::table(static::table($table));
     }
 
     /**
