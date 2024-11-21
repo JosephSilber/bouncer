@@ -2,6 +2,7 @@
 
 namespace Silber\Bouncer\Database\Queries;
 
+use Illuminate\Database\Query\JoinClause;
 use Silber\Bouncer\Database\Models;
 
 use Illuminate\Database\Query\Builder;
@@ -18,11 +19,13 @@ class Abilities
      */
     public static function forAuthority(Model $authority, $allowed = true)
     {
-        return Models::ability()->where(function ($query) use ($authority, $allowed) {
-            $query->whereExists(static::getRoleConstraint($authority, $allowed));
-            $query->orWhereExists(static::getAuthorityConstraint($authority, $allowed));
-            $query->orWhereExists(static::getEveryoneConstraint($allowed));
-        });
+        $abilities = Models::table('abilities');
+
+        return Models::ability()
+            ->where(function ($query) use ($abilities, $authority, $allowed) {
+                $query->whereIn("{$abilities}.id", static::getRoleConstraint($authority, $allowed));
+                $query->orWhereIn("{$abilities}.id", static::getAuthorityConstraint($authority, $allowed));
+            });
     }
 
     /**
@@ -47,20 +50,22 @@ class Abilities
     {
         return function ($query) use ($authority, $allowed) {
             $permissions = Models::table('permissions');
-            $abilities   = Models::table('abilities');
-            $roles       = Models::table('roles');
+            $roles = Models::table('roles');
+            $prefix = Models::prefix();
 
             $query->from($roles)
-                  ->join($permissions, $roles.'.id', '=', $permissions.'.entity_id')
-                  ->whereColumn("{$permissions}.ability_id", "{$abilities}.id")
-                  ->where($permissions.".forbidden", ! $allowed)
-                  ->where($permissions.".entity_type", Models::role()->getMorphClass());
+                ->select("{$prefix}{$permissions}.ability_id")
+                ->join($permissions, fn (JoinClause $join): JoinClause => $join
+                    ->on($roles.'.id', '=', $permissions.'.entity_id')
+                    ->where($permissions.".entity_type", Models::role()->getMorphClass())
+                )
+                ->where($permissions.".forbidden", ! $allowed);
 
             Models::scope()->applyToModelQuery($query, $roles);
             Models::scope()->applyToRelationQuery($query, $permissions);
 
             $query->where(function ($query) use ($roles, $authority, $allowed) {
-                $query->whereExists(static::getAuthorityRoleConstraint($authority));
+                $query->whereIn("{$roles}.id", static::getAuthorityRoleConstraint($authority));
             });
         };
     }
@@ -74,15 +79,18 @@ class Abilities
     protected static function getAuthorityRoleConstraint(Model $authority)
     {
         return function ($query) use ($authority) {
-            $pivot  = Models::table('assigned_roles');
-            $roles  = Models::table('roles');
-            $table  = $authority->getTable();
+            $pivot = Models::table('assigned_roles');
+            $roles = Models::table('roles');
+            $table = $authority->getTable();
+            $prefix = Models::prefix();
 
             $query->from($table)
-                  ->join($pivot, "{$table}.{$authority->getKeyName()}", '=', $pivot.'.entity_id')
-                  ->whereColumn("{$pivot}.role_id", "{$roles}.id")
-                  ->where($pivot.'.entity_type', $authority->getMorphClass())
-                  ->where("{$table}.{$authority->getKeyName()}", $authority->getKey());
+                ->select("{$prefix}{$pivot}.role_id")
+                ->join($pivot, fn (JoinClause $join): JoinClause => $join
+                    ->on("{$table}.{$authority->getKeyName()}", '=', $pivot.'.entity_id')
+                    ->where($pivot.'.entity_type', $authority->getMorphClass())
+                )
+                ->where("{$table}.{$authority->getKeyName()}", '=', $authority->getKey());
 
             Models::scope()->applyToModelQuery($query, $roles);
             Models::scope()->applyToRelationQuery($query, $pivot);
@@ -100,17 +108,18 @@ class Abilities
     {
         return function ($query) use ($authority, $allowed) {
             $permissions = Models::table('permissions');
-            $abilities   = Models::table('abilities');
-            $table       = $authority->getTable();
+            $table = $authority->getTable();
+            $prefix = Models::prefix();
 
             $query->from($table)
-                  ->join($permissions, "{$table}.{$authority->getKeyName()}", '=', $permissions.'.entity_id')
-                  ->whereColumn("{$permissions}.ability_id", "{$abilities}.id")
-                  ->where("{$permissions}.forbidden", ! $allowed)
-                  ->where("{$permissions}.entity_type", $authority->getMorphClass())
-                  ->where("{$table}.{$authority->getKeyName()}", $authority->getKey());
+                ->select("{$prefix}{$permissions}.ability_id")
+                ->join($permissions, fn (JoinClause $join): JoinClause => $join
+                    ->on("{$table}.{$authority->getKeyName()}", '=', $permissions.'.entity_id')
+                    ->where("{$permissions}.entity_type", $authority->getMorphClass())
+                )
+                ->where("{$permissions}.forbidden", ! $allowed)
+                ->where("{$table}.{$authority->getKeyName()}", '=', $authority->getKey());
 
-            Models::scope()->applyToModelQuery($query, $abilities);
             Models::scope()->applyToRelationQuery($query, $permissions);
         };
     }
