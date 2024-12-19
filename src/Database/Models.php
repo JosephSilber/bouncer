@@ -192,7 +192,6 @@ class Models
             $attribute = strtolower(static::basename($authority)).'_id';
         }
 
-
         $isOwnedVia = static::isOwnedVia($attribute, $authority, $model);
         $model::preventAccessingMissingAttributes($preventsAccessingMissingAttributes);
         return $isOwnedVia;
