@@ -3,12 +3,12 @@ name: Tests
 on:
   push:
     paths-ignore:
-      - 'readme.md'
-      - 'assets/**'
+      - readme.md
+      - assets/**
   pull_request:
     paths-ignore:
-      - 'readme.md'
-      - 'assets/**'
+      - readme.md
+      - assets/**
   release:
 
 jobs:
@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        laravel: [11.*]
+        laravel: ['11.*', '12.*']
         php: [8.2, 8.3]
 
     name: Laravel ${{ matrix.laravel }}, PHP ${{ matrix.php }}
@@ -35,8 +35,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-            composer require --dev "illuminate/auth:${{ matrix.laravel }}" "illuminate/cache:${{ matrix.laravel }}" "illuminate/container:${{ matrix.laravel }}" "illuminate/contracts:${{ matrix.laravel }}" "illuminate/database:${{ matrix.laravel }}" "illuminate/console:${{ matrix.laravel }}" "illuminate/events:${{ matrix.laravel }}" --no-interaction --no-update
-            composer update --prefer-stable --prefer-dist --no-interaction --no-suggest
+          composer require --dev "illuminate/auth:${{ matrix.laravel }}" "illuminate/cache:${{ matrix.laravel }}" "illuminate/container:${{ matrix.laravel }}" "illuminate/contracts:${{ matrix.laravel }}" "illuminate/database:${{ matrix.laravel }}" "illuminate/console:${{ matrix.laravel }}" "illuminate/events:${{ matrix.laravel }}" --no-interaction --no-update
+          composer update --prefer-stable --prefer-dist --no-interaction --no-suggest
 
       - name: Run tests
         run: vendor/bin/pest --do-not-cache-result
