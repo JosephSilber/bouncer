@@ -31,19 +31,19 @@
         }
     },
     "require": {
-        "php": "^8.2|^8.3",
-        "illuminate/auth": "^11.0",
-        "illuminate/cache": "^11.0",
-        "illuminate/container": "^11.0",
-        "illuminate/contracts": "^11.0",
-        "illuminate/database": "^11.0"
+        "php": "^8.2",
+        "illuminate/auth": "^11.0|^12.0",
+        "illuminate/cache": "^11.0|^12.0",
+        "illuminate/container": "^11.0|^12.0",
+        "illuminate/contracts": "^11.0|^12.0",
+        "illuminate/database": "^11.0|^12.0"
     },
     "require-dev": {
-        "illuminate/console": "^11.0",
-        "illuminate/events": "^11.0",
+        "illuminate/console": "^11.0|^12.0",
+        "illuminate/events": "^11.0|^12.0",
         "phpunit/phpunit": "^11.0",
         "orchestra/testbench": "^9.0",
-        "pestphp/pest": "3.x-dev",
+        "pestphp/pest": "^3.7",
         "laravel/pint": "^1.14"
     },
     "suggest": {

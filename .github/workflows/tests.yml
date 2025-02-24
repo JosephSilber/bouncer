@@ -18,8 +18,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        laravel: [11.*]
-        php: [8.2, 8.3]
+        laravel: [11.*, 12.*]
+        php: [8.2, 8.3, 8.4]
 
     name: Laravel ${{ matrix.laravel }}, PHP ${{ matrix.php }}
 
