@@ -24,6 +24,7 @@ return new class extends Migration
             $table->json('options')->nullable();
             $table->integer('scope')->nullable()->index();
             $table->timestamps();
+            $table->index(['entity_type', 'entity_id']);
         });
 
         Schema::create(Models::table('roles'), function (Blueprint $table) {
