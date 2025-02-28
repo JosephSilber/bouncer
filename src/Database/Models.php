@@ -180,6 +180,8 @@ class Models
      */
     public static function isOwnedBy(Model $authority, Model $model)
     {
+        $preventsAccessingMissingAttributes = $model::preventsAccessingMissingAttributes();
+        $model::preventAccessingMissingAttributes(false);
         $type = get_class($model);
 
         if (isset(static::$ownership[$type])) {
@@ -190,7 +192,9 @@ class Models
             $attribute = strtolower(static::basename($authority)).'_id';
         }
 
-        return static::isOwnedVia($attribute, $authority, $model);
+        $isOwnedVia = static::isOwnedVia($attribute, $authority, $model);
+        $model::preventAccessingMissingAttributes($preventsAccessingMissingAttributes);
+        return $isOwnedVia;
     }
 
     /**
