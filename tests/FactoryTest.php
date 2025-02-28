@@ -6,6 +6,7 @@ use Illuminate\Auth\Access\Gate;
 use Illuminate\Container\Container;
 use PHPUnit\Framework\Attributes\Test;
 use Silber\Bouncer\Bouncer;
+use Silber\Bouncer\Database\Models;
 use Workbench\App\Models\User;
 
 class FactoryTest extends BaseTestCase
@@ -57,5 +58,16 @@ class FactoryTest extends BaseTestCase
 
         $this->assertTrue($bouncer->can('create-bouncers'));
         $this->assertTrue($bouncer->cannot('delete-bouncers'));
+    }
+
+    #[Test]
+    public function can_create_bouncer_instance_and_reset_scope()
+    {
+        Models::scope()->to(1);
+        $this->assertNotNull(Models::scope()->get());
+
+        $bouncer = Bouncer::create();
+
+        $this->assertNull(Models::scope()->get());
     }
 }
