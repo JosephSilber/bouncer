@@ -36,6 +36,7 @@ Bouncer is an elegant, framework-agnostic approach to managing roles and abiliti
   - [Authorizing users](#authorizing-users)
   - [Blade directives](#blade-directives)
   - [Refreshing the cache](#refreshing-the-cache)
+    
 - [Multi-tenancy](#multi-tenancy)
   - [The scope middleware](#the-scope-middleware)
   - [Customizing Bouncer's scope](#customizing-bouncers-scope)
@@ -911,6 +912,31 @@ The best solution would be to upgrade your DB. If that's not currently possible,
 ```
 
 ## Console commands
+
+### `bouncer:create`
+
+The `bouncer:create` command create abilities the with extra options can assign that ability to role(s). Please follow this options docs:
+
+- **Create an ability** - create a new ability. For example:
+    ```php
+    php artisan bouncer:create create-user
+    php artisan bouncer:create create-user --model=Silber/Bouncer/Database/Role
+    php artisan bouncer:create create-user --scope=1
+    ```
+- **Assign Role** - Permission role(s) to abilities both id, name are searchable. For example:
+    ```php
+    php artisan bouncer:create create-user --role=1 --role=super-admin
+    ```
+  > **Note**: If you use scope and role together then roles will be searched under scope filter
+
+- **Assign Role and Scope (Multi-Tenant)** - create ability and assign role with scope limit
+
+    ```php
+        php artisan bouncer:create create-user --role=1 --role=super-admin -scope=1 --scope=2
+    ```
+
+
+> **Note**: All options as shorter versions also (--scope|-s, --role|-r, --model|-m).
 
 ### `bouncer:clean`
 
