@@ -1032,6 +1032,10 @@ $user->disallow('ban-users');
 $user->disallow('edit', Post::class);
 $user->disallow('delete', $post);
 
+$user->can('ban-users');
+$user->cant('ban-users');
+$user->can('edit', Post::class);
+
 $user->assign('admin');
 $user->retract('admin');
 
