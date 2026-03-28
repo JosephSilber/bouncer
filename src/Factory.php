@@ -74,6 +74,8 @@ class Factory
 
         $bouncer = (new Bouncer($guard))->setGate($gate);
 
+        $bouncer->scope()->remove();
+
         if ($this->registerAtGate) {
             $guard->registerAt($gate);
         }

@@ -524,9 +524,9 @@ class Bouncer
     /**
      * Get the model scoping instance.
      *
-     * @return mixed
+     * @return Scope
      */
-    public function scope(?Scope $scope = null)
+    public function scope(?Scope $scope = null): Scope
     {
         return Models::scope($scope);
     }
